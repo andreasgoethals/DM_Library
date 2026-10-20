@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-"""Run DM Library maintenance; --check-only never writes library content."""
+"""Run configured library maintenance; check-only never writes library content."""
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -14,24 +15,21 @@ sys.dont_write_bytecode = True
 _ROOT = Path(__file__).resolve().parents[1]
 _SCRIPTS = _ROOT / "scripts"
 sys.path.insert(0, str(_SCRIPTS))
-from lib.config import LIBRARY_NAME
-
+CONFIG = json.loads((_SCRIPTS / "library.json").read_text(encoding="utf-8"))
+LIBRARY_NAME = CONFIG["name"]
 STAGES = {
-    "text": ([sys.executable, "-B", str(_SCRIPTS / "papers/extract_paper_text.py"), "--all"], True, "extract missing paper text"),
-    "docs": ([sys.executable, "-B", str(_SCRIPTS / "checks/check_docs.py"), "--quiet"], False, "coverage, chronology, links and neutrality"),
-    "symbols": ([sys.executable, "-B", str(_SCRIPTS / "checks/check_symbols.py")], False, "verify cited upstream symbols and paths"),
-    "zotero": ([sys.executable, "-B", str(_SCRIPTS / "checks/check_zotero_sync.py")], False, "compare the selected Zotero corpus"),
-    "versions": ([sys.executable, "-B", str(_SCRIPTS / "checks/check_paper_versions.py")], False, "report newer arXiv versions"),
-    "repos": ([sys.executable, "-B", str(_SCRIPTS / "dumps/refresh_repositories.py")], True, "refresh registered upstream snapshots"),
+    name: ([sys.executable, "-B", *stage["command"]], stage.get("mutating", False), stage["description"])
+    for name, stage in CONFIG["stages"].items()
 }
 CHECK_ONLY_OVERRIDE = {
-    "text": [sys.executable, "-B", str(_SCRIPTS / "papers/extract_paper_text.py"), "--check"],
+    name: [sys.executable, "-B", *stage["check_command"]]
+    for name, stage in CONFIG["stages"].items() if "check_command" in stage
 }
 
 
 def run_stage(name: str, argv: list[str]) -> tuple[int, float, str]:
     started = time.monotonic()
-    env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONIOENCODING="utf-8")
+    env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONIOENCODING="utf-8", GIT_OPTIONAL_LOCKS="0")
     try:
         proc = subprocess.run(argv, cwd=_ROOT, env=env, capture_output=True,
                               text=True, encoding="utf-8", errors="replace")
@@ -45,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--check-only", action="store_true", help="report only; skip snapshot refresh and check extraction parity")
     ap.add_argument("--skip", action="append", default=[], choices=list(STAGES), metavar="STAGE")
     ap.add_argument("--only", action="append", default=[], choices=list(STAGES), metavar="STAGE")
+    ap.add_argument("--strict-review", action="store_true", help="fail unresolved source reviews where supported")
     ap.add_argument("--quiet", action="store_true", help="suppress stage output and print the result summary")
     args = ap.parse_args(argv)
     selected = [s for s in STAGES if (not args.only or s in args.only) and s not in args.skip]
@@ -54,22 +53,34 @@ def main(argv: list[str] | None = None) -> int:
     print("Stages: " + (", ".join(selected) or "(none)"))
     if excluded:
         print("Skipped mutating stages: " + ", ".join(excluded))
+    if not args.check_only and any(STAGES[name][1] for name in selected):
+        probe = subprocess.run(["git", "rev-parse", "--show-superproject-working-tree"],
+                               cwd=_ROOT, capture_output=True, text=True,
+                               env=dict(os.environ, GIT_OPTIONAL_LOCKS="0"))
+        if probe.returncode or probe.stdout.strip():
+            print("ERROR: refresh requires an independent canonical Git checkout.", file=sys.stderr)
+            return 2
     results = []
     for name in selected:
         cmd = CHECK_ONLY_OVERRIDE.get(name, STAGES[name][0]) if args.check_only else STAGES[name][0]
         print(f"\n>>> [{name}] {STAGES[name][2]}", flush=True)
+        if args.strict_review and CONFIG["stages"][name].get("strict_review"):
+            cmd = [*cmd, "--strict-review"]
         code, elapsed, output = run_stage(name, cmd)
         if not args.quiet and output.strip():
             print(output.rstrip())
         print(f"[{name}] {'OK' if code == 0 else 'ATTENTION'} (exit {code}, {elapsed:.1f}s)", flush=True)
         results.append((name, code))
-        # A refresh can invalidate citations. Validate after successful writes too.
-        if name == "repos" and code == 0 and "symbols" not in args.skip:
-            post_code, elapsed, output = run_stage("symbols", STAGES["symbols"][0])
-            if not args.quiet and output.strip():
-                print(output.rstrip())
-            print(f"[symbols after refresh] {'OK' if post_code == 0 else 'ATTENTION'} (exit {post_code}, {elapsed:.1f}s)")
-            results.append(("symbols after refresh", post_code))
+        # Refresh may invalidate curated references; recheck the selected outputs.
+        if code == 0 and not args.check_only:
+            for post in CONFIG["stages"][name].get("post_checks", []):
+                if post in args.skip:
+                    continue
+                post_code, elapsed, output = run_stage(post, STAGES[post][0])
+                if (not args.quiet or post_code) and output.strip():
+                    print(output.rstrip())
+                print(f"[{post} after {name}] {'OK' if post_code == 0 else 'ATTENTION'} (exit {post_code}, {elapsed:.1f}s)")
+                results.append((f"{post} after {name}", post_code))
     failed = [name for name, code in results if code != 0]
     print("\n" + ("Needs attention: " + ", ".join(failed) if failed else "All selected stages passed."))
     return 1 if failed else 0

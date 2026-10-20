@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import sys
@@ -14,8 +15,14 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lib.config import USER_AGENT
-from lib.library import ROOT as _ROOT, TEXT as _TEXT, MONTHS as _MONTHS, _ARXIV_STAMP as _STAMP
+USER_AGENT = "literature-maintenance/1.0"
+_ROOT = Path(__file__).resolve().parents[2]
+_TEXT = _ROOT / "papers/text"
+_MONTHS = {name: i + 1 for i, name in enumerate(
+    ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])}
+_STAMP = re.compile(
+    r"arXiv:((?:\d{4}\.\d{4,5}|[a-zA-Z.\-]+/\d{7}))(?:v(\d+))?\s*(?:\[[a-zA-Z.\-]+\]\s*)?"
+    r"(\d{1,2})\s+([A-Z][a-z]{2})\s+(\d{4})")
 
 _API = "https://export.arxiv.org/api/query"
 _ATOM = "{http://www.w3.org/2005/Atom}"
@@ -86,8 +93,40 @@ def query_arxiv(ids: list[str]) -> dict[str, dict]:
     for start in range(0, len(ids), 100):
         if start:
             time.sleep(3)
-        out.update(_query_batch(ids[start:start + 100]))
+        batch = ids[start:start + 100]
+        try:
+            out.update(_query_batch(batch))
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (429, 503):
+                raise
+            print(f"arXiv API unavailable ({exc.code}); checking primary submission-history pages.",
+                  file=sys.stderr)
+            for index, aid in enumerate(batch):
+                if index:
+                    time.sleep(3)
+                request = urllib.request.Request(
+                    "https://arxiv.org/abs/" + urllib.parse.quote(aid, safe="/"),
+                    headers={"User-Agent": USER_AGENT})
+                with urllib.request.urlopen(request, timeout=45) as response:
+                    body = response.read().decode("utf-8")
+                out[aid] = parse_submission_history(body)
     return out
+
+
+def parse_submission_history(body: str) -> dict:
+    section = re.search(r'<div class="submission-history">(.*?)</div>', body, re.S)
+    if not section:
+        raise ValueError("Primary arXiv page has no submission history")
+    text = html.unescape(re.sub(r"<[^>]+>", " ", section.group(1)))
+    versions = re.findall(r"\[v(\d+)\]\s*(?:\w+,\s*)?(\d{1,2})\s+([A-Z][a-z]{2})\s+(\d{4})", text)
+    if not versions:
+        raise ValueError("Primary arXiv submission history could not be parsed")
+    version, day, month, year = max(versions, key=lambda row: int(row[0]))
+    title = re.search(r'<meta name="citation_title" content="([^"]*)"', body)
+    return {"latest_version": int(version),
+            "updated": f"{year}-{_MONTHS[month]:02d}-{int(day):02d}",
+            "title": html.unescape(title.group(1)) if title else "",
+            "source": "primary arXiv submission-history page"}
 
 
 def main(argv: list[str] | None = None) -> int:

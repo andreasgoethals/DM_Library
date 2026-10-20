@@ -1,7 +1,8 @@
 # AGENTS.md — DM Library maintenance contract
 
 Establish which checkout you are in before writing. The canonical DM Library
-checkout is editable when the owner requests work here. A downstream project's
+checkout is editable when the owner requests work here or from the parent
+Literature workspace. A downstream project's
 `decision-models-library/` is a pinned, read-only Git submodule. Never edit its
 shared files from a consumer. Report corrections to the owner for the canonical
 checkout. The sole downstream-local exception is the ignored `PROJECT_SPECIFIC.md`

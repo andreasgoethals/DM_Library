@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Discover DM Library consumers and pin them to this checkout's exact published HEAD.
+"""Discover consumers and pin only this library to its exact published HEAD.
 
 Dry-run only reads Git state. Updates require a clean canonical library and an
 origin-advertised commit (or a locally provable ancestor of an advertised ref).
@@ -140,10 +140,51 @@ def readiness() -> tuple[str | None, list[str]]:
     return head, issues
 
 
+def consumer_ready(project: Project) -> None:
+    if not git("branch", "--show-current", cwd=project.repo).stdout.strip():
+        raise ValueError("consumer HEAD is detached; select its intended branch first")
+    if git("diff", "HEAD", "--", ".gitmodules", cwd=project.repo).stdout.strip():
+        raise ValueError("consumer has pending .gitmodules changes; finish registration first")
+    if git("diff", "--cached", "--name-only", "--", project.sub_path, cwd=project.repo).stdout.strip():
+        raise ValueError("submodule path is already staged; preserve the owner's pending pin")
+    if (project.sub_dir / ".git").exists():
+        if git("status", "--porcelain", "--untracked-files=all", cwd=project.sub_dir).stdout.strip():
+            raise ValueError("submodule contains local changes")
+        if project.pinned_sha() != git("rev-parse", "HEAD", cwd=project.sub_dir).stdout.strip():
+            raise ValueError("submodule checkout differs from the committed pin")
+
+
+def push_project(project: Project) -> None:
+    """Never publish unrelated, already-pending consumer commits."""
+    branch = git("branch", "--show-current", cwd=project.repo).stdout.strip()
+    if not branch:
+        raise ValueError("cannot push a detached consumer")
+    head = git("rev-parse", "HEAD", cwd=project.repo).stdout.strip()
+    advertised = git("ls-remote", "--heads", "origin", f"refs/heads/{branch}", cwd=project.repo).stdout.split()
+    if not advertised:
+        raise ValueError("consumer branch is unpublished; publish its initial history explicitly")
+    remote = advertised[0]
+    if remote == head:
+        return
+    git("fetch", "origin", branch, cwd=project.repo)
+    if git("merge-base", "--is-ancestor", remote, head, cwd=project.repo, check=False).returncode:
+        raise ValueError("consumer branch is behind or diverged; reconcile it before pushing")
+    commits = git("rev-list", f"{remote}..{head}", cwd=project.repo).stdout.split()
+    for commit in commits:
+        parents = git("rev-list", "--parents", "-n", "1", commit, cwd=project.repo).stdout.split()
+        paths = set(git("diff-tree", "--no-commit-id", "--name-only", "-r", commit, cwd=project.repo).stdout.splitlines())
+        if len(parents) != 2 or not paths or paths - {project.sub_path}:
+            raise ValueError("unpublished consumer commits include unrelated changes; publish them explicitly")
+    git("push", "origin", f"{head}:refs/heads/{branch}", cwd=project.repo)
+
+
 def update_project(project: Project, head: str, *, message: str | None, push: bool) -> None:
+    consumer_ready(project)
     sub_dir = project.sub_dir
     if not (sub_dir / ".git").exists():
-        raise ValueError("submodule is uninitialized; run git submodule update --init first")
+        if sub_dir.exists() and any(sub_dir.iterdir()):
+            raise ValueError("uninitialized submodule directory is not empty")
+        git("submodule", "update", "--init", "--", project.sub_path, cwd=project.repo)
     library_origin = git("remote", "get-url", "origin", cwd=_ROOT).stdout.strip()
     submodule_origin = git("remote", "get-url", "origin", cwd=sub_dir).stdout.strip()
     if normalise_remote(submodule_origin) != normalise_remote(library_origin):
@@ -166,13 +207,14 @@ def update_project(project: Project, head: str, *, message: str | None, push: bo
     git("commit", "-m", commit_message, "--", project.sub_path, cwd=project.repo)
     project.status, project.detail = "updated", f"committed {head[:7]}"
     if push:
-        git("push", cwd=project.repo)
+        push_project(project)
         project.detail += " and pushed"
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--root", action="append", metavar="DIR", help="consumer search root (repeatable; default is this repository's parent)")
+    ap.add_argument("--project", action="append", help="exact consumer folder name or absolute path")
     ap.add_argument("--depth", type=int, default=3)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--push", action="store_true")
@@ -195,8 +237,13 @@ def main(argv: list[str] | None = None) -> int:
         print(("[DISCOVERY ONLY] " if args.dry_run else "[REFUSING] ") + issue)
     if issues and not args.dry_run:
         return 2
-    roots = [Path(root) for root in args.root] if args.root else [_ROOT.parent]
+    default_root = _ROOT.parent.parent if (_ROOT.parent / "scripts/workspace.py").is_file() else _ROOT.parent
+    roots = [Path(root) for root in args.root] if args.root else [default_root]
     projects = discover(roots, key, args.depth)
+    if args.project:
+        projects = [p for p in projects if any(
+            p.repo.name == selection or p.repo == Path(selection).resolve()
+            for selection in args.project)]
     if not projects:
         print("No downstream consumers found in the selected search roots.")
     for project in projects:
@@ -211,10 +258,11 @@ def main(argv: list[str] | None = None) -> int:
             # --push also supports resuming after a prior local-only update.
             if args.push:
                 try:
-                    git("push", cwd=project.repo)
+                    consumer_ready(project)
+                    push_project(project)
                     project.detail += " and pushed"
-                except subprocess.CalledProcessError as exc:
-                    project.status, project.detail = "FAILED", exc.stderr.strip()
+                except (ValueError, OSError, subprocess.CalledProcessError) as exc:
+                    project.status, project.detail = "FAILED", (getattr(exc, "stderr", "") or str(exc)).strip()
         else:
             try:
                 if not before:

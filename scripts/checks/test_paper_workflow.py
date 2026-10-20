@@ -355,6 +355,19 @@ class WorkflowCase(unittest.TestCase):
 
 
 class ReaderCase(unittest.TestCase):
+    def test_primary_submission_history_uses_latest_version_not_first_date(self):
+        page = '''<meta name="citation_title" content="A &amp; B">
+        <div class="submission-history">
+        <strong>[v1]</strong> Mon, 1 Sep 2025 12:00:00 UTC (1 KB)
+        <strong>[v3]</strong> Tue, 20 Oct 2026 08:00:00 UTC (2 KB)
+        </div>'''
+        result = versions.parse_submission_history(page)
+        self.assertEqual(result["latest_version"], 3)
+        self.assertEqual(result["updated"], "2026-10-20")
+        self.assertEqual(result["title"], "A & B")
+        with self.assertRaises(ValueError):
+            versions.parse_submission_history("<html>unavailable</html>")
+
     def test_house_filename_removes_windows_invalid_characters(self):
         filename = ingest.house_filename(["Dœ", "Straße"], "03", 'A < B > C | D * E \\ F / G: "Decisions?"')
         self.assertEqual(filename, "03_Doe_and_Strasse_A_B_C_D_E_F_G_Decisions.pdf")

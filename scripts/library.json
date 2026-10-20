@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "dm",
+  "name": "DM Library",
+  "origin": "https://github.com/andreasgoethals/DM_Library.git",
+  "mountpoint": "decision-models-library",
+  "stages": {
+    "text": {
+      "command": [
+        "scripts/papers/extract_paper_text.py",
+        "--all"
+      ],
+      "check_command": [
+        "scripts/papers/extract_paper_text.py",
+        "--check"
+      ],
+      "mutating": true,
+      "description": "extract missing paper text"
+    },
+    "docs": {
+      "command": [
+        "scripts/checks/check_docs.py",
+        "--quiet"
+      ],
+      "description": "coverage, chronology, links and neutrality"
+    },
+    "symbols": {
+      "command": [
+        "scripts/checks/check_symbols.py"
+      ],
+      "description": "verify cited source symbols and paths"
+    },
+    "zotero": {
+      "command": [
+        "scripts/checks/check_zotero_sync.py"
+      ],
+      "description": "compare the selected live Zotero corpus"
+    },
+    "versions": {
+      "command": [
+        "scripts/checks/check_paper_versions.py"
+      ],
+      "description": "report newer arXiv versions"
+    },
+    "repos": {
+      "command": [
+        "scripts/dumps/refresh_repositories.py"
+      ],
+      "mutating": true,
+      "description": "refresh registered upstream snapshots",
+      "post_checks": [
+        "symbols",
+        "docs"
+      ]
+    }
+  }
+}

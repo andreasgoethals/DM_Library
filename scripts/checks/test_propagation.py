@@ -162,6 +162,37 @@ class PropagationTests(unittest.TestCase):
         self.assertEqual(self.call(), 1)
         self.assertEqual(before, git(self.consumer, "rev-parse", "HEAD"))
 
+    def test_pending_registration_preserved(self):
+        self.commit_library("second")
+        git(self.library, "push")
+        path = self.consumer / ".gitmodules"
+        path.write_text(path.read_text() + "\n# pending owner registration\n")
+        before = git(self.consumer, "rev-parse", "HEAD")
+        self.assertEqual(self.call(), 1)
+        self.assertEqual(before, git(self.consumer, "rev-parse", "HEAD"))
+        self.assertIn("pending owner", path.read_text())
+
+    def test_push_refuses_unrelated_unpublished_consumer_commit(self):
+        remote = self.root / "consumer-origin.git"
+        git(self.root, "init", "--bare", str(remote))
+        git(self.consumer, "remote", "add", "origin", str(remote))
+        git(self.consumer, "push", "-u", "origin", "main")
+        before = git(remote, "rev-parse", "main")
+        (self.consumer / "consumer.txt").write_text("unrelated owner work")
+        git(self.consumer, "commit", "-am", "Unrelated owner work")
+        self.commit_library("second")
+        git(self.library, "push")
+        self.assertEqual(self.call("--push"), 1)
+        self.assertEqual(before, git(remote, "rev-parse", "main"))
+        self.assertIn("unrelated owner", (self.consumer / "consumer.txt").read_text())
+
+    def test_project_filter_does_not_install_any_other_library(self):
+        self.commit_library("second")
+        git(self.library, "push")
+        before = fingerprint(self.consumer)
+        self.assertEqual(self.call("--project", "another-consumer"), 0)
+        self.assertEqual(before, fingerprint(self.consumer))
+
 
 if __name__ == "__main__":
     unittest.main()
