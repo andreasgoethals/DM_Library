@@ -2,6 +2,8 @@
 
 ## 2026-10-20
 
+- Refreshed all 13 registered implementation snapshots and revalidated 163 cited symbols, the live 20-item Zotero corpus and all 13 filed arXiv versions.
+
 - Joined the local Literature workspace while retaining an independent GitHub repository. Standardized configurable maintenance and exact-published-commit propagation; added consumer registration and unrelated-commit safeguards. Canonical edits are allowed from the parent workspace; downstream shared files remain read-only.
 - Unified read-only arXiv version checks, including an explicit primary submission-history fallback when the batch API is rate-limited; unresolved sources remain failures rather than false success.
 

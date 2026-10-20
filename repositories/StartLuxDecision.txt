@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "83fe6c7d61a687a6e17f118b4f7d8f429f5d3a01",
   "revision_date": "2026-10-17T12:42:28+08:00",
   "slug": "StartLuxLabs/StartLux-Decision",
-  "retrieved_utc": "2026-10-20T08:59:05+00:00",
+  "retrieved_utc": "2026-10-20T10:35:16+00:00",
   "identity_source": "https://arxiv.org/html/2610.17309v1",
   "included_files": 136,
   "excluded_files": 320,

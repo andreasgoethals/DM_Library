@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "3572c8a68b5df5dafe02d0e093989ba8ec0183bc",
   "revision_date": "2026-09-29T16:43:48+08:00",
   "slug": "InternLM/Intern-Decision",
-  "retrieved_utc": "2026-10-20T08:58:50+00:00",
+  "retrieved_utc": "2026-10-20T10:34:53+00:00",
   "identity_source": "https://huggingface.co/internlm/Intern-Decision-4B",
   "included_files": 69,
   "excluded_files": 20,

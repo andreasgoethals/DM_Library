@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "02b55d7076f15129e59ab3f94783f32c4b088674",
   "revision_date": "2026-10-07T20:22:38.000Z",
   "slug": "LiquidAI/d1-omni-600M",
-  "retrieved_utc": "2026-10-20T08:58:56+00:00",
+  "retrieved_utc": "2026-10-20T10:35:00+00:00",
   "identity_source": "https://www.liquid.ai/blog/d1-open",
   "included_files": 9,
   "excluded_files": 3,

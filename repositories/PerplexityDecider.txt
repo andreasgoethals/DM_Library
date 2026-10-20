@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "14c9d90137962d300f3de95633f7b6535e80c5ce",
   "revision_date": "2026-10-12T07:26:21.000Z",
   "slug": "perplexity-ai/pplx-decider-v1.1-27b",
-  "retrieved_utc": "2026-10-20T08:58:58+00:00",
+  "retrieved_utc": "2026-10-20T10:35:02+00:00",
   "identity_source": "https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b",
   "included_files": 33,
   "excluded_files": 15,

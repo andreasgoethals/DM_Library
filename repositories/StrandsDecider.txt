@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "ae170c4b1b94d9b840d5a567af8087dfa429f49f",
   "revision_date": "2026-10-19T14:32:20-07:00",
   "slug": "strands-labs/strands-decider",
-  "retrieved_utc": "2026-10-20T08:58:48+00:00",
+  "retrieved_utc": "2026-10-20T10:34:48+00:00",
   "identity_source": "https://strandsagents.com/blog/introducing-strands-decider/",
   "included_files": 206,
   "excluded_files": 91,

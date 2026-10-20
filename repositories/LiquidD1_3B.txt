@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "051bcc464b01b9f92942b364d9586b0ef5912432",
   "revision_date": "2026-10-07T20:23:00.000Z",
   "slug": "LiquidAI/d1-3B",
-  "retrieved_utc": "2026-10-20T08:58:55+00:00",
+  "retrieved_utc": "2026-10-20T10:34:59+00:00",
   "identity_source": "https://www.liquid.ai/blog/d1-open",
   "included_files": 12,
   "excluded_files": 3,

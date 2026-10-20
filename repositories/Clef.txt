@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "a30162b99d68a481d8bd75d38df069a0cf83df40",
   "revision_date": "2026-10-19T15:07:45.000Z",
   "slug": "Cloudflare/clef",
-  "retrieved_utc": "2026-10-20T08:58:53+00:00",
+  "retrieved_utc": "2026-10-20T10:34:58+00:00",
   "identity_source": "https://blog.cloudflare.com/clef-decision-models/",
   "included_files": 10,
   "excluded_files": 16,

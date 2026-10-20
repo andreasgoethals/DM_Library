@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "87562114d23597f610754f057e5e0da8659dbcfb",
   "revision_date": "2026-10-07T13:43:42+02:00",
   "slug": "AppliedMachineLearning-Lab/jev-benchmarking",
-  "retrieved_utc": "2026-10-20T08:58:42+00:00",
+  "retrieved_utc": "2026-10-20T10:34:36+00:00",
   "identity_source": "https://arxiv.org/html/2609.37647v1",
   "included_files": 54,
   "excluded_files": 166,
