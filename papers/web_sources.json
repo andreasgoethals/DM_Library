@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "collection_substring": "Decision Models",
+  "sources": [
+    {
+      "zotero_item_key": "QEZZ55X7",
+      "citation_key": "2026.ALMEIDA.introducingsystemonemodelsjev",
+      "title": "Introducing System One Models & Jev",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-09-15",
+      "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "authors": [
+        "Diogo Almeida"
+      ],
+      "venue": "TypeSafe AI Blog",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Primary TypeSafe page displays September 15, 2026. Corrected the existing Zotero date on 2026-10-20; citation key unchanged.",
+      "reviewed_on": "2026-10-20",
+      "verified_publication_date": "2026-09-15",
+      "date_precision": "day",
+      "date_sources": [
+        "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+      ],
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 376
+    },
+    {
+      "zotero_item_key": "X58IRXCA",
+      "citation_key": "2026.INTERNLM.interndecision4b",
+      "title": "Intern-Decision-4B",
+      "item_type": "report",
+      "report_type": "Model card",
+      "publication_date": "2026-09-26",
+      "url": "https://huggingface.co/internlm/Intern-Decision-4B",
+      "authors": [
+        "InternLM"
+      ],
+      "venue": "InternLM",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "First substantive official Hugging Face commit added the model card, inference source and checkpoint on 2026-09-26 at 07:57:03 UTC. Public availability is independently corroborated by a same-day discussion from Hugging Face's open-source team announcing its working demo (created 11:33:37 UTC, edited 12:38:26 UTC). The date is not inferred from Git history alone and is distinct from the later research paper. Corrected the existing Zotero date on 2026-10-20; citation key unchanged.",
+      "reviewed_on": "2026-10-20",
+      "verified_publication_date": "2026-09-26",
+      "date_precision": "day",
+      "artifact_date": "2026-09-26",
+      "artifact_revision": "0e5e6aa7d6d750e2b1504ba11a8136cb58aeb3cd",
+      "date_sources": [
+        "https://huggingface.co/api/models/internlm/Intern-Decision-4B/commits/main",
+        "https://huggingface.co/internlm/Intern-Decision-4B/commit/0e5e6aa7d6d750e2b1504ba11a8136cb58aeb3cd",
+        "https://huggingface.co/internlm/Intern-Decision-4B/discussions/1",
+        "https://huggingface.co/api/models/internlm/Intern-Decision-4B/discussions/1"
+      ],
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 379
+    },
+    {
+      "zotero_item_key": "MWJHY75J",
+      "citation_key": "2026.CHEN.introducingclefouropensourcedecisionmodelsnewrlfinetuningplatform",
+      "title": "Introducing Clef: our open-source decision models, and new RL fine-tuning platform",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-10-01",
+      "url": "https://blog.cloudflare.com/clef-decision-models/",
+      "authors": [
+        "Michelle Chen",
+        "Alex Reneau",
+        "Kevin Flansburg"
+      ],
+      "venue": "Cloudflare Blog",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Publication date and provider byline verified against the primary page on 2026-10-20; no immutable PDF version.",
+      "reviewed_on": "2026-10-20",
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 325
+    },
+    {
+      "zotero_item_key": "GI68IPS2",
+      "citation_key": "2026.BROOKER.introducingstrandsdecider2bsmallopensourcedecisionmodel",
+      "title": "Introducing Strands Decider 2B: a small, open source, decision model",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-10-01",
+      "url": "https://strandsagents.com/blog/introducing-strands-decider/",
+      "authors": [
+        "Marc Brooker",
+        "Mike Chambers",
+        "Fabio Nonato de Paula"
+      ],
+      "venue": "Strands Agents",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Publication date and provider byline verified against the primary page on 2026-10-20; no immutable PDF version.",
+      "reviewed_on": "2026-10-20",
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 328
+    },
+    {
+      "zotero_item_key": "DE9KQQLX",
+      "citation_key": "2026.PERPLEXITYAI.pplxdeciderv1127b",
+      "title": "pplx-decider-v1.1-27b",
+      "item_type": "report",
+      "report_type": "Model card",
+      "publication_date": "2026-10-06",
+      "url": "https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b",
+      "authors": [
+        "Perplexity AI"
+      ],
+      "venue": "Perplexity AI",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Official Perplexity announcement dated 2026-10-06 confirms public availability. The evaluated checkpoint commit is dated 2026-10-05 at 12:33:43 UTC, but its original card says private release; that commit is not used as the public publication date. Corrected the existing Zotero date on 2026-10-20 with its citation key unchanged.",
+      "reviewed_on": "2026-10-20",
+      "verified_publication_date": "2026-10-06",
+      "date_precision": "day",
+      "artifact_date": "2026-10-05",
+      "artifact_revision": "db124e5056059be396ec5ba69b97a33dd6adb815",
+      "date_sources": [
+        "https://community.perplexity.ai/t/pplx-decider-v1-1-27b-our-updated-open-weights-multimodal-decision-model-is-now-available/6286",
+        "https://huggingface.co/api/models/perplexity-ai/pplx-decider-v1.1-27b/commits/main",
+        "https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b/blob/db124e5056059be396ec5ba69b97a33dd6adb815/README.md"
+      ],
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 378
+    },
+    {
+      "zotero_item_key": "4U52T7RC",
+      "citation_key": "2026.LIQUIDAI.opend1edgedecisionmodelstextvisionaudio",
+      "title": "Open d1: Edge decision models for text, vision, and audio",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-10-07",
+      "url": "https://www.liquid.ai/blog/d1-open",
+      "authors": [
+        "Liquid AI"
+      ],
+      "venue": "Liquid AI Blog",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Publication date and provider byline verified against the primary page on 2026-10-20; no immutable PDF version.",
+      "reviewed_on": "2026-10-20",
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 322
+    },
+    {
+      "zotero_item_key": "LELM4UBR",
+      "citation_key": "2026.SRIVASTAVA.introducingmicrosoftdecision1ourmodelfastdecisionmaking",
+      "title": "Introducing Microsoft-Decision-1, our model for fast decision-making",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-10-09",
+      "url": "https://commandline.microsoft.com/microsoft-decision-1-model-foundry/",
+      "authors": [
+        "Achint Srivastava"
+      ],
+      "venue": "Command Line",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Publication date and provider byline verified against the primary page on 2026-10-20; no immutable PDF version.",
+      "reviewed_on": "2026-10-20",
+      "metadata_verified_on": "2026-10-20",
+      "zotero_version_at_review": 331
+    }
+  ]
+}

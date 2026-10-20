@@ -1,0 +1,3162 @@
+Benchmarking System One decision models against trained
+classifiers and language models for automated decision gates
+Amir Rafea,∗, Subasish Dasa
+aCivil Engineering, Texas State University, 601 University Drive, San Marcos, 78666, Texas, USA
+ARTICLE INFO
+Keywords:
+System One models
+Decision models
+Calibration
+Selective prediction
+Model cascades
+Text classification
+ABSTRACT
+Software that hands branching decisions to a model needs a declared option and a probability it
+canthreshold.Typeddecisionmodels,alsocalledSystemOnemodels,returnsuchprobabilities
+without generating text, while supervised classifiers and generative language models are the
+established alternatives. One harness sends eight decision-model checkpoints from six families,
+including the hosted model Jev, and four open generative models from three developers the
+same semantic requests, and scores trained and zero-shot classifiers on the same workflow,
+intent, emotion and social-science items. With task labels, a fine-tuned DeBERTa-v3-large
+has the highest observed accuracy on every labeled benchmark but one. Without labels, no
+decision model is significantly more accurate than Jev on workflows or intents, but Gemma-
+4-31B matches it on workflows and exceeds it on CLINC-150 at higher cost and latency. Stated
+probabilitiesofgenerativemodelsbecomeunreadablewhenrepliesmissthekeyformat,whereas
+key likelihoods avoid this but can saturate. A guaranteed 5 percent risk leaves Jev 0.528 of the
+intentdecisions,andanin-scopethresholdstillaccepts0.310ofout-of-scoperequests.Ontyped-
+decisions,swappingyesandnoflips50.5answersperhundredforJevandatleast16.8forevery
+generative model tested, against at most 6.5 for four fine-tuned decision checkpoints. Exposure
+to a benchmark’s training data explains the largest lead of an open checkpoint, which vanishes
+on rater-labeled emotions. An intent-trained first stage escalating to Gemma-4-31B reaches that
+model’s accuracy at about Jev’s price. The results yield condition-dependent design rules for
+automated decision gates.
+1. Introduction
+Softwaresystemsincreasinglydelegateroutinebranchingdecisionstomachinelearningmodels,andmostofthese
+decisionshaveasmallsetofadmissibleoutcomes.Asupportsystemdecideswhethertoescalateareply,anaccounts-
+payable system decides whether to pay, hold or reject an invoice, an incident system assigns an urgency level, and a
+virtualassistantroutesarequesttooneofmanyhandlersortoafallback.Aprogramthathandssuchabranchtoamodel
+needs one of the declared options and a number it can compare with a threshold. Generative language models answer
+in text, and the confidence they state in words is often poorly aligned with their accuracy (Xiong et al., 2024), while
+theirtokenprobabilitiescanbeworsestillafterpreferencetuning(Tianetal.,2023).Constraineddecodingguarantees
+that the text matches a schema (Geng et al., 2023; Willard and Louf, 2023; Dong et al., 2025), but it does not turn the
+answer into a calibrated probability over the declared options.
+Several kinds of model can fill this role. Supervised classifiers trained on the task’s own labels remain a standard
+choice where such labels exist (Devlin et al., 2019; Tunstall et al., 2022). Zero-shot classifiers score label descriptions
+without task training (Yin et al., 2019). A newer class, called decision models here, reads a state and a set of typed
+questionsandreturnsforeveryquestionaprobabilitydistributionoverthedeclaredoptionsinoneforwardpasswithout
+generatingtext(TypeSafeAI,2026b,a).TheirvendorcallsthemSystemOnemodels(TypeSafeAI,2026c).Thehosted
+model Jev introduced the interface with a yes-or-no probability, a choice among declared options and a score on an
+orderedscale.Openimplementationsofthesamecontractfollowedonpublicbackboneswithdifferentdecisionheads,
+amongthemLaya(ConvaiInnovations,2026a),Kev(Palmer,2026b),decider-2b(Mapika,2026),this-that-model-1.0
+(Flock.io, 2026) and Nimble-9B (Bespoke Labs, 2026). An analysis of 2,170 public software projects that call the
+hosted decision model Jev finds it used as a reusable decision component, for attribute judgment and scoring, action
+selection, content filtering, and the selection of models and tools (Ling et al., 2026).
+∗Corresponding author
+amir.rafe@txstate.edu(A. Rafe);subasish@txstate.edu(S. Das)
+ORCID(s):0000-0002-4089-2088(A. Rafe);0000-0002-1671-2753(S. Das)
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 1 of 43
+arXiv:2610.00346v2  [cs.LG]  6 Oct 2026
+
+Benchmarking System One decision models for decision gates
+A practitioner who must choose among these options has model cards that report numbers on different items and
+a growing set of independent evaluations. Each evaluation stays inside one task family, namely computational social
+science(IbrahimandZaki,2026),optionnaming(Sunetal.,2026),judging(Lietal.,2026c),radiologyreportchecking
+(Huang et al., 2026) or call screening (Ren et al., 2026). Their prompts, option texts and scoring code differ, so their
+numbers cannot be placed side by side, and where trained classifiers appear they are quoted from earlier work or
+confined to one task family.
+Theengineeringsettingofthisstudyistheautomateddecisiongate,thepointinasoftwaresystemwhereaprogram
+asks a model for one of a few declared options and acts on the answer without a person in the loop. Beyond accuracy,
+a gate needs a confidence threshold with a known error rate and stability when the option schema grows or its names
+change.Italsoneedsawaytoturnawayrequestsoutsideitsscope,apredictablecostandlatency,andawaytoescalate
+the decisions the model doubts. Each of these properties depends on conditions the engineer controls or inherits, such
+as whether labeled data exist, how many options a question has, how options are named and rendered, and what a
+second stage costs.
+This paper compares these model classes under matched conditions. One harness sends six families of decision
+models, eight checkpoints in all, and four open generative language models from three developers the same semantic
+requests,andsupervisedandzero-shotclassifiersarescoredonthesametestitems.Thetasksareasyntheticworkflow
+benchmark, an intent benchmark with 150 intents and out-of-scope inputs, and four social-science tasks. Two further
+benchmarks,emotionslabeledbyagreeingratersandasecondintentset,changewhichopencheckpointshaveseenthe
+taskintraining.Thestudyasksfourquestions.Researchquestion1(RQ1)askshowtherelativeaccuracyofthemodel
+classes depends on whether labels for the task are available. RQ2 asks how well calibration transfers across tasks and
+option counts, what error rate a threshold chosen on held-out data actually delivers, and what coverage remains when
+that error rate must be guaranteed. RQ3 asks how option count, input budget, option naming and option rendering
+change the behavior of each model. RQ4 asks under which accuracy and cost conditions a confidence-gated cascade
+of two models helps.
+The paper contributes a controlled, model-agnostic evaluation methodology rather than a new model. It consists
+of a harness that normalizes one typed request format across hosted and local checkpoints and three propositions that
+make temperature recovery, hierarchical accuracy and cascade accuracy computable from the recorded answers. It
+alsoincludesstressteststhatvaryoptioncountacrossrepeateddistractorpermutationsandthenamesandrenderingof
+options, and controls that score each decoder-based checkpoint’s untuned backbone and read every larger generative
+model in two ways. Each such model states its probabilities in a reply and is also read through the likelihood of each
+option key. Its practical contribution is a set of condition-dependent design rules for automated decision gates, each
+tied to a measured quantity. The harness, the frozen inputs with their digests, the per-request answers and the analysis
+code are released, so each number here can be regenerated.
+The remainder of the paper is organized as follows. Section 2 reviews the related literature, Section 3 states the
+problem and describes the harness and measures, and Section 4 describes the models and datasets. Section 5 reports
+the results, Section 6 derives the design rules, Section 7 relates the findings to prior studies, and Section 8 concludes.
+2. Related work
+Themodelscomparedheresitatthemeetingpointoftextclassificationwithpretrainedlanguagemodels,structured
+generation,calibration,selectivepredictionandmodelcascades,andthissectionreviewstheselinesbeforestatingthe
+gap that the benchmark addresses.
+Text classification with pretrained models began with fine-tuned encoders that attach a task-specific head to a
+bidirectional transformer (Devlin et al., 2019; Liu et al., 2019). Later work removed the need for a trained head by
+recasting classification as a cloze task whose answer words, the verbalizers, stand for the labels (Schick and Schütze,
+2021;Gaoetal.,2021),orasanentailmentproblembetweentheinputandadescriptionofeachlabel(Yinetal.,2019).
+Efficient few-shot fine-tuning reduced the labeled data that a new label set needs (Tunstall et al., 2022), and generalist
+encoders that score labels given in the input handle new label sets without retraining (Zaratiana et al., 2024; Stepanov
+et al., 2025). Instruction-tuned generative models now classify text from a prompt alone, and recent comparisons
+weigh them against fine-tuned classifiers on accuracy, cost and language coverage (Chae and Davidson, 2026; Vajjala
+and Shimangaud, 2025). Scoring label words with a language model is sensitive to how the label is phrased, because
+different surface forms of the same answer compete for probability (Holtzman et al., 2021). Decision models inherit
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 2 of 43
+
+Benchmarking System One decision models for decision gates
+thisideaofscoringdeclaredoptions,andtheyaddatypedrequestformatandaheadtrainedtoproduceonedistribution
+per question.
+Structuredgenerationtakestheoppositerouteandconstrainsagenerativemodelsothatitstextmatchesagrammar
+or a schema. Grammar-constrained decoding (Geng et al., 2023; Scholak et al., 2021), query languages for prompting
+(Beurer-Kellner et al., 2023), finite-state guidance (Willard and Louf, 2023) and fast grammar engines inside serving
+runtimes(Dongetal.,2025;Zhengetal.,2024b)makeawell-formedanswercertain.Theydonotmaketheprobability
+of that answer meaningful, and a generative model asked to state its confidence in words tends to be over-confident
+(Xiong et al., 2024), although verbalized confidence can be better calibrated than token probabilities after preference
+tuning (Tian et al., 2023). The generative comparators in this study follow this route, returning a JSON object with
+a probability per option under structured decoding, which makes them the natural baseline for a decision model that
+returns the same object without generating text. Reading the larger one also through the likelihood of each option key
+separates the readout from the model.
+Independent evaluations of Jev have grown quickly since its launch, and most stay inside one task family. Ibrahim
+and Zaki (2026) score Jev and several open decision models against nineteen large language models on eighteen
+computational social science tasks. In their results Jev trails the best language model for each task on most tasks
+but costs less and calibrates better than most comparators. A cascade that routes low-confidence items to a language
+model matches or exceeds that model alone at a fraction of its cost. Li et al. (2026c) evaluate Jev as a judge and find
+that a frozen threshold-gated cascade to a stronger judge keeps nearly all of that judge’s accuracy at a little over half
+of its fee. Jev’s gap to the stronger judge widens on judgments that require checking a multi-step derivation.
+Sun et al. (2026) show that a constrained decision head can track the name assigned to an option rather than
+its rubric. Cheng et al. (2026) introduce this-that-model-1.0, adapted from decider-2b, and compare it on a spatial
+reasoningbenchmarkandathird-partyquestionsetwithJevresultsobtainedfromthirdparties.Renetal.(2026)train
+asmallopenscam-callscreenerthatreadsitsprobabilitythewayJevdoesandcompareitscalibrationandlatencywith
+a generative judge and a fine-tuned encoder. Huang et al. (2026) find that Jev agrees more closely with expert error
+countsinradiologyreportsthananopeninferencejudgeundermatcheddecomposition,whilealocalfinding-matching
+pipeline agrees more closely on clinically significant errors.
+A second group of studies uses a decision model inside an application or a domain benchmark and reports the
+outcome that the application cares about. These include legal document understanding (Zhang et al., 2026), source-
+grounded choices in the scientific literature (Deng et al., 2026) and intent-driven service orchestration at the network
+edge (Li et al., 2026a,b). Others address selective control and memory in language-model agents (Wu and Lim, 2026;
+Jiangetal.,2026),gamecontrol(Maetal.,2026),decisionsfromsharedvisualcontext(YuandYao,2026)andvideo
+quality prediction (Robitza, 2026). One of them observed that accuracy fell as the number of options grew, mainly on
+authorizationandriskdecisions(WuandLim,2026),whichisthecardinalityeffectmeasuredhereforseveraldecision
+models on the same items. Across both groups, most studies fix one decision model or one pair of models, and each
+writesitsownpromptsandoptiontexts,soadifferencebetweentwostudiesmixesthemodelwitheverythingelsethat
+changed.
+Thecalibrationofprobabilisticpredictionshasalongrecordofitsown.ProperscoringrulessuchastheBrierscore
+areoptimizedinexpectationonlywhenaforecasterreportsitsactualbelief(Brier,1950;GneitingandRaftery,2007),
+andthereliabilityandresolutiontermsoftheBrierdecompositionseparatecalibrationfromtheabilitytodiscriminate
+(Murphy, 1973). Expected calibration error summarizes reliability over bins of confidence (Pakdaman Naeini et al.,
+2015), and its estimate depends on the binning scheme, which motivates equal-mass bins and bias-aware estimators
+(Nixonetal.,2019;Kumaretal.,2019;Roelofsetal.,2022).Temperaturescalingremainsacommonpost-hocbaseline
+for calibrating modern neural classifiers (Guo et al., 2017). Pretrained transformers are well calibrated in domain and
+less so out of domain relative to their in-domain level (Desai and Durrett, 2020), and the calibration of prompted
+language models, including whether their stated confidence tracks correctness, has its own track (Jiang et al., 2021;
+Kadavath et al., 2022). The scaled arm of this study follows that tradition, and the stored temperatures of several
+decision models raise the question of whether a temperature fitted on one option count transfers to another.
+The sensitivity of language models to the surface of a prompt is well documented. Their predictions shift with the
+wordingandorderingofin-contextexamples,whichcontextualcalibrationpartlycorrects(Zhaoetal.,2021),withthe
+orderoftheoptions(PezeshkpourandHruschka,2024)andwithformattingchoicesthatcarrynomeaning(Sclaretal.,
+2024).Multiple-choiceanswersalsofavorparticularoptionidentifiersregardlessofcontent(Zhengetal.,2024a).The
+option-naming test asks the same question of typed decision models, whose answer space is defined by a rubric, and
+the cardinality test asks how a fixed decision head scales as the option set grows.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 3 of 43
+
+Benchmarking System One decision models for decision gates
+Selective prediction and escalation supply the decision rule that acts on a probability. Chow’s rule balances error
+against abstention (Chow, 1970), the theory of selective classification characterizes the trade-off between risk and
+coverage(El-YanivandWiener,2010),anddeepnetworkscanbegivenarejectoptionwithaguaranteedrisk(Geifman
+andEl-Yaniv,2017).Themaximumsoftmaxprobabilityisastrongbaselinefordetectingerrorsandout-of-distribution
+inputs (Hendrycks and Gimpel, 2017), and no selective method consistently beats it across in-domain, out-of-domain
+andadversariallanguagetasks(Varshneyetal.,2022).Learningtodefertrainsamodeltogetherwitharuleforhanding
+a case to an expert (Madras et al., 2017; Mozannar and Sontag, 2020; Strong et al., 2025). Cascades descend from the
+boosted detectors of Viola and Jones (2001) and now route language-model calls under a budget (Chen et al., 2023),
+through self-verification (Aggarwal et al., 2024) or through learned routers (Ong et al., 2025), and recent surveys
+organize this body of work (Varangot-Reille et al., 2026; Moslem and Kelleher, 2026). The cascades here gate on a
+decision model’s own top-label probability, which is the simplest rule a software gate can apply.
+Benchmarkingpracticeformachinelearningmodelsclosesthereview.Standardizedharnessesthatevaluatemany
+models under one protocol made language models comparable across tasks (Liang et al., 2023). Reporting guidelines
+askforthebudgetandvariancebehindeachnumber(Dodgeetal.,2019),andleakagebetweentrainingandtestdatais
+a documented source of inflated results (Kapoor and Narayanan, 2023). Table 1 codes the 17 closest prior evaluations
+againsttheconditionsadeployeddecisiongatedependson,eachfromthestudy’sowntext.Besidesthestudiesabove,
+aleaderboardcardscoresthehostedmodelandanopendecisionmodelwithtrainedclassifiersonthebenchmarkused
+here as D1 (LocalLLaMA, 2026), and an open reproduction sends identical requests to the hosted model and three
+open checkpoints (Balian, 2026). Three public sources that appeared after that sweep are also close to this design.
+A preprint evaluates the hosted model zero-shot on 37 datasets with one frozen template each and compares it with
+Qwen3.8-27B and Gemma-4-E4B, read through their option probabilities on identical requests (Deußer et al., 2026).
+It reports bootstrap intervals, calibration, selective prediction and cost, but it evaluates no other decision model and
+no classifier trained on the same items. A community leaderboard, the Decision Index, runs 70 open decision models
+and reproductions of Jev beside the hosted model on 120,340 frozen requests from a panel of 38 benchmarks, each
+modelwithitsownnativeprompts(multimodalart,2026).Itreportsaccuracy,calibrationerrorandlatencyforfarmore
+models and tasks than this study, but it scores no classifier trained on the same items and no held-out selective risk. A
+developer launch of the open Clef decision models reports point scores against Jev, Kev-9B and Laya on benchmarks
+that include CLINC-150 and Banking77, for models post-trained on internal synthetic data (Chen et al., 2026).
+Agenerativecomparatoristhemostcommondesign,runfullyin13ofthe17studies.Noneofthestudiesreviewed
+herecomparesseveralhostedandopendecisionmodelsinfullwhilealsoscoringaclassifiertrainedonthesameitems.
+None measures held-out selective risk together with the rejection of out-of-scope requests, and none varies both the
+number and the naming of options. The benchmark reported here addresses these criteria on the same items across
+three task families and audits exposure to the evaluation data wherever the training data are public. It complements
+broad leaderboards by holding the request fixed while one condition changes at a time, so that a difference between
+models can be traced to labels, readout, option schema or second stage.
+3. Methods
+3.1. Problem formulation and notation
+A decision model receives a state𝑠, which is text or a JSON object, together with a set of typed questions, and
+it returns one probability distribution per question over the options that the caller declared. A question𝑞carries an
+instruction, a finite option set𝑞 of size𝐾 𝑞 and, for each option, a rubric sentence that describes when the option
+applies.Threeprimitivetypesexist.AChoicequestionhas𝐾 𝑞 namedoptions,aScorequestionhasorderedlevels,and
+a Noul question is a yes-or-no question whose answer is the probability of yes. For every question the model returns
+a vector𝐩 𝑞 = (𝑝 𝑞,1,…, 𝑝 𝑞,𝐾𝑞 )on the probability simplex, and a program acting on the answer reads the top option
+̂ 𝑦𝑞 = arg max 𝑘 𝑝𝑞,𝑘 anditstop-labelprobability𝑐 𝑞 = max 𝑘 𝑝𝑞,𝑘.Theengineeringusestudiedhereisadecisiongate,in
+which a program acceptŝ 𝑦𝑞 when𝑐 𝑞 reaches a threshold𝜏and otherwise escalates the decision to a stronger model or
+to a person. Table 2 lists the symbols used throughout.
+Three quantities that the analysis computes follow from short identities, which are stated here and proved in
+Appendix A. The first allows the probabilities of a model that serves a stored temperature to be compared with its
+probabilities at a temperature of one without running the model twice.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 4 of 43
+
+Benchmarking System One decision models for decision gates
+Table 1
+Coverage of the evaluation criteria in prior studies of typed decision models and in this study, coded from each study’s own text,
+with a row counting the prior studies that meet each criterion.
+Scope Baselines Measures Stress Design
+Study
+Several models,
+hosted and open
+Several
+task families
+Trained
+classifier
+Generative
+LLM
+Held-out
+calibration
+Held-out
+selective risk
+Out-of-scope
+rejection
+Cost with
+hardware
+Option count
+and naming
+Identical
+requests
+Paired or
+clustered intervals
+MULTI-MODEL EVALUATIONS
+Ibrahim and Zaki (2026)
+Sun et al. (2026)
+LocalLLaMA (2026)
+Balian (2026)
+multimodalart (2026)
+Deußer et al. (2026)
+SINGLE DECISION MODEL AGAINST LANGUAGE MODELS
+Li et al. (2026c)
+Huang et al. (2026)
+Cheng et al. (2026)
+Ren et al. (2026)
+APPLICATIONS
+Zhang et al. (2026)
+Deng et al. (2026)
+Rafe and Das (2026)
+Li et al. (2026a,b)
+Wu and Lim (2026)
+Yu and Yao (2026)
+Jiang et al. (2026)
+Prior studies, full/partial
+4/4 5/10 2/3 13/2 5/6 3/4 3/4 7/9 0/10 6/11 8/4
+This study
+Note: full, partial and absent, each coded from the study’s own text. The first column combines several decision models with hosted and
+open models in one study, and the stress column combines option count with option naming or rendering. Each combined cell is full when both
+criteria are full, empty when both are absent and half otherwise. The two orchestration papers of Li et al. share one row with the higher code of
+each criterion. The coverage row counts the 17 prior rows that meet each criterion fully and partly. The supplementary evidence file gives the
+criteria and, for every cell, a supporting quotation or, for an absent cell without one, the search terms that found nothing.
+Proposition 1 (Temperature recovery).Let𝐩(𝑇) = sof tmax(𝐳∕𝑇)for logits𝐳and a temperature𝑇 >0. For any
+other temperature𝑇 ′ >0,𝐩 (𝑇 ′) is obtained from𝐩 (𝑇) alone by raising each component to the power𝑇∕𝑇′ and
+renormalizing to sum to one.
+The second shows that a two-stage question, which first asks for a domain and then for the intent within the gold
+domain,yieldstheaccuracyofthefullhierarchicalpolicyeventhoughthesecondstageisneveraskedwithinawrongly
+predicted domain. The identity is exact for a model that returns the same distribution for the same request, and it is an
+offline estimate for a model whose repeated answers vary.
+Proposition 2 (Hierarchical accuracy).Let every intent belong to exactly one domain, and let a hierarchical policy
+answer the intent question only among the intents of the domain it predicts. If the model returns the same answer
+wheneveritreceivesthesamerequest,thenthepolicy’sansweriscorrectifandonlyifitsdomainansweranditsintent
+answer within the gold domain are both correct. Its accuracy is then the mean of the product of these two indicators.
+The third expresses the accuracy of a confidence-gated cascade through the two stages and states when escalation
+can help, which Section 6 uses to turn the measurements into a rule for choosing a second stage.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 5 of 43
+
+Benchmarking System One decision models for decision gates
+Table 2
+Mathematical notation and symbols.
+Symbol Meaning
+INPUTS AND OUTPUTS
+𝑠state, the input shared by all questions of one request
+𝑞, 𝑞,𝐾 𝑞 question, its declared option set, and the number of options
+𝐩𝑞,𝑝 𝑞,𝑘 returned distribution and the probability of option𝑘
+̂ 𝑦𝑞,𝑐 𝑞 top option and top-label probability (confidence)
+𝑦𝑞 reference label of question𝑞
+𝐳𝑞 logits behind𝐩𝑞 for models that expose them
+CALIBRATION
+𝑇,𝑇 𝑠 temperature, and the temperature a model applies by default
+𝐵,𝑛 𝑏,̄ 𝑐𝑏,̄ 𝑎𝑏 number of bins, bin size, mean confidence and mean accuracy of bin𝑏
+GATING AND COST
+𝜏confidence threshold of a gate or cascade
+𝑒(𝜏)share of decisions escalated at threshold𝜏
+̄𝑘1, ̄𝑘2, ̄𝑘𝐸
+2 mean cost per decision of the first and the second stage, and of the second stage on the escalated decisions
+𝜙(𝑡),𝑟(𝑡)coverage and empirical risk of the decisions accepted at threshold𝑡
+cov(𝛼)largest coverage whose accepted decisions have empirical risk at most𝛼
+Proposition 3 (Cascade accuracy).Let a first stage answer each of𝑁decisions with confidence𝑐 𝑖 and let the
+decisions in𝐸(𝜏) = {𝑖∶𝑐 𝑖 < 𝜏}be escalated to a second stage. Write𝑎1,𝑖 and𝑎 2,𝑖 for the correctness of the two
+stages on decision𝑖,𝐴 1 and𝐴 2 for their accuracies alone and𝑒(𝜏) =|𝐸(𝜏)|∕𝑁for the escalated share. Then the
+cascade accuracy equals𝐴1 +𝑁 −1 ∑
+𝑖∈𝐸(𝜏) (𝑎2,𝑖 −𝑎 1,𝑖). When𝐸(𝜏)is not empty this equals𝐴1 +𝑒(𝜏) Δ esc(𝜏), where
+Δesc(𝜏)is the accuracy of the second stage minus that of the first on the escalated decisions, and the cascade exceeds
+𝐴1 only ifΔesc(𝜏)>0. When some decisions are kept, the cascade exceeds𝐴2 only if the first stage is more accurate
+than the second on the kept decisions.
+3.2. Harness and experimental protocol
+One harness sends every model the same request, which is the TypeSafe wire body of a shared state and a set of
+typedquestions.Thehostedmodelreceivestherequestthroughthevendor’ssoftwaredevelopmentkit,andeverylocal
+checkpoint receives it through an in-process adapter that implements the same route. Every model therefore receives
+the same semantic request, with the same state, question and option texts in the same order. The rendering into tokens
+is the model’s own, and one adapter departs from the common option text, since this-that-model-1.0 exposes no field
+for an option description and receives each option key joined to its description by a colon (Section 4).
+Every returned distribution is normalized into one shape before any metric is computed, so a difference in the
+reported numbers reflects a difference between models rather than between parsing paths. Each condition is frozen
+once to a JSON Lines file whose SHA-256 digest and random seed, 20260924, are recorded in a manifest, and every
+model reads that same file. The frozen files also let an interrupted run resume without repeating work. The harness
+never shortens a request, and each model applies its own input limits.
+A transient service error is retried a bounded number of times with only the final outcome recorded, and a request
+that a model rejects is recorded as a refusal and scored as missing rather than repaired. A generative reply from which
+no distribution over the declared options can be read, because it holds no parseable JSON or names no declared key,
+is scored as a uniform distribution, so an unreadable reply counts against the model rather than leaving the scored
+set. The only refusals in the study are the 800 requests on which Laya (English) found the full intent list longer than
+its option budget, and Table C.12 in Appendix C lists the resolved revision, served temperature and runtime of every
+model. The study measures the checkpoints available on the run dates in that table, and the released harness accepts
+any further model that implements the same request format.
+Choicequestionscarryneutraloptionidentifiers𝑜 1through𝑜 𝐾 witheveryrubricsentenceunchanged.Amodelthat
+reads an identifier such asbillingrather thano1can shift its answer toward what the word suggests, independently
+of the rubric. A comparison across models that lean on surface wording to different degrees is confounded unless the
+identifiers carry no meaning. The dataset’s native option names are kept in one condition, which validates the harness
+againstthepublishedleaderboardrowforJev,withaccuracy0.727andBrierscore0.148.Thedatasetcardalsoreports
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 6 of 43
+
+Benchmarking System One decision models for decision gates
+a teacher self-agreement of 0.735, which serves as a reference level for agreement with the teacher rather than as an
+upper bound on the accuracy of another model.
+Repeated runs separate a model’s own variability from a difference between models. The hosted model answers
+each condition 3 times. The first run is the one analyzed in every table, and the other runs measure service variability.
+It also answers 5 times on a subset of 40 neutral workflow states, which gives a test-retest floor against which any
+option-naming effect is read. Every open model is checked for determinism on the same subset, since a checkpoint
+served with fixed weights and no sampling should return the same distribution twice.
+Threeprobabilityarmsarecomparedforeveryscoredcondition.Theshippedarmiswhattheserviceorcheckpoint
+returns by default, including any temperature𝑇𝑠 that it applies itself. The raw arm is the same distribution at a
+temperature of one. It exists only for checkpoints whose served temperature is known and whose adapter stores the
+unroundeddistributionatatemperatureofone,whichisrecoveredbyProposition1withoutasecondforwardpass.The
+hostedmodelservestwo-decimalprobabilitiesatanundisclosedtemperatureandtheverbalreadoutsreportverbalized
+probabilities, so none of them has a raw arm, and their raw cells are left empty. The scaled arm applies one further
+temperaturefittedondatathatthescoreditemsnevertouch.Thetemperatureminimizesthenegativelog-likelihoodof
+thereferencelabelsover120log-spacedvaluesfrom0.2to20.ForD1thattemperatureisonevalueperprimitivetype,
+fittedon75training-splitstatesperworkflow.ForD2andforeachD3taskseparatelyitcomesfrom5-foldcross-fitting
+that is disjoint by item, so every scored decision is evaluated under a temperature that never saw it.
+3.3. Measures and stress tests
+Accuracyistheshareofdecisionswhosetopoptionequalsthedataset’sreferencelabel,whichmakesitagreement
+with that reference wherever the reference comes from a teacher model or from hashtags rather than from people.
+Accuracy is reported with a percentile bootstrap interval at the 95 percent level that resamples whole states, because
+the questions asked about one state are not independent draws. Paired differences between models use a paired cluster
+bootstrap with 10000 replicates, a two-sided bootstrap p-value and a Holm correction across the models compared on
+each dataset. Calibration errors, coverages and cascade gains carry cluster-bootstrap intervals from 1000 replicates
+that refit every fitted temperature or threshold inside each replicate. The multi-class Brier score and the negative
+log-likelihood use the full option distribution. Calibration is reported as top-label expected calibration error with 10
+equal-mass bins,
+ECE =
+𝐵∑
+𝑏=1
+𝑛𝑏
+𝑁
+||| ̄ 𝑐𝑏 −̄ 𝑎𝑏
+|||, (1)
+and the multi-class Brier score and the negative log-likelihood of the reference label are reported in Appendix C. The
+multi-class Brier score is
+Brier = 1
+𝑁
+𝑁∑
+𝑖=1
+𝐾∑
+𝑘=1
+(𝑝𝑖,𝑘 −𝑦 𝑖,𝑘
+)2,(2)
+where𝑦 𝑖,𝑘 is one for the reference option and zero otherwise. On D1, whose reference is a hard label together with a
+soft distribution𝐬𝑖 that the dataset derives from the teacher samples, soft accuracy is the mean teacher probability of
+the option the model selects,
+Sof tAcc = 1
+𝑁
+𝑁∑
+𝑖=1
+𝑠𝑖, ̂ 𝑦𝑖. (3)
+This measure rewards a choice the teacher also found plausible, whereas the Brier score compares the whole returned
+distributionwiththehardlabel.Selectivepredictionacceptsthedecisionswhoseconfidencereachesathreshold𝑡,with
+ties accepted together. For the accepted set(𝑡) = {𝑖∶𝑐𝑖 ≥𝑡}, the coverage is𝜙(𝑡) =|(𝑡)|∕𝑁and the empirical
+risk𝑟(𝑡)is the share of errors in(𝑡). The risk-coverage curve traces𝑟(𝑡)against𝜙(𝑡)over the observed confidences,
+and the coverage at 1 and 5 percent risk is
+cov(𝛼) = max
+𝑡
+{𝜙(𝑡) ∣𝑟(𝑡)≤𝛼}.(4)
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 7 of 43
+
+Benchmarking System One decision models for decision gates
+The review budget is the share of decisions that fall outside that accepted set. Computed on the scored items,cov(𝛼)
+traces the frontier of those items. A deployed gate fixes its threshold beforehand, so the analysis also chooses the
+threshold on held-out data, applies it to the scored items, and reports the realized coverage and risk with a one-sided
+upper bound on the risk. A held-out threshold still gives no guarantee, so a third rule controls the risk by Learn-then-
+Test(Angelopoulosetal.,2025).Eachof50candidatethresholdsfixedbeforeanydataareseenistestedwithanexact
+binomial test of the hypothesis that the error rate of the decisions it accepts on the calibration data exceeds 5 percent.
+The lowest threshold whose hypothesis is rejected after a Bonferroni correction over the candidates is applied to the
+scoreditems,sowithprobabilityatleast90percentitsriskonnewexchangeabledecisionsstaysatorbelow5percent.
+Out-of-scope detection on D2 is scored as the area under the receiver operating characteristic curve of the top-label
+probability.
+The option-naming experiment recasts every binary question under four identifier pairs with the rubric text and
+order fixed. The pairs are the digits zero and one, an alignednoandyes, the same pair swapped against the rubric,
+and a pair of random five-letter strings. Each condition is scored by the share of decisions whose chosen rubric flips
+relativetothealignedconditionandbytheareaunderthecurveofthepositive-rubricprobabilityagainstthereference
+label, with its paired-bootstrap change. All three quantities are read against the test-retest floor.
+Thecardinalityexperimentasksthesame600in-scopeintentutteranceswith5,20,50and150options.Theoption
+setsarenestedprefixesofafixedrandompermutationperitemandalwayscontainthegoldintent,sotheoptioncount
+changes together with the particular distractors, their positions and the length of the input. Two further independent
+permutations separate the effect of the option count from that of one draw of distractors. A two-stage condition asks
+the domain and then the intent within the gold domain, and Proposition 2 turns the two answers into the accuracy of
+the hierarchical policy, exactly for the deterministic checkpoints and as an offline estimate for the hosted model.
+Latency is reported for each platform separately and is never expressed as a ratio between platforms, because the
+network path and the serving stack differ. The decision models answer one request at a time, and each comparator is
+timed on 40 requests sent one at a time, while its cost comes from the batched run that produced its answers. Costs on
+differentplatformsarecomparedatthestatedhourlyratesandwiththegraphicsprocessingunit(GPU)fullyoccupied,
+with any lower occupancy stated as a sensitivity, and the cascade cost fraction expresses each cascade relative to its
+second stage. The hosted model’s cost is its recorded input-token usage at the published price, and an open model’s
+costisitsmeasuredGPUtimeatastatedhourlyrate.Thecascadeexperimentpairseachdecisionmodelasafirststage
+with a second stage, sweeps the threshold𝜏over the first stage’s observed confidences, and reports cascade accuracy
+against the cost fraction of the pair,
+cost f raction(𝜏) =
+̄𝑘1 +𝑒(𝜏) ̄𝑘𝐸
+2
+̄𝑘2
+.(5)
+Here ̄𝑘1 and ̄𝑘2 are the mean costs per decision of the two stages over all decisions and̄𝑘𝐸
+2 is the mean second-stage
+cost over the escalated decisions, all computed item by item from recorded tokens or GPU time. The threshold that
+maximizesaccuracyonthescoreditemsoverstateswhatadeployedcascadewouldachieve,soeveryreportedcascade
+usesathresholdchosenonheld-outdata,namelythecalibrationsliceforD1anditem-disjointcross-fittingforD2and
+D3.
+4. Models and datasets
+Six decision-model families are measured, one hosted and five open with eight checkpoints in all, alongside four
+generative language models from three developers read in eight ways, and Table 3 summarizes each. Jev is accessed
+through the vendor’s typesafe-sdk pinned tojev-1.13.0, since the aliasjev-latestmoves without notice. It bills
+0.042 United States dollars per million input tokens, with output tokens free, and returns probabilities on a two-
+decimal grid (TypeSafe AI, 2026a,b). Laya is an encoder that scores each option at a marker token and is trained
+with reinforcement learning against proper scoring rules, a recipe its developers call RLCD. It has a 421M-parameter
+English ModernBERT-large checkpoint with a sequence budget of 512 tokens per question, of which 192 hold the
+optiontext.ThemultilingualmmBERT-basecheckpointhas322Mparametersandasequencebudgetof1,024tokens,
+of which 256 hold the option text (Convai Innovations, 2026a,b). Laya applies its own temperature per question type
+and option count, and the table lists its nominal value.
+Kev-0.8B and Kev-9B add a LoRA adapter of rank 16 and a pointer head to Qwen3.5, trained with cross-entropy.
+They serve at stored temperatures of 2.30 for Kev-9B and 2.35 for Kev-0.8B, the latter read from its checkpoint file
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 8 of 43
+
+Benchmarking System One decision models for decision gates
+on the day of the run (Palmer, 2026a,b). The decider-2b model fine-tunes the 1.9B-parameter Qwen3.5-2B-Base to
+softmax the letter logits at each answer slot, accepts about 32K tokens, and serves at a stored temperature of 1.30
+(Mapika, 2026).
+The this-that-model-1.0 checkpoint, a 1.88B-parameter model adapted from decider-2b, scores a hidden state
+against each option’s label-token embedding without a built-in temperature (Flock.io, 2026). It exposes no request
+format matching the wire body, so the harness joins each option’s key and description with a colon, the one place
+where a model receives option text that no other model sees. Laya, Kev, decider-2b and the comparator prompts also
+joineachkeytoitsdescriptionwithacoloninsidetheirownrendering,sothedifferenceliesintherequestfieldrather
+thaninthetextthemodelreads.Asensitivityrunwiththedescriptionalonemeasureshowmuchthisrenderingmatters,
+andSection5.1reportsit.Nimble-9B,aLoRAadapteronQwen3.5-9B,readsasingle-tokenanswercodeperquestion.
+Its main branch was pinned by commit hash on the day it was updated to serve at 1.0 with a context limit of 8,192
+tokens, and the checkpoint measured here is that pinned revision (Bespoke Labs, 2026).
+ThefirstcomparatorisQwen3-14Binitsofficial4-bitAWQrelease,runinnon-thinkingmodewithitschattemplate
+undervLLM(Yangetal.,2025;Kwonetal.,2023).ItreturnsoneJSONobjectwithitschosenoptionandaprobability
+per option under structured decoding at a sampling temperature of 0.0, so its probabilities are verbalized rather than
+token probabilities. A larger comparator, Qwen3.6-27B in its official FP8 release, answers the neutral-key requests of
+all three dataset families on a Colab A100 GPU (Qwen, 2026b). It is read out in two ways after the same chat prompt,
+once through the JSON protocol and once through the likelihood of each option key, normalized over the options at a
+temperature of one.
+The same checkpoint also answers every main condition in its thinking mode, which samples its reasoning at
+a temperature of 0.6 with a fixed seed and up to 8192 generated tokens before the JSON reply. Two further open
+models from other developers answer the same conditions with both readouts, Gemma-4-31B-it (Google, 2026) and
+Mistral-Small-24B-Instruct-2501 (Mistral AI, 2025). Both run in bfloat16 on a Colab A100 GPU with 80 gigabytes
+of memory, without graph compilation, because the online FP8 path of the serving stack does not run on that GPU.
+Appendix B gives the prompts, the reporting rule and the parser.
+Four conventional classifiers serve as baselines outside the decision-model interface. A BERT-base encoder is
+fine-tunedontheCLINC-150trainingsplit,thesamesplitdecider-2bwastrainedon,andalogisticregressionisfitted
+on sentence embeddings from BGE-small for the same split and for each further benchmark. A DeBERTa-v3-large
+encoder(Heetal.,2023)isfine-tunedonthetrainingsplitofeverybenchmarkwithlabels,asacross-encoderwithsoft
+targetsontyped-decisionsandasasequenceclassifierelsewhere,withearlystoppingonheld-outtrainingdata.Onthe
+typed-decisions training split the same embeddings, with added word n-gram features, feeda soft-label regression per
+question. Training texts that match a test item after normalization are removed first, and hyperparameters are chosen
+on the validation split. A DeBERTa-v3 entailment model scores each option description as a hypothesis without task
+training. Each baseline receives one temperature fitted on held-out data.
+Untuned backbones separate what fine-tuning adds to each decoder-based checkpoint from what its base model
+already does. Each decoder-based checkpoint is paired with the Qwen3.5 checkpoint it starts from (Qwen, 2026a),
+a base model for Kev and decider-2b, the post-trained Qwen3.5-9B for Nimble-9B, and for this-that-model-1.0 the
+base of decider-2b, from which it is adapted. Each backbone reads the same content as a plain prompt without a chat
+template, and the likelihood of each option key gives its probabilities. All open checkpoints are pinned by resolved
+snapshot commit. The decision models and backbones ran on a Colab L4 GPU in eager PyTorch mode with CUDA
+graphs and fused kernels off, so no served temperature is compiled into a kernel. The comparators ran under vLLM,
+Qwen3-14B on the L4 and the three larger models on an A100.
+Three dataset families supply the questions, with sizes, option counts, reference labels and licenses in Table 4.
+D1, typed-decisions, is a synthetic benchmark of four workflows, agent-trace observability, customer service, invoice
+processing and security incidents, each posing a shared state to 5 typed questions at once (LocalLLaMA, 2026). Its
+test split holds 400 states and 2,000 decisions, and its gold label is the mean of three samples from a teacher endpoint
+of roughly four-billion-parameter class. The card reports a teacher self-agreement of 0.735, the accuracy of a fresh
+teachersampleagainstareferencebuiltfromtheothersamplesonthecard’sownevaluationset.Thesoftgolddefines
+soft accuracy, the training split supplies the calibration slice, and the license is Apache-2.0. Its option count varies by
+question type, from a binary Noul question to the widest Score rubric.
+D2 is CLINC-150, an intent-classification benchmark with an explicit out-of-scope class (Larson et al., 2019),
+underaCCBY3.0license.Thetestconditiondraws4utterancesforeachofthe150intents,for600in-scopedecisions,
+plus 200 out-of-scope utterances under the same option set, so confidence in and out of scope share one scale. The
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 9 of 43
+
+Benchmarking System One decision models for decision gates
+Table 3
+Accessroute,backbone,decisionhead,servedtemperatureandhardwareofeverymodel.Thevendordoesnotdisclosethebackbone
+or the head of Jev, and they are not inferred here.
+Model Access Backbone Head Served𝑇 Hardware
+HOSTED
+Jev 1.13.0 hosted API not disclosed not disclosed not
+disclosed
+vendor infra.
+OPEN,ENCODER HEAD
+Laya (English) local ModernBERT-large option-marker scorer 1.0 Colab L4
+Laya (multilingual) local mmBERT-base option-marker scorer 1.0 Colab L4
+OPEN,DECODER HEAD
+Kev-0.8B local Qwen3.5-0.8B-Base +
+LoRA
+pointer head 2.35 Colab L4
+Kev-9B local Qwen3.5-9B-Base + LoRA pointer head 2.30 Colab L4
+decider-2b local Qwen3.5-2B-Base letter logits 1.30 Colab L4
+this-that-model-1.0 local decider-2b hidden-state readout 1.0 Colab L4
+Nimble-9B local Qwen3.5-9B + LoRA single-token code 1.0 Colab L4
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal local,
+vLLM
+Qwen3-14B, 4-bit AWQ structured JSON 0.0 Colab L4
+Qwen3.6-27B, verbal local,
+vLLM
+Qwen3.6-27B, FP8 structured JSON 0.0 Colab A100
+Qwen3.6-27B, likelihood local,
+vLLM
+Qwen3.6-27B, FP8 option-key likelihood 1.0 Colab A100
+Qwen3.6-27B, thinking local,
+vLLM
+Qwen3.6-27B, FP8 JSON after reasoning 0.6 Colab A100
+Gemma-4-31B, verbal local,
+vLLM
+Gemma-4-31B-it, bf16 structured JSON 0.0 Colab A100
+Gemma-4-31B, likelihood local,
+vLLM
+Gemma-4-31B-it, bf16 option-key likelihood 1.0 Colab A100
+Mistral-Small-24B, verbal local,
+vLLM
+Mistral-Small-24B, bf16 structured JSON 0.0 Colab A100
+Mistral-Small-24B, likelihood local,
+vLLM
+Mistral-Small-24B, bf16 option-key likelihood 1.0 Colab A100
+hierarchicalconditionasksthedomain,oneof10,andthentheintent,oneof15.Afurtherconditionappendsanoption
+named out of scope to the 150 intents, and that option becomes thereference label of the out-of-scope utterances. The
+reference label is otherwise the intent tag of the released dataset.
+D3 draws four text-classification tasks from the computational social science collection of Ziems et al. (2024),
+wordedasinthereplicationpackageofapriordecision-modelevaluationonthatcollection(IbrahimandZaki,2026).
+The two binary tasks ask whether a Wikipedia talk-page exchange will derail into a personal attack (conversations
+gone awry, license unstated) and whether a named participant holds a position of power (Wikipedia corpus power,
+CC BY-SA 4.0). The two multi-class tasks ask for one of six basic emotions in a social media post, with the dataset’s
+distanthashtaglabelasreference(emotion,researchuseonly),andwhichofthreepolitenesslevelsaworkplacerequest
+expresses (Wikipedia politeness, CC BY 4.0). Every D3 label is the reference label of the original collection, and
+accuracy is measured against it.
+Twofurtherbenchmarkstestwhethertheresultsholdbeyondthesereferencelabelsandbeyondthetrainingdataof
+the open checkpoints. GoEmotions labels Reddit comments with 27 emotions by several raters each (Demszky et al.,
+2020). The test items are the 492 comments whose rater-agreed labels map to one of the six Ekman emotions of the
+dataset’s own mapping, stratified by emotion, and they are asked with the question of the D3 emotion task (license
+Apache-2.0). It replaces the distant hashtag label of the D3 emotion task with a label people agreed on, and none of
+the decision models lists it among its training sets. Banking77 holds 77 human-assigned intents of online-banking
+queries (Casanueva et al., 2020), of which 616 test queries, 8 per intent, are each asked with all 77 intents under
+neutral keys (license CC BY 4.0). The Kev cards list Banking77 among their training sets, whereas decider-2b and
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 10 of 43
+
+Benchmarking System One decision models for decision gates
+Table 4
+Size, option count, reference-label type and license of every dataset, where𝑛counts scored decisions.
+Dataset 𝑛 𝐾 Reference License
+WORKFLOW AND INTENT
+D1 typed-decisions 2,000 2 to 5 teacher consensus Apache-2.0
+D2 CLINC-150 800 150 administrative tag CC BY 3.0
+Banking77 616 77 human-assigned intent CC BY 4.0
+COMPUTATIONAL SOCIAL SCIENCE
+D3 conv. gone awry 500 2 original collection unstated
+D3 wiki corpus power 500 2 original collection CC BY-SA 4.0
+D3 emotion 498 6 distant (hashtag) research use only
+D3 wiki politeness 498 3 original collection CC BY 4.0
+GoEmotions, Ekman 492 6 rater agreement Apache-2.0
+this-that-model-1.0 were trained on CLINC-150, so the two intent benchmarks reverse which checkpoints have seen
+the task.
+5. Results
+The results are reported in the order of the research questions. Section 5.1 answers RQ1 and RQ2 on accuracy,
+calibration and selective prediction, Section 5.2 answers RQ3 on option count and option names, and Section 5.3
+answers RQ4 on cost, latency and escalation.
+5.1. Accuracy, calibration and selective prediction
+Theharnessreproducesthepublishedreferencepointsbeforeanycomparisonisread.Onthenativetyped-decisions
+condition the hosted model reaches an accuracy of 0.736 and a soft accuracy of 0.582 against leaderboard values of
+0.727 and 0.580. The hosted model’s accuracy of 0.558 on conversation derailment, 0.608 on power and 0.504 on
+emotion lies close to the 0.572, 0.610 and 0.494 of the replication package of Ibrahim and Zaki (2026). All results
+below use the neutral-identifier conditions unless stated otherwise. In Table 5, D1 is typed-decisions with neutral
+option identifiers, D2 is CLINC-150 with all 150 intents, and the next four columns are the D3 tasks of conversation
+derailment, power, emotion and politeness. D3 F1 is the mean macro-F1 of the four tasks in percent, D1 soft is
+agreement with the teacher distribution, and D2 AUROC separates in-scope from out-of-scope inputs by the top
+probability.
+Without training on the task, accuracy differs widely between the decision models (Table 5), and among them the
+hosted model has the highest observed accuracy on typed-decisions and CLINC-150. On typed-decisions it reaches
+0.732,andthenearestopendecisionmodel,Kev-9B,reaches0.712.Theirpaireddifferenceof−1.9pointshasastate-
+clustered interval from−4.0 to 0.1 and a Holm-adjusted p-value of 0.37, so the two are not distinguishable on this
+benchmark. On CLINC-150 the difference of every other decision model from the hosted model remains significant
+afterthesamecorrection(TableC.4inAppendixC).Nimble-9Bfollowsat0.685,thetwo2B-classmodelsat0.597and
+0.588,Kev-0.8Bat0.451,andbothLayacheckpointsnear0.366,belowtheinput-blindpriorof0.470.OnCLINC-150
+the hosted model reaches 0.913, and decider-2b, this-that-model-1.0, Nimble-9B and Kev-9B cluster between 0.850
+and 0.863.
+The decider-2b model was trained on the training split of CLINC-150, and this-that-model-1.0 is adapted from it,
+so both are task-trained models on the intent benchmark rather than zero-shot comparisons. None of the 800 intent
+test utterances occurs verbatim in that training split, 5 occur after normalizing case and punctuation, and 20 are
+near duplicates by character overlap. The stored temperature of decider-2b was fitted on in-task evaluation sets, and
+rebuildingthemfromthepublishedloaderplaces201ofthe800testitemsinthatpool(Mapika,2026).Thisexposure
+reaches one stored temperature, not the accuracy, and the scaled arm refits the temperature on the benchmark items
+themselves.
+The rendering exception of this-that-model-1.0 matters on this benchmark. Given each option’s description alone
+instead of its key joined to the description, the checkpoint gains 6.8 points on CLINC-150, with an interval from 4.5
+to 9.3, and reaches 0.932. That is not significantly different from the hosted model, with a difference of 1.8 points and
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 11 of 43
+
+Benchmarking System One decision models for decision gates
+Table 5
+Accuracy and related measures of every model class under the same harness. A dash marks a condition the model refused or a
+condition not run.
+D1 typed-decisions D2 CLINC-150 D3 social science tasks
+Model Acc. Soft Acc. AUROC Derail. Power Emotion Polite. F1
+HOSTED
+Jev 1.13.0 0.732 0.582 0.913 0.921 0.558 0.608 0.504 0.657 55.0
+OPEN,ENCODER HEAD
+Laya (English) 0.366 0.358 – – 0.568 0.508 0.504 0.373 45.8
+Laya (multilingual) 0.349 0.339 0.005 0.548 0.552 0.482 0.396 0.365 41.7
+OPEN,DECODER HEAD
+Kev-0.8B 0.451 0.415 0.685 0.761 0.530 0.520 0.516 0.476 44.7
+Kev-9B 0.712 0.574 0.850 0.933 0.530 0.594 0.528 0.476 48.3
+decider-2b 0.588 0.504 0.860 0.885 0.514 0.534 0.803 0.464 51.5
+this-that-model-1.0 0.597 0.516 0.863 0.860 0.516 0.530 0.805 0.414 50.1
+Nimble-9B 0.685 0.559 0.860 0.923 0.556 0.554 0.514 0.516 48.3
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.680 0.555 0.728 0.600 0.554 0.576 0.464 0.653 52.7
+Qwen3.6-27B, verbal 0.725 0.584 0.683 0.649 0.534 0.616 0.398 0.655 50.2
+Qwen3.6-27B, likelihood 0.733 0.587 0.912 0.932 0.534 0.618 0.464 0.659 52.3
+Qwen3.6-27B, thinking 0.721 0.583 0.928 0.879 0.5420.6340.518 0.645 55.5
+Gemma-4-31B, verbal 0.741 0.592 0.942 0.925 0.588 0.614 0.474 0.661 55.8
+Gemma-4-31B, likelihood 0.742 0.592 0.940 0.902 0.588 0.612 0.474 0.661 55.7
+Mistral-Small-24B, verbal 0.606 0.510 0.757 0.724 0.586 0.558 0.243 0.651 47.0
+Mistral-Small-24B, likelihood 0.655 0.547 0.782 0.876 0.574 0.580 0.454 0.689 54.3
+CLASSIFIER TRAINED ON EACH TASK’S OWN LABELS
+BGE-small, trained per task 0.702 0.563 0.948 0.955 0.528 0.592 0.675 0.580 59.4
+BERT-base, fine-tuned – – 0.940 0.975 – – – – –
+DeBERTa-v3-large, fine-tuned0.793 0.616 0.953 0.989 0.5920.5860.938 0.729 70.9
+ZERO-SHOT CLASSIFIER
+DeBERTa-v3 NLI, zero-shot 0.411 0.383 0.507 0.619 0.514 0.514 0.651 0.400 48.0
+Note:Acc. is accuracy, Soft is agreement with the teacher distribution, AUROC separates in-scope from out-of-scope inputs, and F1 is the mean
+macro-F1 of the four D3 tasks in percent. The trained classifiers use labeled data of each task disjoint from its test items, and the decision models
+and the comparators use no task training except where Section 4 states it. Bold marks the best value in each column over all rows, with ties
+bolded.
+ap-valueof0.13,whereasontyped-decisionsthesamechangemovesitsaccuracyby−1.1points.Thetableskeepthe
+rendering that was fixed before any result was seen.
+Thegenerativecomparatorsshowthatthehostedmodel’sleadamongthedecisionmodelsdoesnotextendtoevery
+languagemodelwithouttasktraining.Gemma-4-31Breaches0.741ontyped-decisionsand0.942onCLINC-150with
+itsstatedprobabilities,and0.742and0.940throughitskeylikelihoods,asthetworeadoutschoosethesameoptionfor
+nearlyeverydecision.Ontyped-decisionsitsdifferencefromthehostedmodelof0.9pointsisnotsignificant,withan
+interval from−1.1 to 2.9. On CLINC-150 it leads by 2.8 points, with an interval from 1.0 to 4.7 and a Holm-adjusted
+p-valueof0.004,anditslikelihoodreadoutleadsby2.7points.Qwen3.6-27Breadthroughitskeylikelihoodsreaches
+0.733and0.912,levelwiththehostedmodelonbothbenchmarks,andinitsthinkingmodeitreaches0.721and0.928,
+alsonotsignificantlydifferent.Qwen3-14BandbothreadoutsofMistral-Small-24Bstaysignificantlybelowthehosted
+modelonbothbenchmarks,Mistral-Small-24Bby13.2pointsonCLINC-150eventhroughitskeylikelihoods.Whether
+an open generative model matches a decision model therefore depends on the particular checkpoint rather than on the
+model class.
+Theverbalreadoutaddsasourceoferrorthatthelikelihoodreadoutcannothave,becausethereplyhastonamethe
+declaredkeysinparseableJSON(TableC.5inAppendixC).Everyunreadablereplyisscoredasauniformdistribution.
+Qwen3.6-27B wrote each option key followed by its description in 160 of its 600 intent replies, so its verbal accuracy
+of 0.683 on CLINC-150 rises to 0.907 when such keys are accepted. Mistral-Small-24B returned no parseable JSON
+for235typed-decisionsdecisionsandwrotekeyswithdescriptionsfor382ofthe498emotiondecisions,whichleaves
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 12 of 43
+
+Benchmarking System One decision models for decision gates
+Table 6
+Accuracy, macro-F1, calibration error and paired difference from Jev 1.13.0 on the two further benchmarks, GoEmotions with
+rater-agreed labels and Banking77 with all 77 intents.
+GoEmotions, Ekman emotions Banking77 intents
+Model Acc. F1 ECE vs Jev Acc. F1 ECE vs Jev
+HOSTED
+Jev 1.13.0 0.604 60.7 0.203 – 0.821 80.0 0.073 –
+OPEN,ENCODER HEAD
+Laya (English) 0.524 53.0 0.263−7.90.010 0.2 0.072−81.2
+Laya (multilingual) 0.526 51.50.069−7.70.013 0.4 0.048−80.8
+OPEN,DECODER HEAD
+Kev-0.8B 0.555 55.2 0.072−4.9 0.830 82.0 0.149 0.8
+Kev-9B 0.608 61.2 0.092 0.4 0.849 83.9 0.243 2.8
+decider-2b 0.618 60.6 0.072 1.4 0.828 81.0 0.030 0.6
+this-that-model-1.0 0.612 60.1 0.185 0.8 0.828 81.7 0.070 0.6
+Nimble-9B 0.596 60.0 0.173−0.8 0.843 82.9 0.067 2.1
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.585 58.8 0.100−1.8 0.659 65.0 0.237−16.2
+Qwen3.6-27B, verbal 0.530 53.0 0.211−7.30.765 75.3 0.106−5.7
+Qwen3.6-27B, likelihood 0.585 58.7 0.225−1.8 0.800 77.7 0.101−2.1
+Qwen3.6-27B, thinking 0.606 60.5 0.175 0.2 0.825 80.9 0.113 0.3
+Gemma-4-31B, verbal 0.573 57.8 0.162−3.0 0.821 80.8 0.071 0.0
+Gemma-4-31B, likelihood 0.571 57.5 0.416−3.3 0.818 80.3 0.176−0.3
+Mistral-Small-24B, verbal 0.226 18.9 0.211−37.80.679 66.1 0.168−14.3
+Mistral-Small-24B, likelihood 0.577 57.8 0.210−2.6 0.662 64.0 0.057−15.9
+CLASSIFIER TRAINED ON EACH BENCHMARK’S OWN LABELS
+BGE-small, trained per task 0.677 67.6 0.0767.30.937 93.6 0.05711.5
+DeBERTa-v3-large, fine-tuned0.756 75.70.11015.2 0.950 94.8 0.022 12.8
+ZERO-SHOT CLASSIFIER
+DeBERTa-v3 NLI, zero-shot 0.490 48.2 0.329−11.40.683 66.2 0.147−13.8
+Note:GoEmotions has 492 Reddit comments whose rater-agreed labels map to one of six Ekman emotions, and Banking77 has 616 queries, each
+asked with all 77 intents. F1 is macro-F1 in percent, ECE the calibration error as shipped, and vs Jev the paired accuracy difference from Jev
+1.13.0 in points. The Kev checkpoints list Banking77 among their training sets. Bold marks the best value in each of the first three columns of a
+benchmark and a difference significant after Holm correction at the five percent level.
+it at 0.243 on emotion. Gemma-4-31B and the thinking mode of Qwen3.6-27B left at most 0.007 of the decisions on
+any benchmark unusable. Format compliance is therefore a property of the checkpoint that has to be measured, and
+every table keeps the fixed parser for every model.
+The social-science tasks narrow the spread, because no model separates the classes well on three of the four.
+Conversationderailmentstaysbetween0.514and0.588foreverymodelwithoutitstraininglabelsonabalancedbinary
+task, and power stays between 0.482 and 0.608 for every decision model. Politeness favors the hosted model, which
+leadseveryopendecisionmodelbybetween14.1and29.1points.Onemotiontwoopenmodelsleadbyawidemargin,
+at 0.803 for decider-2b and 0.805 for this-that-model-1.0 against 0.504 for the hosted model. The published training
+mixture of decider-2b, from which this-that-model-1.0 is adapted, includes the training split of the same emotion
+corpus. The lead persists on the 468 test items whose text does not occur in that split, at 0.803, so it reflects exposure
+tothecorpusanditslabelingprocedureratherthanrecallofitems.OnGoEmotions,whoseitemsandlabelsthesetwo
+models did not see, the lead disappears (Table 6).
+The two further benchmarks test these findings on labels that people assigned and with the exposure of the intent
+benchmarks reversed (Table 6). On GoEmotions the hosted model reaches 0.604, and decider-2b and this-that-model-
+1.0 reach 0.618 and 0.612, not significantly different from it. Their lead on the D3 emotion task therefore reflects the
+training split of that corpus rather than a general skill with emotion. No decision model or comparator is significantly
+more accurate than the hosted model on GoEmotions. On Banking77, whose training split the Kev checkpoints list
+among their training data, Kev-9B reaches 0.849 against 0.821 for the hosted model, a difference of 2.8 points with
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 13 of 43
+
+Benchmarking System One decision models for decision gates
+a Holm-adjusted p-value of 0.36. The two models trained on CLINC-150 reach 0.828 and Gemma-4-31B equals the
+hosted model at 0.821, so on this intent set no model without its labels is significantly more accurate than the hosted
+model.BothLayacheckpointsstaynearchanceonBanking77,becauseitsoptiontextagainexceedstheirinputbudget.
+Thetrainedclassifierskeeptheirleadonbothbenchmarks,thefine-tunedDeBERTa-v3-largeat0.756onGoEmotions
+and 0.950 on Banking77 and the embedding classifier at 0.677 and 0.937.
+When the task’s own labels are available, conventional classifiers trained on them form a further model class
+(Table 5, with calibration and latency in Table C.9 of Appendix C). A DeBERTa-v3-large encoder fine-tuned on
+each training split has the highest observed accuracy on every task of the three main dataset families except power. It
+reaches0.793ontyped-decisionsand0.953onCLINC-150,against0.732and0.913forthehostedmodel,andseparates
+out-of-scope requests with an area of 0.989. Its leads over the hosted model are significant after Holm correction on
+typed-decisions,CLINC-150,emotionandpoliteness,andonderailmentandpowerthetwodonotdiffersignificantly.
+Gemma-4-31B, which uses no task labels, is not significantly different from it on CLINC-150, with a difference of
+−1.2 points and a Holm-adjusted p-value of 0.5.
+Thesmallertrainedclassifiersareweakerbutstillcompetitive.ABERT-baseencoderfine-tunedontheCLINC-150
+training split reaches 0.940 on the intent benchmark and a logistic regression on small sentence embeddings reaches
+0.948, both above the hosted model, and the embedding classifier is better calibrated as shipped, at 0.017. On typed-
+decisionsasetofsoft-labelregressionsperquestiononthesameembeddingswithwordn-gramfeaturesreaches0.702,
+fromwhichthehostedmodel,Kev-9BandNimble-9BdonotdiffersignificantlyandwhichGemma-4-31Bexceedsby
+3.9 points.
+Without task training the picture reverses, since a zero-shot entailment classifier reaches only 0.507 on the intent
+benchmarkand0.411ontyped-decisions.EverydecisionmodelexceptthetwoLayacheckpointsissignificantlymore
+accurate than the zero-shot classifier on typed-decisions and CLINC-150, and on emotion the zero-shot classifier, at
+0.651, is significantly ahead of every decision model not trained on that corpus. The ranking of the model classes
+therefore depends on whether task labels exist, and with them a fine-tuned encoder of under half a billion parameters
+has the highest observed accuracy on most tasks.
+The untuned backbones show what fine-tuning adds to the base models (Table C.7 in Appendix C). Scored by
+the likelihood of each option key, Qwen3.5-9B-Base reaches 0.562 on typed-decisions and 0.728 on CLINC-150, and
+Kev-9B,trainedfromit,gains14.9and12.2points.Nimble-9Bgains6.9and7.8pointsoverthepost-trainedQwen3.5-
+9B, and every such gain on the two benchmarks is significant after Holm correction except that of Kev-0.8B on
+typed-decisions.Onderailmentandpowernofine-tunedcheckpointchangesaccuracysignificantly,sofine-tuningadds
+accuracyonworkflowsandintentsbutnotonthetaskswherenomodelseparatestheclasseswell.Calibrationmovesin
+both directions, since every fine-tuned checkpoint is better calibrated as shipped than its backbone on typed-decisions
+and worse on derailment, and both Kev checkpoints are also worse on CLINC-150. Scoring each option’s description
+instead of its key lowers the accuracy of all four backbones on typed-decisions and CLINC-150, for Qwen3.5-9B on
+CLINC-150 from 0.782 to 0.105, so the key readout does not understate them there.
+Calibrationasshippeddependsonthepairingofmodelandtaskmorethanonthemodelalone(Table7).Thehosted
+modelisclosetocalibratedontyped-decisionsandCLINC-150,witherrorsof0.033and0.032,andfarfromitonthe
+social-science tasks, where the pooled error is 0.251. The same pattern holds for most open models, and the scaled
+arm reduces the pooled social-science error of every decision model to between 0.026 and 0.038. Pooling averages
+tasks on which a model is over-confident with tasks on which it is under-confident, and per task the scaled error of
+the decision models lies between 0.031 and 0.105 (Table C.1 in Appendix C). Among the decision models scaling
+therefore lowers the error on nearly every task, the exception being small increases for Kev-0.8B on typed-decisions
+and emotion, without bringing every task close to calibration.
+The stored temperatures of Kev and decider-2b lower the error relative to their raw logits on the workflow and
+social-science tasks, but those of both Kev checkpoints raise it markedly on CLINC-150, for Kev-9B from 0.051 at
+a temperature of one to 0.377 as shipped. A temperature fitted on development data with few options therefore does
+nottransferto150options.Scalingcannotcreateresolution,andtheLayacheckpoints,whosebinaryanswersrankthe
+positive class below chance on typed-decisions, reach low scaled error only by moving toward uniform probabilities.
+Thelikelihoodreadoutsofthecomparatorsareover-confidentasshippedwhereamodelissureofmostanswers,most
+clearly that of Gemma-4-31B. Its key likelihoods put at least 0.999 on the top option for 0.78 of the typed-decisions
+decisions and 0.96 of the intent decisions, and its error of 0.244 on typed-decisions falls to 0.064 after scaling.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 14 of 43
+
+Benchmarking System One decision models for decision gates
+Table 7
+Top-label expected calibration error as shipped, at a served temperature of one (raw), and after one temperature fitted on a disjoint
+slice (scaled), with coverage at 5 percent risk as shipped.
+D1 typed-decisions D2 CLINC-150 D3 pooled
+Model Ship. Raw Scal. Cov. Ship. Raw Scal. Cov. Ship. Raw Scal. Cov.
+HOSTED
+Jev 1.13.00.033– 0.032 0.13 0.032 – 0.032 0.93 0.251 – 0.038 0.00
+OPEN,ENCODER HEAD
+Laya (English) 0.156 0.232 0.068 0.00 – – – – 0.158 0.225 0.0290.01
+Laya (multilingual) 0.279 0.279 0.044 0.01 0.031 0.031 0.010 0.00 0.2040.2040.029 0.00
+OPEN,DECODER HEAD
+Kev-0.8B 0.060 0.161 0.070 0.02 0.254 0.090 0.087 0.220.1250.2900.0260.00
+Kev-9B 0.087 0.092 0.047 0.12 0.377 0.051 0.046 0.61 0.138 0.295 0.029 0.00
+decider-2b 0.094 0.139 0.036 0.06 0.035 0.0350.025 0.75 0.232 0.272 0.032 0.00
+this-that-model-1.0 0.196 0.196 0.040 0.04 0.055 0.0550.0230.78 0.331 0.331 0.038 0.00
+Nimble-9B 0.0570.057 0.0260.20 0.069 0.069 0.037 0.66 0.285 0.285 0.031 0.00
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.117 – 0.091 0.00 0.204 – 0.096 0.01 0.197 – 0.032 0.00
+Qwen3.6-27B, verbal 0.126 – 0.063 0.04 0.023 – 0.027 0.69 0.293 – 0.029 0.00
+Qwen3.6-27B, likelihood 0.061 0.061 0.0290.420.044 0.044 0.035 0.86 0.312 0.312 0.035 0.00
+Qwen3.6-27B, thinking 0.129 – 0.045 0.10 0.038 – 0.032 0.85 0.271 –0.0260.00
+Gemma-4-31B, verbal 0.106 – 0.043 0.120.022– 0.026 0.97 0.258 – 0.033 0.00
+Gemma-4-31B, likelihood 0.244 0.244 0.064 0.28 0.058 0.058 0.0340.980.409 0.409 0.071 0.00
+Mistral-Small-24B, verbal 0.151 – 0.065 0.00 0.135 – 0.186 0.00 0.203 – 0.032 0.00
+Mistral-Small-24B, likelihood 0.112 0.112 0.045 0.08 0.055 0.055 0.053 0.41 0.292 0.2920.026 0.01
+Note:Ship., Raw and Scal. are the expected calibration error as shipped, at a temperature of one and after scaling, and Cov. is the coverage at 5
+percent risk as shipped. The raw arm exists only where the served temperature is known and the temperature-one distribution is stored, so Jev
+1.13.0 and the verbal readouts have none, and the likelihood readout is itself read at a temperature of one. The Laya (multilingual) cells on D2,
+whose option text exceeds its input budget, are shown but not ranked. Bold marks the lowest error and the highest coverage in each column, with
+ties bolded, and marks a shipped error above the raw error before rounding, where the stored temperature raises the error.
+Selective prediction separates the models more sharply than accuracy does. At 5 percent risk the hosted model
+accepts 0.93 of the CLINC-150 decisions, against 0.78 for this-that-model-1.0, 0.61 for Kev-9B and 0.97 for Gemma-
+4-31B, and on typed-decisions it accepts 0.13 against 0.20 for Nimble-9B. The likelihood readout of Qwen3.6-27B
+accepts0.42ofthetyped-decisionsdecisionsatthatriskand0.41withaheld-outthreshold,against0.17forthehosted
+model, and rounding its probabilities to the two-decimal grid of the hosted model leaves 0.42. On the social-science
+tasksnomodelholdsthatrisklevelbeyondacoverageof0.17,apartfromtheemotiontaskofthetwoexposedmodels,
+so a review budget at that risk covers nearly every item.
+Thesein-samplecoveragesdescribethefrontierofthescoreditemsratherthanadeployedgate.Withthethreshold
+chosen on held-out data, the hosted model accepts 0.93 of the CLINC-150 decisions at a realized risk of 0.049, with
+a one-sided upper bound of 0.066, and 0.17 of the typed-decisions decisions at 0.058. The one-sided upper bound on
+the realized risk lies above the five percent target for every model except the stated probabilities of Gemma-4-31B on
+typed-decisions, whose held-out threshold accepts only 0.12 of the decisions (Table C.2 in Appendix C). The risk-
+coverage curves of Figure 1 show where the models separate. On the in-scope CLINC-150 items the hosted model,
+Kev-9B, decider-2b, this-that-model-1.0 and Nimble-9B stay below ten percent risk until at least three quarters of the
+decisionsareaccepted.Onthepooledsocial-sciencetasks,bycontrast,everydecisionmodel’scurvereachesafifthor
+more of errors by a tenth of coverage, so ordering decisions by confidence buys little there.
+A threshold chosen by Learn-then-Test turns the target into a guarantee and shows what the guarantee costs
+(Table C.3 in Appendix C). With a guarantee at 90 percent confidence that the risk stays at or below 5 percent, the
+hosted model accepts 0.528 of the CLINC-150 decisions, at a realized risk of 0.009, and 0.083 of the typed-decisions
+decisions.Gemma-4-31Baccepts0.507oftheintentdecisionswithitsstatedprobabilities,andthelikelihoodreadoutof
+Qwen3.6-27B accepts the most typed-decisions decisions, 0.163. Most other models receive no guaranteed coverage
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 15 of 43
+
+Benchmarking System One decision models for decision gates
+0 0.2 0.4 0.6 0.8 1
+Coverage
+0
+0.01
+0.05
+0.1
+0.2
+0.4
+0.6
+0.8
+1
+Risk of accepted decisions (square-root scale)
+(a) D1, neutral phrasing
+0 0.2 0.4 0.6 0.8 1
+Coverage
+(b) D2, in-scope items
+0 0.2 0.4 0.6 0.8 1
+Coverage
+(c) D3, four tasks pooled
+Jev 1.13.0
+Qwen3-14B, verbal
+Laya (English)
+Laya (multilingual)
+Kev-0.8B
+Kev-9B
+decider-2b
+this-that-model-1.0
+Nimble-9B
+Figure1:Risk-coveragecurvesonD1,D2andthepooledD3tasksforeverydecisionmodelandQwen3-14B,withtheprobabilities
+as shipped. Horizontal lines mark 1 and 5 percent risk.
+on typed-decisions, and the saturated likelihoods of Gemma-4-31B receive none on either benchmark, because no
+threshold separates decisions whose top probabilities all lie near one.
+The top probability separates out-of-scope intent requests from in-scope ones with an area of 0.921 for the hosted
+model,withanintervalfrom0.901to0.940,butagoodrankingdoesnotmakeonethresholdservebothpurposes.The
+gate analysis draws its folds over all 800 utterances and therefore finds a slightly different threshold. At that held-out
+threshold,whichkeepsthein-scoperisknearfivepercent,thehostedmodelaccepts0.310oftheout-of-scoperequests,
+against0.015forKev-9Band0.030forNimble-9B,whichinturnacceptfewerin-scoperequests,0.61and0.66against
+0.92. The likelihood readout of Qwen3.6-27B accepts 0.165 of the out-of-scope requests at an in-scope coverage of
+0.87, and Gemma-4-31B accepts 0.330 with its stated probabilities and 0.655 with its saturated key likelihoods.
+An explicit out-of-scope option changes this picture (Table C.8 in Appendix C). The hosted model chooses it for
+0.585oftheout-of-scoperequestsand0.003ofthein-scopeones,andwithathresholdchosenbythesameheld-outrule
+its false acceptance falls to 0.195 while it still routes 0.925 of the in-scope requests. Qwen3.6-27B chooses the option
+most often, for 0.880 of the out-of-scope requests with its stated probabilities and 0.860 through its key likelihoods,
+whosegatedfalseacceptancefallsto0.035.Gemma-4-31BandthethinkingmodeofQwen3.6-27Bchooseitfor0.715
+and 0.665, whereas Laya (multilingual), Kev-0.8B, decider-2b and this-that-model-1.0 choose it for at most 0.165 of
+the out-of-scope requests and Qwen3-14B and Mistral-Small-24B for at most 0.300.
+5.2. Stress tests on option count and option names
+The cardinality sweep varies the number of options on the same utterances and shows two behaviors (Figure 2).
+Sixoftheeightcheckpointslosegradually,thehostedmodelfrom0.990with5optionsto0.913with150,andKev-9B
+from0.980to0.850.BothLayacheckpointscollapsebetween20and50options,theEnglishonefrom0.852to0.020,
+andtheEnglishcheckpointrejectsthefulllabelsetoutright.ReplayingLaya’sownsequencebuilderwithitstokenizer
+showswhy.With50optionstheoptiontextoftheEnglishcheckpointneeds302tokensagainstaheadbudgetof192,so
+every option iscut to its key and nodescription survives. With 150 options 24optionsfall past the limit of512 tokens
+andthecheckpointrefusesthequestion.Withoutthedescriptionsbothcheckpointschooselargelybylistposition,and
+the English one picks from the first fifth of the list for 0.837 of the items.
+Thetwo-stagealternativecostsaccuracyforeverymodelthatacceptsthefulllabelsetexcepttheLayacheckpoints,
+becausethedomainquestionisharder,andthehostedmodelreaches0.673withadomainaccuracyof0.703.ForLaya
+the two stages restore part of the loss, at 0.302 for the multilingual checkpoint against 0.005 with all intents at once.
+The calibration error with all intents in Table 8 repeats the effect of the stored temperatures noted above, at 0.254
+for Kev-0.8B and 0.377 for Kev-9B against 0.032 for the hosted model. A model that keeps its accuracy with many
+options can therefore still lose the meaning of its confidence. Two further random permutations of the distractors
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 16 of 43
+
+Benchmarking System One decision models for decision gates
+5 20 50 150
+Number of options (log scale)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0Accuracy
+Chance
+(a) Accuracy by number of options
+Two-stage 5 20 50 150
+Number of options (log scale)
+0.0
+0.1
+0.2
+0.3
+0.4Expected calibration error
+(b) Calibration error by number of options
+Jev 1.13.0
+Qwen3-14B, verbal
+Laya (English)
+Laya (multilingual)
+Kev-0.8B
+Kev-9B
+decider-2b
+this-that-model-1.0
+Nimble-9B
+Figure 2:Accuracy (a) and top-label calibration error (b) on the same 600 CLINC-150 utterances as the number of nested options
+grows. Hollow markers show the accuracy of the two-stage condition.
+0 1 10 100
+Jev 1.13.0
+Laya (English)
+Laya (multilingual)
+Kev-0.8B
+Kev-9B
+decider-2b
+this-that-model-1.0
+Nimble-9B
+Hosted
+Encoder scorers
+Decoder-based heads
+(a) Flips per hundred against aligned names
+D1
+0 1 10 100
+Flips per hundred (symmetric log scale)
+Derailment
+0 1 10 100
+Power
+0.4 0.6 0.8
+(b) AUC of the positive-rubric probability
+D1
+0.4 0.6 0.8
+Area under the ROC curve
+Derailment
+0.4 0.6 0.8
+Power
+0/1 names Random strings Swapped Retest floor (a) or aligned names (b) Chance
+Figure 3:Option-name conditions on the binary questions of D1 and the two binary D3 tasks with every rubric held fixed, as flips
+per hundred decisions (a) and the area under the curve (b).
+leave the hosted model’s accuracy within 0.013 of the original at every option count, and they change the accuracy
+of every other model by at most 0.035, apart from Laya (English) with 20 options at 0.058. Among the comparators
+Gemma-4-31Blosesleast,from0.995to0.942,andQwen3.6-27Breadthroughitskeylikelihoodsfallsfrom0.995to
+0.912.
+AttachingthewordsyesandnototheoppositerubricsmovesthehostedmodelandbothLayacheckpointsstrongly,
+Kev-0.8Bmoderately,andthefourlargerdecoder-basedcheckpointslittle(Figure3).Onthebinaryquestionsoftyped-
+decisions the swapped names flip 50.5 answers per hundred for the hosted model, with a state-clustered interval from
+46.2 to 54.7 and a test-retest floor of 1.3. Its area under the curve falls from 0.89 to 0.31, a change with an interval
+from−0.62 to−0.52. Its flip rate reaches 97.2 on conversation derailment and 84.0 on power, against measured floors
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 17 of 43
+
+Benchmarking System One decision models for decision gates
+Table 8
+Cardinality sweep on the same CLINC-150 utterances with the two-stage accuracy and the drop from the smallest to the largest
+option set. A dash marks a refused condition or one not run.
+One-stage accuracy by option count With all 150 options
+Model 5 20 50 150 ECE Two-stage Drop
+HOSTED
+Jev 1.13.0 0.990 0.975 0.957 0.913 0.0320.6730.077
+OPEN,ENCODER HEAD
+Laya (English) 0.932 0.852 0.020 – – 0.365 –
+Laya (multilingual) 0.943 0.830 0.065 0.005 0.031 0.302 0.938
+OPEN,DECODER HEAD
+Kev-0.8B 0.938 0.838 0.750 0.685 0.254 0.382 0.253
+Kev-9B 0.980 0.952 0.920 0.850 0.377 0.602 0.130
+decider-2b0.9950.978 0.947 0.860 0.035 0.518 0.135
+this-that-model-1.00.995 0.9820.938 0.863 0.055 0.523 0.132
+Nimble-9B 0.987 0.975 0.930 0.860 0.069 0.593 0.127
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.978 0.955 0.875 0.728 0.204 – 0.250
+Qwen3.6-27B, verbal 0.982 0.863 0.415 0.683 0.023 – 0.298
+Qwen3.6-27B, likelihood0.995 0.9820.952 0.912 0.044 – 0.083
+Gemma-4-31B, verbal0.9950.980 0.9650.942 0.022–0.053
+Gemma-4-31B, likelihood0.9950.9800.9670.940 0.058 – 0.055
+Mistral-Small-24B, verbal 0.873 0.970 0.860 0.757 0.135 – 0.117
+Mistral-Small-24B, likelihood 0.988 0.962 0.862 0.782 0.055 – 0.207
+Note:Two-stage is the accuracy of asking the domain and then the intent, and Drop is the one-stage accuracy lost from 5 to 150 options. The
+two-stage condition was run for the decision models only. Bold marks the highest accuracy and the lowest error and drop in each column, with
+ties bolded.
+of 0.4 and 0.8. The open checkpoints returned identical distributions for repeated requests on all three binary sets, so
+their floor is zero.
+Laya flips 91.3 answers per hundred on the same questions and also moves under the digit and random-string
+conditions, at 22.8 and 31.5. Kev-0.8B flips 14.3 answers per hundred under the swap and 20.2 under random strings.
+Kev-9B,Nimble-9B,decider-2bandthis-that-model-1.0flipbetween4.2and6.5answersperhundredundertheswap,
+and their areas under the curve change by at most 0.06. For the hosted model, digits and random strings stay within
+2.8 flips per hundred of the aligned condition on all three binary sets, so neutral identifiers reduce the measured effect
+for the hosted model to near its retest floor.
+On the binary social-science tasks the untuned backbones show that this robustness is acquired in training. Under
+theswapthebasemodelsflipupto100.0derailmentanswersperhundredandthepost-trainedQwen3.5-9Bonly7.2,so
+generalpost-trainingsuppliespartofit,andeverydecoder-basedcheckpointflipssignificantlyfewerthanthebackbone
+it adapts on both binary social-science tasks. On typed-decisions Kev-9B and Nimble-9B change the flip rate of their
+backbones by−34.0 and−30.2 per hundred, whereas decider-2b and this-that-model-1.0 stay at the low rate of their
+backbone and Kev-0.8B flips more than its own under digits and random strings.
+The generative comparators are more sensitive to the names than the decoder-based decision models. Under the
+swap Gemma-4-31B flips 17.2 typed-decisions answers per hundred, and the readouts of Qwen3.6-27B and Mistral-
+Small-24Bflipbetween40.3and48.7,againstatmost9.8forthefourlargerdecoder-basedcheckpointsonanybinary
+set. Instruction tuning alone therefore does not supply the robustness that the decision heads acquire. Table C.10 in
+Appendix C lists every condition on each binary set.
+5.3. Cost, latency and escalation
+Latency and cost are measured on each platform separately (Table 9 and Figure C.1). The hosted model answers a
+typed-decisionsrequestatamedianof138millisecondsattheclientandcosts0.0079USdollarsperthousanddecisions
+at its list price. From a cloud runtime as a second client location, the first 40 of these requests took a median of 248
+milliseconds against 139 for the same requests from the first location, so the hosted latency depends on the network
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 18 of 43
+
+Benchmarking System One decision models for decision gates
+Table 9
+Latency per request and cost per thousand decisions on typed-decisions, with the hosted model measured through its API and the
+open models on Colab GPUs at assumed hourly prices.
+US dollars per thousand decisions Latency in ms
+Model Measured on Cost Median 95th pct.
+HOSTED
+Jev 1.13.0 API 0.0079 138 183
+OPEN,ENCODER HEAD
+Laya (English) Colab L4 0.0016 60 80
+Laya (multilingual) Colab L40.0009 32 38
+OPEN,DECODER HEAD
+Kev-0.8B Colab L4 0.0025 84 125
+Kev-9B Colab L4 0.0147 590 798
+decider-2b Colab L4 0.0109 426 601
+this-that-model-1.0 Colab L4 0.0020 71 74
+Nimble-9B Colab L4 0.0532 2056 2466
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal Colab L4 0.0265 11330 11514
+Qwen3.6-27B, verbal Colab A100 0.0707 8387 8692
+Qwen3.6-27B, likelihood Colab A100 0.0581 997 1019
+Qwen3.6-27B, thinking Colab A100 0.6215 – –
+Gemma-4-31B, verbal Colab A100 0.0623 28464 29260
+Gemma-4-31B, likelihood Colab A100 0.0220 668 677
+Mistral-Small-24B, verbal Colab A100 0.0427 12670 12874
+Mistral-Small-24B, likelihood Colab A100 0.0136 358 369
+Note:Costs of the comparators come from batched runs and their latencies from 40 requests sent one at a time, with Gemma-4-31B and Mistral-
+Small-24B served without graph compilation and the thinking mode not timed alone. Bars share one linear scale, cut at its end for the thinking
+mode, and the orange tick marks the hosted model’s list price. Bold marks the lowest value in each column, with ties bolded.
+path. On a Colab L4 with one request at a time, the median ranges from 32 milliseconds for Laya (multilingual) to
+2056 for Nimble-9B, which scores each question in its own pass.
+At an assumed 0.48 US dollars per GPU hour, the cost per thousand decisions ranges from 0.0009 to 0.0532 US
+dollars, so the 9B checkpoints and decider-2b cost more per decision than the hosted list price at this batch size. The
+Layacheckpoints,Kev-0.8Bandthis-that-model-1.0havethelowestcostandmedianlatencyamongtheopenmodels,
+withthis-that-model-1.0at71millisecondsand0.0020USdollarsperthousanddecisions,belowthehostedlistprice.
+The this-that-model-1.0 cost stays below the hosted list price up to a price of 1.90 US dollars per GPU hour with the
+GPU fully occupied, and at a quarter of that occupancy it rises to 0.0080 US dollars per thousand decisions, about the
+hosted price.
+The comparators cost more per decision than the hosted list price on typed-decisions. With batched scoring on
+the A100, the key likelihoods of Mistral-Small-24B cost 0.0136 and those of Gemma-4-31B 0.0220 US dollars per
+thousanddecisions,thestatedprobabilitiesofGemma-4-31B0.0623,andthethinkingmodeofQwen3.6-27B0.6215.
+On CLINC-150, whose 150 options lengthen every request, the key likelihoods of Mistral-Small-24B cost 0.1037
+against 0.1095 for the hosted model, at an accuracy of 0.782, and Gemma-4-31B costs 0.2893. One request at a time
+and without graph compilation, the key likelihoods answer a typed-decisions request at a median of 358 milliseconds
+forMistral-Small-24Band668forGemma-4-31B.ThestatedprobabilitiesofGemma-4-31Btake28464milliseconds,
+because every question of a request is a separate generated reply.
+Confidence-gated escalation adds accuracy only where the two stages differ in what they get right, and its cost
+depends on the price of the second stage (Table 10 and Figure 4). Each threshold is chosen out of fold as Section 3
+describes,withtiesbrokentowardlessescalation,andcostsarecomputedperitemfromtherecordedtokensandGPU
+timeofeachstage.OnCLINC-150,this-that-model-1.0escalates0.25ofitsdecisionstothehostedmodelandreaches
+0.927, against 0.913 for the hosted model alone, at 0.43 of the hosted cost. Its gain of 1.3 points, or 8 more correct
+decisionsoutof600,hasanintervalfrom−0.7to2.8andaone-sidedbootstrapp-valueof0.16,sothecascadematches
+thehostedmodelatunderhalfitscostratherthanexceedingit.Thedecider-2bmodelbehavesalike,withagainof1.2
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 19 of 43
+
+Benchmarking System One decision models for decision gates
+Table 10
+Confidence-gated cascades on D1 and D2 with held-out thresholds and the cost fraction of Eq. (5). The upper block of each panel
+escalates to Gemma-4-31B and the lower block to Jev 1.13.0.
+D1 typed-decisions Single stage Cascade Escalation
+First stage First Second Accuracy Gain Esc. Cost
+ESCALATION TOGEMMA-4-31B,VERBAL
+Jev 1.13.0 0.732 0.741 0.749[0.725, 0.768]0.8[−0.5, 1.7]0.39 0.52
+Laya (English) 0.366 0.741 0.741[0.719, 0.761]0.0[0.0, 0.0]0.99 1.02
+Laya (multilingual) 0.349 0.741 0.741[0.719, 0.761]0.0[0.0, 0.0]1.00 1.01
+Kev-0.8B 0.451 0.741 0.741[0.718, 0.761]0.0[−0.3, 0.0]0.99 1.03
+Kev-9B 0.712 0.741 0.745[0.720, 0.765]0.4[−0.7, 1.3]0.53 0.77
+decider-2b 0.588 0.741 0.740[0.718, 0.760]−0.1[−0.4, 0.1]0.94 1.11
+this-that-model-1.0 0.597 0.741 0.740[0.717, 0.760]−0.1[−1.2, 0.0]0.94 0.97
+Nimble-9B 0.685 0.741 0.743[0.713, 0.764]0.2[−2.0, 0.9]0.86 1.72
+ESCALATION TOJEV1.13.0
+Laya (English) 0.366 0.732 0.732[0.710, 0.754]0.0[0.0, 0.3]1.00 1.20
+Laya (multilingual) 0.349 0.732 0.732[0.710, 0.752]0.0[−0.1, 0.1]1.00 1.11
+Kev-0.8B 0.451 0.732 0.732[0.708, 0.752]0.0[−1.3, 0.0]0.99 1.30
+Kev-9B 0.712 0.732 0.738[0.714, 0.759]0.6[−0.4, 1.5]0.53 2.37
+decider-2b 0.588 0.732 0.731[0.707, 0.751]−0.1[−0.7, 0.0]0.94 2.31
+this-that-model-1.0 0.597 0.732 0.731[0.708, 0.751]−0.1[−0.9, 0.0]0.94 1.19
+Nimble-9B 0.685 0.732 0.732[0.711, 0.756]0.0[−1.2, 1.1]0.86 7.55
+D2 CLINC-150 Single stage Cascade Escalation
+First stage First Second Accuracy Gain Esc. Cost
+ESCALATION TOGEMMA-4-31B,VERBAL
+Jev 1.13.0 0.913 0.942 0.942[0.917, 0.957]0.0[−1.5, 0.5]0.26 0.64
+Laya (English) – – – – – –
+Laya (multilingual) 0.005 0.942 0.942[0.923, 0.960]0.0[0.0, 0.0]1.00 1.02
+Kev-0.8B 0.685 0.942 0.940[0.920, 0.957]−0.2 [−0.8,−0.2]0.94 0.97
+Kev-9B 0.850 0.942 0.940[0.917, 0.955]−0.2[−1.2, 0.0]0.74 0.94
+decider-2b 0.860 0.942 0.940[0.920, 0.960]−0.2[−1.3, 1.2]0.40 0.47
+this-that-model-1.0 0.863 0.942 0.942[0.917, 0.957]0.0[−1.7, 1.3]0.30 0.37
+Nimble-9B 0.860 0.942 0.942[0.920, 0.958]0.0[−0.8, 0.5]0.43 1.20
+ESCALATION TOJEV1.13.0
+Laya (English) – – – – – –
+Laya (multilingual) 0.005 0.913 0.913[0.888, 0.935]0.0[−0.5, 0.0]1.00 1.04
+Kev-0.8B 0.685 0.913 0.912[0.887, 0.932]−0.2 [−1.2,−0.2]0.94 1.03
+Kev-9B 0.850 0.913 0.910[0.880, 0.932]−0.3[−1.8, 0.2]0.56 1.08
+decider-2b 0.860 0.913 0.925[0.892, 0.942]1.2[−1.2, 2.0]0.40 0.58
+this-that-model-1.0 0.863 0.913 0.927[0.898, 0.945]1.3[−0.7, 2.8]0.25 0.43
+Nimble-9B 0.860 0.913 0.910[0.882, 0.933]−0.3[−1.7, 0.3]0.28 2.33
+Note:First and Second are the accuracies of each stage alone, Accuracy is the cascade accuracy with thresholds chosen on data disjoint from
+the scored items, and Gain is its difference from the better single stage in points. Esc. is the escalated share and Cost the cost fraction from each
+decision’s own cost, where the escalation unit on D1 is the decision, a request’s cost is shared among its decisions and a comparator is charged per
+question. Brackets hold cluster bootstrap intervals at 95 percent whose 1000 replicates refit the thresholds, unadjusted for the number of cascades.
+A dash marks a pair without results, because Laya (English) refused the full intent list, andmarks a gain whose interval excludes zero.
+pointsfrom−1.2to2.0at0.58ofthehostedcost,whereasKev-9B,whichwasnottrainedonthebenchmark,escalates
+0.56 of its decisions and costs 1.08 times the hosted model without gaining accuracy.
+Escalating to Gemma-4-31B, the most accurate model on CLINC-150 among those without task labels, moves
+the same trade-off to a higher accuracy. The same this-that-model-1.0 escalates 0.30 of its intent decisions to it and
+reaches0.942,theaccuracyofGemma-4-31Balone,at0.37ofitscost.Thatis0.108USdollarsperthousanddecisions,
+against 0.1095 for the hosted model alone and 0.2893 for Gemma-4-31B alone. With the hosted model as first stage,
+the cascade to Gemma-4-31B escalates 0.26 of the intent decisions and also reaches 0.942, at 0.186 US dollars per
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 20 of 43
+
+Benchmarking System One decision models for decision gates
+0 0.25 0.5 0.75 1
+0.86
+0.88
+0.90
+0.92
+0.94Accuracy
+(a) this-that-model-1.0, D2
+First stage alone
+Jev 1.13.0 alone
+0 0.25 0.5 0.75 1
+0.86
+0.88
+0.90
+0.92
+0.94
+(b) decider-2b, D2
+First stage alone
+Jev 1.13.0 alone
+0 0.5 1 1.5 2 2.5
+0.70
+0.72
+0.74
+(c) Kev-9B, D1
+First stage alone
+Jev 1.13.0 alone
+0 0.25 0.5 0.75 1
+Cost relative to the second stage
+0.72
+0.74
+0.76Accuracy
+(d) Jev 1.13.0, D1
+First stage alone
+Gemma-4-31B alone
+0 0.25 0.5 0.75 1 1.25
+Cost relative to the second stage
+0.90
+0.92
+0.94
+0.96
+(e) Jev 1.13.0, D2
+First stage alone
+Gemma-4-31B alone
+0 0.25 0.5 0.75 1
+Cost relative to the second stage
+0.85
+0.90
+0.95
+(f) this-that-model-1.0, D2
+First stage alone
+Gemma-4-31B alone
+Held-out cascade In-sample threshold sweep Better single stage Single stage alone (model marker)
+Figure 4:Accuracy against cost fraction for six confidence-gated cascades, with the in-sample threshold sweep as a line, the out-
+of-fold cascade ringed and the better single stage dashed.
+thousanddecisions.Ontyped-decisionsthesamecascadereaches0.749,againof0.8pointsoverGemma-4-31Balone
+whose interval from−0.5 to 1.7 includes zero.
+The cascades to the two Qwen comparators are listed in Table C.6 of Appendix C. Among them the only positive
+gainwhoseintervalexcludeszeroontyped-decisionsisthatofNimble-9BescalatingtoQwen3-14B,2.2pointsat2.31
+times the cost of Qwen3-14B alone, and its cascade accuracy of 0.708 remains below that of the hosted model alone.
+On CLINC-150 the one such gain joins two weak stages, Kev-0.8B and the verbal readout of Qwen3.6-27B, which
+togetherreach0.738,5.3pointsabovethebetterofthetwoandstillfarbelowthehostedmodel.Proposition3explains
+these outcomes, because the gain of a cascade over its first stage is the escalated share times the accuracy difference
+on the escalated decisions. The intent-trained models escalate between a quarter and two fifths of their decisions,
+and a second stage that is more accurate on those decisions corrects enough of them to reach its own accuracy while
+answering only the escalated share.
+6. Implications for engineering decision gates
+Adecisiongateisthepointinasoftwaresystemwhereaprogramasksamodelforoneofafewdeclaredoptionsand
+acts on the answer without a person in the loop. The workflows of D1 are gates of this kind, and the intent benchmark
+standsfortheroutinggateofavirtualassistant,whichmustmaparequesttooneofmanyhandlersandsendunknown
+requests elsewhere. This section works through one gate on the intent benchmark with outcomes stated at the level of
+the application, and then states design rules that each name the condition under which they hold.
+Table 11 compares eight policies for one routing gate. Letting the hosted model route every request sends every
+out-of-scope request to some handler, because the policy has no reject option. A held-out threshold that targets five
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 21 of 43
+
+Benchmarking System One decision models for decision gates
+Table 11
+Worked case of an intent-routing gate for a virtual assistant with 150 handlers on the CLINC-150 test items. Every threshold is
+chosen on held-out data, and the intervals come from the cluster bootstrap.
+In-scope requests Out of scope Cost and latency
+Policy Accuracy Answered Risk Bound Escalated Accepted USD Median 95th pct.
+EVERY REQUEST ANSWERED
+(a) Jev 1.13.0, no gate 0.913
+[0.890, 0.935]
+all – – none all 0.1095 148 212
+GATE AT THE IN-SCOPE RISK TARGET
+(b) Jev 1.13.0 – 0.92
+[0.81, 0.97]
+0.047 0.065 none 0.310
+[0.142, 0.502]
+0.1095 148 212
+(c) Kev-9B – 0.61
+[0.47, 0.72]
+0.051 0.075 none 0.015
+[0.000, 0.064]
+0.0573 428 435
+(d) decider-2b – 0.77
+[0.65, 0.85]
+0.059 0.080 none 0.155
+[0.083, 0.300]
+0.0202 149 154
+(e) Qwen3.6-27B,
+likelihood
+– 0.87
+[0.80, 0.94]
+0.052 0.071 none 0.165
+[0.081, 0.346]
+1.1814 3609 3609
+(f) Gemma-4-31B, verbal – 0.95
+[0.74, 1.00]
+0.051 0.069 none 0.330
+[0.077, 0.823]
+0.2893 885 885
+CASCADE
+(g) this-that-model-1.0
+escalating to Jev 1.13.0
+0.927
+[0.898, 0.945]
+all – – 0.25
+[0.20, 0.40]
+all 0.048 153 320
+(h) this-that-model-1.0
+escalating to Gemma-4-31B
+0.942
+[0.917, 0.957]
+all – – 0.30
+[0.23, 0.56]
+all 0.108 153 1039
+Note:Answered is the share of in-scope requests a policy answers without review, and Risk the error rate among them with its one-sided 95
+percent upper bound. Escalated is the share sent to the second stage, and Accepted the share of out-of-scope requests routed to a handler, which is
+all of them when no request can be rejected. USD is the cost per thousand requests and the latencies are in ms per request, amortized over a batch
+for the comparators. The cascades have no reject option and so route every out-of-scope request, and their latencies compose recorded in-scope
+latencies offline. Beneath a value is its cluster bootstrap interval at 95 percent.
+percent in-scope risk lets the hosted model route 0.92 of the in-scope requests at a realized risk of 0.047, but it still
+accepts 0.310 of the out-of-scope requests. The same rule applied to Kev-9B routes fewer requests, 0.61, and accepts
+only 0.015 of the unknown ones, so the choice depends on whether a misrouted unknown request or a request left for
+review costs more. The likelihood readout of Qwen3.6-27B routes 0.87 of the in-scope requests and accepts 0.165 of
+the unknown ones, and Gemma-4-31B routes 0.95 and accepts 0.330, both at a higher cost per request.
+The cascade from this-that-model-1.0 to the hosted model routes every request, out-of-scope ones included, at the
+hosted model’s in-scope accuracy for 0.43 of its cost with the GPU fully occupied. The cascade from the same first
+stagetoGemma-4-31Breachesthehigherin-scopeaccuracyof0.942at0.108USdollarsperthousandrequests,about
+thehostedprice.Thelatencyofeachdecisioniscomposedfromthemeasuredlatenciesofthestagesitpassesthrough.
+Where the gate’s own labeled traffic exists, a DeBERTa-v3-large fine-tuned on it reaches a higher in-scope accuracy
+than any policy that answers every request (Table C.9).
+Thefirstconditionistheavailabilityoflabels.Whenthegatehasastablelabelsetandlabeledtrafficwhoselabels
+theinputdetermines,aclassifierfine-tunedonthattraffichadthehighestobservedaccuracyoneverybenchmarkwith
+such labels except power. A fine-tuned DeBERTa-v3-large answers in about 58.0 milliseconds per request on an L4
+GPU. When no labels exist or the option set changes faster than a classifier can be retrained, a decision model or a
+generative model answers from the rubric alone. Among these, the hosted decision model was matched on workflows
+and exceeded on CLINC-150 by Gemma-4-31B, so its advantage lies in cost, latency and the probability interface
+rather than in accuracy.
+A generative model should be read through the likelihood of each option key or have its reply format verified,
+because stated probabilities depend on a format that the parser must match, which the parser could not read in 0.767
+oftheemotionrepliesofMistral-Small-24B.Thechoiceshouldstillbecheckedonalabeledsampleofthegate’sown
+traffic,becausetherankingofopencheckpointschangedbetweenbenchmarksandexposuretoabenchmark’straining
+data lifted a model on one emotion corpus but not on another.
+The second condition is the error rate the gate may accept. The threshold has to be set for one model on one
+task on held-out labeled data and its risk verified on further held-out data, because the same model accepts 0.93
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 22 of 43
+
+Benchmarking System One decision models for decision gates
+of the intent decisions but only 0.17 of the workflow decisions at the same target. On typed-decisions its realized
+risk of 0.058 already exceeds the target. A gate that needs a guaranteed risk can choose its threshold by Learn-then-
+Test (Angelopoulos et al., 2025; Bates et al., 2021), which kept the hosted model at 0.528 of the intent decisions
+with a guarantee at 90 percent confidence. The guarantee therefore costs coverage, and a model whose probabilities
+are saturated near one, such as the key likelihoods of Gemma-4-31B, receives no guaranteed coverage until it is
+recalibrated.
+Thethirdconditionisachangeoftaskoroptioncount.Astoredtemperaturebelongstotheconditionsitwasfitted
+under, as the Kev temperatures show when they raise the calibration error of Kev-9B from 0.051 to 0.377 with 150
+options. One temperature fitted per task on held-out labeled decisions is cheap, and Proposition 1 applies it without
+a second forward pass for a checkpoint whose temperature is known, so recalibration should precede any threshold
+choice.
+The fourth condition is the design of the option schema. Where option names are chosen freely, neutral identifiers
+with all meaning in the rubric reduce the naming effect for the hosted model to near its retest floor. Where names
+are dictated by an existing schema, the four larger decoder-based checkpoints moved by at most 9.8 flips per hundred
+underapolarityswap.Theencoder-basedcheckpointsandKev-0.8Balsomovedunderdigitsandrandomstrings,and
+every generative comparator tested moved by at least 15.6 on every binary set. Their untuned backbones flipped far
+more answers on the binary social-science questions, so this robustness comes from training beyond the base model
+andhastobeverifiedforeachcheckpointratherthanassumedforabackbonefamily.Theadapterthatrendersoptions
+intomodeltextbelongstothegateaswell,sincedescribingtheoptionswithouttheirkeyschangedtheintentaccuracy
+of this-that-model-1.0 by 6.8 points. The option count and description length have to fit the model’s input budget, and
+where they do not, the domain-then-intent split of Proposition 2 restores part of the loss.
+Thefifthconditionisthepresenceofrequestsoutsidethegate’sscope.Athresholdtunedforin-scoperiskdoesnot
+controlout-of-scope acceptance evenwhen thetop probabilityranks unknownrequests well.An explicitout-of-scope
+option among the declared options lowered the false acceptance of the hosted model from 0.310 to 0.195 at the same
+in-scope target and that of Gemma-4-31B from 0.330 to 0.170. Four of the open decision checkpoints, Qwen3-14B
+and Mistral-Small-24B seldom chose it. The gate therefore needs such an option, validated for the model at hand, or
+a second threshold chosen on out-of-scope examples, and its false acceptance has to be reported beside the in-scope
+risk.
+Thesixthconditionisthepriceandaccuracygapbetweentwostages.Proposition3showsthattheescalatedshare
+and the accuracy difference on the escalated decisions set the gain, and the held-out cascades show the two ways in
+which escalation pays. A cheap first stage that knows the gate’s labels can escalate a minority of its decisions to a
+costlier stage that is more accurate on them. The intent-trained this-that-model-1.0 did so toward the hosted model at
+underhalfthehostedcost,andtowardGemma-4-31Batthatmodel’saccuracyandaboutthehostedprice.Afirststage
+without that training gained accuracy only where both stages were weak, as Kev-0.8B escalating to the verbal readout
+of Qwen3.6-27B did, and Nimble-9B escalating to Qwen3-14B paid more than twice the cost of its second stage. The
+second stage should therefore be the most accurate model the budget allows on the doubted decisions, and the first
+stage the cheapest model that is confident where it is right.
+7. Discussion
+Placingeverymodelunderoneharnesschangesseveralconclusionsthatsingle-modelstudiesreachedontheirown
+items. The developers of this-that-model-1.0 report an accuracy of 0.941 for their model against 0.765 for the hosted
+model on a third party’s questions (Cheng et al., 2026). On the identical items of this study the same checkpoint trails
+the hosted model by13.5 points on typed-decisions and 5.0on CLINC-150, and given the option descriptionsalone it
+islevelwiththehostedmodelonCLINC-150.TheLayacardreportsazero-shottyped-decisionsaccuracyof0.362for
+its English checkpoint (Convai Innovations, 2026a), and the harness reproduces it at 0.358, so developer and harness
+numbers agree when the items and question texts match. The Kev-9B card reports an out-of-domain calibration error
+of 0.042 with its stored temperature (Palmer, 2026b), a developer-reported value, yet on CLINC-150 that temperature
+yields 0.377. The same-item cardinality sweep ties the increase to the option count, since the error of Kev-9B rises
+with the number of options on identical utterances.
+The closest single-model evaluation, posted after the literature sweep, scores the hosted model with one frozen
+template per dataset (Deußer et al., 2026). Its accuracy of 0.797 on Banking77 and in-scope accuracy of 0.921 on
+CLINC-150 lie close to the 0.821 and 0.913 measured here, and its pooled calibration error of 0.028 matches the low
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 23 of 43
+
+Benchmarking System One decision models for decision gates
+errors found here on typed-decisions and CLINC-150. Its explicit out-of-scope option recovers 0.776 of the out-of-
+scope requests against 0.585 here, a difference that the wording of the option and the share of out-of-scope requests
+in each test set may explain. Its finding that none of the leads of Qwen3.8-27B over the hosted model lies outside
+the bootstrap intervals agrees with the result here that no Qwen readout is significantly more accurate than the hosted
+model.ItteststhesmallerGemma-4-E4B,whereasGemma-4-31BhereleadsthehostedmodelonCLINC-150,sothe
+ranking of a generative model against the hosted model depends on the checkpoint as well as on the readout.
+An independent leaderboard offers a second check on the harness itself. The Decision Index scores Banking77 by
+macro-F1onthefulltestsplit,witheachmodelreadingitsownnativeprompt(multimodalart,2026).Itreports79.7for
+thehostedmodeland84.8forKev-9B,withinapointofthe80.0and83.9measuredhereonasampleofthesamesplit.
+ForKev-0.8Banddecider-2bitreports76.2and72.8,against82.0and81.0here.Gapsofthatsizefitthesensitivityto
+the adapter that the rendering run of this-that-model-1.0 shows, but the leaderboard releases no answers per item that
+would trace them.
+Theoption-nameresultsextendthesinglestudythatmeasuredapolarityswapandrelocateitscontrastfromhosted
+against open to one checkpoint against another. Sun et al. (2026) report that exchanging the rubrics behind no and yes
+changes 32.5 percent of the hosted model’s answers and 76.92 percent for an open marker head on the encoder family
+of Laya. The hosted model moves further here, by 50.5 to 97.2 flips per hundred, and Laya by 91.3, close to their
+marker head. The heads of Kev-9B, Nimble-9B, decider-2b and this-that-model-1.0, which read the answer from a
+slot, a pointer or a single token after the rubric, move by at most 6.5 on typed-decisions, and Kev-0.8B by 14.3. Their
+findingthatneutralidentifiersremovetheeffectholdsforthesedecoder-basedmodelsandapproximatelyforthehosted
+model, whose flips fall to near its retest floor, while Laya also moves under digits and random strings.
+The calibration results agree in direction with the largest prior evaluation and differ in magnitude. Ibrahim and
+Zaki (2026) report a median calibration error of 0.157 for the hosted model over their social-science tasks and 0.121
+after a transferred temperature. On the four shared tasks the pooled error as shipped is 0.251 and falls to 0.038 with a
+temperaturefittedwithineachtask.TheirgridplacesNimble-9Batamedianmacro-F1of53.8anddecider-2bat45.2
+over a wider task set, against 48.3 and 51.5 here, the latter raised by the emotion task whose label source decider-2b
+was trained on. The Laya card reports that the checkpoint ships over-confident and recovers after temperature scaling
+(Convai Innovations, 2026a), which the reliability diagrams of Figure C.2 reproduce.
+The evaluations of judges and of call screening both located the value of a decision model in how its confidence
+separates easy decisions from hard ones. Li et al. (2026c) report an accuracy of 95.8 percent for confident judgments
+against 47.7 percent for unconfident ones, and Ren et al. (2026) attribute the gain of their open readout to calibration
+rather than accuracy. The risk-coverage results show the same separation on the workflow and intent benchmarks and
+its near absence on the social-science tasks, so the value of a confidence gate has to be measured per task before a
+threshold is deployed.
+The cascade results place prior reports of cheap escalation in a narrower frame, because their savings depend on
+the relative cost of the second stage. Ibrahim and Zaki (2026) report that escalating low-confidence items from the
+hostedmodeltoafrontiermodelkeepsmostofitsaccuracyatacostfractionof0.561,andthatthesamepolicytoward
+an open model costs 1.13 times that model alone at a strict threshold. Li et al. (2026c) report a frozen cascade that
+reaches 92.5 percent accuracy at 56.8 percent of the frontier fee.
+Here every open comparator costs more per typed-decisions decision than the hosted model, so escalation from
+thehostedmodelsavesnothingagainstthehostedmodelalone,andtowardGemma-4-31Bitbuysthatmodel’shigher
+intentaccuracyat0.64ofitscost.Escalationfromasmallintent-trainedopenmodeltothehostedmodelontheintent
+benchmarkmatchesthehostedaccuracyatunderhalfthehostedcost,withagainwhoseintervalincludeszero.Toward
+Gemma-4-31B the same first stage reaches the accuracy of that model at about the hosted price. The saving therefore
+followsthepricegapbetweenthetwostagesandthedifferenceinwhattheyanswercorrectly,andithastobemeasured
+for each pair before a policy is deployed.
+The comparison with generative models agrees with the largest prior evaluation and narrows it. Ibrahim and Zaki
+(2026)foundthatthehostedmodeltrailsthebestofmanylanguagemodelsonmostsocial-sciencetasksbutcostsless.
+Under one harness the same holds on intents, where Gemma-4-31B leads the hosted model by 2.8 points at 0.2893
+against 0.1095 US dollars per thousand decisions. On workflows and on the social-science tasks no comparator is
+significantly more accurate than the hosted model, and Qwen3-14B and Mistral-Small-24B stay significantly below
+it on workflows. Part of the difference between the generative models lies in how they are read, since key likelihoods
+avoid the unreadable replies that halved the verbal accuracy of Mistral-Small-24B on emotion. The calibration of a
+likelihoodreadoutcannotbeassumedeither,becausethekeylikelihoodsofGemma-4-31Bsaturatenearoneandleave
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 24 of 43
+
+Benchmarking System One decision models for decision gates
+no threshold with a guaranteed risk. Reports that a language model outperforms a decision model, or the reverse,
+therefore have to name the checkpoint, the readout and the task.
+8. Conclusion
+This paper compared eight decision-model checkpoints from six families, four generative language models from
+threedevelopersreadineightways,andconventionalclassifiersundermatchedconditionsonthreedatasetfamiliesand
+twofurtherbenchmarks,witheverydecisionmodelandcomparatorreceivingthesamesemanticrequests.Onaccuracy
+(RQ1), the ranking depended on the availability of task labels and on the particular checkpoint. A DeBERTa-v3-large
+encoderfine-tunedoneachtask’slabelshadthehighestobservedaccuracyoneverytaskwithsuchlabelsexceptpower,
+andsmallertrainedclassifiersremainedcompetitiveonintents.Withouttasklabelsnodecisionmodelwassignificantly
+moreaccuratethanthehostedmodelontheworkflowandintentbenchmarks.Gemma-4-31Bmatcheditonworkflows
+and exceeded it on CLINC-150, while Qwen3-14B and Mistral-Small-24B stayed significantly below it. Exposure
+explained the largest lead of an open checkpoint, on the hashtag-labeled emotion task whose training split decider-2b
+hadseen,andthatleadvanishedonGoEmotions.Kev-9BgainednosignificantleadonBanking77althoughitliststhat
+benchmarkamongitstrainingsets.Thestatedprobabilitiesofgenerativemodelsdependedonthereplyformat,which
+theparsercouldnotreadforupto0.767ofthedecisionsofonemodel,whereaskeylikelihoodsavoidedthatproblem.
+Oncalibration(RQ2),calibrationasshippeddependedonthepairingofmodelandtask,andastoredtemperaturefitted
+on few options raised the error of both Kev checkpoints with 150 options. One held-out temperature per task lowered
+theerrorofnearlyeverymodelwithoutaddingresolution.ALearn-then-Testthresholdguaranteedtheriskattheprice
+of coverage, keeping the hosted model at 0.528 of the intent decisions against 0.93 under a held-out threshold, and
+saturated key likelihoods received no guaranteed coverage. A threshold tuned for in-scope risk left the hosted model
+accepting 0.310 of out-of-scope intent requests, and an explicit out-of-scope option lowered that share to 0.195 at
+nearly the same in-scope coverage.
+On robustness (RQ3), the encoder-based checkpoints collapsed once the option text exceeded their input budget,
+whiletheotherdecisionmodelsdegradedgraduallyandconsistentlyacrossdistractorpermutations.Swappingyesand
+noagainstfixedrubricsflippedmostbinaryanswersofthehostedmodelandofLayaandbetween16.8and48.7typed-
+decisions answers per hundred for the generative comparators. Four decoder-based checkpoints moved by at most 9.8
+flips per hundred, and their untuned backbones flipped far more on the binary social-science tasks, so this robustness
+comesfromtheirtraining.Describingoptionswithouttheirkeysmovedthis-that-model-1.0by6.8pointsontheintent
+benchmark, so the adapter belongs to the gate as well. On escalation (RQ4), a cascade gained accuracy beyond its
+interval only where both stages were weak. An intent-trained first stage matched the hosted model’s accuracy at 0.43
+of its cost, and escalating to Gemma-4-31B instead it matched that model’s higher accuracy at 0.108 US dollars per
+thousand decisions, about the hosted price. For engineers who build automated decision gates, these findings become
+rules that choose the model class by the availability of labels, read generative models through key likelihoods, and
+set, verify or guarantee thresholds per model and task. The same rules recalibrate per gate, validate option names,
+rendering and input budget together with the model, check out-of-scope requests separately, and escalate only where
+the second stage is more accurate on the doubted decisions.
+The workflow labels are the consensus of a teacher model and the intent and social-science labels come from the
+original collections, so accuracy measures agreement with those references, although the rater-agreed GoEmotions
+labels gave the same ranking of the model classes. The public benchmarks stand in for operating gates rather than
+logs of a deployed system. The training data of the hosted model and of Laya are not released, so their exposure to
+the benchmark items cannot be checked, and the hosted model can change without notice, which the pinned version
+documents but cannot prevent. Most of the reviewed literature on these models consists of preprints and developer
+reports rather than peer-reviewed articles.
+Future work can test these rules on logs from operating gates with labels adjudicated by people, and can rerun the
+released harness on each new release of the models it covers.
+Appendices
+A. Proofs of the propositions
+This appendix proves the three propositions of Section 3.1. Each proof uses only the definitions stated there.
+The analysis code uses each result exactly as stated, the temperature recovery to form the raw and scaled arms, the
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 25 of 43
+
+Benchmarking System One decision models for decision gates
+hierarchical identity to score the two-stage intent condition and the cascade identity to read the held-out cascades of
+Table 10.
+PROOF(PROPOSITION1). Forlogits𝐳andatemperature𝑇,write𝑍 𝑇 = ∑𝐾
+𝑗=1 exp(𝑧𝑗∕𝑇)forthenormalizingsum,so
+that𝑝 (𝑇)
+𝑘 = exp(𝑧𝑘∕𝑇)∕𝑍 𝑇. Raising each component to the power𝑇∕𝑇′ gives
+(𝑝(𝑇)
+𝑘
+)𝑇∕𝑇 ′
+= exp(𝑧𝑘∕𝑇 ′)
+𝑍 𝑇∕𝑇 ′
+𝑇
+.
+The denominator𝑍 𝑇∕𝑇 ′
+𝑇 does not depend on𝑘, so dividing by the sum of these values over𝑘cancels it and leaves
+exp(𝑧𝑘∕𝑇 ′)∕ ∑
+𝑗 exp(𝑧𝑗∕𝑇 ′) =𝑝 (𝑇 ′)
+𝑘 . The logits themselves are never needed. When a model serves a known stored
+temperature𝑇 𝑠, setting𝑇=𝑇 𝑠 and𝑇 ′ = 1recovers the raw arm, and a further temperature𝑇′′ fitted on held-out data
+is applied in the same way to form the scaled arm.□
+PROOF(PROPOSITION2). Let𝑑(𝑦)denotethedomainofthegoldintent𝑦,let ̂𝑑bethepredicteddomain,andlet̂ 𝚤 𝑑 be
+the intent the model selects when it is asked only among the intents of domain𝑑. The hierarchical policy returnŝ 𝚤̂𝑑,
+which lies in domain̂𝑑. If ̂𝑑≠𝑑(𝑦),then̂ 𝚤 ̂𝑑 belongs to a domain that does not contain𝑦,because every intent belongs
+to exactly one domain, so the answer is wrong. If̂𝑑=𝑑(𝑦), the policy returnŝ 𝚤𝑑(𝑦), which is correct exactly when the
+within-gold-domainansweriscorrect.Hencethepolicyiscorrectonanitemifandonlyif𝟏[ ̂𝑑=𝑑(𝑦)]𝟏[̂ 𝚤 𝑑(𝑦) =𝑦] = 1,
+and averaging this product over items gives its accuracy. Both indicators are observed for every item, because the
+two-stage condition asks the domain question and the within-gold-domain intent question independently. The identity
+treats the answer to the offline within-gold-domain request as the answer the policy would receive, which requires
+that request to be identical to the one the policy would send after a correct domain answer. It then holds exactly for
+a model that returns the same distribution for the same request, as the determinism check of Section 3.2 tests for the
+open checkpoints, and it is an offline estimate for the hosted model, whose repeated answers vary.□
+PROOF(PROPOSITION3). Let𝑎 1,𝑖 and𝑎 2,𝑖 be the correctness indicators of the two stages on decision𝑖out of𝑁, and
+let𝐸= {𝑖∶𝑐 𝑖 < 𝜏}be the escalated set, so that𝑒(𝜏) =|𝐸|∕𝑁. The cascade takes the second stage’s answer on𝐸
+and the first stage’s answer elsewhere, so its accuracy is
+𝐴c(𝜏) = 1
+𝑁
+(∑
+𝑖∉𝐸
+𝑎1,𝑖 +
+∑
+𝑖∈𝐸
+𝑎2,𝑖
+)
+=𝐴 1 + 1
+𝑁
+∑
+𝑖∈𝐸
+(𝑎2,𝑖 −𝑎 1,𝑖
+)=𝐴 1 +𝑒(𝜏) Δ esc(𝜏),
+where the middle expression holds for every threshold and the last one requires𝐸to be nonempty, withΔesc(𝜏) =
+|𝐸|−1 ∑
+𝑖∈𝐸(𝑎2,𝑖 −𝑎 1,𝑖)theaccuracydifferenceontheescalateddecisions.When𝐸isemptythesumvanishesandthe
+cascadeequalsthefirststage,sothecascadeexceeds𝐴 1 onlyif𝐸isnonemptyandΔ esc(𝜏)>0.Writingthesamesum
+around the second stage gives
+𝐴c(𝜏) −𝐴 2 = 1
+𝑁
+∑
+𝑖∉𝐸
+(𝑎1,𝑖 −𝑎 2,𝑖
+)= (1 −𝑒(𝜏) )Δkeep(𝜏),
+wherethelastexpressionrequiresatleastonekeptdecisionandΔ keep(𝜏)istheaccuracyofthefirststageminusthatof
+the second on the kept decisions, so the cascade exceeds𝐴2 only ifΔkeep(𝜏)>0. For the cost, every decision passes
+through the first stage and only the escalated decisions reach the second. The mean cost per decision is̄𝑘1 +𝑒(𝜏) ̄𝑘𝐸
+2 ,
+where ̄𝑘1 is the mean first-stage cost over all decisions and̄𝑘𝐸
+2 the mean second-stage cost over the escalated ones.
+DividingbythemeancostofthesecondstagealonegivesthecostfractionofEq.(5),whichreducesto(𝑘 1+𝑒(𝜏)𝑘 2)∕𝑘2
+when every decision costs the same.□
+B. Question texts and frozen conditions
+This appendix lists the exact question text and every frozen condition a model was asked to answer, so a reader
+can reproduce a request byte for byte from the released input files rather than from a paraphrase in the body of the
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 26 of 43
+
+Benchmarking System One decision models for decision gates
+paper. Every condition below is written once to a JSON Lines file before any model runs. Each file’s SHA-256 digest
+is recorded in a manifest alongside the seed, 20260924, used to build it, and that digest is what lets a reader confirm
+the file they replay is the one every model in this study actually answered.
+D1asks5questionsperstateacrossitsfourworkflows.Eachquestionisphrasedasthedataset’sownauthorswrote
+it,forexamplewhetheracustomer-servicereplyshouldbeescalated,whaturgencyanincidentwarrantsonanordered
+scale, or whether an invoice should be paid, held or rejected. Three D1 conditions are used.d1_nativekeeps the
+dataset’s own Choice option names, such asbillingortechnical, and exists only as the harness-validation anchor
+ofSection3.2.d1_neutralreplaceseveryChoiceoptionnamewithaneutralidentifier,𝑜 1 through𝑜 𝐾,whileleaving
+everyrubricsentencedescribingthatoptionunchanged,anditistheconditionscoredineveryaccuracyandcalibration
+table in this paper.d1_calibrepeats the neutral rendering on 75 training-split states per workflow and supplies the
+disjoint slice the D1 temperature is fitted on.
+D2 asks one question, phrased identically across every cardinality condition, of which intent a request to a virtual
+assistant expresses, or, in the hierarchical condition, of which domain it belongs to. The option descriptions are the
+intent names with underscores replaced by spaces, so no formatting artifact distinguishes a neutral identifier from
+a natural-language label. Four flat conditions,d2_k5,d2_k20,d2_k50andd2_k150, ask the same 600 in-scope
+utteranceswithagrowing,nestedoptionsetthatalwayscontainsthegoldintent,andd2_k150additionallycarriesthe
+200 out-of-scope utterances under the full option set. Two further conditions,d2_hier_domandd2_hier_int, ask
+thedomainandthentheintentwithinthegolddomain.Theconditiond2_k150_oosrepeatsd2_k150withonefurther
+option named out of scope, the reference label of the out-of-scope utterances.
+D3 asks one fixed question per task, quoted here as the replication package and the original collection render
+it. Conversations gone awry asks whether the previous conversation will eventually derail into a personal attack.
+Wikipedia corpus power asks whether the named participant in the conversation is in a position of power. Emotion
+asks which of six basic emotions a mental health professional would assign to the passage, which is the wording of
+the replication package, although the reference label is the dataset’s distant hashtag label. Wikipedia politeness asks
+which of three politeness levels, judged against formal workplace norms, best describes the conversation.
+EachD3taskisaskedonceunderneutraloptionkeys.Thetwobinarytasksareadditionallyaskedunderfouroption-
+naming conditions, keyedk01,kny,kswapandkrandfor the digit pair, the rubric-aligned pair, the rubric-reversed
+pairandapairofrandomfive-letterstrings.ForthebinaryD3tasks,theleadingwordthatnamestherubric’sownkey,
+suchasadescriptionthatopenswiththewordTrue,isstrippedinthefournamingconditions.Theoptionnameisthen
+the only cue to polarity. D1’s noul questions are recast under the same four naming conditions with their rubric text
+unchanged, because their rubrics do not name a key, which gives thee2_d1_*ande2_d3_*condition families used
+by the option-naming experiment of Section 3.3.
+Qwen3-14B receives each question as a separate chat turn built from the same state, question and option texts,
+with the thinking mode of Qwen3 switched off. The prompt lists every option as its key and description and asks for
+one JSON object that holds the key of the best option and a list of key and probability pairs. The list covers every
+option when a question has at most 20 options and the 5 options the model judges most likely otherwise. Structured
+decoding constrains the reply to that schema under greedy decoding, with a context limit of 12288 tokens and at most
+768 generated tokens.
+The parser clips negative values at zero, assigns zero to the options the reply omits and renormalizes the reported
+valuestosumtoone,fallingbacktoauniformdistributionwheneveryreportedkeymissestheoptionset.Areplythat
+cannot be parsed is scored as a uniform distribution, the same rule that applies when every reported key misses the
+option set, and a prompt that exceeds the context limit is recorded as a failed request. The prompt tells the model that
+itsvalueswillberenormalized,andthechosenkeyitreportsisnotused,sincetheoptionwiththehighestrenormalized
+value is taken as its answer.
+Of the 10,004 answered questions of Qwen3-14B, 4,601 returned values that did not sum to one, 3,525 of them
+on a percent scale, and every reply held parseable JSON, although a few named a key together with its description
+(Table C.5). The resulting numbers are verbalized probabilities that the model states in text, not the probabilities it
+assigns to its own output tokens, so every table keeps the comparators in a separate group. The calibration of a verbal
+readout is read as that of stated confidence. The exact prompt and schema are part of the released adapter code.
+Qwen3.6-27B receives the same chat turn with its thinking mode off, and its verbal readout follows the protocol
+above with a longer context limit, which the released adapter records. Its likelihood readout appends the opening
+charactersoftherequestedJSONreplyuptotheanswerfieldandscoreseachoptionkeyasthecontinuation,summing
+the log-probabilities of the key’s tokens and of the token that closes the field. The scores are normalized over the
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 27 of 43
+
+Benchmarking System One decision models for decision gates
+options at a temperature of one, and every needed token lay within the log-probabilities the server returned. Both
+readouts choose the same option for every derailment conversation, nearly always the same one of the two, so their
+derailment accuracies coincide.
+ThethinkingmodeswitchesthereasoningofQwen3.6-27Bonandsamplesitatatemperatureof0.6withanucleus
+mass of 0.95 and a fixed seed. The same parser reads the JSON object that follows the reasoning and scores a reply
+without one as a uniform distribution. Gemma-4-31B and Mistral-Small-24B receive the same chat turn through their
+own chat templates, and both readouts follow the protocol of Qwen3.6-27B unchanged. The backbone controls use
+the same key scoring after a plain prompt that lists the state, the question and each option as its key and description,
+followed by an instruction to reply with one key.
+C. Supporting results
+ThisappendixreportstheestimatesbehindseveralstatementsinSection5withtheiruncertainty,togetherwiththe
+run manifest. Table C.1 gives the calibration error on every task rather than pooled over the social-science tasks. The
+scalederrorliesbelowtheshippederrorfornearlyeverymodelandtask,butonthesocial-sciencetasksitstaysbetween
+0.031 and 0.105 for the decision models. The intervals refit the temperatures inside each bootstrap replicate. Because
+the bootstrap distribution of the calibration error is biased upward when the error is small, a few point estimates lie
+below their own interval. Several fits on those tasks reach the upper end of the temperature grid, which flattens the
+probabilities of a model whose confidence carries little information.
+Table C.1
+Expected calibration error on every task as shipped and after temperature scaling, with an interval for the scaled error whose
+bootstrap replicates refit the cross-fitted temperatures.
+D1 D2 Derail. Power Emotion Polite.
+Model Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled
+HOSTED
+Jev 1.13.00.0330.032
+[0.023,0.055]
+0.032 0.032
+[0.023,0.058]
+0.365 0.084
+[0.058,0.133]
+0.247 0.069
+[0.061,0.136]
+0.314 0.073
+[0.051,0.118]
+0.085 0.048
+[0.036,0.097]
+OPEN,ENCODER HEAD
+Laya (English) 0.156 0.068
+[0.058,0.099]
+– –0.065 0.042
+[0.043,0.123]
+0.0900.049
+[0.045,0.118]
+0.327 0.069
+[0.044,0.106]
+0.190 0.066
+[0.045,0.114]
+Laya (multilingual) 0.279 0.044
+[0.033,0.069]
+0.031 0.010
+[0.007,0.016]
+0.173 0.080
+[0.046,0.117]
+0.217 0.040
+[0.045,0.111]
+0.269 0.071
+[0.060,0.132]
+0.1630.031
+[0.048,0.123]
+OPEN,DECODER HEAD
+Kev-0.8B 0.060 0.070
+[0.051,0.094]
+0.254 0.087
+[0.066,0.118]
+0.183 0.043
+[0.045,0.126]
+0.153 0.064
+[0.045,0.119]
+0.073 0.074
+[0.053,0.128]
+0.125 0.042
+[0.045,0.112]
+Kev-9B 0.087 0.047
+[0.035,0.072]
+0.377 0.046
+[0.033,0.079]
+0.270 0.075
+[0.049,0.125]
+0.1200.037
+[0.042,0.113]
+0.057 0.051
+[0.043,0.106]
+0.150 0.094
+[0.069,0.149]
+decider-2b 0.094 0.036
+[0.028,0.064]
+0.035 0.025
+[0.017,0.055]
+0.444 0.081
+[0.056,0.138]
+0.228 0.055
+[0.048,0.126]
+0.043 0.034
+[0.029,0.078]
+0.236 0.065
+[0.044,0.113]
+this-that-model-1.0 0.196 0.040
+[0.026,0.064]
+0.0550.023
+[0.017,0.056]
+0.466 0.105
+[0.075,0.152]
+0.2960.037
+[0.042,0.117]
+0.111 0.039
+[0.033,0.080]
+0.452 0.070
+[0.058,0.128]
+Nimble-9B 0.0570.026
+[0.020,0.058]
+0.069 0.037
+[0.026,0.065]
+0.345 0.050
+[0.041,0.111]
+0.337 0.064
+[0.051,0.126]
+0.287 0.050
+[0.047,0.116]
+0.170 0.077
+[0.057,0.130]
+GENERATIVE COMPARATORS
+Qwen3-14B,
+verbal
+0.117 0.091
+[0.062,0.135]
+0.204 0.096
+[0.066,0.126]
+0.292 0.061
+[0.046,0.125]
+0.284 0.064
+[0.046,0.118]
+0.136 0.070
+[0.054,0.125]
+0.117 0.098
+[0.066,0.145]
+Qwen3.6-27B,
+verbal
+0.126 0.063
+[0.046,0.088]
+0.023 0.027
+[0.021,0.059]
+0.391 0.083
+[0.055,0.134]
+0.295 0.081
+[0.058,0.127]
+0.290 0.067
+[0.051,0.114]
+0.197 0.089
+[0.074,0.145]
+Qwen3.6-27B,
+likelihood
+0.061 0.029
+[0.019,0.049]
+0.044 0.035
+[0.021,0.060]
+0.427 0.053
+[0.051,0.117]
+0.294 0.047
+[0.040,0.115]
+0.371 0.055
+[0.043,0.104]
+0.161 0.039
+[0.037,0.097]
+Qwen3.6-27B,
+thinking
+0.129 0.045
+[0.036,0.077]
+0.038 0.032
+[0.023,0.056]
+0.352 0.058
+[0.050,0.123]
+0.288 0.043
+[0.039,0.106]
+0.263 0.067
+[0.049,0.121]
+0.180 0.049
+[0.043,0.111]
+Gemma-4-31B,
+verbal
+0.106 0.043
+[0.035,0.074]
+0.0220.026
+[0.017,0.054]
+0.311 0.057
+[0.045,0.114]
+0.312 0.069
+[0.041,0.117]
+0.274 0.075
+[0.051,0.119]
+0.138 0.067
+[0.055,0.122]
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 28 of 43
+
+Benchmarking System One decision models for decision gates
+D1 D2 Derail. Power Emotion Polite.
+Model Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled Ship. Scaled
+Gemma-4-31B,
+likelihood
+0.244 0.064
+[0.047,0.089]
+0.058 0.034
+[0.031,0.067]
+0.408 0.066
+[0.059,0.128]
+0.384 0.047
+[0.045,0.108]
+0.517 0.106
+[0.072,0.163]
+0.329 0.101
+[0.064,0.139]
+Mistral-Small-
+24B, verbal
+0.151 0.065
+[0.038,0.085]
+0.135 0.186
+[0.158,0.230]
+0.298 0.057
+[0.049,0.127]
+0.316 0.061
+[0.049,0.125]
+0.071 0.045
+[0.031,0.088]
+0.200 0.109
+[0.068,0.145]
+Mistral-Small-
+24B, likelihood
+0.112 0.045
+[0.027,0.066]
+0.055 0.053
+[0.033,0.081]
+0.366 0.061
+[0.050,0.127]
+0.359 0.048
+[0.051,0.128]
+0.370 0.072
+[0.050,0.118]
+0.0820.047
+[0.038,0.099]
+Note:Ship. is the expected calibration error as shipped and Scaled the error after temperature scaling, with one temperature per question type
+fitted on the calibration split for D1 and temperatures cross-fitted over item folds for the other tasks. Beneath each scaled error is its cluster
+bootstrap interval at 95 percent, whose 1000 replicates refit the temperatures. Bold marks the lowest error in each column, with ties bolded.
+Table C.2 contrasts the coverage at 5 percent risk chosen on the scored decisions with the coverage a threshold
+chosen on disjoint data achieves on them. The hosted model keeps its coverage on CLINC-150 and gains some on
+typed-decisions, at a realized risk above the target there, while the typed-decisions coverage of Kev-9B falls from
+0.12 in sample to 0.02 once the threshold is fixed in advance. Every one-sided upper bound on the realized risk lies
+above the target except that of the stated probabilities of Gemma-4-31B on typed-decisions, which is why the main
+text treats these coverages as estimates. Table C.4 gives the paired accuracy difference between every model and the
+hosted model on each dataset with its state-clustered interval, and bold marks the differences that remain significant
+after Holm correction within each dataset.
+Table C.2
+Selectivepredictionat5percentriskonD1andD2,withthethresholdchosenonthescoreddecisionsandwiththethresholdchosen
+on data disjoint from them.
+D1 typed-decisions D2 CLINC-150
+Model In-
+sample
+Held-out Risk Bound In-
+sample
+Held-out Risk Bound
+HOSTED
+Jev 1.13.0 0.13
+[0.10, 0.24]
+0.17 0.058 0.084 0.93
+[0.80, 0.97]
+0.93 0.049 0.066
+OPEN,ENCODER HEAD
+Laya (English) 0.00
+[0.00, 0.00]
+0.00 0.500 0.975 – – – –
+Laya (multilingual) 0.01
+[0.01, 0.02]
+0.00 0.000 0.950 0.00
+[0.00, 0.00]
+0.00 – –
+OPEN,DECODER HEAD
+Kev-0.8B 0.02
+[0.02, 0.03]
+0.01 0.000 0.133 0.22
+[0.04, 0.42]
+0.23 0.051 0.094
+Kev-9B 0.12
+[0.09, 0.21]
+0.02 0.000 0.066 0.61
+[0.48, 0.72]
+0.61 0.049 0.072
+decider-2b 0.06
+[0.04, 0.08]
+0.04 0.011 0.053 0.75
+[0.64, 0.85]
+0.76 0.053 0.074
+this-that-model-1.0 0.04
+[0.03, 0.07]
+0.05 0.062 0.118 0.78
+[0.73, 0.86]
+0.79 0.048 0.068
+Nimble-9B 0.20
+[0.09, 0.26]
+0.16 0.047 0.072 0.66
+[0.49, 0.84]
+0.66 0.051 0.073
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.00
+[0.00, 0.00]
+0.00 0.000 0.776 0.01
+[0.01, 0.03]
+0.02 0.091 0.364
+Qwen3.6-27B, verbal 0.04
+[0.03, 0.05]
+0.00 – – 0.69
+[0.01, 0.75]
+0.69 0.048 0.069
+Qwen3.6-27B, likelihood 0.42
+[0.36, 0.47]
+0.410.049 0.064 0.86
+[0.80, 0.93]
+0.85 0.049 0.067
+Qwen3.6-27B, thinking 0.10
+[0.00, 0.28]
+0.00 0.000 0.527 0.85
+[0.45, 1.00]
+0.87 0.044 0.062
+Gemma-4-31B, verbal 0.12
+[0.10, 0.15]
+0.12 0.016 0.036 0.97
+[0.65, 1.00]
+0.95 0.053 0.071
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 29 of 43
+
+Benchmarking System One decision models for decision gates
+D1 typed-decisions D2 CLINC-150
+Model In-
+sample
+Held-out Risk Bound In-
+sample
+Held-out Risk Bound
+Gemma-4-31B, likelihood 0.28
+[0.21, 0.37]
+0.38 0.072 0.089 0.98
+[0.93, 1.00]
+0.980.051 0.069
+Mistral-Small-24B, verbal 0.00
+[0.00, 0.00]
+0.00 – – 0.00
+[0.00, 0.00]
+0.00 – –
+Mistral-Small-24B, likelihood 0.08
+[0.03, 0.14]
+0.04 0.038 0.095 0.41
+[0.32, 0.62]
+0.43 0.051 0.080
+Note:In-sample is the coverage at 5 percent risk with the threshold chosen on the scored decisions, with its cluster bootstrap interval at 95 percent
+beneath. Held-out applies a threshold chosen by the same rule on the calibration split for D1 and on the other item folds for D2. Risk is the error
+rate of the decisions it accepts and Bound is the one-sided 95 percent Clopper-Pearson upper limit of that rate, with a dash where no decision is
+accepted. A coverage printed as zero can still accept a few decisions. Bold marks the highest held-out coverage on each dataset, with ties bolded.
+Table C.3 replaces the held-out threshold with one chosen by Learn-then-Test, whose coverage carries a finite-
+sample guarantee on the risk of the accepted decisions. The threshold is the lowest of 50 candidates fixed before any
+data are seen whose accepted calibration decisions pass the binomial test after the Bonferroni correction, and it is
+applied unchanged to the scored decisions. Coverage falls wherever the calibration data leave few accepted decisions
+at high confidence, so most models receive none on typed-decisions while the hosted model keeps 0.528 of the intent
+decisions. A model whose top probabilities sit near one, as the key likelihoods of Gemma-4-31B do, receives no
+coverage on either benchmark.
+Table C.3
+Selective prediction with a guaranteed risk on D1 and D2, with the threshold chosen by Learn-then-Test on the calibration data.
+D1 typed-decisions D2 CLINC-150
+Model Coverage Accepted Risk Coverage Accepted Risk
+HOSTED
+Jev 1.13.0 0.083 166 0.0240.528317 0.009
+OPEN,ENCODER HEAD
+Laya (English) 0.000 0 – – – –
+Laya (multilingual) 0.000 0 – 0.000 0 –
+OPEN,DECODER HEAD
+Kev-0.8B 0.000 0 – 0.000 0 –
+Kev-9B 0.000 0 – 0.000 0 –
+decider-2b 0.000 0 – 0.180 108 0.028
+this-that-model-1.0 0.000 0 – 0.072 43 0.047
+Nimble-9B 0.089 179 0.022 0.000 0 –
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.000 0 – 0.000 0 –
+Qwen3.6-27B, verbal 0.000 0 – 0.000 0 –
+Qwen3.6-27B, likelihood0.163326 0.006 0.253 152 0.039
+Qwen3.6-27B, thinking 0.000 0 – 0.078 47 0.021
+Gemma-4-31B, verbal 0.000 0 – 0.507 304 0.016
+Gemma-4-31B, likelihood 0.000 0 – 0.000 0 –
+Mistral-Small-24B, verbal 0.000 0 – 0.000 0 –
+Mistral-Small-24B, likelihood 0.000 0 – 0.000 0 –
+Note:The threshold is the lowest of 50 fixed candidates whose accepted decisions on the calibration data pass an exact binomial test of an error
+rate at or below 5 percent, with a Bonferroni correction over the candidates at 90 percent confidence. Coverage and Risk are the accepted share
+and its error rate on the scored decisions, and Accepted counts those decisions, with a dash where none is accepted. Bold marks the highest
+coverage on each dataset, with ties bolded.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 30 of 43
+
+Benchmarking System One decision models for decision gates
+Table C.4
+Paired accuracy differences between each model and Jev 1.13.0 on identical decisions, in percentage points.
+Workflow and intent sets D3 social science tasks
+Model D1 D2 Derail. Power Emotion Polite.
+OPEN,ENCODER HEAD
+Laya (English)−36.5
+[−39.9,−33.2]
+– 1.0
+[−3.4, 5.4]
+−10.0
+[−16.2,−3.8]
+0.0
+[−4.6, 4.6]
+−28.3
+[−34.7,−21.9]
+Laya (multilingual)−38.2
+[−41.2,−35.3]
+−90.8
+[−93.0,−88.5]
+−0.6
+[−5.4, 4.2]
+−12.6
+[−17.6,−7.6]
+−10.8
+[−15.7,−5.8]
+−29.1
+[−35.7,−22.5]
+OPEN,DECODER HEAD
+Kev-0.8B−28.1
+[−31.1,−25.1]
+−22.8
+[−26.5,−19.2]
+−2.8
+[−5.8, 0.2]
+−8.8
+[−13.2,−4.4]
+1.2
+[−2.8, 5.4]
+−18.1
+[−24.5,−11.6]
+Kev-9B−1.9
+[−4.0, 0.1]
+−6.3
+[−8.8,−3.8]
+−2.8
+[−5.2,−0.4]
+−1.4
+[−4.6, 2.0]
+2.4
+[−1.2, 6.0]
+−18.1
+[−23.9,−12.2]
+decider-2b−14.4
+[−17.1,−11.8]
+−5.3
+[−8.2,−2.5]
+−4.4
+[−7.2,−1.8]
+−7.4
+[−11.4,−3.4]
+29.9
+[25.3, 34.5]
+−19.3
+[−25.7,−13.1]
+this-that-model-1.0−13.5
+[−16.0,−10.9]
+−5.0
+[−7.8,−2.3]
+−4.2
+[−6.8,−1.6]
+−7.8
+[−12.0,−3.4]
+30.1
+[25.5, 34.9]
+−24.3
+[−30.9,−17.7]
+Nimble-9B−4.6
+[−6.8,−2.5]
+−5.3
+[−7.7,−3.0]
+−0.2
+[−2.0, 1.6]
+−5.4
+[−9.0,−1.8]
+1.0
+[−2.0, 4.2]
+−14.1
+[−18.3,−9.8]
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal−5.1
+[−7.7,−2.6]
+−18.5
+[−22.0,−15.2]
+−0.4
+[−2.4, 1.6]
+−3.2
+[−7.0, 0.6]
+−4.0
+[−7.4,−0.6]
+−0.4
+[−5.0, 4.2]
+Qwen3.6-27B, verbal−0.7
+[−2.6, 1.2]
+−23.0
+[−26.5,−19.5]
+−2.4
+[−4.8,−0.2]
+0.8
+[−2.2, 3.8]
+−10.6
+[−14.5,−6.8]
+−0.2
+[−3.2, 2.6]
+Qwen3.6-27B, likelihood 0.1
+[−1.8, 2.1]
+−0.2
+[−2.0, 1.7]
+−2.4
+[−4.8,−0.2]
+1.0
+[−2.0, 4.0]
+−4.0
+[−7.2,−1.0]
+0.2
+[−2.6, 3.0]
+Qwen3.6-27B, thinking−1.1
+[−3.3, 1.1]
+1.5
+[−0.3, 3.5]
+−1.6
+[−3.6, 0.4]
+2.6
+[−0.4, 5.6]
+1.4
+[−1.2, 4.0]
+−1.2
+[−4.6, 2.2]
+Gemma-4-31B, verbal 0.9
+[−1.1, 2.9]
+2.8
+[1.0, 4.7]
+3.0
+[0.8, 5.2]
+0.6
+[−2.6, 3.8]
+−3.0
+[−6.0,−0.2]
+0.4
+[−3.0, 3.8]
+Gemma-4-31B, likelihood 1.1
+[−1.0, 3.0]
+2.7
+[1.0, 4.5]
+3.0
+[0.8, 5.2]
+0.4
+[−2.8, 3.4]
+−3.0
+[−6.0,−0.2]
+0.4
+[−3.0, 3.8]
+Mistral-Small-24B, verbal−12.6
+[−15.6,−9.7]
+−15.7
+[−19.2,−12.3]
+2.8
+[0.2, 5.6]
+−5.0
+[−8.8,−1.2]
+−26.1
+[−30.9,−21.1]
+−0.6
+[−5.0, 3.8]
+Mistral-Small-24B, likelihood−7.6
+[−9.8,−5.5]
+−13.2
+[−16.5,−9.8]
+1.6
+[−0.4, 3.6]
+−2.8
+[−6.0, 0.4]
+−5.0
+[−8.8,−1.2]
+3.2
+[−1.0, 7.4]
+Note:Each cell is the accuracy of the model minus that of Jev 1.13.0 on identical decisions in percentage points, with its paired cluster bootstrap
+interval at 95 percent over 10000 replicates beneath. Bold marks a difference that is significant after Holm correction across the models of each
+dataset at the five percent level.
+Table C.5 gives, for every verbal readout, the share of decisions whose reply the fixed parser could not use and
+the accuracy with the fixed parser and with a lenient re-parse. A reply is unusable when it holds no parseable JSON
+after any reasoning or names an option by its key joined to its description, and the fixed parser scores it as a uniform
+distribution.Thelenientre-parseacceptssuchkeysandleaveseveryotherreplyunchanged,sothedifferencebetween
+the two accuracies is the cost of the format alone. The unusable share differs most between checkpoints on emotion,
+from 0.000 for Gemma-4-31B to 0.767 for Mistral-Small-24B.
+Table C.5
+Reliability of the verbal readouts, with the share of unusable replies and the accuracy under the fixed and a lenient parser.
+Model Measure D1 D2 Emotion GoEmo. Bank.
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal Unusable share 0.000 0.015 0.004 0.000 0.045
+Accuracy, fixed parser 0.680 0.728 0.464 0.585 0.659
+Accuracy, lenient 0.680 0.735 0.466 0.585 0.677
+Qwen3.6-27B, verbal Unusable share 0.000 0.267 0.151 0.063 0.036
+Accuracy, fixed parser 0.725 0.683 0.398 0.530 0.765
+Accuracy, lenient 0.725 0.907 0.466 0.583 0.794
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 31 of 43
+
+Benchmarking System One decision models for decision gates
+Model Measure D1 D2 Emotion GoEmo. Bank.
+Qwen3.6-27B, thinking Unusable share 0.000 0.007 0.002 0.002 0.000
+Accuracy, fixed parser 0.721 0.928 0.518 0.606 0.825
+Accuracy, lenient 0.721 0.928 0.518 0.606 0.825
+Gemma-4-31B, verbal Unusable share 0.001 0.000 0.000 0.000 0.000
+Accuracy, fixed parser 0.741 0.942 0.474 0.573 0.821
+Accuracy, lenient 0.741 0.942 0.474 0.573 0.821
+Mistral-Small-24B, verbal Unusable share 0.119 0.000 0.767 0.695 0.000
+Accuracy, fixed parser 0.606 0.757 0.243 0.226 0.679
+Accuracy, lenient 0.606 0.757 0.464 0.567 0.679
+Note:Unusable share counts decisions whose reply has no parseable JSON after any reasoning, or names an option by its key joined to its
+description. The fixed parser, used in every other table, scores such a decision as a uniform distribution, and the lenient re-parse accepts a key
+followed by its description. GoEmo. is GoEmotions and Bank. is Banking77.
+Table C.6 lists the held-out cascades whose second stage is one of the two Qwen comparators, in the format of
+Table 10. Every decision model serves as first stage, the thresholds are chosen out of fold as for the main cascades,
+andthecostsarecomputedperitemfromtherecordedtokensandGPUtime.Mostofthesecascadesgainnoaccuracy
+beyond the interval of the better single stage. Four gains have intervals that exclude zero, the two positive gains that
+Section5.3discussesandtwosmalllosseswhenaKevcheckpointescalatestothelikelihoodreadoutofQwen3.6-27B
+on CLINC-150.
+Table C.6
+Confidence-gated cascades on D1 and D2 that escalate every decision model to Qwen3-14B or to either readout of Qwen3.6-27B,
+with thresholds chosen on data disjoint from the scored items.
+D1 typed-decisions Single stage Cascade Escalation
+First stage First Second Accuracy Gain Esc. Cost
+ESCALATION TOQWEN3-14B,VERBAL
+Jev 1.13.0 0.732 0.680 0.732[0.714, 0.762]0.0[−0.4, 2.5]0.01 0.31
+Laya (English) 0.366 0.680 0.681[0.656, 0.704]0.1[−0.8, 0.4]0.99 1.05
+Laya (multilingual) 0.349 0.680 0.680[0.657, 0.704]0.0[−0.2, 0.3]1.00 1.03
+Kev-0.8B 0.451 0.680 0.679[0.652, 0.703]−0.1[−1.5, 0.2]0.96 1.06
+Kev-9B 0.712 0.680 0.718[0.690, 0.741]0.6[−0.3, 1.4]0.04 0.60
+decider-2b 0.588 0.680 0.679[0.654, 0.703]−0.1[−0.4, 0.2]0.93 1.34
+this-that-model-1.0 0.597 0.680 0.680[0.648, 0.701]0.0[−2.9, 1.3]0.55 0.62
+Nimble-9B 0.685 0.680 0.708[0.684, 0.730]2.2 [0.3, 3.3]0.31 2.31
+ESCALATION TOQWEN3.6-27B,VERBAL
+Jev 1.13.0 0.732 0.725 0.733[0.709, 0.754]0.1[−1.6, 1.2]0.23 0.34
+Laya (English) 0.366 0.725 0.726[0.702, 0.746]0.1[−1.1, 0.4]0.99 1.02
+Laya (multilingual) 0.349 0.725 0.725[0.704, 0.745]0.0[−0.1, 0.3]1.00 1.01
+Kev-0.8B 0.451 0.725 0.723[0.702, 0.744]−0.2[−0.8, 0.1]0.96 1.00
+Kev-9B 0.712 0.725 0.725[0.702, 0.745]0.0[−1.1, 0.1]0.97 1.18
+decider-2b 0.588 0.725 0.724[0.701, 0.744]−0.1[−0.6, 0.0]0.94 1.09
+this-that-model-1.0 0.597 0.725 0.724[0.702, 0.745]−0.1[−0.4, 0.1]0.95 0.97
+Nimble-9B 0.685 0.725 0.727[0.701, 0.748]0.2[−1.6, 1.3]0.53 1.29
+ESCALATION TOQWEN3.6-27B,LIKELIHOOD
+Jev 1.13.0 0.732 0.733 0.733[0.711, 0.754]−0.0[−1.8, 0.9]0.22 0.35
+Laya (English) 0.366 0.733 0.734[0.710, 0.754]0.1[−1.1, 0.4]0.99 1.02
+Laya (multilingual) 0.349 0.733 0.733[0.712, 0.754]0.0[−0.2, 0.3]1.00 1.01
+Kev-0.8B 0.451 0.733 0.731[0.709, 0.752]−0.2[−1.0, 0.1]0.96 1.01
+Kev-9B 0.712 0.733 0.733[0.709, 0.753]0.0[−1.4, 0.0]0.97 1.22
+decider-2b 0.588 0.733 0.732[0.710, 0.751]−0.1[−0.8, 0.0]0.94 1.13
+this-that-model-1.0 0.597 0.733 0.732[0.710, 0.753]−0.1[−0.8, 0.1]0.95 0.99
+Nimble-9B 0.685 0.733 0.736[0.703, 0.753]0.3[−2.4, 0.9]0.67 1.59
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 32 of 43
+
+Benchmarking System One decision models for decision gates
+D2 CLINC-150 Single stage Cascade Escalation
+First stage First Second Accuracy Gain Esc. Cost
+ESCALATION TOQWEN3-14B,VERBAL
+Jev 1.13.0 0.913 0.728 0.915[0.887, 0.935]0.2[−1.2, 0.5]0.01 0.73
+Laya (English) – – – – – –
+Laya (multilingual) 0.005 0.728 0.728[0.695, 0.763]0.0[0.0, 0.0]1.00 1.03
+Kev-0.8B 0.685 0.728 0.740[0.705, 0.782]1.2[−1.2, 4.2]0.47 0.54
+Kev-9B 0.850 0.728 0.850[0.813, 0.873]0.0[−1.7, 0.0]0.00 0.38
+decider-2b 0.860 0.728 0.853[0.825, 0.887]−0.7[−2.3, 1.8]0.11 0.24
+this-that-model-1.0 0.863 0.728 0.868[0.833, 0.892]0.5[−1.8, 2.2]0.06 0.20
+Nimble-9B 0.860 0.728 0.860[0.827, 0.885]0.0[−1.5, 1.5]0.02 1.48
+ESCALATION TOQWEN3.6-27B,VERBAL
+Jev 1.13.0 0.913 0.683 0.913[0.892, 0.937]0.0[−0.5, 1.0]0.02 0.60
+Laya (English) – – – – – –
+Laya (multilingual) 0.005 0.683 0.683[0.648, 0.720]0.0[−0.5, 0.0]1.00 1.03
+Kev-0.8B 0.685 0.683 0.738[0.702, 0.783]5.3 [2.0, 8.3]0.36 0.42
+Kev-9B 0.850 0.683 0.845[0.815, 0.875]−0.5[−1.5, 1.2]0.03 0.33
+decider-2b 0.860 0.683 0.862[0.830, 0.892]0.2[−2.2, 2.7]0.09 0.20
+this-that-model-1.0 0.863 0.683 0.870[0.838, 0.900]0.7[−1.2, 2.7]0.06 0.17
+Nimble-9B 0.860 0.683 0.872[0.838, 0.895]1.2[−0.5, 2.5]0.04 1.22
+ESCALATION TOQWEN3.6-27B,LIKELIHOOD
+Jev 1.13.0 0.913 0.912 0.922[0.895, 0.943]0.8[−1.0, 2.0]0.06 0.15
+Laya (English) – – – – – –
+Laya (multilingual) 0.005 0.912 0.912[0.888, 0.932]0.0[0.0, 0.0]1.00 1.00
+Kev-0.8B 0.685 0.912 0.910[0.883, 0.930]−0.2 [−1.0,−0.2]0.94 0.95
+Kev-9B 0.850 0.912 0.910[0.880, 0.930]−0.2 [−1.5,−0.2]0.75 0.80
+decider-2b 0.860 0.912 0.922[0.893, 0.943]1.0[−1.0, 2.5]0.35 0.37
+this-that-model-1.0 0.863 0.912 0.932[0.900, 0.948]2.0[−0.5, 3.3]0.25 0.27
+Nimble-9B 0.860 0.912 0.908[0.883, 0.930]−0.3[−1.3, 0.5]0.40 0.59
+Note:First and Second are the accuracies of each stage alone, Accuracy is the cascade accuracy with thresholds chosen on data disjoint from
+the scored items, and Gain is its difference from the better single stage in points. Esc. is the escalated share and Cost the cost fraction from each
+decision’s own cost, where the escalation unit on D1 is the decision, a request’s cost is shared among its decisions and a comparator is charged per
+question. Brackets hold cluster bootstrap intervals at 95 percent whose 1000 replicates refit the thresholds, unadjusted for the number of cascades.
+A dash marks a pair without results, because Laya (English) refused the full intent list, andmarks a gain whose interval excludes zero.
+TableC.7compareseachdecoder-baseddecisionmodelwiththeuntunedbackboneitadapts,onthesamedecisions
+and under the same paired bootstrap.
+Table C.7
+Decoder-based decision models against their untuned backbones on identical decisions.
+Accuracy difference
+Decision model Untuned backbone D1 D2 Derail. Power Emotion Polite.
+Kev-0.8B Qwen3.5-0.8B-Base 0.1
+[−2.8, 3.1]
+56.5
+[52.2, 60.7]
+−4.2
+[−11.6, 3.2]
+2.0
+[−6.2, 10.2]
+8.2
+[4.4, 12.0]
+14.3
+[8.0, 20.5]
+Kev-9B Qwen3.5-9B-Base14.9
+[12.2, 17.7]
+12.2
+[8.8, 15.5]
+−4.0
+[−7.6,−0.4]
+−1.4
+[−5.6, 2.8]
+4.2
+[1.0, 7.4]
+−5.4
+[−11.6, 1.0]
+Nimble-9B Qwen3.5-9B6.9
+[4.2, 9.4]
+7.8
+[4.8, 10.8]
+−0.4
+[−2.8, 1.8]
+−4.4
+[−8.8,−0.2]
+1.8
+[−1.0, 4.6]
+−2.8
+[−6.4, 0.8]
+decider-2b Qwen3.5-2B-Base17.3
+[14.4, 20.2]
+34.8
+[30.5, 39.3]
+1.8
+[−0.6, 4.2]
+1.4
+[−5.2, 8.2]
+36.9
+[32.1, 41.6]
+4.8
+[−1.6, 11.4]
+this-that-model-
+1.0
+Qwen3.5-2B-Base18.3
+[15.2, 21.4]
+35.2
+[30.8, 39.7]
+2.0
+[−0.4, 4.4]
+1.0
+[−5.4, 7.6]
+37.1
+[32.3, 42.0]
+−0.2
+[−7.2, 6.8]
+Calibration error difference
+Decision model Untuned backbone D1 D2 Derail. Power Emotion Polite.
+Kev-0.8B Qwen3.5-0.8B-Base−17.0
+[−19.5,−13.9]
+20.6
+[16.4, 23.4]
+12.0
+[6.1, 16.0]
+−6.5
+[−13.7, 0.9]
+−8.6
+[−13.3,−2.5]
+−38.6
+[−43.0,−32.1]
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 33 of 43
+
+Benchmarking System One decision models for decision gates
+Calibration error difference
+Decision model Untuned backbone D1 D2 Derail. Power Emotion Polite.
+Kev-9B Qwen3.5-9B-Base−4.0
+[−7.3,−0.9]
+35.0
+[29.7, 36.6]
+12.5
+[9.2, 15.7]
+6.3
+[1.2, 9.2]
+−13.0
+[−16.7,−6.4]
+2.0
+[−3.6, 8.4]
+Nimble-9B Qwen3.5-9B−4.2
+[−6.7,−1.8]
+2.2
+[−1.3, 3.9]
+17.5
+[14.3, 19.5]
+21.7
+[17.5, 25.1]
+17.8
+[13.3, 20.1]
+9.8
+[3.3, 13.1]
+decider-2b Qwen3.5-2B-Base−15.8
+[−18.1,−13.3]
+−20.7
+[−23.9,−16.2]
+24.2
+[21.7, 26.7]
+12.0
+[4.8, 16.8]
+−5.5
+[−9.5,−1.2]
+9.6
+[3.7, 15.1]
+this-that-model-
+1.0
+Qwen3.5-2B-Base−5.6
+[−8.7,−3.0]
+−18.7
+[−22.8,−14.3]
+26.3
+[23.9, 28.8]
+18.8
+[11.9, 23.5]
+1.3
+[−4.3, 4.5]
+31.1
+[25.2, 37.0]
+Flip difference under option names
+Decision model Untuned backbone D1 swap D1 digits D1 rand. Derail. swap Derail. rand. Power swap
+Kev-0.8B Qwen3.5-0.8B-Base 3.0
+[−0.7, 6.8]
+6.2
+[4.3, 8.2]
+16.3
+[12.9, 20.0]
+−96.2
+[−97.8,−94.4]
+−19.2
+[−22.8,−15.6]
+−44.6
+[−49.6,−39.6]
+Kev-9B Qwen3.5-9B-Base−34.0
+[−38.2,−29.7]
+−0.7
+[−3.1, 1.8]
+−6.5
+[−9.7,−3.3]
+−19.2
+[−22.6,−15.6]
+−7.0
+[−9.4,−4.6]
+−60.0
+[−64.8,−55.0]
+Nimble-9B Qwen3.5-9B−30.2
+[−33.7,−26.4]
+−9.3
+[−11.9,−6.8]
+−10.3
+[−13.5,−7.2]
+−5.4
+[−8.0,−3.0]
+−9.8
+[−13.0,−6.8]
+−43.2
+[−47.8,−38.6]
+decider-2b Qwen3.5-2B-Base 0.0
+[−2.3, 2.4]
+0.7
+[−1.0, 2.3]
+0.0
+[−2.3, 2.3]
+−99.0
+[−99.8,−98.0]
+−35.0
+[−39.2,−30.8]
+−93.2
+[−95.4,−90.8]
+this-that-model-
+1.0
+Qwen3.5-2B-Base−0.5
+[−3.0, 1.9]
+0.7
+[−1.0, 2.4]
+0.8
+[−1.5, 3.2]
+−99.8
+[−100.0,−99.4]
+−35.0
+[−39.2,−30.8]
+−88.6
+[−91.4,−85.6]
+Note:Each cell is the decision model minus the untuned backbone it adapts on identical decisions, in points of accuracy or of shipped top-label
+calibration error, or in flips per hundred decisions against the aligned names, with its paired cluster bootstrap interval beneath. The backbones are
+scored by the likelihood of each option key after a plain prompt. The decider-2b and this-that-model-1.0 checkpoints were trained on CLINC-150,
+and this-that-model-1.0 is adapted from decider-2b. Bold marks a difference significant after Holm correction across the five pairs of its column at
+the five percent level.
+Table C.8 repeats the intent-routing gate with an explicit out-of-scope option among the declared options.
+Table C.8
+The intent benchmark with an explicit out-of-scope option, answered directly and through the gate at the in-scope risk target.
+Answers with the option Gate at the in-scope risk target
+Model In-scope acc. OOS chosen In-scope lost Answered Accepted Without
+option
+HOSTED
+Jev 1.13.0 0.908 0.585 0.003 0.925
+[0.794, 0.973]
+0.195
+[0.070, 0.310]
+0.310
+OPEN,ENCODER HEAD
+Laya (multilingual) 0.008 0.005 0.003 0.000
+[0.000, 0.000]
+0.000
+[0.000, 0.000]
+0.000
+OPEN,DECODER HEAD
+Kev-0.8B 0.682 0.110 0.013 0.223
+[0.080, 0.395]
+0.010
+[0.000, 0.054]
+0.010
+Kev-9B 0.830 0.840 0.047 0.610
+[0.454, 0.714]
+0.015
+[0.000, 0.055]
+0.015
+decider-2b 0.855 0.130 0.000 0.762
+[0.651, 0.853]
+0.140
+[0.070, 0.250]
+0.155
+this-that-model-1.0 0.862 0.165 0.002 0.780
+[0.717, 0.858]
+0.185
+[0.124, 0.277]
+0.255
+Nimble-9B 0.860 0.645 0.012 0.657
+[0.475, 0.805]
+0.030
+[0.005, 0.079]
+0.030
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.732 0.280 0.015 0.000
+[0.000, 0.023]
+0.000
+[0.000, 0.015]
+0.005
+Qwen3.6-27B, verbal 0.648 0.880 0.042 0.653
+[0.014, 0.704]
+0.055
+[0.000, 0.102]
+0.325
+Qwen3.6-27B, likelihood 0.885 0.860 0.040 0.837
+[0.770, 0.914]
+0.035
+[0.013, 0.080]
+0.165
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 34 of 43
+
+Benchmarking System One decision models for decision gates
+Answers with the option Gate at the in-scope risk target
+Model In-scope acc. OOS chosen In-scope lost Answered Accepted Without
+option
+Qwen3.6-27B, thinking 0.925 0.665 0.007 0.890
+[0.691, 0.983]
+0.165
+[0.066, 0.310]
+0.290
+Gemma-4-31B, verbal 0.938 0.715 0.003 0.945
+[0.739, 0.998]
+0.170
+[0.041, 0.307]
+0.330
+Gemma-4-31B, likelihood 0.937 0.715 0.005 0.972
+[0.896, 0.997]
+0.210
+[0.103, 0.319]
+0.655
+Mistral-Small-24B, verbal 0.765 0.300 0.017 0.000
+[0.000, 0.000]
+0.000
+[0.000, 0.000]
+0.000
+Mistral-Small-24B, likelihood 0.783 0.135 0.005 0.442
+[0.329, 0.607]
+0.035
+[0.005, 0.103]
+0.035
+Note:The 800 CLINC-150 requests are asked with the 150 intents and one further option named out of scope. In-scope acc. counts an in-scope
+request answered with that option as an error, OOS chosen is the share of out-of-scope requests answered with that option and In-scope lost the
+share of in-scope requests answered with it. The gate routes a request when it is not answered with the option and its top probability reaches a
+held-out threshold that targets 5 percent in-scope risk. Answered is its in-scope coverage and Accepted its out-of-scope false acceptance, beside
+the false acceptance of the same gate without the option, with cluster bootstrap intervals beneath Answered and Accepted. Laya (English) refused
+every request with this option set and is not listed. Bold marks the lowest false acceptance among models that answer at least half of the in-scope
+requests.
+TableC.9addsthecalibration,coverage,out-of-scopeseparationandlatencyoftheconventionalclassifiersonthe
+workflow and intent benchmarks, beside the hosted model.
+Table C.9
+Conventional classifier baselines on the same test items beside the hosted decision model. The supervised classifiers are trained on
+their benchmark’s training split and the entailment classifier without task training.
+D1 typed-decisions D2 CLINC-150
+Model Training data Acc. Soft Acc. ECE
+ship.
+ECE
+scal.
+Cov. AUROC ms
+HOSTED DECISION MODEL
+Jev 1.13.0 none 0.732 0.582 0.913 0.032 0.032 0.93 0.921 148
+SUPERVISED CLASSIFIERS TRAINED ON THE TASK
+BERT-base, fine-tuned CLINC train – – 0.940 0.028 0.029 0.98 0.975 6
+BGE-small embeddings with
+logistic regression
+CLINC train – – 0.9480.017 0.0110.99 0.955 7
+BGE-small embeddings with
+soft-label regression
+typed-decisions
+train
+0.702 0.563 – – – – – 9
+DeBERTa-v3-large, fine-tuned typed-decisions
+train
+0.793 0.616– – – – – 126.5
+DeBERTa-v3-large, fine-tuned CLINC train – –0.9530.036 0.0351.00 0.98958.0
+ZERO-SHOT ENTAILMENT CLASSIFIER
+DeBERTa-v3-base NLI none 0.411 0.383 0.507 0.094 0.133 0.21 0.619 3140
+Note:Acc. is accuracy, Soft the teacher probability of the chosen option, and ECE ship. and scal. the calibration error as shipped and after one
+temperature fitted on held-out data. Cov. is the in-sample coverage at 5 percent risk, AUROC the separation of out-of-scope from in-scope
+requests by the top probability, and ms the median latency per request on CLINC-150, or per typed-decisions state for the regression baseline.
+The DeBERTa-v3-large classifiers ran on a Colab L4 GPU, the other baselines on a local workstation GPU and the hosted model through its API,
+so their latencies are not comparable across platforms. Bold marks the best value in each accuracy, calibration, coverage and separation column.
+Table C.10 gives every option-name condition on each binary set together with the measured test-retest floors.
+Figure C.1 places the cost per thousand typed-decisions decisions against the median latency of each decision model
+and Qwen3-14B, whose values Table 9 reports with those of the other comparators.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 35 of 43
+
+Benchmarking System One decision models for decision gates
+Table C.10
+Option-name conditions on the binary questions, with flips per hundred decisions against the aligned identifiers, the area under the
+curve under those identifiers and the test-retest floor.
+Flips per hundred decisions
+Model Binary set Digits Random Swapped AUC Floor
+HOSTED
+Jev 1.13.0 Typed-decisions 2.5 2.2 50.5 0.89 1.3
+Derailment 0.8 1.0 97.2 0.660.4
+Power 1.8 2.8 84.0 0.63 0.8
+OPEN,ENCODER HEAD
+Laya (English) Typed-decisions 22.8 31.5 91.3 0.45 0.0
+Derailment 11.6 18.8 98.8 0.62 0.0
+Power 19.4 24.8 90.6 0.55 0.0
+Laya (multilingual) Typed-decisions 26.2 29.3 86.8 0.42 0.0
+Derailment 42.0 50.6 83.0 0.55 0.0
+Power 32.0 43.4 71.4 0.49 0.0
+OPEN,DECODER HEAD
+Kev-0.8B Typed-decisions 6.2 20.2 14.3 0.64 0.0
+Derailment 0.4 0.8 1.4 0.63 0.0
+Power 1.4 1.2 5.6 0.56 0.0
+Kev-9B Typed-decisions 4.7 4.7 6.5 0.89 0.0
+Derailment 0.6 0.8 0.8 0.65 0.0
+Power 1.8 1.8 6.0 0.65 0.0
+decider-2b Typed-decisions 2.7 5.3 4.8 0.75 0.0
+Derailment 0.0 0.4 1.0 0.64 0.0
+Power 3.4 4.0 5.2 0.60 0.0
+this-that-model-1.0 Typed-decisions 2.7 6.2 4.3 0.81 0.0
+Derailment 0.2 0.4 0.2 0.64 0.0
+Power 4.6 4.6 9.8 0.59 0.0
+Nimble-9B Typed-decisions 1.0 3.3 4.2 0.91 0.0
+Derailment 2.4 2.2 1.8 0.65 0.0
+Power 2.6 1.8 1.8 0.59 0.0
+GENERATIVE COMPARATORS
+Qwen3.6-27B, verbal Typed-decisions 9.7 11.0 47.8 0.90 –
+Derailment 2.2 3.8 36.2 0.61 –
+Power 4.4 6.6 85.0 0.63 –
+Qwen3.6-27B, likelihood Typed-decisions 7.0 8.8 48.7 0.93 –
+Derailment 1.8 2.6 18.4 0.64 –
+Power 3.8 6.4 83.4 0.65 –
+Gemma-4-31B, verbal Typed-decisions 2.8 3.2 17.2 0.91 –
+Derailment 2.4 3.6 15.6 0.66–
+Power 1.8 2.2 31.0 0.67–
+Gemma-4-31B, likelihood Typed-decisions 2.3 2.8 16.8 0.94–
+Derailment 2.4 3.6 15.8 0.65 –
+Power 2.0 1.8 31.6 0.65 –
+Mistral-Small-24B, verbal Typed-decisions 9.0 14.8 40.3 0.78 –
+Derailment 12.8 5.6 84.2 0.61 –
+Power 6.4 5.8 81.0 0.61 –
+Mistral-Small-24B, likelihood Typed-decisions 11.0 17.2 40.7 0.83 –
+Derailment 4.4 6.0 80.2 0.66–
+Power 5.0 5.6 83.0 0.61 –
+Note:Digits, Random and Swapped are the option-name conditions, AUC is measured under the aligned identifiers and Floor is the test-retest
+floor. The glyph grades the flips above the model’s floor on that set,below one per hundred, from one to ten andten or more. A floor that
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 36 of 43
+
+Benchmarking System One decision models for decision gates
+was not measured counts as zero, as it is for every open model on typed-decisions and for every comparator. Bold marks the highest AUC on each
+set, with ties bolded.
+Table C.11 gives the multi-class Brier score and the negative log-likelihood of every model on each benchmark,
+the two proper scoring rules that complement the calibration error.
+Table C.11
+Multi-class Brier score and negative log-likelihood of every model on each benchmark, from the probabilities as shipped.
+D1 D2 Derail. Power Emo. Pol.
+Model Brier NLL Brier NLL Brier NLL Brier NLL Brier NLL Brier NLL
+HOSTED
+Jev 1.13.0 0.371 0.689 0.131 0.390 0.738 1.810 0.613 1.166 0.749 2.945 0.470 0.810
+OPEN,ENCODER HEAD
+Laya (English) 0.741 1.294 – –0.498 0.6930.5130.7080.792 2.027 0.725 1.197
+Laya (multilingual) 0.853 1.618 0.999 5.160 0.564 0.805 0.609 0.843 0.840 1.940 0.715 1.170
+OPEN,DECODER HEAD
+Kev-0.8B 0.608 1.065 0.522 1.495 0.559 0.764 0.555 0.757 0.644 1.327 0.639 1.037
+Kev-9B 0.415 0.741 0.402 1.162 0.631 0.8890.5090.711 0.619 1.286 0.635 1.067
+decider-2b 0.555 0.967 0.209 0.571 0.894 1.851 0.606 0.8560.286 0.5430.707 1.217
+this-that-model-1.0 0.564 1.090 0.208 0.646 0.936 2.987 0.692 1.153 0.292 0.626 0.990 2.152
+Nimble-9B 0.430 0.797 0.220 0.644 0.737 1.357 0.743 1.272 0.747 1.794 0.618 1.096
+GENERATIVE COMPARATORS
+Qwen3-14B, verbal 0.493 1.021 0.494 2.234 0.667 0.945 0.638 0.914 0.738 1.576 0.524 0.938
+Qwen3.6-27B, verbal 0.445 0.841 0.356 1.633 0.793 1.255 0.639 0.966 0.828 1.792 0.559 0.947
+Qwen3.6-27B, likelihood0.355 0.6060.155 0.403 0.859 2.498 0.657 1.376 0.870 2.405 0.500 0.935
+Qwen3.6-27B, thinking 0.433 0.774 0.127 0.389 0.725 1.116 0.626 1.002 0.731 1.528 0.544 0.942
+Gemma-4-31B, verbal 0.411 0.7610.104 0.3250.666 1.085 0.666 1.129 0.785 1.856 0.506 0.851
+Gemma-4-31B, likelihood 0.495 2.220 0.115 0.606 0.817 5.203 0.768 4.935 1.032 6.278 0.666 3.308
+Mistral-Small-24B, verbal 0.552 1.010 0.419 2.030 0.668 0.982 0.709 1.045 0.802 1.718 0.566 0.996
+Mistral-Small-24B, likelihood 0.473 0.832 0.320 0.850 0.746 1.677 0.762 1.680 0.876 2.2240.446 0.772
+Note:Brier is the multi-class Brier score and NLL the negative log-likelihood of the reference label, both from the probabilities as shipped. Bold
+marks the lowest value in each column, with ties bolded, and the over-budget Laya (multilingual) cells on D2 are shown but not ranked.
+Table C.12 lists the identifier, resolved revision, served temperature, run date and runtime of every model, which
+thereleasedmanifestrecordsinfulltogetherwiththedigestofeveryfrozeninput.Thehostedservicereportsneithera
+weightrevisionnoratemperature,soitsentryrecordsthepinnedmodelnamethateveryresponsereturned.FigureC.2
+then shows the reliability diagrams on typed-decisions from which the shipped and scaled calibration values of that
+benchmark are computed.
+Table C.12
+Run manifest with the identifier, resolved revision, served temperature, run date and runtime of every model.
+Model Repository or service Revision Temp. Run date Runtime
+HOSTED
+Jev 1.13.0 TypeSafe API, modeljev-1.13.0– –2026-09-24
+to
+2026-09-30
+hosted service through
+typesafe_sdk
+OPEN,ENCODER HEAD
+Laya (English)convaiinnovations/laya 55cf4c4ebb1.02026-09-24
+to
+2026-09-29
+laya 0.3.20,torch 2.8.0
+Laya (multilingual)convaiinnovations/laya,
+subfoldermultilingual
+55cf4c4ebb1.02026-09-24
+to
+2026-09-29
+laya 0.3.20,torch 2.8.0
+OPEN,DECODER HEAD
+Kev-0.8Bjaredpalmer/kev-0.8b 9a45d25eb22.352026-09-24
+to
+2026-09-29
+torch 2.8.0,kev@73504e51f6,
+transformers>=5.17
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 37 of 43
+
+Benchmarking System One decision models for decision gates
+Model Repository or service Revision Temp. Run date Runtime
+Kev-9Bjaredpalmer/kev-9b 2629c06a5a2.302026-09-24
+to
+2026-09-29
+torch 2.8.0,kev@73504e51f6,
+transformers>=5.17
+decider-2bMapika/decider-2b d61c1c16081.302026-09-24
+to
+2026-09-29
+torch 2.8.0,kev@73504e51f6,
+transformers>=5.17
+this-that-model-1.0flock-io/this-that-model-1.0 3d927195c41.02026-09-24
+to
+2026-09-29
+torch 2.8.0,kev@73504e51f6,
+transformers>=5.17,
+thisthat@542d445efa
+Nimble-9Bbespokelabs/Bespoke-Nimble-9B bd792f44ec1.02026-09-24
+to
+2026-09-29
+torch 2.8.0,
+transformers 5.17.0
+GENERATIVE COMPARATORS
+Qwen3-14B, verbalQwen/Qwen3-14B-AWQ 31c69efc290.02026-09-25
+to
+2026-09-29
+vllm 0.30.0,torch 2.13.0
+Qwen3.6-27B, both
+readouts
+Qwen/Qwen3.6-27B-FP8 e89b16ebf10.0,
+1.0
+2026-09-27
+to
+2026-10-01
+vllm 0.30.0
+Qwen3.6-27B,
+thinking
+Qwen/Qwen3.6-27B-FP8 e89b16ebf10.62026-09-30
+to
+2026-10-01
+vllm 0.30.0
+Gemma-4-31B, both
+readouts
+google/gemma-4-31B-it 842da3794e0.0,
+1.0
+2026-09-30 vllm 0.30.0, bf16, eager
+Mistral-Small-24B,
+both readouts
+mistralai/Mistral-Small-24B-
+Instruct-2501
+9527884be60.0,
+1.0
+2026-09-30 vllm 0.30.0, bf16, eager
+UNTUNED BACKBONES
+Qwen3.5-0.8B-BaseQwen/Qwen3.5-0.8B-Base dc7cdfe2ee1.02026-09-26
+to
+2026-09-29
+torch 2.8.0,
+transformers 5.17.0
+Qwen3.5-2B-BaseQwen/Qwen3.5-2B-Base b1485b2fa61.02026-09-27
+to
+2026-09-29
+torch 2.8.0,
+transformers 5.17.0
+Qwen3.5-9B-BaseQwen/Qwen3.5-9B-Base 68c46c4b341.02026-09-27
+to
+2026-09-29
+torch 2.8.0,
+transformers 5.17.0
+Qwen3.5-9BQwen/Qwen3.5-9B c2022362351.02026-09-27
+to
+2026-09-29
+torch 2.8.0,
+transformers 5.17.0
+Note:Revision is the start of the resolved commit of the weights and Temp. the served temperature that every answer record reports. The hosted
+service reports neither, and each response named the pinned model. Laya applies a temperature per question type and option count and records
+one as its nominal value. The comparators decode greedily or read key likelihoods at a temperature of one, except the thinking mode, which
+samples its reasoning at the temperature shown with a fixed seed. Qwen3.6-27B, Gemma-4-31B and Mistral-Small-24B ran on a Colab A100
+GPU and every other open model on a Colab L4 GPU, and a pin written as a lower bound was resolved at install time.
+ThecalibrationerrorsofTable7summarizeeachmodelbyonenumber.EachpanelofFigureC.2relatesconfidence
+toaccuracyforonemodel.Eachpanelbinsthedecisionsofonemodelinto10equal-massbinsbytop-labelprobability
+andplotstheobservedaccuracyofeachbinagainstitsmeanconfidence.Acurveonthediagonalisthereforecalibrated,
+acurvebelowitisover-confidentandacurveaboveitisunder-confident.Theshadedbandisaclusterbootstrapinterval
+that resamples whole states.
+The hosted model and Kev-0.8B lie close to the diagonal as shipped, and Kev-9B lies slightly above it, which
+marks mildunder-confidence. Thedecider-2b, this-that-model-1.0 andNimble-9B checkpointslie below thediagonal
+asshipped,andthescaledtemperaturemovestheircurvesontoitorslightlyaboveit.Qwen3-14Bisalsoover-confident
+as shipped and remains noisy after scaling. The two Laya checkpoints differ from every other model, because their
+observed accuracy stays between roughly a quarter and a half across the whole confidence range. Scaling pulls their
+confidencestowardthesamenarrowrangeratherthanseparatingcorrectfromincorrectdecisions,whichisthelossof
+resolution discussed in Section 5.1. Their shipped curves show the over-confidence that the Laya card reports.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 38 of 43
+
+Benchmarking System One decision models for decision gates
+0.001 0.01 0.1
+USD per 1,000 decisions (log scale)
+20
+50
+100
+200
+500
+1000
+2000
+5000Median latency per request, ms (log scale)
+Jev 1.13.0, hosted API
+Laya (English)
+Laya (multilingual)
+Kev-0.8B
+Kev-9B
+decider-2b
+this-that-model-1.0
+Nimble-9B
+Qwen3-14B, verbal, batched
+Open models and comparator
+on one Colab L4 GPU
+Whiskers reach the 95th percentile
+Figure C.1:Cost per thousand typed-decisions decisions against median latency per request, with whiskers to the 95th percentile,
+for the hosted model through its API and the other models on one Colab L4 GPU.
+0
+0.2
+0.4
+0.6
+0.8
+1
+Observed accuracy
+(a) Jev 1.13.0
+ (b) Laya (English)
+ (c) Laya (multilingual)
+0
+0.2
+0.4
+0.6
+0.8
+1
+Observed accuracy
+(d) Kev-0.8B
+ (e) Kev-9B
+ (f) decider-2b
+0 0.2 0.4 0.6 0.8 1
+Mean predicted confidence
+0
+0.2
+0.4
+0.6
+0.8
+1
+Observed accuracy
+(g) this-that-model-1.0
+0 0.2 0.4 0.6 0.8 1
+Mean predicted confidence
+(h) Nimble-9B
+0 0.2 0.4 0.6 0.8 1
+Mean predicted confidence
+(i) Qwen3-14B, verbal
+Shipped probabilities Temperature scaled Cluster bootstrap 95% band Perfect calibration
+Figure C.2:Reliability diagrams on D1 with 10 equal-mass bins, shipped and temperature scaled, with cluster bootstrap bands.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 39 of 43
+
+Benchmarking System One decision models for decision gates
+Declaration of competing interest
+Theauthorsdeclarethattheyhavenoknowncompetingfinancialinterestsorpersonalrelationshipsthatcouldhave
+appearedtoinfluencetheworkreportedinthispaper.Theauthorshavenoaffiliationwiththedevelopersofanymodel
+evaluated in this study.
+Funding
+This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit
+sectors.
+CRediT authorship contribution statement
+AmirRafe:Conceptualization,methodology,software,datacuration,formalanalysis,investigation,visualization,
+writing of the original draft, review and editing.Subasish Das:Conceptualization, methodology, supervision, and
+review and editing.
+Code and data availability
+Theharness,thefrozeninputfileswiththeirSHA-256digests,therawanswersofeverymodel,andtheanalysisand
+plotting scripts are available athttps://github.com/pozapas/system-one-models-survey. D1, D2, the four
+D3 tasks, GoEmotions and Banking77 are drawn from their own public releases under the licenses stated in Table 4.
+The repository redistributes D1, D2 and Banking77 with attribution in the frozen, neutral-identifier form that the
+harness constructs. It releases the four D3 tasks and GoEmotions as item identifiers together with scripts that rebuild
+thefrozeninputsfromthepinnedpublicreleases,becausetheD3licensesdonotgrantredistributionofthetextandthe
+GoEmotions texts are comments written by Reddit users. For the same reason, reasoning traces of the thinking mode
+that quote the text of these items are withheld from the released answers, whose probabilities are kept.
+References
+Aggarwal, P., Madaan, A., Anand, A., Potharaju, S.P., Mishra, S., Zhou, P., Gupta, A., Rajagopal, D., Kappaganthu, K., Yang, Y., Upadhyay, S.,
+Faruqui, M., Mausam, M., 2024. AutoMix: automatically mixing language models, in: Advances in Neural Information Processing Systems 37,
+pp. 131000–131034. doi:10.52202/079017-4164,arXiv:2310.12963.
+Angelopoulos, A.N., Bates, S., Candès, E.J., Jordan, M.I., Lei, L., 2025. Learn then test: Calibrating predictive algorithms to achieve risk control.
+The Annals of Applied Statistics 19. doi:10.1214/24-AOAS1998.
+Balian, R., 2026. rev: Reverse engineering jev using open models. URL:https://github.com/robbalian/rev.
+Bates, S., Angelopoulos, A., Lei, L., Malik, J., Jordan, M., 2021. Distribution-free, risk-controlling prediction sets. Journal of the ACM 68, 1–34.
+doi:10.1145/3478535,arXiv:2101.02703.
+Bespoke Labs, 2026. bespokelabs/Bespoke-Nimble-9B. URL:https://huggingface.co/bespokelabs/Bespoke-Nimble-9B. model card
+at revision bd792f44ec, accessed 24 September 2026.
+Beurer-Kellner, L., Fischer, M., Vechev, M., 2023. Prompting is programming: A query language for large language models. Proceedings of the
+ACM on Programming Languages 7, 1946–1969. doi:10.1145/3591300.
+Brier,G.W.,1950. Verificationofforecastsexpressedintermsofprobability. MonthlyWeatherReview78,1–3. doi:10.1175/1520-0493(1950)
+078<0001:vofeit>2.0.co;2.
+Casanueva,I.,Temčinas,T.,Gerz,D.,Henderson,M.,Vulić,I.,2020. Efficientintentdetectionwithdualsentenceencoders,in:Proceedingsofthe
+2nd Workshop on Natural Language Processing for Conversational AI, Association for Computational Linguistics. pp. 38–45. doi:10.18653/
+v1/2020.nlp4convai-1.5.
+Chae, Y., Davidson, T., 2026. Large language models for text classification: From Zero-Shot learning to Instruction-Tuning. Sociological Methods
+& Research 55, 501–567. doi:10.1177/00491241251325243.
+Chen, L., Zaharia, M., Zou, J., 2023. FrugalGPT: how to use large language models while reducing cost and improving performance. URL:
+https://arxiv.org/abs/2305.05176,arXiv:2305.05176.
+Chen, M., Reneau, A., Flansburg, K., 2026. Introducing Clef: Our open-source decision models, and new RL fine-tuning platform. URL:
+https://blog.cloudflare.com/clef-decision-models/. cloudflare Blog, 1 October 2026.
+Cheng, Z., Dai, W., Sun, J., 2026. this-that-model-1.0: A typed decision model that decides in 30 ms, for a millionth of a cent. URL:
+https://arxiv.org/abs/2609.23886,arXiv:2609.23886.
+Chow,C.,1970. Onoptimumrecognitionerrorandrejecttradeoff. IEEETransactionsonInformationTheory16,41–46. doi:10.1109/tit.1970.
+1054406.
+Convai Innovations, 2026a. convaiinnovations/laya. URL:https://huggingface.co/convaiinnovations/laya. model card at revision
+55cf4c4ebb, accessed 24 September 2026.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 40 of 43
+
+Benchmarking System One decision models for decision gates
+Convai Innovations, 2026b. convaiinnovations/laya-multilingual. URL:https://huggingface.co/convaiinnovations/
+laya-multilingual. model card at revision 55cf4c4ebb, accessed 24 September 2026.
+Demszky,D.,Movshovitz-Attias,D.,Ko,J.,Cowen,A.,Nemade,G.,Ravi,S.,2020.GoEmotions:adatasetoffine-grainedemotions,in:Proceedings
+of the 58th Annual Meeting of the Association for Computational Linguistics, Association for Computational Linguistics. pp. 4040–4054.
+doi:10.18653/v1/2020.acl-main.372.
+Deng, B., Fan, S., Zhang, H., Xie, X., 2026. Jev for scientific decisions: Evaluating semantic choices and their consequences. URL:https:
+//arxiv.org/abs/2609.24965,arXiv:2609.24965.
+Desai, S., Durrett, G., 2020. Calibration of pre-trained transformers, in: Proceedings of the 2020 Conference on Empirical Methods in Natural
+Language Processing (EMNLP), pp. 295–302. doi:10.18653/v1/2020.emnlp-main.21.
+Deußer, T., Sparrenberg, L., Sifa, R., 2026. Evaluating and benchmarking the system one model Jev. URL:https://arxiv.org/abs/2609.
+37647,arXiv:2609.37647.
+Devlin, J., Chang, M.W., Lee, K., Toutanova, K., 2019. BERT: pre-training of deep bidirectional transformers for language understanding, in:
+Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language
+Technologies, Volume 1 (Long and Short Papers), pp. 4171–4186. doi:10.18653/v1/n19-1423.
+Dodge,J.,Gururangan,S.,Card,D.,Schwartz,R.,Smith,N.A.,2019. Showyourwork:Improvedreportingofexperimentalresults,in:Proceedings
+of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language
+Processing (EMNLP-IJCNLP), pp. 2185–2194. doi:10.18653/v1/d19-1224.
+Dong, Y., Ruan, C.F., Cai, Y., Lai, R., Xu, Z., Zhao, Y., Chen, T., 2025. XGrammar: Flexible and efficient structured generation engine for large
+language models, in: Proceedings of Machine Learning and Systems (MLSys). URL:https://arxiv.org/abs/2411.15100.
+El-Yaniv, R., Wiener, Y., 2010. On the foundations of noise-free selective classification. Journal of Machine Learning Research 11, 1605–1641.
+Flock.io, 2026. flock-io/this-that-model-1.0. URL:https://huggingface.co/flock-io/this-that-model-1.0. model card at revision
+3d927195c4, accessed 24 September 2026.
+Gao, T., Fisch, A., Chen, D., 2021. Making pre-trained language models better few-shot learners, in: Proceedings of the 59th Annual Meeting of
+the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long
+Papers), pp. 3816–3830. doi:10.18653/v1/2021.acl-long.295.
+Geifman, Y., El-Yaniv, R., 2017. Selective classification for deep neural networks, in: Advances in Neural Information Processing Systems 30
+(NeurIPS), pp. 4878–4887. URL:https://arxiv.org/abs/1705.08500.
+Geng, S., Josifoski, M., Peyrard, M., West, R., 2023. Grammar-Constrained decoding for structured NLP tasks without finetuning, in: Proceedings
+ofthe2023ConferenceonEmpiricalMethodsinNaturalLanguageProcessing,pp.10932–10952. doi:10.18653/v1/2023.emnlp-main.674,
+arXiv:2305.13971.
+Gneiting, T., Raftery, A.E., 2007. Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association 102,
+359–378. doi:10.1198/016214506000001437.
+Google, 2026. google/gemma-4-31B-it. URL:https://huggingface.co/google/gemma-4-31B-it. revision 842da379.
+Guo, C., Pleiss, G., Sun, Y., Weinberger, K.Q., 2017. On calibration of modern neural networks. URL:https://arxiv.org/abs/1706.04599,
+arXiv:1706.04599.
+He, P., Gao, J., Chen, W., 2023. DeBERTaV3: improving DeBERTa using ELECTRA-style pre-training with gradient-disentangled embedding
+sharing,in:TheEleventhInternationalConferenceonLearningRepresentations. URL:https://openreview.net/forum?id=sE7-XhLxHA.
+Hendrycks, D., Gimpel, K., 2017. A baseline for detecting misclassified and Out-of-Distribution examples in neural networks, in: 5th International
+Conference on Learning Representations (ICLR). URL:https://arxiv.org/abs/1610.02136,arXiv:1610.02136.
+Holtzman, A., West, P., Shwartz, V., Choi, Y., Zettlemoyer, L., 2021. Surface form competition: Why the highest probability answer isn’t always
+right,in:Proceedingsofthe2021ConferenceonEmpiricalMethodsinNaturalLanguageProcessing,pp.7038–7051. doi:10.18653/v1/2021.
+emnlp-main.564,arXiv:2104.08315.
+Huang, J., Yang, H., Ma, X., Liang, X., Cai, K., Ma, J., Chen, S., Sun, Y., Tan, T., 2026. Can jev judge radiology reports? evaluating a system one
+model for clinical factuality. URL:https://arxiv.org/abs/2609.27607,arXiv:2609.27607.
+Ibrahim, H., Zaki, Y., 2026. Evaluating decision models for text annotation in computational social science. URL:https://arxiv.org/abs/
+2609.24574,arXiv:2609.24574.
+Jiang,D.,Li,Y.,Li,B.,2026. Jev-Mem:System-One-ControlledagenticmemoryforefficientAIagents. URL:https://arxiv.org/abs/2609.
+23986,arXiv:2609.23986.
+Jiang,Z.,Araki,J.,Ding,H.,Neubig,G.,2021. Howcanweknowwhenlanguagemodelsknow?onthecalibrationoflanguagemodelsforquestion
+answering. Transactions of the Association for Computational Linguistics 9, 962–977. doi:10.1162/tacl_a_00407.
+Kadavath,S.,Conerly,T.,Askell,A.,Henighan,T.,Drain,D.,Perez,E.,Schiefer,N.,Hatfield-Dodds,Z.,DasSarma,N.,Tran-Johnson,E.,Johnston,
+S., El-Showk, S., Jones, A., Elhage, N., Hume, T., Chen, A., Bai, Y., Bowman, S., Fort, S., Ganguli, D., Hernandez, D., Jacobson, J., Kernion,
+J., Kravec, S., Lovitt, L., Ndousse, K., Olsson, C., Ringer, S., Amodei, D., Brown, T., Clark, J., Joseph, N., Mann, B., McCandlish, S., Olah, C.,
+Kaplan, J., 2022. Language models (mostly) know what they know. URL:https://arxiv.org/abs/2207.05221,arXiv:2207.05221.
+Kapoor, S., Narayanan, A., 2023. Leakage and the reproducibility crisis in machine-learning-based science. Patterns 4, 100804. doi:10.1016/j.
+patter.2023.100804.
+Kumar, A., Liang, P., Ma, T., 2019. Verified uncertainty calibration. URL:https://arxiv.org/abs/1909.10155,arXiv:1909.10155.
+Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C.H., Gonzalez, J., Zhang, H., Stoica, I., 2023. Efficient memory management for
+large language model serving with PagedAttention, in: Proceedings of the 29th Symposium on Operating Systems Principles, pp. 611–626.
+doi:10.1145/3600006.3613165.
+Larson, S., Mahendran, A., Peper, J.J., Clarke, C., Lee, A., Hill, P., Kummerfeld, J.K., Leach, K., Laurenzano, M.A., Tang, L., Mars, J., 2019.
+An evaluation dataset for intent classification and Out-of-Scope prediction, in: Proceedings of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), pp. 1311–1316.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 41 of 43
+
+Benchmarking System One decision models for decision gates
+doi:10.18653/v1/d19-1131.
+Li, D., Wang, X., Gong, H., Lang, R., Yu, G., 2026a. Fast Intent-Driven service orchestration with jev for 6g edge networks. URL:https:
+//arxiv.org/abs/2609.23136,arXiv:2609.23136.
+Li, D., Wang, X., Gong, H., Lang, R., Yu, G., 2026b. Replacing large language models with jev decision models for Low-Latency edge service
+orchestration. URL:https://arxiv.org/abs/2609.22753,arXiv:2609.22753.
+Li, Y., Miao, Y., Krishnan, R., Padman, R., 2026c. JEV-as-a-Judge: accept when confident, escalate when unsure. URL:https://arxiv.org/
+abs/2609.26550,arXiv:2609.26550.
+Liang,P.,Bommasani,R.,Lee,T.,Tsipras,D.,Soylu,D.,Yasunaga,M.,Zhang,Y.,Narayanan,D.,Wu,Y.,Kumar,A.,Newman,B.,Yuan,B.,Yan,
+B., Zhang, C., Cosgrove, C., Manning, C.D., Ré, C., Acosta-Navas, D., Hudson, D.A., Zelikman, E., Durmus, E., Ladhak, F., Rong, F., Ren, H.,
+Yao, H., Wang, J., Santhanam, K., Orr, L., Zheng, L., Yuksekgonul, M., Suzgun, M., Kim, N., Guha, N., Chatterji, N., Khattab, O., Henderson,
+P.,Huang,Q.,Chi,R.,Xie,S.M.,Santurkar,S.,etal.,2023. Holisticevaluationoflanguagemodels. TransactionsonMachineLearningResearch
+URL:https://arxiv.org/abs/2211.09110,arXiv:2211.09110.
+Ling, G., Xue, M., Ye, Z., 2026. Jev in the wild: A data-driven analysis of the Jev model’s functionality, applications and ecosystem. URL:
+https://arxiv.org/abs/2609.30216,arXiv:2609.30216.
+Liu, Y., Ott, M., Goyal, N., Du, J., Joshi, M., Chen, D., Levy, O., Lewis, M., Zettlemoyer, L., Stoyanov, V., 2019. RoBERTa: a robustly optimized
+BERT pretraining approach. URL:https://arxiv.org/abs/1907.11692,arXiv:1907.11692.
+LocalLLaMA, 2026. LocalLLaMA/typed-decisions. URL:https://huggingface.co/datasets/LocalLLaMA/typed-decisions.
+Ma, W., Zhao, L., Zeng, Y., Zhao, J., 2026. JEV-Star: fast, Low-Cost StarCraft II control with Language-Model planning. URL:https:
+//arxiv.org/abs/2609.27331,arXiv:2609.27331.
+Madras, D., Pitassi, T., Zemel, R., 2017. Predict responsibly: Improving fairness and accuracy by learning to defer. URL:https://arxiv.org/
+abs/1711.06664,arXiv:1711.06664.
+Mapika, 2026. Mapika/decider-2b. URL:https://huggingface.co/Mapika/decider-2b. model card at revision d61c1c1608, accessed 24
+September 2026.
+Mistral AI, 2025. mistralai/Mistral-Small-24B-Instruct-2501. URL:https://huggingface.co/mistralai/
+Mistral-Small-24B-Instruct-2501. revision 9527884b.
+Moslem,Y.,Kelleher,J.D.,2026. DynamicmodelroutingandcascadingforefficientLLMinference:Asurvey. URL:https://arxiv.org/abs/
+2603.04445,arXiv:2603.04445.
+Mozannar, H., Sontag, D., 2020. Consistent estimators for learning to defer to an expert. URL:https://arxiv.org/abs/2006.01862,
+arXiv:2006.01862.
+multimodalart, 2026. Jev decision index. URL:https://huggingface.co/spaces/multimodalart/jev-decision-index. edition 0.2.1
+of 28 September 2026, Hugging Face Space.
+Murphy, A.H., 1973. A new vector partition of the probability score. Journal of Applied Meteorology 12, 595–600. doi:10.1175/
+1520-0450(1973)012<0595:anvpot>2.0.co;2.
+Nixon, J., Dusenberry, M., Jerfel, G., Nguyen, T., Liu, J., Zhang, L., Tran, D., 2019. Measuring calibration in deep learning. URL:https:
+//arxiv.org/abs/1904.01685,arXiv:1904.01685.
+Ong, I., Almahairi, A., Wu, V., Chiang, W.L., Wu, T., Gonzalez, J.E., Kadous, M.W., Stoica, I., 2025. RouteLLM: learning to route LLMs with
+preference data, in: The Thirteenth International Conference on Learning Representations (ICLR). URL:https://arxiv.org/abs/2406.
+18665,arXiv:2406.18665.
+PakdamanNaeini,M.,Cooper,G.,Hauskrecht,M.,2015. Obtainingwellcalibratedprobabilitiesusingbayesianbinning. ProceedingsoftheAAAI
+Conference on Artificial Intelligence 29. doi:10.1609/aaai.v29i1.9602.
+Palmer, J., 2026a. jaredpalmer/kev-0.8b. URL:https://huggingface.co/jaredpalmer/kev-0.8b. model card at revision 9a45d25eb2,
+accessed 24 September 2026.
+Palmer,J.,2026b. jaredpalmer/kev-9b. URL:https://huggingface.co/jaredpalmer/kev-9b.modelcardatrevision2629c06a5a,accessed
+24 September 2026.
+Pezeshkpour,P.,Hruschka,E.,2024.LargelanguagemodelssensitivitytotheorderofoptionsinMultiple-Choicequestions,in:FindingsoftheAsso-
+ciationforComputationalLinguistics:NAACL2024,pp.2006–2017. doi:10.18653/v1/2024.findings-naacl.130,arXiv:2308.11483.
+Qwen, 2026a. Qwen3.5 model collection. URL:https://huggingface.co/Qwen. qwen3.5-0.8B-Base, Qwen3.5-2B-Base, Qwen3.5-9B-Base
+and Qwen3.5-9B.
+Qwen, 2026b. Qwen/Qwen3.6-27B-FP8. URL:https://huggingface.co/Qwen/Qwen3.6-27B-FP8. revision e89b16eb.
+Rafe,A.,Das,S.,2026. Calibrateddecisionsatscale:Convertingpolicecrashnarrativesintoprobabilisticcrashvariableswithasystemonemodel
+(jev). URL:https://arxiv.org/abs/2609.24052,arXiv:2609.24052.
+Ren,S.,Zewde,K.,Shen,X.,Zhou,Y.,Ng,D.,Raj,A.,Duong,T.,Zhang,Y.,Tiangratanakul,N.,2026. Open-JevjudgmentsonCallScreenBench:
+calibrated One-Pass scam screening with a small language model. URL:https://arxiv.org/abs/2609.23959,arXiv:2609.23959.
+Robitza, W., 2026. JEVQA - video quality from metadata, bitstream, and pixel features with a General-Purpose decision model. URL:
+https://arxiv.org/abs/2609.24395,arXiv:2609.24395.
+Roelofs,R.,Cain,N.,Shlens,J.,Mozer,M.C.,2022. Mitigatingbiasincalibrationerrorestimation,in:Proceedingsofthe25thInternationalConfer-
+enceonArtificialIntelligenceandStatistics(AISTATS),pp.4036–4054.URL:https://arxiv.org/abs/2012.08668,arXiv:2012.08668.
+Schick, T., Schütze, H., 2021. Exploiting Cloze-Questions for Few-Shot text classification and natural language inference, in: Proceedings of the
+16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume, pp. 255–269. doi:10.18653/v1/
+2021.eacl-main.20.
+Scholak, T., Schucher, N., Bahdanau, D., 2021. PICARD: parsing incrementally for constrained Auto-Regressive decoding from language models,
+in: Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pp. 9895–9901. doi:10.18653/v1/2021.
+emnlp-main.779,arXiv:2109.05093.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 42 of 43
+
+Benchmarking System One decision models for decision gates
+Sclar, M., Choi, Y., Tsvetkov, Y., Suhr, A., 2024. Quantifying language models’ sensitivity to spurious features in prompt design or: How i
+learned to start worrying about prompt formatting, in: The Twelfth International Conference on Learning Representations (ICLR). URL:
+https://arxiv.org/abs/2310.11324,arXiv:2310.11324.
+Stepanov, I., Shtopko, M., Vodianytskyi, D., Lukashov, O., Yavorskyi, A., Yaroshenko, M., 2025. GLiClass: generalist lightweight model for
+sequence classification tasks. URL:https://arxiv.org/abs/2508.07662,arXiv:2508.07662.
+Strong, J., Sun, E., Rogers, H., Higham, H., Noble, A., 2025. Learning to defer: A survey. doi:10.5281/zenodo.17843044.
+Sun,Y.,Xu,J.,Shi,J.,Yang,Z.,2026. Type-SafeisnotError-Free:aconstraineddecisionheadfollowstheoptionname,nottherubricboundtoit.
+URL:https://arxiv.org/abs/2609.26758,arXiv:2609.26758.
+Tian, K., Mitchell, E., Zhou, A., Sharma, A., Rafailov, R., Yao, H., Finn, C., Manning, C., 2023. Just ask for calibration: Strategies for eliciting
+calibrated confidence scores from language models Fine-Tuned with human feedback, in: Proceedings of the 2023 Conference on Empirical
+Methods in Natural Language Processing, pp. 5433–5442. doi:10.18653/v1/2023.emnlp-main.330,arXiv:2305.14975.
+Tunstall, L., Reimers, N., Jo, U.E.S., Bates, L., Korat, D., Wasserblat, M., Pereg, O., 2022. Efficient Few-Shot learning without prompts. URL:
+https://arxiv.org/abs/2209.11055,arXiv:2209.11055.
+TypeSafe AI, 2026a. API reference - TypeSafe AI. URL:https://docs.typesafe.ai/api.
+TypeSafe AI, 2026b. Introducing system one models & jev. URL:https://typesafe.ai/blog/
+introducing-system-one-models-and-jev.
+TypeSafe AI, 2026c. System one - TypeSafe AI. URL:https://docs.typesafe.ai/concepts/system-one.
+Vajjala, S., Shimangaud, S., 2025. Text classification in the LLM era – where do we stand? URL:https://arxiv.org/abs/2502.11830,
+arXiv:2502.11830.
+Varangot-Reille,C.,Bouvard,C.,Ciancone,M.,Gourru,A.,Schaeffer,M.,Jacquenet,F.,2026. Doingmorewithless:Asurveyonroutingstrategies
+forresourceoptimisationinlargelanguageModel-Basedsystems. JournalofArtificialIntelligenceResearch86. doi:10.1613/jair.1.19801.
+Varshney, N., Mishra, S., Baral, C., 2022. Investigating selective prediction approaches across several tasks in IID, OOD, and adversarial settings,
+in: Findings of the Association for Computational Linguistics: ACL 2022, pp. 1995–2002. doi:10.18653/v1/2022.findings-acl.158.
+Viola, P., Jones, M., 2001. Rapid object detection using a boosted cascade of simple features, in: Proceedings of the 2001 IEEE Computer Society
+Conference on Computer Vision and Pattern Recognition, pp. I–511–I–518. doi:10.1109/CVPR.2001.990517.
+Willard, B.T., Louf, R., 2023. Efficient guided generation for large language models. URL:https://arxiv.org/abs/2307.09702,
+arXiv:2307.09702.
+Wu, T., Lim, W.Y.B., 2026. REFLEX with jev for efficient selective control in LLM agents. URL:https://arxiv.org/abs/2609.26532,
+arXiv:2609.26532.
+Xiong, M., Hu, Z., Lu, X., Li, Y., Fu, J., He, J., Hooi, B., 2024. Can LLMs express their uncertainty? an empirical evaluation of confidence
+elicitationinLLMs,in:TheTwelfthInternationalConferenceonLearningRepresentations(ICLR).URL:https://openreview.net/forum?
+id=gjeQKFxFpZ.
+Yang, A., Li, A., Yang, B., Zhang, B., Hui, B., Zheng, B., Yu, B., Gao, C., Huang, C., Lv, C., Zheng, C., Liu, D., Zhou, F., Huang, F., Hu, F.,
+Ge, H., Wei, H., Lin, H., Tang, J., Yang, J., Tu, J., Zhang, J., Yang, J., Yang, J., Zhou, J., Zhou, J., Lin, J., Dang, K., Bao, K., Yang, K.,
+Yu, L., Deng, L., Li, M., Xue, M., Li, M., Zhang, P., Wang, P., Zhu, Q., Men, R., Gao, R., et al., 2025. Qwen3 technical report. URL:
+https://arxiv.org/abs/2505.09388,arXiv:2505.09388.
+Yin, W., Hay, J., Roth, D., 2019. Benchmarking zero-shot text classification: Datasets, evaluation and entailment approach, in: Proceedings of
+the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language
+Processing (EMNLP-IJCNLP), pp. 3912–3921. doi:10.18653/v1/d19-1404.
+Yu, G., Yao, Y., 2026. Visual jev: Accurate and efficient decisions from shared visual context. URL:https://arxiv.org/abs/2609.25845,
+arXiv:2609.25845.
+Zaratiana, U., Tomeh, N., Holat, P., Charnois, T., 2024. GLiNER: generalist model for named entity recognition using bidirectional transformer,
+in: Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language
+Technologies (Volume 1: Long Papers), pp. 5364–5376. doi:10.18653/v1/2024.naacl-long.300,arXiv:2311.08526.
+Zhang,F.,Chen,Y.,Xie,Z.,Zhou,Y.,Peng,S.,Fan,L.,Ji,X.,Zheng,C.,Shan,H.,Yu,P.S.,Liu,X.,Chen,Y.,Nakov,P.,He,S.,2026. Samescores,
+different decisions: Evaluating JEV and language models for legal document understanding. URL:https://arxiv.org/abs/2609.27678,
+arXiv:2609.27678.
+Zhao, T.Z., Wallace, E., Feng, S., Klein, D., Singh, S., 2021. Calibrate before use: Improving Few-Shot performance of language models. URL:
+https://arxiv.org/abs/2102.09690,arXiv:2102.09690.
+Zheng, C., Zhou, H., Meng, F., Zhou, J., Huang, M., 2024a. Large language models are not robust multiple choice selectors, in: The Twelfth
+International Conference on Learning Representations (ICLR). URL:https://openreview.net/forum?id=shr9PXz7T0.
+Zheng, L., Yin, L., Xie, Z., Sun, C., Huang, J., Yu, C., Cao, S., Kozyrakis, C., Stoica, I., Gonzalez, J., Barrett, C., Sheng, Y., 2024b. SGLang:
+efficient execution of structured language model programs, in: Advances in Neural Information Processing Systems 37, pp. 62557–62583.
+doi:10.52202/079017-2000,arXiv:2312.07104.
+Ziems, C., Held, W., Shaikh, O., Chen, J., Zhang, Z., Yang, D., 2024. Can large language models transform computational social science?
+Computational Linguistics 50, 237–291. doi:10.1162/coli_a_00502.
+A. Rafe and S. Das:Preprint submitted to ElsevierPage 43 of 43

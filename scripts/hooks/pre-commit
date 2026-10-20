@@ -1,0 +1,14 @@
+#!/bin/sh
+# DM Library: fast offline checks. Install with python scripts/hooks/install.py.
+set -e
+if [ -x ".venv/Scripts/python.exe" ]; then PY=".venv/Scripts/python.exe"
+elif [ -x ".venv/bin/python" ]; then PY=".venv/bin/python"
+elif command -v python >/dev/null 2>&1; then PY="python"
+elif command -v python3 >/dev/null 2>&1; then PY="python3"
+else
+    echo "pre-commit: Python unavailable; cannot validate library." >&2
+    exit 1
+fi
+export PYTHONIOENCODING=utf-8
+export PYTHONDONTWRITEBYTECODE=1
+exec "$PY" -B scripts/maintain.py --check-only --only text --only docs --only symbols

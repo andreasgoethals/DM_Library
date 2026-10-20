@@ -1,0 +1,1620 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://huggingface.co/LiquidAI/d1-3B",
+  "revision": "051bcc464b01b9f92942b364d9586b0ef5912432",
+  "revision_date": "2026-10-07T20:23:00.000Z",
+  "slug": "LiquidAI/d1-3B",
+  "retrieved_utc": "2026-10-20T08:58:55+00:00",
+  "identity_source": "https://www.liquid.ai/blog/d1-open",
+  "included_files": 12,
+  "excluded_files": 3,
+  "file_sha256": [
+    {
+      "path": "LICENSE",
+      "bytes": 10574,
+      "sha256": "4d28ca14dedc0b3d0fcc2b3339f0e79931faa33874f3d24f522183a8fc70068c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10448,
+      "sha256": "175b0bd5f0b4272a67723e16d5e1994e7a8c2d162e7797c9f1c24c01fed83f1d"
+    },
+    {
+      "path": "api.py",
+      "bytes": 3478,
+      "sha256": "94e9f82eabfdf92c4abe1153e9a6dc4dd9821f9cc2fec3221e79e70723d8ada0"
+    },
+    {
+      "path": "chat_template.jinja",
+      "bytes": 5436,
+      "sha256": "86f4770449a4797c9b4212d110b0cc70fb993c1ce960095bcfb12eea22f61cca"
+    },
+    {
+      "path": "config.json",
+      "bytes": 2773,
+      "sha256": "0cbac0f580bd8036ef94ac83aa632a57a170e66d20f381ef47c3f6486c9a3e8c"
+    },
+    {
+      "path": "hybrid.py",
+      "bytes": 14416,
+      "sha256": "ce579827b952a6978a3560f70e74be9e228f9029de46048996b0c5f58d7f1f39"
+    },
+    {
+      "path": "lfm2_vl.py",
+      "bytes": 5602,
+      "sha256": "f9e8d3354572a169237865283594b0364209fdb858901121b9f99147328b5d95"
+    },
+    {
+      "path": "modeling_d1.py",
+      "bytes": 1335,
+      "sha256": "7fc6a001f80fc2d146f2a51128478f3b3bd4f1423a3ac129bc10f3fd0caf1d98"
+    },
+    {
+      "path": "processor_config.json",
+      "bytes": 824,
+      "sha256": "b9b82ad34a69e2f70a9033741e11f82b8a98bb5f8e6c13b3b2d5efdd3935d916"
+    },
+    {
+      "path": "prompt.py",
+      "bytes": 12478,
+      "sha256": "a20b5f52e41a6d29e694bb8c861a5a4803ce3eb69364edad79511ccf8edb5c31"
+    },
+    {
+      "path": "runner.py",
+      "bytes": 11776,
+      "sha256": "24d3ae718e9f9717771c0df39c93d324d00aa27bf3e12bab085c0922096cb0dd"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 507,
+      "sha256": "ef6770d12dd9ac58d334e979bf160c5cdfd41f13d205fd5d5516857645feb0ea"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8f in position 2075: character maps to <undefined>
+
+
+================================================
+FILE: api.py
+================================================
+"""The System One API: named questions over a state in, typed answers out.
+
+    model.system_one(state, {"refund": {"type": "noul", "instructions": "Is this a refund request?"}})
+    # {"answers": {"refund": {"type": "noul", "noul": p}}, "usage": {"input_tokens": n, "output_tokens": 0}}
+
+A state is a string, any JSON value, or None with pictures alone. A question is a dict in the Decision
+Index's schema (`type`, `instructions`, `criteria`) or one of `prompt`'s classes.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from typing import Any
+
+from .prompt import Choice, Noul, Question, as_question
+
+
+def answer(q: Question, probs: Sequence[float]) -> dict:
+    """A noul's P(yes); a choice's pick and its probabilities; a score's expected level."""
+    if isinstance(q, Noul):
+        return {"type": "noul", "noul": probs[0]}
+    best = max(range(len(probs)), key=probs.__getitem__)
+    if isinstance(q, Choice):
+        names = list(q.criteria)
+        return {"type": "choice", "choice": names[best], "confidence": probs[best],
+                "probabilities": dict(zip(names, probs))}
+    return {"type": "score", "score": sum(i * p for i, p in enumerate(probs)), "confidence": probs[best],
+            "probabilities": {str(i): p for i, p in enumerate(probs)},
+            "legend": {str(i): text for i, text in enumerate(q.criteria)}}
+
+
+class SystemOneApi:
+    """`system_one` and `system_one_batch`, and the plain probabilities under them, over a model's
+    `run(requests)`: each `(state, questions, images)` request's probabilities (in its questions' order)
+    and the tokens it read."""
+
+    def run(self, requests: Sequence[tuple[Any, list[Question], Sequence]]) -> list[tuple[list[list[float]], int]]:
+        raise NotImplementedError
+
+    def probabilities(self, state: Any, questions: Sequence, images: Sequence | None = None) -> list[list[float]]:
+        """Each question's distribution over its options (`yes`, `no` for a noul), in one pass."""
+        return self.run([(state, [as_question(q) for q in questions], images or ())])[0][0]
+
+    def probabilities_batch(self, requests: Sequence[tuple]) -> list[list[list[float]]]:
+        """`probabilities` for many `(state, questions[, images])` requests, packed as `system_one_batch`."""
+        reqs = [(r[0], [as_question(q) for q in r[1]], (r[2] if len(r) > 2 else None) or ()) for r in requests]
+        return [probs for probs, _ in self.run(reqs)]
+
+    def system_one(self, state: Any, questions: Mapping[str, Any], images: Sequence | None = None) -> dict:
+        """Named questions over one state, and its pictures if any, in one forward pass."""
+        return self.system_one_batch([(state, questions, images)])[0]
+
+    def system_one_batch(self, requests: Sequence[tuple]) -> list[dict]:
+        """Many `(state, questions)` or `(state, questions, images)` requests. Single-question requests
+        are packed together with no padding; a request with several questions reads its state once."""
+        named = [(r[0], {n: as_question(q) for n, q in r[1].items()}, (r[2] if len(r) > 2 else None) or ())
+                 for r in requests]
+        done = self.run([(state, list(qs.values()), images) for state, qs, images in named])
+        return [{"answers": {n: answer(q, p) for (n, q), p in zip(qs.items(), probs)},
+                 "usage": {"input_tokens": read, "output_tokens": 0}}
+                for (_, qs, _), (probs, read) in zip(named, done)]
+
+
+
+================================================
+FILE: chat_template.jinja
+================================================
+{{- bos_token -}}
+{%- set preserve_thinking = preserve_thinking | default(false) -%}
+
+{%- macro format_arg_value(arg_value) -%}
+    {%- if arg_value is string -%}
+        {{- "'" + (arg_value | replace("\\", "\\\\") | replace("'", "\\'") | replace("\n", "\\n") | replace("\r", "\\r")) + "'" -}}
+    {%- elif arg_value is mapping or arg_value is iterable -%}
+        {{- arg_value | tojson -}}
+    {%- else -%}
+        {{- arg_value | string -}}
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro parse_content(content) -%}
+    {%- if content is string -%}
+        {{- content -}}
+    {%- elif content is mapping -%}
+        {{- content | tojson -}}
+    {%- elif content is iterable -%}
+        {%- set _ns = namespace(result="") -%}
+        {%- for item in content -%}
+            {%- if item is string -%}
+                {%- set _ns.result = _ns.result + item -%}
+            {%- elif item is mapping and item.get("type") == "image" -%}
+                {%- set _ns.result = _ns.result + "<image>" -%}
+            {%- elif item is mapping and item.get("type") == "text" -%}
+                {%- set _ns.result = _ns.result + ((item.get("text") or "") | string) -%}
+            {%- else -%}
+                {%- set _ns.result = _ns.result + (item | tojson) -%}
+            {%- endif -%}
+        {%- endfor -%}
+        {{- _ns.result -}}
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro render_tool_calls(tool_calls) -%}
+    {%- set tool_calls_ns = namespace(tool_calls=[]) -%}
+    {%- for tool_call in tool_calls -%}
+        {%- set func = tool_call["function"] if "function" in tool_call else tool_call -%}
+        {%- set func_name = func["name"] -%}
+        {%- set func_args = func.get("arguments") -%}
+        {%- set args_ns = namespace(arg_strings=[]) -%}
+        {%- if func_args is mapping -%}
+            {%- for arg_name, arg_value in func_args.items() -%}
+                {%- set args_ns.arg_strings = args_ns.arg_strings + [arg_name + "=" + format_arg_value(arg_value)] -%}
+            {%- endfor -%}
+        {%- elif func_args is string and (func_args | trim) not in ["", "{}", "null"] -%}
+            {{- raise_exception("Tool call arguments must be a mapping, got a JSON-encoded string: parse arguments with json.loads() before applying the chat template") -}}
+        {%- endif -%}
+        {%- set tool_calls_ns.tool_calls = tool_calls_ns.tool_calls + [func_name + "(" + (args_ns.arg_strings | join(", ")) + ")"] -%}
+    {%- endfor -%}
+    {{- "<|tool_call_start|>[" + (tool_calls_ns.tool_calls | join(", ")) + "]<|tool_call_end|>" -}}
+{%- endmacro -%}
+
+{%- set ns = namespace(system_prompt="", last_user_index=-1) -%}
+{%- if messages and messages[0]["role"] == "system" -%}
+    {%- if messages[0].get("content") -%}
+        {%- set ns.system_prompt = parse_content(messages[0]["content"]) -%}
+    {%- endif -%}
+    {%- set messages = messages[1:] -%}
+{%- endif -%}
+{%- if tools -%}
+    {%- set ns.system_prompt = ns.system_prompt + ("\n" if ns.system_prompt else "") + "List of tools: [" -%}
+    {%- for tool in tools -%}
+        {%- if tool is not string -%}
+            {%- set tool = tool | tojson -%}
+        {%- endif -%}
+        {%- set ns.system_prompt = ns.system_prompt + tool -%}
+        {%- if not loop.last -%}
+            {%- set ns.system_prompt = ns.system_prompt + ", " -%}
+        {%- endif -%}
+    {%- endfor -%}
+    {%- set ns.system_prompt = ns.system_prompt + "]" -%}
+{%- endif -%}
+{%- if ns.system_prompt -%}
+    {{- "<|im_start|>system\n" + ns.system_prompt + "<|im_end|>\n" -}}
+{%- endif -%}
+{%- for message in messages -%}
+    {%- if message["role"] == "user" -%}
+        {%- set ns.last_user_index = loop.index0 -%}
+    {%- endif -%}
+{%- endfor -%}
+{%- for message in messages -%}
+    {{- "<|im_start|>" + message.role + "\n" -}}
+    {%- if message.role == "assistant" -%}
+        {%- generation -%}
+        {%- set keep_thinking = preserve_thinking or loop.index0 > ns.last_user_index -%}
+        {%- set thinking = message.thinking or message.reasoning or message.reasoning_content -%}
+        {%- set thinking = thinking if thinking is string else "" -%}
+        {%- if thinking and keep_thinking -%}
+            {{- "<think>" + thinking + "</think>" -}}
+        {%- endif -%}
+        {%- set _cfm_tag = "CONTINUE_FINAL_MESSAGE_TAG " -%}
+        {%- set _has_cfm = false -%}
+        {%- set content = "" -%}
+        {%- if message.get("content") -%}
+            {%- set content = parse_content(message.content) -%}
+        {%- endif -%}
+        {%- if not keep_thinking and "</think>" in content -%}
+            {%- set content = content.split("</think>")[-1] | trim -%}
+        {%- endif -%}
+        {%- if content.endswith(_cfm_tag) -%}
+            {%- set _has_cfm = true -%}
+            {%- set _trunc_len = (content | length) - (_cfm_tag | length) -%}
+            {%- set content = content[:_trunc_len] -%}
+        {%- endif -%}
+        {{- content -}}
+        {%- if message.tool_calls -%}
+            {{- render_tool_calls(message.tool_calls) -}}
+        {%- endif -%}
+        {%- if _has_cfm -%}
+            {{- _cfm_tag -}}
+        {%- endif -%}
+        {{- "<|im_end|>\n" -}}
+        {%- endgeneration -%}
+    {%- else %}
+        {%- if message.get("content") -%}
+            {{- parse_content(message["content"]) -}}
+        {%- endif -%}
+        {{- "<|im_end|>\n" -}}
+    {%- endif %}
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+    {{- "<|im_start|>assistant\n" -}}
+{%- endif -%}
+
+
+
+================================================
+FILE: config.json
+================================================
+{
+  "architectures": [
+    "Lfm2VlForConditionalGeneration"
+  ],
+  "auto_map": {
+    "AutoModel": "modeling_d1.D1Model"
+  },
+  "bos_token_id": 124894,
+  "do_image_splitting": true,
+  "do_resize": true,
+  "downsample_factor": 2,
+  "dtype": "bfloat16",
+  "encoder_patch_size": 16,
+  "eos_token_id": 124900,
+  "image_token_id": 124907,
+  "max_image_tokens": 256,
+  "max_num_patches": 1024,
+  "max_pixels_tolerance": 2.0,
+  "max_tiles": 10,
+  "min_image_tokens": 64,
+  "min_tiles": 2,
+  "model_type": "lfm2_vl",
+  "pad_token_id": 124893,
+  "projector_bias": true,
+  "projector_hidden_act": "gelu",
+  "projector_hidden_size": 2048,
+  "projector_use_layernorm": false,
+  "text_config": {
+    "architectures": [
+      "Lfm2ForCausalLM"
+    ],
+    "block__name_mlp": "parallel_mlp_merged",
+    "block_auto_adjust_ff_dim": false,
+    "block_dim": 2048,
+    "block_ffn_dim_multiplier": 1.0,
+    "block_multiple_of": 256,
+    "block_norm_eps": 1e-05,
+    "block_use_swiglu": true,
+    "bos_token_id": 124894,
+    "conv_L_cache": 3,
+    "conv_bias": false,
+    "conv_dim": 2048,
+    "dtype": "bfloat16",
+    "eos_token_id": 124900,
+    "full_attn_idxs": null,
+    "hidden_size": 2048,
+    "initializer_range": 0.02,
+    "intermediate_size": 10752,
+    "layer_types": [
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv"
+    ],
+    "max_position_embeddings": 32768,
+    "model_type": "lfm2",
+    "norm_eps": 1e-05,
+    "num_attention_heads": 32,
+    "num_heads": 32,
+    "num_hidden_layers": 30,
+    "num_key_value_heads": 8,
+    "output_softcap": 0.0,
+    "pad_token_id": 124893,
+    "rope_parameters": {
+      "rope_theta": 1000000.0,
+      "rope_type": "default"
+    },
+    "tie_word_embeddings": true,
+    "use_cache": true,
+    "use_pos_enc": true,
+    "vocab_size": 128000
+  },
+  "tie_word_embeddings": true,
+  "tile_size": 512,
+  "transformers_version": "5.14.1",
+  "use_image_special_tokens": true,
+  "use_thumbnail": true,
+  "vision_config": {
+    "attention_dropout": 0.0,
+    "dtype": "bfloat16",
+    "hidden_act": "gelu_pytorch_tanh",
+    "hidden_size": 1152,
+    "intermediate_size": 4304,
+    "layer_norm_eps": 1e-06,
+    "model_type": "siglip2_vision_model",
+    "num_attention_heads": 16,
+    "num_channels": 3,
+    "num_hidden_layers": 27,
+    "num_patches": 256,
+    "patch_size": 16,
+    "vision_use_head": false
+  }
+}
+
+
+
+================================================
+FILE: hybrid.py
+================================================
+"""The pieces every LFM hybrid is made of, and the one shape that makes many
+questions cost about one forward.
+
+A model runs a batch of right-padded chains `(B, T)`, or a tree: a trunk of P
+tokens (the state) and N branches (the questions) that each continue it, packed
+back to back on one axis with no padding, `[trunk | branch 0 | branch 1 | ...]`.
+Everything that works token by token (norms, projections, the MLP) runs once
+over the packed axis. A convolution continues each branch from the trunk's last
+inputs. Attention runs by parts: the trunk causally, every branch token over the
+trunk in one flash call that reads the trunk's keys once for all questions
+(under sliding attention, one fp32 product over the trunk's last window-1 keys),
+each branch over its own tokens in one varlen flash call, the two merged by
+their log-sum-exp. Nothing is cached, copied or padded.
+"""
+
+from __future__ import annotations
+
+from typing import Callable
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from transformers.modeling_layers import GradientCheckpointingLayer
+from transformers.modeling_outputs import BaseModelOutputWithPast
+
+Tensor = torch.Tensor
+
+
+class Tree:
+    """A trunk of `p` tokens and branches of `lengths` tokens, packed on one axis."""
+
+    def __init__(self, p: int, lengths: Tensor):
+        self.p, self.n = p, len(lengths)
+        self.cu = F.pad(lengths.cumsum(0), (1, 0)).int()  # where each branch starts, past the trunk
+        self.longest = int(lengths.max())
+        self.branch = torch.repeat_interleave(torch.arange(self.n, device=lengths.device), lengths)
+        self.offset = torch.arange(len(self.branch), device=lengths.device) - self.cu[self.branch]
+        # a branch starts where the trunk ends
+        self.positions = torch.cat((torch.arange(p, device=lengths.device), p + self.offset))
+        self.leaves = p + self.cu[1:].long() - 1  # each branch's last token
+        self._conv = {}
+
+    def conv_order(self, keep: int) -> tuple[Tensor, Tensor]:
+        """Gather and keep indices that run one causal conv over all branches,
+        each led by the trunk's last `keep` inputs. Indices are into the whole
+        input left-padded by `keep` zeros."""
+        if keep not in self._conv:
+            p, total, dev = self.p, len(self.branch), self.branch.device
+            slot = torch.arange(total, device=dev) + keep * (self.branch + 1)
+            order = torch.empty(total + self.n * keep, dtype=torch.long, device=dev)
+            order[slot] = keep + p + torch.arange(total, device=dev)
+            lead = (self.cu[:-1] + keep * torch.arange(self.n, device=dev))[:, None]
+            order[lead + torch.arange(keep, device=dev)] = p + torch.arange(keep, device=dev)
+            self._conv[keep] = order, slot - keep
+        return self._conv[keep]
+
+
+# --------------------------------------------------------------------------- #
+# norms and rotary
+# --------------------------------------------------------------------------- #
+
+
+class RMSNorm(nn.Module):
+    def __init__(self, dim: int, eps: float):
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(dim))
+        self.eps = eps
+
+    def forward(self, x: Tensor) -> Tensor:
+        x32 = x.float()
+        return (x32 * torch.rsqrt(x32.pow(2).mean(-1, keepdim=True) + self.eps)).type_as(x) * self.weight
+
+
+def cos_sin(angles: Tensor) -> tuple[Tensor, Tensor]:
+    angles = torch.cat((angles, angles), dim=-1)
+    return angles.cos(), angles.sin()
+
+
+def rotate(x: Tensor, cos: Tensor, sin: Tensor) -> Tensor:
+    """Half-split RoPE in fp32; `cos`/`sin` broadcast over the head axis."""
+    x32 = x.float()
+    a, b = x32.chunk(2, dim=-1)
+    return (x32 * cos + torch.cat((-b, a), dim=-1) * sin).type_as(x)
+
+
+def rope(x: Tensor, pos: Tensor, theta: float, rotated: int) -> Tensor:
+    """RoPE over `(B, T, H, D)` at positions `pos` `(T,)`, pairs past `rotated` left as they are."""
+    dim = x.shape[-1]
+    inv = 1.0 / theta ** (torch.arange(0, dim, 2, device=x.device).float() / dim)
+    inv[rotated:] = 0.0
+    cos, sin = cos_sin(pos.float()[:, None] * inv)
+    return rotate(x, cos[:, None], sin[:, None])
+
+
+# --------------------------------------------------------------------------- #
+# causal convolution
+# --------------------------------------------------------------------------- #
+
+
+def causal_conv(x: Tensor, weight: Tensor, tree: Tree | None) -> Tensor:
+    """Depthwise causal conv over `(B, C, T)`; a tree's branches continue its trunk."""
+    keep = weight.shape[-1] - 1
+    padded = F.pad(x, (keep, 0))
+    if tree is None:
+        return F.conv1d(padded, weight, groups=x.shape[1])
+    order, kept = tree.conv_order(keep)
+    branches = F.conv1d(padded[..., order], weight, groups=x.shape[1])[..., kept]
+    if tree.p == 0:
+        return branches
+    return torch.cat((F.conv1d(padded[..., : keep + tree.p], weight, groups=x.shape[1]), branches), dim=-1)
+
+
+# --------------------------------------------------------------------------- #
+# attention, `(B, H, T, D)`
+# --------------------------------------------------------------------------- #
+
+
+# queries per explicit product off the flash kernels, which bounds its fp32 scores
+CHUNK = 1024
+
+
+def _fused(q: Tensor) -> bool:
+    """Whether the flash kernels take these queries: a GPU in half precision, ROCm or CUDA from Ampere on."""
+    if not q.is_cuda or q.dtype not in (torch.float16, torch.bfloat16):
+        return False
+    return bool(torch.version.hip) or torch.cuda.get_device_capability(q.device)[0] >= 8
+
+
+def _explicit(q: Tensor, k: Tensor, v: Tensor, allowed: Tensor | None, scale: float) -> tuple[Tensor, Tensor]:
+    """Attention with its log-sum-exp, in fp32, for small key sets. GQA by broadcast."""
+    groups = q.shape[1] // k.shape[1]
+    k, v = k.repeat_interleave(groups, dim=1).float(), v.repeat_interleave(groups, dim=1).float()
+    scores = (q.float() @ k.transpose(-1, -2)) * scale
+    if allowed is not None:
+        scores = scores.masked_fill(~allowed, float("-inf"))
+    return torch.softmax(scores, dim=-1).nan_to_num() @ v, torch.logsumexp(scores, dim=-1)
+
+
+def _cat(parts: list[tuple[Tensor, Tensor]]) -> tuple[Tensor, Tensor]:
+    return torch.cat([o for o, _ in parts], dim=2), torch.cat([lse for _, lse in parts], dim=2)
+
+
+def _over_trunk(q: Tensor, k: Tensor, v: Tensor, scale: float) -> tuple[Tensor, Tensor]:
+    """Every branch token over all of the trunk, with its log-sum-exp. Each KV
+    head's query group is folded into the query axis, so the trunk's keys are
+    read once and never repeated."""
+    batch, heads, length, dim = q.shape
+    kv = k.shape[1]
+    if not _fused(q):
+        return _cat([_explicit(part, k, v, None, scale) for part in q.split(CHUNK, dim=2)])
+    folded = q.reshape(batch, kv, heads // kv * length, dim)
+    out, lse = torch.ops.aten._scaled_dot_product_flash_attention(folded, k, v, 0.0, False, False, scale=scale)[:2]
+    return out.reshape(batch, heads, length, dim).float(), lse.reshape(batch, heads, length)
+
+
+def _own(q: Tensor, k: Tensor, v: Tensor, tree: Tree, window: int | None, scale: float) -> tuple[Tensor, Tensor]:
+    """Each branch over its own tokens, causally (within `window`), with its log-sum-exp."""
+    if not _fused(q) and len(tree.branch) <= CHUNK:  # small enough for one masked product
+        same, off = tree.branch[:, None] == tree.branch[None], tree.offset
+        allowed = same & (off[None] <= off[:, None])
+        if window is not None:
+            allowed &= off[None] > off[:, None] - window
+        return _explicit(q, k, v, allowed, scale)
+    if not _fused(q):  # branch by branch: memory grows with the longest question, not with the batch
+        parts = []
+        for a, b in zip(tree.cu[:-1].tolist(), tree.cu[1:].tolist()):
+            off = torch.arange(b - a, device=q.device)
+            allowed = off[None] <= off[:, None]
+            if window is not None:
+                allowed &= off[None] > off[:, None] - window
+            parts.append(_explicit(q[:, :, a:b], k[:, :, a:b], v[:, :, a:b], allowed, scale))
+        return _cat(parts)
+    local = {} if window is None else {"window_size_left": window - 1, "window_size_right": 0}
+    out, lse = torch.ops.aten._flash_attention_forward(
+        *(t[0].transpose(0, 1) for t in (q, k, v)), tree.cu, tree.cu, tree.longest, tree.longest,
+        0.0, True, False, scale=scale, **local)[:2]
+    return out.transpose(0, 1)[None].float(), lse[None]
+
+
+def _merge(a: tuple[Tensor, Tensor], b: tuple[Tensor, Tensor]) -> Tensor:
+    (oa, la), (ob, lb) = a, b
+    m = torch.maximum(la, lb)
+    wa, wb = (la - m).exp(), (lb - m).exp()
+    return (oa * wa[..., None] + ob * wb[..., None]) / (wa + wb)[..., None]
+
+
+def _windowed(q: Tensor, k: Tensor, v: Tensor, window: int, scale: float) -> Tensor:
+    """Causal attention within `window`, as local blocks: each block of `window`
+    queries sees its own block and the one before it."""
+    batch, heads, length, dim = q.shape
+    blocks = -(-length // window)
+
+    def split(t: Tensor) -> Tensor:  # (B, H, T, D) -> (B, blocks, H, window, D)
+        t = F.pad(t, (0, 0, 0, blocks * window - length))
+        return t.reshape(batch, t.shape[1], blocks, window, dim).transpose(1, 2)
+
+    def with_previous(t: Tensor) -> Tensor:
+        return torch.cat((F.pad(t, (0, 0, 0, 0, 0, 0, 1, 0))[:, :-1], t), dim=3)
+
+    qb, kb, vb = split(q), with_previous(split(k)), with_previous(split(v))
+    qpos = torch.arange(window, device=q.device)[:, None] + window
+    kpos = torch.arange(2 * window, device=q.device)[None, :]
+    allowed = (kpos <= qpos) & (kpos > qpos - window)
+    first = allowed & (kpos >= window)  # block 0 has no block before it
+    mask = torch.stack([first] + [allowed] * (blocks - 1))[:, None].repeat(batch, 1, 1, 1)
+    out = F.scaled_dot_product_attention(qb.flatten(0, 1), kb.flatten(0, 1), vb.flatten(0, 1),
+                                         attn_mask=mask, scale=scale, enable_gqa=True)
+    out = out.reshape(batch, blocks, heads, window, dim).transpose(1, 2)
+    return out.reshape(batch, heads, blocks * window, dim)[:, :, :length]
+
+
+def causal_attention(q: Tensor, k: Tensor, v: Tensor, window: int | None, scale: float) -> Tensor:
+    """Right-padded chains: causal, within `window` if set."""
+    if window is None or q.shape[2] <= window:
+        return F.scaled_dot_product_attention(q, k, v, is_causal=True, scale=scale, enable_gqa=True)
+    return _windowed(q, k, v, window, scale)
+
+
+def attention(q: Tensor, k: Tensor, v: Tensor, tree: Tree | None, window: int | None, scale: float) -> Tensor:
+    """Chains, or a tree: the trunk causally, each branch over the trunk and over
+    its own tokens."""
+    if tree is None:
+        return causal_attention(q, k, v, window, scale)
+    p = tree.p
+    qb = q[:, :, p:]
+    mine = _own(qb, k[:, :, p:], v[:, :, p:], tree, window, scale)
+    if p == 0:
+        return mine[0].to(q.dtype)
+    trunk = causal_attention(q[:, :, :p], k[:, :, :p], v[:, :, :p], window, scale)
+    if window is None:
+        seen = _over_trunk(qb, k[:, :, :p], v[:, :, :p], scale)
+    else:  # only the trunk's last window-1 keys are in reach of a branch
+        tail = min(p, window - 1)
+        allowed = torch.arange(p - tail, p, device=q.device)[None] > tree.positions[p:, None] - window
+        seen = _explicit(qb, k[:, :, p - tail:p], v[:, :, p - tail:p], allowed, scale)
+    return torch.cat((trunk, _merge(seen, mine).to(q.dtype)), dim=2)
+
+
+# --------------------------------------------------------------------------- #
+# the stack
+# --------------------------------------------------------------------------- #
+
+
+class DecoderLayer(GradientCheckpointingLayer):
+    """Norm, operator (`conv` or `self_attn`), residual; norm, MLP, residual.
+    `sandwich` adds a norm on each branch's output."""
+
+    def __init__(self, kind: str, operator: nn.Module, mlp: nn.Module, dim: int, eps: float, sandwich: bool):
+        super().__init__()
+        self.operator_name = "conv" if kind == "conv" else "self_attn"
+        setattr(self, self.operator_name, operator)
+        self.feed_forward = mlp
+        self.operator_norm = RMSNorm(dim, eps)
+        self.ffn_norm = RMSNorm(dim, eps)
+        self.post_operator_norm = RMSNorm(dim, eps) if sandwich else nn.Identity()
+        self.post_ffn_norm = RMSNorm(dim, eps) if sandwich else nn.Identity()
+
+    def forward(self, x: Tensor, pos: Tensor, tree: Tree | None = None) -> Tensor:
+        h = x + self.post_operator_norm(getattr(self, self.operator_name)(self.operator_norm(x), pos, tree))
+        return h + self.post_ffn_norm(self.feed_forward(self.ffn_norm(h)))
+
+
+class LanguageModel(nn.Module):
+    """Embedding, the hybrid stack and the final norm, called like HF's text models.
+
+    Rows are right-padded, so the causal operators never let a pad reach a real
+    token and there is no attention mask to apply.
+    """
+
+    def __init__(self, cfg, operator: Callable[[str], nn.Module], mlp: Callable[[], nn.Module],
+                 eps: float, sandwich: bool = False):
+        super().__init__()
+        self.embed_tokens = nn.Embedding(cfg.vocab_size, cfg.hidden_size)
+        self.layers = nn.ModuleList(
+            DecoderLayer(kind, operator(kind), mlp(), cfg.hidden_size, eps, sandwich) for kind in cfg.layer_types)
+        self.embedding_norm = RMSNorm(cfg.hidden_size, eps)  # the final norm, despite its name
+
+    def get_input_embeddings(self) -> nn.Embedding:
+        return self.embed_tokens
+
+    def run(self, h: Tensor, tree: Tree | None = None) -> Tensor:
+        pos = tree.positions if tree is not None else torch.arange(h.shape[1], device=h.device)
+        for layer in self.layers:
+            h = layer(h, pos, tree)
+        return self.embedding_norm(h)
+
+    def forward(self, input_ids=None, inputs_embeds=None, **_) -> BaseModelOutputWithPast:
+        h = self.embed_tokens(input_ids) if inputs_embeds is None else inputs_embeds
+        return BaseModelOutputWithPast(last_hidden_state=self.run(h))
+
+    def answer(self, trunk: Tensor, questions: Tensor, lengths: Tensor) -> Tensor:
+        """Final hidden states at the last token of every question, in one pass.
+        `trunk` `(1, P, d)` embeddings; `questions` the ids of all questions back
+        to back, `(sum(lengths),)`."""
+        tree = Tree(trunk.shape[1], lengths)
+        h = self.run(torch.cat((trunk, self.embed_tokens(questions)[None]), dim=1), tree)
+        return h[0, tree.leaves]
+
+
+
+================================================
+FILE: lfm2_vl.py
+================================================
+"""LFM2-VL and LFM2 on the hybrid stack.
+
+HF's classes stay the frame (the SigLIP2 tower, the projector, the image
+features, loading and saving); only the language model is replaced, with HF's
+module names, so checkpoints load and save unchanged. A state with any number
+of questions runs as one `hybrid.Tree`, with the same outputs as HF's own
+implementation.
+"""
+
+from __future__ import annotations
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from transformers import Lfm2Config, Lfm2VlConfig
+from transformers.models.lfm2.modeling_lfm2 import Lfm2ForCausalLM as HfLfm2
+from transformers.models.lfm2_vl.modeling_lfm2_vl import Lfm2VlForConditionalGeneration as HfLfm2Vl
+
+from .hybrid import LanguageModel, RMSNorm, Tree, attention, causal_conv, rope
+
+
+class Attention(nn.Module):
+    """GQA with per-head q/k norms and RoPE over the whole head."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        self.heads, self.kv_heads = cfg.num_attention_heads, cfg.num_key_value_heads
+        self.head_dim = getattr(cfg, "head_dim", None) or cfg.hidden_size // self.heads
+        self.q_proj = nn.Linear(cfg.hidden_size, self.heads * self.head_dim, bias=False)
+        self.k_proj = nn.Linear(cfg.hidden_size, self.kv_heads * self.head_dim, bias=False)
+        self.v_proj = nn.Linear(cfg.hidden_size, self.kv_heads * self.head_dim, bias=False)
+        self.out_proj = nn.Linear(self.heads * self.head_dim, cfg.hidden_size, bias=False)
+        self.q_layernorm = RMSNorm(self.head_dim, cfg.norm_eps)
+        self.k_layernorm = RMSNorm(self.head_dim, cfg.norm_eps)
+        self.theta = cfg.rope_parameters["rope_theta"]
+        self.scale = self.head_dim**-0.5
+
+    def forward(self, x: torch.Tensor, pos: torch.Tensor, tree: Tree | None) -> torch.Tensor:
+        batch, length, _ = x.shape
+        q = self.q_layernorm(self.q_proj(x).view(batch, length, self.heads, self.head_dim))
+        k = self.k_layernorm(self.k_proj(x).view(batch, length, self.kv_heads, self.head_dim))
+        v = self.v_proj(x).view(batch, length, self.kv_heads, self.head_dim)
+        q, k = rope(q, pos, self.theta, self.head_dim // 2), rope(k, pos, self.theta, self.head_dim // 2)
+        y = attention(q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2), tree, None, self.scale)
+        return self.out_proj(y.transpose(1, 2).flatten(2))
+
+
+class ShortConv(nn.Module):
+    """`out(C * conv(B * x))`; HF's `nn.Conv1d` holds the taps, `causal_conv` runs them."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        dim, taps = cfg.hidden_size, cfg.conv_L_cache
+        self.conv = nn.Conv1d(dim, dim, taps, groups=dim, bias=cfg.conv_bias, padding=taps - 1)
+        self.in_proj = nn.Linear(dim, 3 * dim, bias=cfg.conv_bias)
+        self.out_proj = nn.Linear(dim, dim, bias=cfg.conv_bias)
+
+    def forward(self, x: torch.Tensor, pos: torch.Tensor, tree: Tree | None) -> torch.Tensor:
+        b, c, u = self.in_proj(x).transpose(1, 2).chunk(3, dim=1)
+        z = causal_conv(b * u, self.conv.weight, tree)
+        if self.conv.bias is not None:
+            z = z + self.conv.bias[:, None]
+        return self.out_proj((c * z).transpose(1, 2))
+
+
+class MLP(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        hidden = cfg.intermediate_size
+        if cfg.block_auto_adjust_ff_dim:  # HF's sizing rule, kept exactly
+            hidden = int(2 * hidden / 3)
+            if cfg.block_ffn_dim_multiplier is not None:
+                hidden = int(cfg.block_ffn_dim_multiplier * hidden)
+                hidden = cfg.block_multiple_of * ((hidden + cfg.block_multiple_of - 1) // cfg.block_multiple_of)
+        self.w1 = nn.Linear(cfg.hidden_size, hidden, bias=False)
+        self.w3 = nn.Linear(cfg.hidden_size, hidden, bias=False)
+        self.w2 = nn.Linear(hidden, cfg.hidden_size, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.w2(F.silu(self.w1(x)) * self.w3(x))
+
+
+def language_model(cfg) -> LanguageModel:
+    return LanguageModel(cfg, lambda kind: ShortConv(cfg) if kind == "conv" else Attention(cfg),
+                         lambda: MLP(cfg), cfg.norm_eps)
+
+
+class Lfm2VlForConditionalGeneration(HfLfm2Vl):
+    """HF's LFM2-VL with the hybrid language model, under HF's name so a saved
+    checkpoint reads as HF's."""
+
+    def __init__(self, config: Lfm2VlConfig):
+        super().__init__(config)
+        self.model.language_model = language_model(config.text_config)
+
+    def answer(self, trunk: torch.Tensor, questions: torch.Tensor, lengths: torch.Tensor, **vision) -> torch.Tensor:
+        """Logits at the last token of every question, the state (and its image)
+        read once: `trunk` `(1, P)` ids, `questions` their ids back to back."""
+        embeds = self.get_input_embeddings()(trunk)
+        if vision:
+            features = torch.cat(self.model.get_image_features(**vision).pooler_output).to(embeds.dtype)
+            slots = self.model.get_placeholder_mask(trunk, inputs_embeds=embeds, image_features=features)
+            embeds = embeds.masked_scatter(slots, features)
+        return self.lm_head(self.model.language_model.answer(embeds, questions, lengths))
+
+
+class Lfm2ForCausalLM(HfLfm2):
+    """HF's LFM2 with the hybrid language model, under HF's name."""
+
+    def __init__(self, config: Lfm2Config):
+        super().__init__(config)
+        self.model = language_model(config)
+
+    def answer(self, trunk: torch.Tensor, questions: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
+        return self.lm_head(self.model.answer(self.model.embed_tokens(trunk), questions, lengths))
+
+
+
+
+================================================
+FILE: LICENSE
+================================================
+LFM Open License v1.0 
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by this document.
+
+"Licensor" shall mean Liquid AI, Inc.
+
+"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work.
+
+"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+
+"Commercial Use" shall mean any use of the Work for direct or indirect commercial advantage or monetary compensation.
+
+"Qualified Non-Profit Organization" shall mean a Legal Entity that is organized and operated exclusively for religious, charitable, scientific, testing for public safety, literary, or educational purposes, and which is exempt from federal income tax under Section 501(c)(3) of the United States Internal Revenue Code of 1986, as amended, or any equivalent non-profit or charitable organization in a foreign jurisdiction.
+
+"Non-Commercial or Research Purposes" shall mean purposes that do not involve any use of the Work or a Derivative Work for Commercial Use.
+
+"Threshold" shall mean annual revenue of 10 million United States dollars ($10,000,000) or more.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, including the Commercial Use limitation set forth in Section 5, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of this License, including the Commercial Use limitation set forth in Section 5, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
+
+(a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+(b) You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+(c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
+
+(d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
+
+You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
+
+5. Commercial Use Limitation.
+
+(a) The rights granted under this License for Commercial Use are conditioned upon You or Your Legal Entity not exceeding the Threshold.
+
+(b) Any Commercial Use of the Work or a Derivative Work by a Legal Entity that exceeds the Threshold is not licensed under this Agreement.
+
+(c) The Threshold shall not apply to a Qualified Non-Profit Organization's use of the Work or a Derivative Work for Non-Commercial or Research Purposes.
+
+6. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
+
+7. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except for the reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
+
+8. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+
+9. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
+
+10. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
+
+11. Termination. This License will terminate automatically and immediately if You fail to comply with any of its terms and conditions. Upon termination, You must cease all use of the Work and any Derivative Works and delete all copies in Your possession.
+
+END OF TERMS AND CONDITIONS
+
+
+================================================
+FILE: modeling_d1.py
+================================================
+"""`AutoModel.from_pretrained(repo, trust_remote_code=True)`: LFM2-VL with the System One API.
+
+    model.system_one(state, {name: question}, images=None)    # one forward pass
+    model.system_one_batch([(state, {name: question}), ...])  # many states, packed with no padding
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from functools import cached_property
+from typing import Any
+
+from .lfm2_vl import Lfm2VlForConditionalGeneration
+from .runner import SystemOne
+
+
+class D1Model(Lfm2VlForConditionalGeneration):
+    @cached_property
+    def engine(self) -> SystemOne:
+        from transformers import AutoTokenizer
+
+        return SystemOne(model=self.eval(), tokenizer=AutoTokenizer.from_pretrained(self.name_or_path))
+
+    def system_one(self, state: Any, questions: Mapping[str, Any], images: Sequence | None = None) -> dict:
+        """Named questions over a state (text, JSON, or None with images alone):
+        `{"answers": {name: answer}, "usage": {"input_tokens": n, "output_tokens": 0}}`."""
+        return self.engine.system_one(state, questions, images)
+
+    def system_one_batch(self, requests: Sequence[tuple]) -> list[dict]:
+        """`(state, questions)` or `(state, questions, images)` requests, one response each."""
+        return self.engine.system_one_batch(requests)
+
+
+
+================================================
+FILE: processor_config.json
+================================================
+{
+  "image_processor": {
+    "data_format": "channels_first",
+    "do_image_splitting": true,
+    "do_normalize": true,
+    "do_pad": true,
+    "do_rescale": true,
+    "do_resize": true,
+    "downsample_factor": 2,
+    "encoder_patch_size": 16,
+    "image_mean": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "image_processor_type": "Lfm2VlImageProcessor",
+    "image_std": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "max_image_tokens": 256,
+    "max_num_patches": 1024,
+    "max_pixels_tolerance": 2.0,
+    "max_tiles": 10,
+    "min_image_tokens": 64,
+    "min_tiles": 2,
+    "resample": 3,
+    "rescale_factor": 0.00392156862745098,
+    "return_row_col_info": true,
+    "size": {
+      "height": 512,
+      "width": 512
+    },
+    "tile_size": 512,
+    "use_thumbnail": true
+  },
+  "processor_class": "Lfm2VlProcessor"
+}
+
+
+
+================================================
+FILE: prompt.py
+================================================
+"""The prompt and the readout. A System One decision is a single forward pass that stops at the answer
+slot: everything the model sees is built here, and the answer is a softmax over its options' tokens.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import re
+from dataclasses import dataclass
+from functools import lru_cache
+from typing import Any, Mapping, Sequence
+
+# The system turn: none by default.
+SYSTEMS: dict[str, str | None] = {
+    "none": None,
+    "isolated": (
+        "You are a System One decision model. Answer only the current isolated "
+        "question from the shared state. Other questions do not exist."
+    ),
+}
+DEFAULT_SYSTEM = "none"
+
+IM_START = "<|im_start|>"
+IM_END = "<|im_end|>"
+
+
+# --------------------------------------------------------------------------- #
+# question types
+# --------------------------------------------------------------------------- #
+
+
+@dataclass(frozen=True)
+class Choice:
+    instructions: str
+    criteria: Mapping[str, str | None]
+    type: str = "choice"
+
+
+@dataclass(frozen=True)
+class Noul:
+    instructions: str
+    criteria: Mapping[str, Any] | None = None
+    type: str = "noul"
+
+
+@dataclass(frozen=True)
+class Score:
+    instructions: str
+    criteria: Sequence[str]
+    type: str = "score"
+
+
+Question = Choice | Noul | Score
+
+
+# --------------------------------------------------------------------------- #
+# verbalizer
+# --------------------------------------------------------------------------- #
+
+
+def option_codes(labels: Sequence[str]) -> list[str]:
+    """Native letters when the labels already are letters, else A..Z, else 00..; one rule for every
+    cardinality."""
+    labs = [str(x).strip() for x in labels]
+    if labs and all(len(k) == 1 and k.isalpha() for k in labs):
+        return labs
+    if len(labs) <= 26:
+        return [chr(ord("A") + i) for i in range(len(labs))]
+    return [f"{i:02d}" for i in range(len(labs))]
+
+
+_FALLBACK_POOL = (
+    [chr(c) for c in range(ord("A"), ord("Z") + 1)]
+    + [f"{i:02d}" for i in range(100)]
+    + [chr(c) for c in range(ord("a"), ord("z") + 1)]
+    + [f"#{i}" for i in range(200)]
+    # Where a tokenizer splits digits, "00".."99" and "#i" are two tokens, and two capital letters are
+    # often one. Last in the pool, so a tokenizer with digit pairs never reaches it.
+    + [chr(a) + chr(b) for a in range(ord("A"), ord("Z") + 1) for b in range(ord("A"), ord("Z") + 1)]
+)
+
+
+@lru_cache(maxsize=4096)
+def _aliases_cached(tokenizer_key: int, codes: tuple[str, ...]) -> tuple[tuple[str, int], ...]:
+    tokenizer = _TOKENIZERS[tokenizer_key]
+    used: set[int] = set()
+    out: list[tuple[str, int]] = []
+
+    def take(raw: str) -> bool:
+        enc = tokenizer.encode(raw, add_special_tokens=False)
+        if len(enc) != 1 or enc[0] in used:
+            return False
+        out.append((raw, enc[0]))
+        used.add(enc[0])
+        return True
+
+    for code in codes:
+        if take(code):
+            continue
+        if not any(take(raw) for raw in _FALLBACK_POOL):
+            raise RuntimeError(f"no single-token alias left for {len(codes)} options")
+    return tuple(out)
+
+
+_TOKENIZERS: dict[int, object] = {}
+
+
+def aliases(tokenizer, labels: Sequence[str]) -> list[tuple[str, int]]:
+    """Assign every label a distinct single-token code: [(code, token_id)].
+
+    Memoised on the codes rather than on the labels: the codes are positional
+    unless the labels are already letters, so every option list of one length
+    shares an entry.
+    """
+    _TOKENIZERS.setdefault(id(tokenizer), tokenizer)
+    codes = tuple(option_codes(labels))
+    return list(_aliases_cached(id(tokenizer), codes))
+
+
+@lru_cache(maxsize=8192)
+def _ids_cached(tokenizer_key: int, texts: tuple[str, ...]) -> tuple[int, ...]:
+    tokenizer = _TOKENIZERS[tokenizer_key]
+    out, seen = [], set()
+    for t in texts:
+        enc = tokenizer.encode(t, add_special_tokens=False)
+        if len(enc) == 1 and enc[0] not in seen:
+            out.append(enc[0])
+            seen.add(enc[0])
+    return tuple(out)
+
+
+def _ids(tokenizer, texts: Sequence[str]) -> list[int]:
+    _TOKENIZERS.setdefault(id(tokenizer), tokenizer)
+    return list(_ids_cached(id(tokenizer), tuple(texts)))
+
+
+def as_question(q: Mapping | Question) -> Question:
+    """A question in the Decision Index's JSON, `{"type": "noul" | "choice" | "score", "instructions",
+    "criteria"}`, as one of the classes above; a class passes through."""
+    if not isinstance(q, Mapping):
+        return q
+    kind = q.get("type", "choice")
+    if kind == "noul":
+        return Noul(q["instructions"], q.get("criteria"))
+    if kind == "score":
+        return Score(q["instructions"], list(q["criteria"]))
+    return Choice(q["instructions"], q["criteria"])
+
+
+YES_FORMS = ("yes", "Yes", "YES")
+NO_FORMS = ("no", "No", "NO")
+
+
+def readout_ids(tokenizer, q: Question) -> list[list[int]]:
+    """Token ids to score, one group per option, max-pooled: the answer is a softmax over these and
+    nothing else."""
+    if isinstance(q, Noul):
+        yes, no = _ids(tokenizer, YES_FORMS), _ids(tokenizer, NO_FORMS)
+        if not yes or not no:
+            raise RuntimeError("tokenizer has no single-token yes/no")
+        return [yes, no]
+    if isinstance(q, Score):
+        groups = [_ids(tokenizer, [str(i)]) for i in range(len(q.criteria))]
+        if any(not g for g in groups):
+            raise RuntimeError(
+                f"score with {len(q.criteria)} levels needs single-token digits; "
+                "the primitive is defined for 2 to 10"
+            )
+        return groups
+    groups = []
+    for code, tid in aliases(tokenizer, list(q.criteria.keys())):
+        extra = _ids(tokenizer, [f" {code}"])
+        groups.append([tid] + [i for i in extra if i != tid])
+    if not groups:
+        raise RuntimeError("choice with no options")
+    return groups
+
+
+def readout(tokenizer, q: Question, logz, calibration=None) -> list[float]:
+    """Option probabilities from the log-probabilities at the answer slot.
+
+    `logz` is indexed by token id: a vocabulary tensor, or a dict holding at
+    least the question's option tokens. Each option scores its best form.
+    """
+    scores = [max(float(logz[i]) for i in g) for g in readout_ids(tokenizer, q)]
+    if calibration is not None:
+        scores = calibration.apply(q, scores)
+    m = max(scores)
+    exps = [math.exp(s - m) for s in scores]
+    return [e / sum(exps) for e in exps]
+
+
+# --------------------------------------------------------------------------- #
+# state and question rendering
+# --------------------------------------------------------------------------- #
+
+
+DEFAULT_MODEL = "LiquidAI/LFM2.5-VL-3B"
+
+# How a state is rendered: `json_only`, the default, writes every state as the object it is; `json` keeps
+# three shortcuts (`Message:`, `Passage:` / `Asked:`, a lone question's text); `sections` writes nested
+# states as labelled blocks.
+DEFAULT_STATE_STYLE = "json_only"
+
+
+def _is_scalar(v: Any) -> bool:
+    return v is None or isinstance(v, (str, int, float, bool)) and "\n" not in str(v)
+
+
+def _sections(obj: Any, path: str, out: list[str]) -> None:  # noqa: C901
+    """Flatten a nested state into labelled blocks, keeping real newlines.
+
+    `json.dumps` escapes every newline inside a log line or a record, so a
+    multi-line record would arrive as one string of `\n`; this keeps it readable.
+    """
+    head = f"[{path}]\n" if path else ""
+    if isinstance(obj, dict):
+        scalars = [(k, v) for k, v in obj.items() if _is_scalar(v)]
+        rest = [(k, v) for k, v in obj.items() if not _is_scalar(v)]
+        if scalars:
+            body = "\n".join(f"{k}: {'' if v is None else v}" for k, v in scalars)
+            out.append(f"{head}{body}")
+        for k, v in rest:
+            _sections(v, f"{path}.{k}" if path else str(k), out)
+        return
+    if isinstance(obj, (list, tuple)):
+        if obj and all(_is_scalar(v) for v in obj):
+            body = "\n".join(f"- {'' if v is None else v}" for v in obj)
+            out.append(f"{head}{body}")
+            return
+        for i, v in enumerate(obj, start=1):
+            _sections(v, f"{path} {i}/{len(obj)}" if path else f"{i}/{len(obj)}", out)
+        return
+    out.append(f"{head}{'' if obj is None else obj}")
+
+
+def render_state(state: Any) -> str:
+    if isinstance(state, str):
+        return state
+    out: list[str] = []
+    _sections(state, "", out)
+    return "\n\n".join(out)
+
+
+def state_block(state: Any, style: str = DEFAULT_STATE_STYLE) -> str:
+    """Flatten a state into the block that precedes QUESTION:.
+
+    Without `_only`, three shapes get a shortcut: a bare utterance becomes
+    `Message:`, a passage and a question `Passage:` / `Asked:`, a lone question
+    its text. The `_only` styles (the default) render every state as the object
+    it is.
+    """
+    if isinstance(state, dict) and not style.endswith("_only"):
+        keys = set(state.keys())
+        if keys == {"text"}:
+            return f"Message: {state['text']}\n\n"
+        if {"passage", "question"} <= keys and len(keys) == 2:
+            return f"Passage: {state['passage']}\n\nAsked: {state['question']}\n\n"
+        if keys == {"question"}:
+            return f"{state['question']}\n\n"
+    if style.startswith("json"):
+        if isinstance(state, str):
+            return f"{state}\n\n"
+        return json.dumps(state, ensure_ascii=False, indent=2) + "\n\n"
+    return f"{render_state(state)}\n\n"
+
+
+_PLACEHOLDER = re.compile(r"^opt\d+$")
+
+
+def _option_line(code: str, label: str, desc: str | None, style: str) -> str:
+    text = desc or label.replace("_", " ")
+    if style == "name_desc" and not _PLACEHOLDER.match(label) and label != text:
+        return f"{code} {label}: {text}"
+    return f"{code} {text}"
+
+
+def question_block(tokenizer, q: Question, option_style: str = "desc") -> str:
+    if isinstance(q, Choice):
+        labels = list(q.criteria.keys())
+        codes = aliases(tokenizer, labels)
+        lines = "\n".join(
+            _option_line(codes[i][0], lab, q.criteria[lab], option_style)
+            for i, lab in enumerate(labels)
+        )
+        return (
+            f"{q.instructions}\n\nOptions:\n{lines}\n\n"
+            "Reply with the option code only."
+        )
+    if isinstance(q, Noul):
+        extra = ""
+        if q.criteria:
+            extra = f"\nYes: {q.criteria.get('true')}\nNo: {q.criteria.get('false')}"
+        return f"{q.instructions}{extra}\n\nReply with yes or no only."
+    if isinstance(q, Score):
+        legend = "\n".join(f"{i} {name}" for i, name in enumerate(q.criteria))
+        return (
+            f"{q.instructions}\n\n{legend}\n\n"
+            f"Reply with a single digit 0-{len(q.criteria) - 1} only."
+        )
+    raise TypeError(f"unknown question type {type(q)}")
+
+
+def prefix_text(
+    tokenizer,
+    state: Any,
+    bos: str = "",
+    style: str = DEFAULT_STATE_STYLE,
+    system: str = DEFAULT_SYSTEM,
+    images: str = "",
+) -> str:
+    """Everything before the question, shared by all questions on one state: the pictures' markup
+    (`images`, as the chat template writes them) at the head of the user turn, then the state. With no
+    state (`None`) the question follows the pictures directly."""
+    text = SYSTEMS[system]
+    turn = "" if text is None else f"{IM_START}system\n{text}{IM_END}\n"
+    body = "" if state is None else f"{state_block(state, style)}\nQUESTION:\n"
+    return f"{bos}{turn}{IM_START}user\n{images}{body}"
+
+
+# What sits between the assistant header and the answer slot, per model type: nothing on LFM2-VL, whose
+# template opens no reasoning block.
+DEFAULT_LEAD = ""
+LEADS: dict[str, str] = {}
+
+
+def default_lead(model_type: str | None) -> str:
+    """What a checkpoint's own template writes before a non-thinking answer."""
+    return LEADS.get(model_type, DEFAULT_LEAD)
+
+
+def suffix_text(
+    tokenizer, q: Question, lead: str = DEFAULT_LEAD, option_style: str = "desc"
+) -> str:
+    """The question and the assistant header, up to the answer slot."""
+    body = question_block(tokenizer, q, option_style)
+    return f"{body}{IM_END}\n{IM_START}assistant\n{lead}"
+
+
+def render(
+    tokenizer,
+    state: Any,
+    q: Question,
+    bos: str = "",
+    lead: str = DEFAULT_LEAD,
+    style: str = DEFAULT_STATE_STYLE,
+    system: str = DEFAULT_SYSTEM,
+    option_style: str = "desc",
+    images: str = "",
+) -> str:
+    return prefix_text(tokenizer, state, bos, style, system, images) + suffix_text(
+        tokenizer, q, lead, option_style
+    )
+
+
+
+================================================
+FILE: runner.py
+================================================
+"""One-pass typed decisions on a causal LFM backbone.
+
+The model sees the state and the question once, and the answer is read off the
+logits at the answer slot. Nothing is decoded, so a schema violation is
+impossible and `tokens generated per decision` is zero.
+"""
+
+from __future__ import annotations
+
+import math
+from typing import Any, Sequence
+
+import torch
+
+from .api import SystemOneApi
+from .lfm2_vl import Lfm2ForCausalLM, Lfm2VlForConditionalGeneration
+from .prompt import (
+    DEFAULT_MODEL,
+    DEFAULT_STATE_STYLE,
+    DEFAULT_SYSTEM,
+    IM_START,
+    Question,
+    default_lead,
+    prefix_text,
+    readout,
+    render,
+    suffix_text,
+)
+
+# Every picture is bounded at this many pixels before the processor.
+VISION_MAX_PIXELS = 1024 * 1024
+
+
+# LFM2 models run on the hybrid stack (`hybrid.py`); any other model type through transformers as it is.
+MODELS = {
+    "lfm2_vl": Lfm2VlForConditionalGeneration,
+    "lfm2": Lfm2ForCausalLM,
+}
+
+
+def load_backbone(model_id: str = DEFAULT_MODEL, dtype=torch.bfloat16):
+    """The checkpoint and its tokenizer, with SDPA attention."""
+    from transformers import AutoModelForImageTextToText, AutoTokenizer, PretrainedConfig
+
+    tok = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    if tok.pad_token_id is None:
+        tok.pad_token = tok.eos_token
+    kind = PretrainedConfig.get_config_dict(model_id)[0].get("model_type")
+    cls = MODELS.get(kind, AutoModelForImageTextToText)
+    return cls.from_pretrained(model_id, dtype=dtype, attn_implementation="sdpa"), tok
+
+
+def cap_pixels(image, max_pixels: int = VISION_MAX_PIXELS):
+    """A picture downscaled to at most `max_pixels`, bicubic."""
+    image = image.convert("RGB") if hasattr(image, "convert") else image
+    w, h = image.size
+    if w * h <= max_pixels:
+        return image
+    try:
+        from PIL import Image
+    except ImportError as e:  # optional for text
+        raise ImportError("resizing a picture needs Pillow") from e
+
+    scale = math.sqrt(max_pixels / (w * h))
+    return image.resize((max(1, int(w * scale)), max(1, int(h * scale))), Image.Resampling.BICUBIC)
+
+
+class SystemOne(SystemOneApi):
+    """State in, calibrated distribution out, one forward pass."""
+
+    def __init__(
+        self,
+        model_id: str = DEFAULT_MODEL,
+        device: str | None = None,
+        calibration=None,
+        lead: str | None = None,
+        state_style: str = DEFAULT_STATE_STYLE,
+        system: str = DEFAULT_SYSTEM,
+        option_style: str = "desc",
+        compile: bool = False,
+        token_budget: int = 65536,
+        model=None,
+        tokenizer=None,
+    ):
+        """`model` and `tokenizer`, when given, are a backbone already loaded (`D1Model` passes itself);
+        it stays on its device unless `device` says otherwise."""
+        if model is None:
+            model, tokenizer = load_backbone(model_id)
+        else:
+            model_id, device = model.config._name_or_path, device or next(model.parameters()).device
+        self.model, self.tokenizer = model, tokenizer
+        self.model_id = model_id
+        if lead is None:
+            lead = default_lead(self.model.config.model_type)
+        self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+        self.model.to(self.device).eval()
+        bos = getattr(self.tokenizer, "bos_token", None)
+        self.bos = bos if isinstance(bos, str) else ""
+        self.calibration = calibration
+        self.lead = lead
+        self.state_style = state_style
+        self.system = system
+        self.option_style = option_style
+        self.token_budget = token_budget
+        self.processor = None
+        # CUDA graphs for single questions on NVIDIA, where eager time is mostly kernel launches.
+        if compile and torch.version.hip:
+            raise ValueError("compile=True needs CUDA: on ROCm the CUDA graphs fault after a few dozen calls")
+        self._one_pass = (torch.compile(self.model.forward, mode="reduce-overhead")
+                          if compile else self.model)
+
+    # ---------------------------------------------------------------- prompt
+
+    def render(self, state: Any, q: Question) -> str:
+        return render(
+            self.tokenizer, state, q, self.bos, self.lead, self.state_style,
+            self.system, self.option_style,
+        )
+
+    # --------------------------------------------------------------- forward
+
+    def _logz_ids(self, rows: list[list[int]]) -> list[torch.Tensor]:
+        """Log-softmax at the answer slot, one row per token list, in one pass.
+
+        The rows are one tree (`hybrid.py`): their common start is its trunk and
+        is read once; the rest of each row is a branch, packed with no padding.
+        Mathematically each row alone; in bf16 the kernels differ by batch shape.
+        """
+        if len(rows) == 1:  # nothing to share: a plain chain is faster than a tree of one
+            row = self._one_pass(input_ids=torch.tensor(rows, device=self.device), logits_to_keep=1).logits[0, -1]
+            return [row.float() - torch.logsumexp(row.float(), dim=-1)]
+        shared = 0  # every row keeps at least its last token
+        while shared < min(map(len, rows)) - 1 and len({r[shared] for r in rows}) == 1:
+            shared += 1
+        return self._tree_logz(rows[0][:shared], [r[shared:] for r in rows])
+
+    def _tree_logz(self, trunk: list[int], rows: list[list[int]], **vision) -> list[torch.Tensor]:
+        """`trunk` then each of `rows`, read at each row's end."""
+        packed = torch.tensor([t for r in rows for t in r], device=self.device)
+        lengths = torch.tensor([len(r) for r in rows], device=self.device)
+        trunk = torch.tensor([trunk], dtype=torch.long, device=self.device)
+        logits = self.model.answer(trunk, packed, lengths, **vision).float()
+        return list(logits - torch.logsumexp(logits, dim=-1, keepdim=True))
+
+    def plan_batches(self, texts: Sequence[str], token_budget: int | None = None) -> list[list[int]]:
+        """Consecutive batches of at most `token_budget` tokens: rows are packed,
+        so a batch costs its real tokens."""
+        return self._plan([len(self.tokenizer.encode(t, add_special_tokens=False)) for t in texts], token_budget)
+
+    def _plan(self, lengths: Sequence[int], token_budget: int | None = None) -> list[list[int]]:
+        if not lengths:
+            return []
+        budget = token_budget or self.token_budget
+        out: list[list[int]] = [[]]
+        used = 0
+        for i, n in enumerate(lengths):
+            if out[-1] and used + n > budget:
+                out.append([])
+                used = 0
+            out[-1].append(i)
+            used += n
+        return out
+
+    # --------------------------------------------------------------- readout
+
+    def _readout(self, q: Question, logz: torch.Tensor) -> list[float]:
+        return readout(self.tokenizer, q, logz, self.calibration)
+
+    # ------------------------------------------------------------------- api
+
+    @torch.inference_mode()
+    def run(self, requests: Sequence[tuple[Any, list[Question], Sequence]]) -> list[tuple[list[list[float]], int]]:
+        """Each `(state, questions, images)` request's probabilities and the tokens it read. Requests of one
+        question and no pictures are packed together, one tree per token budget; any other request is its
+        own pass, its state (and pictures) the trunk and its questions the branches."""
+        out: list = [None] * len(requests)
+        single = [i for i, (_, qs, images) in enumerate(requests) if len(qs) == 1 and not images]
+        rows = [self.tokenizer.encode(self.render(requests[i][0], requests[i][1][0]), add_special_tokens=False)
+                for i in single]
+        for chunk in self._plan([len(r) for r in rows]):
+            for j, z in zip(chunk, self._logz_ids([rows[j] for j in chunk])):
+                out[single[j]] = ([self._readout(requests[single[j]][1][0], z)], len(rows[j]))
+        for i, (state, qs, images) in enumerate(requests):
+            if out[i] is None:
+                out[i] = self._request(state, qs, images)
+        return out
+
+    def _request(self, state: Any, qs: list[Question], images: Sequence) -> tuple[list[list[float]], int]:
+        pics = [cap_pixels(im) for im in images]
+        prefix = prefix_text(self.tokenizer, state, self.bos, self.state_style, self.system,
+                             self._image_markup(len(pics)) if pics else "")
+        suffixes = [suffix_text(self.tokenizer, q, self.lead, self.option_style) for q in qs]
+        vision: dict = {}
+        if not pics:
+            trunk = self.tokenizer.encode(prefix, add_special_tokens=False)
+        elif len(qs) == 1:  # the whole prompt in one plain pass
+            inputs = self._image_inputs(prefix + suffixes[0], pics)
+            row = self._one_pass(**inputs, logits_to_keep=1).logits[0, -1].float()
+            return [self._readout(qs[0], row - torch.logsumexp(row, dim=-1))], int(inputs["input_ids"].shape[1])
+        else:
+            vision = self._image_inputs(prefix, pics)
+            trunk = vision.pop("input_ids")[0].tolist()
+            vision.pop("attention_mask", None)
+        branches = [self.tokenizer.encode(s, add_special_tokens=False) for s in suffixes]
+        probs: list[list[float]] = []
+        for chunk in self._plan([len(b) for b in branches]):
+            zs = self._tree_logz(trunk, [branches[j] for j in chunk], **vision)
+            probs += [self._readout(qs[j], z) for j, z in zip(chunk, zs)]
+        return probs, len(trunk) + sum(map(len, branches))
+
+    def tokens(self, state: Any, questions: Sequence[Question]) -> int:
+        """The longest prompt one of `questions` makes over a text state: its state's tokens and its own."""
+        prefix = prefix_text(self.tokenizer, state, self.bos, self.state_style, self.system)
+        return len(self.tokenizer.encode(prefix, add_special_tokens=False)) + max(
+            len(self.tokenizer.encode(suffix_text(self.tokenizer, q, self.lead, self.option_style),
+                                      add_special_tokens=False)) for q in questions)
+
+    # ---------------------------------------------------------------- vision
+
+    def _image_markup(self, n: int) -> str:
+        """What the chat template writes for `n` images at the head of a user turn (`<image>` each on LFM2-VL)."""
+        if self.processor is None:
+            self.processor = self._load_processor()
+        msgs = [{"role": "user", "content": [*([{"type": "image"}] * n), {"type": "text", "text": "\x00"}]}]
+        text = self.processor.apply_chat_template(msgs, add_generation_prompt=False, tokenize=False)
+        head = f"{IM_START}user\n"
+        return text[text.index(head) + len(head):text.index("\x00")]
+
+    def _load_processor(self):
+        from transformers import AutoProcessor
+
+        return AutoProcessor.from_pretrained(self.model.config._name_or_path, trust_remote_code=True)
+
+    def _image_inputs(self, text: str, images: Sequence) -> dict:
+        """Token ids and pixel inputs for one prompt holding `images`; the prompt carries its own BOS."""
+        inputs = self.processor(text=[text], images=[list(images)], return_tensors="pt", add_special_tokens=False)
+        if "pixel_attention_mask" in inputs:
+            # LFM2-VL's processor pads every image to 1024 patches and the tower
+            # masks the padding out; cutting it gives the same answer for up to
+            # half the work.
+            n = int(inputs["pixel_attention_mask"].sum(1).max())
+            inputs["pixel_values"] = inputs["pixel_values"][:, :n]
+            inputs["pixel_attention_mask"] = inputs["pixel_attention_mask"][:, :n]
+        return {k: (v.to(self.device) if hasattr(v, "to") else v) for k, v in inputs.items()}
+
+
+
+================================================
+FILE: tokenizer_config.json
+================================================
+{
+  "backend": "tokenizers",
+  "bos_token": "<|startoftext|>",
+  "clean_up_tokenization_spaces": false,
+  "eos_token": "<|im_end|>",
+  "is_local": true,
+  "legacy": false,
+  "local_files_only": false,
+  "max_length": null,
+  "model_max_length": 1000000000000000019884624838656,
+  "pad_to_multiple_of": null,
+  "pad_token": "<|pad|>",
+  "pad_token_type_id": 0,
+  "padding_side": "left",
+  "processor_class": "Lfm2VlProcessor",
+  "tokenizer_class": "TokenizersBackend",
+  "use_default_system_prompt": false
+}
+
+

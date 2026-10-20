@@ -1,0 +1,426 @@
+# Decision models: source summaries
+
+The selected Zotero **Decision Models** collection contains thirteen research papers
+and seven web-only releases/model cards. The current evidence concerns fast,
+schema-conditioned probabilistic decisions. It does not constitute a general
+survey of decision theory or optimization. Read [the synthesis](SYNTHESIS.md) for
+comparisons, and [the implementation guide](REPOSITORIES.md) for source maps.
+
+Dates below describe the PDF version filed. Publication dates remain separately
+recorded in [the provenance manifest](papers/manifest.json); multiple October
+versions are ordered by their confirmed day. All thirteen are arXiv preprints: no
+peer-reviewed venue is confirmed in the curated records. Source-specific numbers
+are reported results, not measurements rerun by this library. Citation keys come
+from Zotero and remain unchanged.
+
+## Overview table
+
+| Date | Authors | Title | One-line contribution | PDF |
+|---|---|---|---|---|
+| 2026-09 | Li et al. | Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms? | Label-free logical checks expose inconsistency between negation, disjunction, yes/no and categorical probabilities. | [pdf](papers/2026/09_Li_et_al._Beyond_Calibration_Do_a_Typed_Decision_Models_Probabilities_Obey_the_Probability_Axioms.pdf) |
+| 2026-09 | Deußer et al. | Evaluating and Benchmarking the System One Model Jev | A broad, reproducible evaluation separates choice calibration, binary thresholds and rubric scoring. | [pdf](papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) |
+| 2026-09 | Zhang et al. | AnyJev Technical Report | Frozen-LLM readouts separate label-prior correction, option-order averaging, calibration and adaptive rotation cost. | [pdf](papers/2026/09_Zhang_et_al._AnyJev_Technical_Report.pdf) |
+| 2026-10 | Cao et al. | SearchJev: A Fast and Calibrated System-1 Model for Search Agents | Task-specific decision training within a hybrid controller improves a small search-agent evaluation. | [pdf](papers/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.pdf) |
+| 2026-10 | Rafe and Das | Benchmarking System One decision models against trained classifiers and language models for automated decision gates | Matched decision gates compare specialist models, trained classifiers and LLM readouts under calibration, rejection and cascade costs. | [pdf](papers/2026/10_Rafe_and_Das_Benchmarking_System_One_decision_models_against_trained_classifiers_and_language_models_for_automated_decision_gates.pdf) |
+| 2026-10 | Xu et al. | JevOut: Natural Context Can Flip Decision Models | Answer-preserving context changes expose confident decision errors under an explicit search budget. | [pdf](papers/2026/10_Xu_et_al._JevOut_Natural_Context_Can_Flip_Decision_Models.pdf) |
+| 2026-10 | Li et al. | JEV-as-a-Judge: Accept When Confident, Escalate When Unsure | Frozen and prospective judge cascades quantify when confidence can save cost without losing accuracy. | [pdf](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) |
+| 2026-10 | Sharma et al. | TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models | Policy-generated tasks evaluate wording robustness, calibration noise floors and decisions under asymmetric costs. | [pdf](papers/2026/10_Sharma_et_al._TypedBench_A_Benchmark_for_Calibration_Framing_Sensitivity_and_Cost_in_System_One_Decision_Models.pdf) |
+| 2026-10 | Duan et al. | General Decision Models: Benchmarking and Insights Beyond Jev | A broad benchmark, analytic probability probes and agent tests separate local speed from system reliability. | [pdf](papers/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.pdf) |
+| 2026-10 | Zhuang et al. | StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | [pdf](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) |
+| 2026-10 | Li and Wagle | LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them | Prefix-free candidate scoring tests when frozen LLMs suffice and when anchored fine-tuning or bounded reasoning helps. | [pdf](papers/2026/10_Li_and_Wagle_LLM_as_Jev_LLMs_Are_Already_Jev_Style_Decision_Models_When_and_How_to_Fine_Tune_Them.pdf) |
+| 2026-10 | Imperatrice et al. | Are AI Decision Models Biased? A Case Study of Jev | Behavioral tasks distinguish selected answers from probability shifts under irrelevant context, framing and option order. | [pdf](papers/2026/10_Imperatrice_et_al._Are_AI_Decision_Models_Biased_A_Case_Study_of_Jev.pdf) |
+| 2026-10 | Zhu et al. | Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling | Multimodal masked decision training scores multiple fields in one causal pass, with separate calibration and handoff evaluations. | [pdf](papers/2026/10_Zhu_et_al._Intern_Decision_Efficient_Multimodal_Decision_Making_with_Autoregressive_Masked_Language_Modeling.pdf) |
+
+<a id="beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms"></a>
+
+## 2026-09 — Li et al. — Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms?
+
+**Venue / provenance:** arXiv preprint `2609.33209v1`; filed PDF version dated 2026-09-27. Zotero publication date: 2026-09-27. DOI: [10.48550/arXiv.2609.33209](https://doi.org/10.48550/arXiv.2609.33209). [PDF](papers/2026/09_Li_et_al._Beyond_Calibration_Do_a_Typed_Decision_Models_Probabilities_Obey_the_Probability_Axioms.pdf) · [generated text](papers/text/2026/09_Li_et_al._Beyond_Calibration_Do_a_Typed_Decision_Models_Probabilities_Obey_the_Probability_Axioms.txt).
+
+**Zotero citation key:** `2026.LI.calibrationtypeddecisionmodelsprobabilitiesobeyprobabilityaxioms`
+
+**Where it fits.** Li, He and Li (2026), *Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms?*, distinguish calibration across examples from coherence across logically related questions about one example. A well-ranked confidence score is not automatically a consistent joint belief.
+
+**What it contains.** For 100 ChaosNLI and 60 PubMedQA items with three mutually exclusive, exhaustive labels, the study asks whether each label applies, whether it does not apply, whether either alternative applies, and which label applies. Definitions are held fixed, and these identities require no gold labels. Repeated calls, confidence matching, label renaming, option permutations and question bundling probe alternative explanations.
+
+Across 480 negation pairs, mean absolute complementarity violation is 0.064 for Jev, 0.293 for Qwen3.8-27B first-token probabilities and 0.122 for its verbalized probabilities. Jev still overcounts three single-label yes/no probabilities by about 0.14 on average, and yes/no versus categorical probabilities differ. The two Qwen readouts even shift the direction of incoherence, showing that the elicitation method is part of the evaluated system.
+
+**Strengths.** Explicit partitions make the logical requirements clear; matched questions and multiple controls separate repeat noise, readout and some wording confounds. The checks identify inconsistencies ordinary single-form ECE misses.
+
+**Limitations.** The sample contains two English domains, one main wording per relation, one Jev version and one comparison backbone with thinking disabled. Public-data exposure is unresolved. Coherence is necessary for combining probability statements but not sufficient for informativeness or accuracy: constant prior probabilities can pass. These findings do not establish general economic losses or causal policy effects.
+
+**Evidence locations.** §§3–7; Eq. 1; Figure 1 and Table 1. The arXiv banner dates v1 to 27 September; the typeset title page says 29 September. The manifest follows the version banner. The [author supplement](https://github.com/bro789/typed-decision-coherence) is linked for reproduction but is not selected as a substantial maintained implementation snapshot.
+
+<a id="deusser-benchmark"></a>
+
+## 2026-09 — Deußer et al. — Evaluating and Benchmarking the System One Model Jev
+
+**Venue / provenance:** arXiv preprint `2609.37647v1`; attached PDF dated 2026-09-29. Zotero publication date: 2026-09-29. DOI: [10.48550/arXiv.2609.37647](https://doi.org/10.48550/arXiv.2609.37647). [PDF](papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) · [generated text](papers/text/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.txt).
+
+**Zotero citation key:** `2026.DEUSSER.evaluatingbenchmarkingsystemonemodeljev`
+
+**Where it fits.** Deußer, Sparrenberg and Sifa (2026), *Evaluating and Benchmarking the System One Model Jev*, establish a broad empirical baseline for a hosted typed-decision service. The central contribution is measurement across interfaces and tasks, rather than a new architecture or a proof that bounded outputs are reliable.
+
+**What it contains.** Sections 3–4 evaluate Jev 1.13.0 on 37 datasets using 346,009 answered requests, one frozen template per dataset and no in-context examples. Templates were piloted on 20 training/validation examples. The open-weight controls use the same requests and exact next-token probabilities restricted to valid option codes, with thinking disabled. This is a stronger control for the decision interface than asking a baseline to generate JSON and verbalize confidence. Table 3 reports Jev ahead of Qwen3.8-27B on 27 datasets, behind on nine and tied on one; eleven Jev leads have non-overlapping bootstrap intervals, whereas none of Qwen's leads do. Jev exceeds Gemma-4-E4B on all 37 datasets.
+
+Choice calibration pools 279,925 answers over 22 datasets: ECE is 0.028, but the mean per-dataset ECE is 0.061 and some difficult datasets are much worse (Figure 2; Appendix Table 8). The single-question binary and multi-label binary interfaces behave differently: the latter over-predict positives. Table 4 shows that thresholds selected on separate training/validation data raise UNFAIR-ToS micro-F1 from 0.499 to 0.748. Score tasks correlate better with surface properties such as sentiment than with generated-answer correctness. The paper releases a content-addressed harness and raw responses, with a Zenodo DOI, enabling analysis without repeat API calls.
+
+**Strengths.** Full evaluation splits, explicit task/primitive mappings, frozen prompts, uncertainty intervals and matched probability readouts make the results auditable. The paper tests calibration, selective prediction, threshold transfer, multilingual performance and contamination explanations instead of relying on average accuracy alone. It reports both useful confidence rankings and interface-specific probability failures.
+
+**Limitations.** The closed model's architecture and training data remain unknown. Option-rotation and question-removal tests do not exclude memorized question–answer pairs; the unusually strong MMLU mathematics result remains unexplained. Dataset-specific metrics cannot be collapsed into one general decision-quality number. Pooled ECE is dominated by large datasets; ranking usefulness does not imply calibrated probabilities for rare-label fan-out. Baselines disable reasoning, so the study does not establish superiority to reasoning-capable deployments. Prices, API latency and model behavior are observations of the measured version, not enduring service guarantees.
+
+**Evidence locations.** §§3.2–3.7, Tables 1–4, Figures 2–4, §4.6 and Appendix Table 8. See [official code source maps](REPOSITORIES.md).
+
+<a id="anyjev-technical-report"></a>
+
+## 2026-09 — Zhang et al. — AnyJev Technical Report
+
+**Venue / provenance:** arXiv preprint `2610.00831v1`; filed PDF version dated 2026-09-30. Zotero publication date: 2026-09-30. DOI: [10.48550/arXiv.2610.00831](https://doi.org/10.48550/arXiv.2610.00831). [PDF](papers/2026/09_Zhang_et_al._AnyJev_Technical_Report.pdf) · [generated text](papers/text/2026/09_Zhang_et_al._AnyJev_Technical_Report.txt).
+
+**Zotero citation key:** `2026.ZHANG.anyjevtechnicalreport`
+
+**Where it fits.** Zhang et al. (2026), *AnyJev Technical Report*, ask how much decision capability can be obtained from unchanged open LLMs by improving the readout. The contribution is an inference procedure and cost analysis rather than a newly pretrained decision backbone.
+
+**What it contains.** L0 restricts next-token probabilities to legal option-label tokens, applies a contextual label-prior correction and averages cyclic option rotations in log space. An answer-mass gate detects cases where the requested labels capture too little model probability. Temperature calibration is a separate fitted step. An adaptive rule reads well-spaced rotations and stops when a log-margin threshold is met; its target is agreement with the model's full-rotation answer, not correctness against ground truth.
+
+On two 20-option tasks, rotations improve accuracy and reduce reversal-induced answer flips for all eleven tested models. Mean flip rates fall from about 0.33 to 0.138 and 0.183. Calibration improvements mainly come from temperature fitting, not rotations alone. The JevBench analysis scores 213 of 231 public items and reports uncertainty intervals; accuracy changes there are less conclusive. Additional full-split evaluation shows that the label-prior correction is task-dependent.
+
+**Strengths.** Matched unchanged weights isolate readout effects. Negative results for shared heads, cache reuse and option masking are documented. The report distinguishes one prefill per rotation from one prefill for the entire decision and separates probability calibration from debiasing.
+
+**Limitations.** Some settings tune prior strength using labels, so “training-free” does not mean every hyperparameter is label-free. The 20-option sweep lacks stored item-level outcomes for confidence intervals. Eighteen public benchmark items are excluded, and timing and accuracy use different workloads. The report contains both same-sample stopping experiments and a disjoint selection/verification analysis; only the latter supports its stated selection-aware check. Neither provides a general accuracy or regret guarantee.
+
+**Evidence locations.** §§4–10; Tables 1–2 and 10–11; Appendix E. See [AnyJev source map](REPOSITORIES.md#anyjevtxt).
+
+<a id="searchjev"></a>
+
+## 2026-10 — Cao et al. — SearchJev: A Fast and Calibrated System-1 Model for Search Agents
+
+**Venue / provenance:** arXiv preprint `2610.05107v1`; attached PDF dated 2026-10-04. Zotero publication date: 2026-10-04. DOI: [10.48550/arXiv.2610.05107](https://doi.org/10.48550/arXiv.2610.05107). [PDF](papers/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.pdf) · [generated text](papers/text/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.txt).
+
+**Zotero citation key:** `2026.CAO.searchjevfastcalibratedsystem1modelsearchagents`
+
+**Where it fits.** Cao et al. (2026), *SearchJev: A Fast and Calibrated System-1 Model for Search Agents*, turn the decision interface into a search-specific trained component. A larger model retains planning, query generation and answer composition; the decision model handles bounded judgments and delegates uncertain ones. This is a hybrid controller, not an autonomous optimal-policy learner.
+
+**What it contains.** SearchDecision-Bench covers routing, rewriting, relevance, sufficiency, navigation and verification with categorical, ordinal and binary outputs (Tables 1–2). A Qwen3.5 backbone scores single-token option labels through its existing LM head and normalizes only over valid labels (Eq. 1). SLCD combines source-weighted soft-target cross-entropy and Brier loss (Eq. 2); separate held-out temperature calibration is fitted by output type (Eq. 3). A confidence threshold selects which judgments go to System 2. Dataset identity/query checks remove overlapping examples and synthetic variants derived from evaluation sources.
+
+Table 3 shows 27.6/37.1 ms median decision latency for the 0.8B/4B variants versus 144.2/195.2 ms for same-size autoregressive JSON baselines. The larger model does not dominate Jev on every task: navigation is weaker, and Jev retains better mean calibration. The end-to-end experiment samples 100 BrowseComp-Plus questions, runs each agent once, fixes System 2 at Qwen3.5-27B and uses BM25 retrieval. Table 4 reports 45% answer accuracy and 4,080 s median active time for System 2 alone; the 4B hybrid reaches 54% and 1,102 s. The 0.8B hybrid is faster at 868 s but reaches 46%. Active time includes retrieval and model calls. OOD evaluation covers four decision families; verification accuracy and calibration transfer remain uneven (Table 5).
+
+**Strengths.** It connects a concrete probability-learning objective to an operational routing rule and measures final answer quality alongside local accuracy, calls, output tokens and time. Keeping the larger reasoner fixed makes the system comparison interpretable. It exposes both task-level and held-out-dataset results rather than treating calibration as universal.
+
+**Limitations.** A single run on 100 search questions supports a limited deployment claim; it is not evidence of reliable gains across long-horizon agents. Appendix D/Table 8 records zero explicit System-2 short-decision calls in both SearchJev runs; the aggregate logs cannot recover the gate threshold. This neither proves that the gate was disabled nor isolates a benefit from uncertainty delegation. Task-specific training and the change from JSON decoding to direct readout occur together, so baseline gains do not isolate architecture, training or decoding individually. Calibration deteriorates on some held-out families despite high classification accuracy, and no OOD sufficiency/navigation tests are provided. Teacher/derived soft labels express the supervision process's uncertainty, which need not equal true outcome uncertainty. The study supplies no causal identification or cumulative-regret guarantee.
+
+**Evidence locations.** §§2.2, 3.1–3.3 and 4.4; Eqs. 1–3; Tables 2–5. See [official code source maps](REPOSITORIES.md).
+
+<a id="benchmarking-system-one-decision-models-against-trained-classifiers-and-language-models-for-automated-decision-gates"></a>
+
+## 2026-10 — Rafe and Das — Benchmarking System One decision models against trained classifiers and language models for automated decision gates
+
+**Venue / provenance:** arXiv preprint `2610.00346v2`; filed PDF version dated 2026-10-06. Zotero publication date: 2026-09-29. DOI: [10.48550/arXiv.2610.00346](https://doi.org/10.48550/arXiv.2610.00346). [PDF](papers/2026/10_Rafe_and_Das_Benchmarking_System_One_decision_models_against_trained_classifiers_and_language_models_for_automated_decision_gates.pdf) · [generated text](papers/text/2026/10_Rafe_and_Das_Benchmarking_System_One_decision_models_against_trained_classifiers_and_language_models_for_automated_decision_gates.txt).
+
+**Zotero citation key:** `2026.RAFE.benchmarkingsystemonedecisionmodelstrainedclassifierslanguagemodelsautomateddecisiongates`
+
+**Where it fits.** Rafe and Das (2026), *Benchmarking System One decision models against trained classifiers and language models for automated decision gates*, connect model evaluation to a program that accepts, rejects or escalates a bounded choice. They also test whether a conventional classifier is preferable when stable labels and training data are available.
+
+**What it contains.** The study compares six decision-model families, generative LLMs through different probability readouts, and supervised classifiers. It varies task, option count and option naming; recalibrates on held-out data; evaluates selective risk and out-of-scope acceptance; and constructs cost/latency cascades. A worked CLINC-150 gate illustrates that a threshold targeting low in-scope error still accepts many unknown requests.
+
+In that case, Jev answers 0.92 of in-scope requests at empirical risk 0.047 while accepting 0.310 of out-of-scope inputs. A separate Learn-then-Test procedure sacrifices coverage for a statistical risk bound. A classifier fine-tuned on the gate's labels attains stronger in-scope results in most supported settings. Cascade latency is composed offline from measured stage latencies; the costs assume a stated hardware utilization and workload.
+
+**Strengths.** The paper separates calibration as shipped from recalibration, probability elicitation from model identity, and in-scope risk from out-of-scope handling. It states the stronger assumptions behind certified thresholds and compares against supervised baselines rather than only generative models.
+
+**Limitations.** Trained classifiers receive labeled task data that zero-shot competitors do not; this is a deployment choice rather than a supervision-matched architecture test. Public benchmark exposure remains relevant. Format failures and temperature settings affect LLM comparisons. Offline cascades are not live end-to-end measurements; GPU utilization, prices, batching and transport alter cost rankings. A risk bound depends on its statistical assumptions and does not cover arbitrary distribution shift.
+
+**Evidence locations.** §§3–7; Table 11; Appendix A. The filed v2 is dated 6 October, while Zotero retains the original 29 September publication date.
+
+<a id="jevout"></a>
+
+## 2026-10 — Xu et al. — JevOut: Natural Context Can Flip Decision Models
+
+**Venue / provenance:** arXiv preprint `2609.30243v2`; attached PDF dated 2026-10-08. Zotero publication date: 2026-09-24. DOI: [10.48550/arXiv.2609.30243](https://doi.org/10.48550/arXiv.2609.30243). [PDF](papers/2026/10_Xu_et_al._JevOut_Natural_Context_Can_Flip_Decision_Models.pdf) · [generated text](papers/text/2026/10_Xu_et_al._JevOut_Natural_Context_Can_Flip_Decision_Models.txt).
+
+**Zotero citation key:** `2026.XU.jevoutnaturalcontextcanflipdecisionmodels`
+
+**Where it fits.** Xu et al. (2026), *JevOut: Natural Context Can Flip Decision Models*, test whether constrained outputs remain reliable when surrounding language changes without changing the correct answer. The study examines the input side of decision reliability, complementing calibration and interface checks.
+
+**What it contains.** The evaluation retains each target model's initially correct items, fixes its most probable wrong option as the target, and permits natural context additions while preserving the original question, options and their order. A proposer and a separate semantic checker generate and accept candidates. Probability-guided allocation uses the target's margin over its strongest competitor; the budget is at most 64 accepted target evaluations per decision (Eqs. 1–4; §3). The seven datasets span knowledge, reasoning, legal cases, multi-answer selection and recorded tool-routing checkpoints. Development and held-out source items are disjoint.
+
+Table 1 reports targeted flip rates of 61.4% for Jev (508 initially correct decisions), 72.6% for OpenSourceJev (328), 73.2% for Von (328) and 64.9% for a plain Qwen scorer (285). These are search success rates conditional on initial correctness, not ordinary test error rates or comparable populations across models. On initially confident Jev decisions, 45.5% can still be flipped under the same budget (Table 2). Three blinded annotators assess 250 sampled successful contexts: 91.6% meet all validity criteria by majority judgment. Matched controls show that probability-based allocation improves flip discovery over label-only allocation; frozen contexts also transfer across systems (§§4.4–4.5).
+
+**Strengths.** The fixed wrong target, retained failure denominator, matched-budget controls, human validity audit and transfer experiments make the robustness claim precise. It distinguishes harmless-looking additions from explicit answer commands and measures resulting confidence, not merely label changes. A plain next-token scorer provides a useful interface control.
+
+**Limitations.** The search has the gold answer and chosen wrong target and excludes rejected proposals from its accepted-target-call budget; its full computational cost exceeds 64 simple calls. Automatic semantic checks are imperfect, and the human result validates sampled successes rather than every generated context. Different initial-correctness populations prevent a simple robustness leaderboard. Tool routing is evaluated at recorded checkpoints, not full interactive task completion. The study does not show that 61–73% of naturally occurring production inputs fail, nor does it establish a universal defense.
+
+**Evidence locations.** §§3–4; Tables 1–3; Figures 4–5; Appendices B–D and G–J. See [official code source maps](REPOSITORIES.md).
+
+<a id="jev-judge"></a>
+
+## 2026-10 — Li et al. — JEV-as-a-Judge: Accept When Confident, Escalate When Unsure
+
+**Venue / provenance:** arXiv preprint `2609.26550v5`; attached PDF dated 2026-10-09. Zotero publication date: 2026-09-22. DOI: [10.48550/arXiv.2609.26550](https://doi.org/10.48550/arXiv.2609.26550). [PDF](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) · [generated text](papers/text/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.txt).
+
+**Zotero citation key:** `2026.LI.jevasajudgeacceptwhenconfidentescalatewhenunsure`
+
+**Where it fits.** Li et al. (2026), *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*, study a concrete accept-or-escalate decision. Jev supplies a verdict and probabilities; an expensive judge resolves low-confidence cases. The contribution is an empirical operating envelope and threshold-validation procedure, rather than a novel routing algorithm.
+
+**What it contains.** The base study contains 5,172 judgments, with public preference/factuality tasks, answer-adjudication controls, reverse-order tests and follow-ups on style and prose. Sixteen other judges include generative and reward models. Generative judges share the verdict-and-probability output contract, with no emitted rationale; the study separately records reasoning settings. Blinded human adjudication checks disputed labels in a 990-item subset. It distinguishes a 642-item pilot, held-out evaluation and exploratory follow-ups (§§3–4).
+
+For the frozen two-order cascade, aligned probabilities from both candidate orders are averaged; a threshold selected on 96 pilot selection pairs is fixed before held-out evaluation. Table 4 reports 93.4% accuracy versus GPT-6's 92.5% on 1,610 held-out preference pairs, with 31.5% escalated and 41.4% of the fallback's fee. The pool is 83% RewardBench: JudgeBench needs substantially more escalation and has less cost saving. These rows are offline reconstructions from retained outputs. A 510-pair live replication measures actual cascade latency. More compellingly, §9 prospectively selects separate thresholds on 100 local labels per new workload and runs 570 held-out pairs live: accuracy matches the fallback at 90.2%, with 74.2% escalation and 75.5% of its fee (Table 5). The threshold rule uses a lower confidence bound on paired accuracy differences under a tolerance, not a calibrated economic utility objective.
+
+**Strengths.** The paper distinguishes threshold exploration, frozen selection, live replication and prospective workload testing. It includes source-cluster uncertainty intervals, a matched-spend random-routing control, human adjudication and explicit failure cases. The cost accounting includes both first-stage orders and escalation; stronger uncertainty control costs more and is visible in the results.
+
+**Limitations.** Confidence routing is weaker on style-adversarial comparisons and reference-free prose. A small pooled calibration set can select a threshold that fails a difficult subgroup; thresholds are workload- and fallback-dependent. The two-order protocol doubles first-stage judgments and incurs sequential delay when escalating. The strong headline savings from the favorable held-out mixture do not transfer to the harder prospective workloads. Some follow-ups and alternative-first-stage comparisons are retrospective, closed-service prices/versioning can change, and finite benchmark parity is not a guarantee for deployment under shift.
+
+**Evidence locations.** §§3–4 and 7–9; Eq. 1; Tables 3–5; Figure 8; Appendices N–Q. Rechecked 2026-10-20: the [author project repository](https://github.com/yubol-bobo/jev-as-a-judge) supplies a website, manuscript and figures, but no experimental reproduction code. The paper's supplementary package remains unverified as a public download; see [implementation coverage boundaries](REPOSITORIES.md#coverage-boundaries).
+
+<a id="typedbench-a-benchmark-for-calibration-framing-sensitivity-and-cost-in-system-one-decision-models"></a>
+
+## 2026-10 — Sharma et al. — TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models
+
+**Venue / provenance:** arXiv preprint `2610.11392v2`; filed PDF version dated 2026-10-09. Zotero publication date: 2026-10-08. DOI: [10.48550/arXiv.2610.11392](https://doi.org/10.48550/arXiv.2610.11392). [PDF](papers/2026/10_Sharma_et_al._TypedBench_A_Benchmark_for_Calibration_Framing_Sensitivity_and_Cost_in_System_One_Decision_Models.pdf) · [generated text](papers/text/2026/10_Sharma_et_al._TypedBench_A_Benchmark_for_Calibration_Framing_Sensitivity_and_Cost_in_System_One_Decision_Models.txt).
+
+**Zotero citation key:** `2026.SHARMA.typedbenchbenchmarkcalibrationframingsensitivitycostsystemonedecisionmodels`
+
+**Where it fits.** Sharma et al. (2026), *TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models*, evaluate whether probabilities are useful when software actually acts on them. The benchmark complements evaluations of public classification datasets with explicit policies whose labels can be derived from generated inputs.
+
+**What it contains.** Seven generators cover support tickets, phishing, retrieval relevance, log triage, policy compliance, guardrail intent and multilingual tickets. Nine suites vary wording, criteria, option order/count, input length, noise, missing information and question bundling; they also measure ordinal consistency, selective prediction, asymmetric cost and cascades. Calibration is compared with the finite-sample ECE of a matched perfectly calibrated predictor, rather than interpreting any nonzero ECE as a defect.
+
+The evaluation includes Jev, two Laya encoder checkpoints and three Kev decoder sizes, alongside conventional and restricted-answer LLM baselines. Restating the same ticket-priority policy moves Jev accuracy by 24 percentage points. Miscalibration changes direction across questions. On some cost matrices, using the probabilities of the strongest classifiers costs more than acting on their top answer; model accuracy alone does not rank decision value.
+
+**Strengths.** Paired perturbations, explicit rule-based labels, independent generator seeds for supervised baselines, per-question diagnostics and cost-sensitive outcomes separate several failure modes hidden by a pooled benchmark score.
+
+**Limitations.** Templated, rule-generated inputs trade naturalness for controllable labels; fresh examples do not eliminate familiarity with their task families. Much of the detailed stress evaluation uses tickets and phishing, while additional generators receive canonical wording only. A classifier trained on the same generator family has different supervision from a zero-shot decision model. The results concern the tested checkpoints and hardware. No author-verified TypedBench implementation snapshot was identified; a cited earlier calibration repository is not treated as its official code.
+
+**Evidence locations.** §§3–7; Table 1; Figure 2; Appendices A, B and J.
+
+<a id="general-decision-models"></a>
+
+## 2026-10 — Duan et al. — General Decision Models: Benchmarking and Insights Beyond Jev
+
+**Venue / provenance:** arXiv preprint `2610.03935v2`; attached PDF dated 2026-10-12. Zotero publication date: 2026-10-02. DOI: [10.48550/arXiv.2610.03935](https://doi.org/10.48550/arXiv.2610.03935). [PDF](papers/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.pdf) · [generated text](papers/text/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.txt).
+
+**Zotero citation key:** `2026.DUAN.generaldecisionmodelsbenchmarkinginsightsjev`
+
+**Where it fits.** Duan et al. (2026), *General Decision Models: Benchmarking and Insights Beyond Jev*, provide the widest systems critique in this corpus and an open decision-model training recipe. Their evidence connects bounded local choices to long-context behavior, interactive workflows and aggregate social predictions.
+
+**What it contains.** JEVal contains 11,257 bilingual instances from 36 datasets in ten domains and evaluates 25 model configurations. The paper distinguishes accuracy, returned-choice ECE, raw full-vector Brier error and latency; generative baselines report probabilities under the specified output contract. Strong decision models approach thinking-model accuracy on evidence-rich tasks, while specialist knowledge and personalization remain harder. In controlled analytic probability tasks (100 items each), Jev selects the prior mode on all items but assigns it 89.35% probability on average when the true average is 35.60% (Table 2; Figure 5). This isolates distribution distortion even when the selected option is right.
+
+In the τ-bench agent experiment, Jev chooses an action while the same DeepSeek base model supplies arguments/responses. Overall success falls from 77.6% to 66.1%, median episode time drops from 267.1 to 160.6 seconds, and P95 time increases from 695.5 to 816.0 seconds (Table 3). The social analysis separates agreement with a model-based profiler from real ground truth and distinguishes individual response prediction from population aggregation. Finally, SII-Decision retains the backbone's existing single-token label readout. Reasoning-to-Readout Self-Distillation averages option distributions after two teacher reasoning chains and trains the no-reasoning student to match them, with an ordinal term and a KL anchor to the frozen original model (Eqs. 11–12). It does not require gold labels for those targets.
+
+**Strengths.** The paper examines probability estimates against analytically known distributions, reports both median and tail system latency, and holds the argument-generating model fixed in the action-selection comparison. It distinguishes local prediction, sequence-level success and population-level error. The reproducible open training recipe connects single-pass inference to a specified teacher objective.
+
+**Limitations.** Each interactive task runs once; stochastic trajectory variation and alternative controllers could change the systems result. The profiling reference is another LLM, with possible same-family agreement advantages rather than verified human truth. Self-distillation inherits teacher weaknesses and only partly recovers reasoning-intensive gains. Some latency figures use local RTX 4090 inference, others H100, while hosted Jev includes transport: they are protocol-specific, not an architecture-only comparison. A single ECE score does not establish correct full distributions, and synthetic probability probes do not by themselves measure deployment calibration. Finite-option inference does not establish an optimal sequential policy.
+
+**Evidence locations.** §§4–6; Tables 1–4; Figures 4–7 and 9–10; Eqs. 6–12; Appendices E–F. See [official code source maps](REPOSITORIES.md).
+
+<a id="startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions"></a>
+
+## 2026-10 — Zhuang et al. — StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions
+
+**Venue / provenance:** arXiv preprint `2610.17309v1`; filed PDF version dated 2026-10-12. Zotero publication date: 2026-10-12. DOI: [10.48550/arXiv.2610.17309](https://doi.org/10.48550/arXiv.2610.17309). [PDF](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) · [generated text](papers/text/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.txt).
+
+**Zotero citation key:** `2026.ZHUANG.startluxdecisionautothinkdecisionmodelsreinforcementlearningcalibrateddeliberativedecisions`
+
+**Where it fits.** Zhuang et al. (2026), *StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions*, make inference-time computation a decision variable. This complements always-direct readout and confidence routing to an entirely separate model.
+
+**What it contains.** Instant enables bidirectional prompt attention in full-attention layers. AutoThink keeps causal attention, first scores the options, then invokes reasoning for uncertain requests and combines initial and post-reasoning probabilities. Questions are separate batch rows; the letter readout supports 26 options, with longer lists handled by a multi-round grouping procedure. Thus this interface differs from Intern-Decision's simultaneous masked fields.
+
+Three-stage training combines foundational decision training, variant-specific adaptation and reasoning training. RLCD² rewards improvement in a decision-weighted proper score measured by a frozen scorer, with a soft penalty for long reasoning. The paper also studies calibration after selection and routing. Decision Index's public subset guided data, attention and checkpoint choices; DecisionPivot is the stated independent evaluation. Improvements from extra task data concentrate in the represented families. Reported deployment includes vLLM, llama.cpp and MLX.
+
+**Strengths.** The paper distinguishes development benchmarks from independent evaluation, discloses task-family specialization, and examines probability fusion, selection effects, reasoning termination and runtime compatibility. The public repository has substantial serving, inference, evaluation and adaptation code.
+
+**Limitations.** Proper-score rewards do not establish calibrated probabilities under arbitrary distribution shift. Public Decision Index scores are not independent test estimates. AutoThink's full cost includes reasoning and another readout; single-readout latency cannot represent it. Grouped large-option decisions do not reproduce one jointly normalized distribution over the full list. High agreement between runtimes does not establish exact probability equivalence. The released inference and LoRA utilities should not be mistaken for a complete release of the paper's full training pipeline and data.
+
+**Evidence locations.** §§2–6; Figure 2; Eqs. 1 and 3–6; §4.1; Appendix D. See [StartLux source map](REPOSITORIES.md#startluxdecisiontxt).
+
+<a id="llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them"></a>
+
+## 2026-10 — Li and Wagle — LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them
+
+**Venue / provenance:** arXiv preprint `2610.02076v3`; filed PDF version dated 2026-10-13. Zotero publication date: 2026-10-01. DOI: [10.48550/arXiv.2610.02076](https://doi.org/10.48550/arXiv.2610.02076). [PDF](papers/2026/10_Li_and_Wagle_LLM_as_Jev_LLMs_Are_Already_Jev_Style_Decision_Models_When_and_How_to_Fine_Tune_Them.pdf) · [generated text](papers/text/2026/10_Li_and_Wagle_LLM_as_Jev_LLMs_Are_Already_Jev_Style_Decision_Models_When_and_How_to_Fine_Tune_Them.txt).
+
+**Zotero citation key:** `2026.LI.llmasjevllmsarealreadyjevstyledecisionmodelswhenhowfinetunethem`
+
+**Where it fits.** Li and Wagle (2026), *LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them*, provide a matched-backbone alternative to attributing all gains to a specialized decision architecture. The filed v3 uses this title; earlier versions used a different title.
+
+**What it contains.** The prompt contains all options and ends with a fixed prefix before a bracketed numeric identifier. Candidate suffixes are prefix-free, allowing variable-length identifiers and large option sets. Their sequence log-likelihoods are scored through shared-prefix caching and parallel suffix evaluation, then normalized over candidates. This can require several short scoring steps after prefill, so it is not universally a single-forward-pass method.
+
+For adaptation, a tree-factorized listwise loss changes legal candidate preferences; KL anchors constrain legal mass, conditional choice distributions and non-decision behavior. Inference uses full suffix likelihood, whereas local tree normalization is a training construction. Frozen Qwen3.5-4B obtains 81.4% on public JevBench; the reported LoRA configuration reaches 84.0%. Fine-tuning gains concentrate in represented domains, especially high-cardinality routing and the smaller 0.6B model. Native thinking under an explicit budget adds a further accuracy–cost tradeoff.
+
+**Strengths.** Same-backbone controls, high-cardinality tasks, multimodal checks and tests of general text-generation behavior distinguish readout, adaptation and capability retention. The study reports both useful adaptation and deterioration without adequate regularization.
+
+**Limitations.** Two backbone sizes and public benchmarks do not establish universal training-free sufficiency or calibration. Tuned data mixtures and regularization choices matter. Numeric identifiers support more options but cannot make long schemas computationally free. Thinking-mode results consume additional computation. No verified author implementation repository was found; similarly named community projects are distinct.
+
+**Evidence locations.** §§3–5; Eqs. 1–2; Tables 1, 7, 11 and 15; Appendices B–C.
+
+<a id="are-ai-decision-models-biased-a-case-study-of-jev"></a>
+
+## 2026-10 — Imperatrice et al. — Are AI Decision Models Biased? A Case Study of Jev
+
+**Venue / provenance:** arXiv preprint `2610.19619v1`; filed PDF version dated 2026-10-14. Zotero publication date: 2026-10-14. DOI: [10.48550/arXiv.2610.19619](https://doi.org/10.48550/arXiv.2610.19619). [PDF](papers/2026/10_Imperatrice_et_al._Are_AI_Decision_Models_Biased_A_Case_Study_of_Jev.pdf) · [generated text](papers/text/2026/10_Imperatrice_et_al._Are_AI_Decision_Models_Biased_A_Case_Study_of_Jev.txt).
+
+**Zotero citation key:** `2026.IMPERATRICE.areaidecisionmodelsbiasedcasestudyjev`
+
+**Where it fits.** Imperatrice et al. (2026), *Are AI Decision Models Biased? A Case Study of Jev*, evaluate whether structured outputs remain sensitive to information that should not alter a decision. The work connects behavioral probes to confidence-based automation without treating a model as a human experimental participant.
+
+**What it contains.** The main protocol collects 41,500 responses from Jev 1.13.0 across cognitive reflection, anchoring, conjunction, framing, sunk-cost, zero-risk and demographic pricing tasks. Nine cognitive-reflection items are always answered correctly, but success on the familiar conjunction example fails to transfer to an edited version. A separate 30-scenario conjunction robustness experiment contains 15,000 responses and reports 53.96% incorrect selections, with substantial scenario and answer-order variation.
+
+An irrelevant dice value shifts the probability-weighted sentencing estimate despite fixed case facts. In the pricing study, 125 names with repeated calls yield small group differences and an almost unchanged top price. Several manipulations change probabilities even where the selected answer stays fixed, which can alter an escalation threshold or expected-score calculation.
+
+**Strengths.** Original and adapted tasks, answer-order reversals and separate reporting of choices, probabilities and derived scores expose effects hidden by aggregate accuracy. The authors do not pool normatively different tasks into one universal bias score.
+
+**Limitations.** Repeated responses to a small set of scenarios are not independent population samples. One hosted model and version cannot establish a general property of decision models. Familiar-example success does not prove memorization. Probability-weighted prices and sentences are analyst-constructed summaries, not directly observed real-world decisions. Small demographic effects in one pricing setup do not establish fairness across applications.
+
+**Evidence locations.** §§3–8; Tables 1 and 3; Figures 1 and 6. The separate conjunction robustness sample should not be silently counted inside the 41,500-response main protocol.
+
+<a id="intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling"></a>
+
+## 2026-10 — Zhu et al. — Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling
+
+**Venue / provenance:** arXiv preprint `2610.22131v1`; filed PDF version dated 2026-10-15. Zotero publication date: 2026-10-15. DOI: [10.48550/arXiv.2610.22131](https://doi.org/10.48550/arXiv.2610.22131). [PDF](papers/2026/10_Zhu_et_al._Intern_Decision_Efficient_Multimodal_Decision_Making_with_Autoregressive_Masked_Language_Modeling.pdf) · [generated text](papers/text/2026/10_Zhu_et_al._Intern_Decision_Efficient_Multimodal_Decision_Making_with_Autoregressive_Masked_Language_Modeling.txt).
+
+**Zotero citation key:** `2026.ZHU.interndecisionefficientmultimodaldecisionmakingautoregressivemaskedlanguagemodeling`
+
+**Where it fits.** Zhu et al. (2026), *Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling*, supply the technical evidence behind the separately filed Intern-Decision model card. The model consumes a state, optional images and an ordered decision schema. It predicts supplied options rather than discovering actions or learning an environment policy.
+
+**What it contains.** The assistant context is a complete JSON skeleton with one decision placeholder per field. The logit immediately before each placeholder predicts its answer; gold answers appear only in supervision, and neither gold nor predicted answers are fed into other fields. Training uses full-vocabulary cross-entropy at these shifted positions; inference normalizes only legal answer-token logits. The Qwen3.5 vision tower and projector remain frozen while the language backbone is trained. All three released sizes share 17,880 training samples and 23,500 decisions.
+
+The 4B model reports 90.02% unweighted accuracy over seven suites versus 88.74% for Jev. A fixed 289-token, three-field request takes 44.16 ms on one RTX 4090. A separate 96-case known-distribution pilot evaluates full probability vectors; temperature scaling reduces expected Brier from 0.628 to 0.550. A 111-item handoff experiment improves correct answers from 82 to 97 while escalating 42 cases.
+
+**Strengths.** Explicit causal alignment, target-exclusion checks, checkpoint-bound calibration and separated accuracy, latency and distributional evaluations make the interface auditable. The public code includes training and inference paths, scoring and deterministic pilot generation.
+
+**Limitations.** The 96 cases contain paired order variants of only 48 settings, not 96 independent mechanisms. The latency result is one request shape and device. Public task-family exposure and development choices limit independence of headline comparisons; baselines do not all receive newly fitted temperatures. The routing result is one operating point, and visual demos do not establish sequential policy quality. Training data and private calibration records are not fully released.
+
+**Evidence locations.** §§3–5; Eqs. 1–3; Tables 1–3; Appendices A–C. See [Intern-Decision source map](REPOSITORIES.md#interndecisiontxt).
+
+## Web-source overview
+
+These seven selected sources have no PDF attachment. Their curated metadata,
+original URLs, date precision and review date are retained in
+[the web-source registry](papers/web_sources.json). They are represented by source
+links and authored summaries rather than fabricated PDFs or manual PDF text.
+Dates distinguish public announcements from model-card/checkpoint history.
+Intern-Decision's 26 September release is corroborated by a same-day public
+demo announcement, in addition to its upload history.
+
+| Date | Authors | Title | Contribution | Summary |
+|---|---|---|---|---|
+| 2026-09-15 | Diogo Almeida | Introducing System One Models & Jev | A provider release defines the typed probabilistic interface. | [source summary](#web-qezz55x7) |
+| 2026-09-26 | InternLM | Intern-Decision-4B | A multimodal model card specifies multi-field candidate readout and calibration. | [source summary](#web-x58irxca) |
+| 2026-10-01 | Michelle Chen, Alex Reneau, Kevin Flansburg | Introducing Clef: our open-source decision models, and new RL fine-tuning platform | A release combines schema scoring, cross-field attention and adaptation. | [source summary](#web-mwjhy75j) |
+| 2026-10-01 | Marc Brooker, Mike Chambers, Fabio Nonato de Paula | Introducing Strands Decider 2B: a small, open source, decision model | A small pointer-head model exposes a training and experimentation path. | [source summary](#web-gi68ips2) |
+| 2026-10-06 | Perplexity AI | pplx-decider-v1.1-27b | A model card makes attention and calibration part of the inference contract. | [source summary](#web-de9kqqlx) |
+| 2026-10-07 | Liquid AI | Open d1: Edge decision models for text, vision, and audio | An edge-focused release adds text, image and audio decision variants. | [source summary](#web-4u52t7rc) |
+| 2026-10-09 | Achint Srivastava | Introducing Microsoft-Decision-1, our model for fast decision-making | A hosted release emphasizes scoring, perturbation robustness and benchmark breadth. | [source summary](#web-lelm4ubr) |
+
+## Web sources
+
+<a id="web-qezz55x7"></a>
+
+### 2026-09 — Introducing System One Models & Jev
+
+**Venue / provenance:** TypeSafe AI Blog; blogPost. [Primary source](https://typesafe.ai/blog/introducing-system-one-models-and-jev). Reviewed 2026-10-20. The primary page displays September 15, 2026; the existing Zotero record was corrected to 2026-09-15 with its citation key preserved.
+
+**Zotero citation key:** `2026.ALMEIDA.introducingsystemonemodelsjev`
+
+**Where it fits.** Almeida (2026), *Introducing System One Models & Jev*, provides the vendor's rationale for replacing generated answers with typed decisions.
+
+**What it contains.** It introduces Jev, parallel probabilistic outputs and RLCD, and evaluates fixed workflows against reference probabilities from stronger LLMs.
+
+**Strengths.** The interface and evaluation assumptions are explicit, including developer-created workflows and the reference-model choice.
+
+**Limitations.** This is a provider announcement. Type validity does not establish factual correctness, calibration or reliable action selection. Its workflow evidence is agreement with reference models rather than independent outcome truth; reported efficiency should not be generalized beyond those workloads.
+
+<a id="web-x58irxca"></a>
+
+### 2026-09 — Intern-Decision-4B
+
+**Venue / provenance:** InternLM; model card. [Primary source](https://huggingface.co/internlm/Intern-Decision-4B). Reviewed 2026-10-20. Zotero now records 2026-09-26. The official [first substantive upload](https://huggingface.co/internlm/Intern-Decision-4B/commit/0e5e6aa7d6d750e2b1504ba11a8136cb58aeb3cd) added the card, inference source and checkpoint that day. A [same-day public demo announcement](https://huggingface.co/internlm/Intern-Decision-4B/discussions/1) by Hugging Face's open-source team corroborates public availability; the discussion API records 2026-09-26 at 11:33:37 UTC. The date is not inferred from Git history alone.
+
+**Zotero citation key:** `2026.INTERNLM.interndecision4b`
+
+**Where it fits.** InternLM (2026), *Intern-Decision-4B*, documents a Qwen-derived alternative with explicit multi-field inference.
+
+**What it contains.** A complete output skeleton contains decision placeholders; one causal forward pass reads the preceding logits, restricts them to field-specific candidate symbols and applies temperature calibration. The card describes separate calibration/validation cases and a 96-case known-distribution pilot.
+
+**Strengths.** It specifies inference semantics, limits and calibration, making reproduction less ambiguous than generic text-generation examples.
+
+**Limitations.** Provider benchmarks and a small diagnostic pilot do not establish broad distributional correctness. Generic Hub generation snippets are not the documented decision-scoring path.
+
+<a id="web-mwjhy75j"></a>
+
+### 2026-10 — Introducing Clef: our open-source decision models, and new RL fine-tuning platform
+
+**Venue / provenance:** Cloudflare Blog; blogPost. [Primary source](https://blog.cloudflare.com/clef-decision-models/). Reviewed 2026-10-20. Publication date and provider byline verified against the primary page; no immutable PDF version.
+
+**Zotero citation key:** `2026.CHEN.introducingclefouropensourcedecisionmodelsnewrlfinetuningplatform`
+
+**Where it fits.** Chen et al. (2026), *Introducing Clef: our open-source decision models, and new RL fine-tuning platform*, describes an open implementation of schema-bound scoring.
+
+**What it contains.** Qwen backbones feed option-specific evidence routing and cross-field attention. Training combines smoothed cross-entropy, Brier loss, adapters and a later RL objective. The release includes Clef and Clef-flash, vision inputs and provider-run benchmark comparisons.
+
+**Strengths.** Released inference artifacts make architectural details inspectable; the post connects multi-field outputs to a concrete training design.
+
+**Limitations.** The training data are internal and the comparisons are provider-run. Public benchmark wins and typed outputs do not validate general calibration or sequential reliability. The adaptation platform is a product capability, not independent evidence of improved downstream outcomes.
+
+<a id="web-gi68ips2"></a>
+
+### 2026-10 — Introducing Strands Decider 2B: a small, open source, decision model
+
+**Venue / provenance:** Strands Agents; blogPost. [Primary source](https://strandsagents.com/blog/introducing-strands-decider/). Reviewed 2026-10-20. Publication date and provider byline verified against the primary page; no immutable PDF version.
+
+**Zotero citation key:** `2026.BROOKER.introducingstrandsdecider2bsmallopensourcedecisionmodel`
+
+**Where it fits.** Brooker et al. (2026), *Introducing Strands Decider 2B: a small, open source, decision model*, offers a local experimentation-oriented implementation.
+
+**What it contains.** A Qwen3.5-2B torso uses a pointer head to score option positions against an answer position, with LoRA adaptation. The release links code, training scripts/data and architecture iterations; it reports accuracy, Brier scores and hardware-specific latency.
+
+**Strengths.** The public development history and training materials support inspection and reproduction beyond a hosted API.
+
+**Limitations.** Iterative tuning against a public benchmark risks benchmark-specific selection. Local timing depends on hardware and input length; an illustrative guardrail integration does not establish safe or reliable deployment. This is a release article, not a controlled independent study.
+
+<a id="web-de9kqqlx"></a>
+
+### 2026-10 — pplx-decider-v1.1-27b
+
+**Venue / provenance:** Perplexity AI; model card. [Primary source](https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b). Reviewed 2026-10-20. Zotero now records 2026-10-06, the date of the [official public announcement](https://community.perplexity.ai/t/pplx-decider-v1-1-27b-our-updated-open-weights-multimodal-decision-model-is-now-available/6286). The [checkpoint history](https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b/commits/main) records an earlier release commit on 2026-10-05; its original card explicitly described a private release. The registry preserves both dates rather than treating that private commit as the public announcement.
+
+**Zotero citation key:** `2026.PERPLEXITYAI.pplxdeciderv1127b`
+
+**Where it fits.** Perplexity AI (2026), *pplx-decider-v1.1-27b*, illustrates how checkpoint-specific execution affects decision behavior.
+
+**What it contains.** The card describes a separate decision readout, noncausal full-attention layers, native linear-attention behavior and one application of the saved calibration temperature. It reports Decision Index gains and supplies source/checksum provenance.
+
+**Strengths.** It identifies concrete reproduction hazards: changing the attention mask, using an incompatible output head or applying temperature twice.
+
+**Limitations.** Its leaderboard comparison is a provider result and does not isolate additional training data from mask changes. Image settings can move beyond the evaluated distribution. The public announcement and earlier checkpoint commit are distinct events; neither dates later edits to the live card.
+
+<a id="web-4u52t7rc"></a>
+
+### 2026-10 — Open d1: Edge decision models for text, vision, and audio
+
+**Venue / provenance:** Liquid AI Blog; blogPost. [Primary source](https://www.liquid.ai/blog/d1-open). Reviewed 2026-10-20. Publication date and provider byline verified against the primary page; no immutable PDF version.
+
+**Zotero citation key:** `2026.LIQUIDAI.opend1edgedecisionmodelstextvisionaudio`
+
+**Where it fits.** Liquid AI (2026), *Open d1: Edge decision models for text, vision, and audio*, broadens the deployment and modality axis.
+
+**What it contains.** The release introduces d1-3B and experimental d1-omni-600M, describing distinct backbones, modality adaptation and benchmark results. It reports input-to-output latency across workstation and edge hardware, including longer states and packed workloads.
+
+**Strengths.** The hardware/input breakdown makes latency claims more interpretable than a single headline speedup. Separate artifacts expose the two architectures.
+
+**Limitations.** The smaller multimodal checkpoint is experimental. The post does not report the private vision split and identifies audio decision benchmarking as unresolved. Demonstrations and provider measurements do not establish broad multimodal decision reliability.
+
+<a id="web-lelm4ubr"></a>
+
+### 2026-10 — Introducing Microsoft-Decision-1, our model for fast decision-making
+
+**Venue / provenance:** Command Line; blogPost. [Primary source](https://commandline.microsoft.com/microsoft-decision-1-model-foundry/). Reviewed 2026-10-20. Publication date and provider byline verified against the primary page; no immutable PDF version.
+
+**Zotero citation key:** `2026.SRIVASTAVA.introducingmicrosoftdecision1ourmodelfastdecisionmaking`
+
+**Where it fits.** Srivastava (2026), *Introducing Microsoft-Decision-1, our model for fast decision-making*, represents the hosted deployment branch.
+
+**What it contains.** The announcement describes Qwen3.5-9B post-training for single-pass option probabilities and comparisons across 36 benchmarks. It reports perturbation tests, calibration and latency, and names Foundry/OpenRouter availability.
+
+**Strengths.** It explicitly separates accuracy, robustness, probability quality and runtime, and states that evaluation benchmarks were blinded from training.
+
+**Limitations.** These are provider claims; the selected source does not supply a reproducible training implementation. Its perturbation protocol differs from adaptive context search, so a low average flip rate cannot rebut JevOut's adversarial findings. The article was updated after release and has no immutable PDF in Zotero.

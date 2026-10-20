@@ -1,0 +1,4 @@
+# Maintenance tools only; this knowledge base is not an installable package.
+pypdf>=5.1
+gitingest>=0.1.4
+# Audits and downstream propagation otherwise use Python's standard library.

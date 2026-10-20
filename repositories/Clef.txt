@@ -1,0 +1,1607 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://huggingface.co/Cloudflare/clef",
+  "revision": "a30162b99d68a481d8bd75d38df069a0cf83df40",
+  "revision_date": "2026-10-19T15:07:45.000Z",
+  "slug": "Cloudflare/clef",
+  "retrieved_utc": "2026-10-20T08:58:53+00:00",
+  "identity_source": "https://blog.cloudflare.com/clef-decision-models/",
+  "included_files": 10,
+  "excluded_files": 16,
+  "file_sha256": [
+    {
+      "path": ".eval_results/Cloudflare__clef.yaml",
+      "bytes": 1112,
+      "sha256": "7dc4aa93f7d8475e9817cd1568eeb8c32520596eea9c8586a90ae1d976cfaff1"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 11544,
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11105,
+      "sha256": "16ee04d296b1ef5edcdb3c4d3d3cd369acdc627fb5d255b34264a73e224d821a"
+    },
+    {
+      "path": "chat_template.jinja",
+      "bytes": 8952,
+      "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+    },
+    {
+      "path": "config.json",
+      "bytes": 3688,
+      "sha256": "c42e88892bd3fd84e8276b2ad90df58c1c3b797676ea161035006a72ad468c58"
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 214,
+      "sha256": "dc36854b2b25176764cfeeda32a3d80fb4fcffbef2b00d55c6614079bf21eb9f"
+    },
+    {
+      "path": "joint_head_config.json",
+      "bytes": 119,
+      "sha256": "890be585d75b981201eb96a35f98a9967afe37bc8d220cfdea2e72d56507534f"
+    },
+    {
+      "path": "joint_schema_model.py",
+      "bytes": 23263,
+      "sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3"
+    },
+    {
+      "path": "processor_config.json",
+      "bytes": 1191,
+      "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1075,
+      "sha256": "91a08f825d370d085d692e04cf117cdd7faad7bf18e996f1e6031b6dab03db72"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+---
+license: apache-2.0
+library_name: transformers
+pipeline_tag: image-text-to-text
+base_model: Qwen/Qwen3.8-27B
+base_model_relation: finetune
+tags:
+- clef
+- cloudflare
+- systemone
+- decision-model
+- qwen3.8
+- post-train
+- image-text-to-typed-output
+- multimodal
+- structured-output
+- classification
+- custom-code
+---
+
+# Clef
+
+- **Announcement:** [Clef decision models on the Cloudflare blog](https://blog.cloudflare.com/clef-decision-models)
+- **Decision Index leaderboard:** [clef-evals.workers-ai-mle.workers.dev](https://clef-evals.workers-ai-mle.workers.dev)
+
+Clef is a 27B multimodal model that turns a state and a schema of typed
+questions into decisions. It reads the state as text, JSON, images, or video, and returns a
+probability for every allowed option of every question in a single forward pass. There is no
+free-form text generation and no output parsing.
+
+The Clef API is fully compatible with Jev and SystemOne.
+
+Clef is post-trained from [Qwen/Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B). See
+[Clef-Flash](https://huggingface.co/Cloudflare/clef-flash) for the
+smaller, faster variant.
+
+## Model
+
+- **Backbone:** Qwen/Qwen3.8-27B with its vision encoder, stored as standard sharded safetensors.
+- **Joint schema head:** a small transformer head that reads the backbone's final hidden states,
+  routes evidence from the state to each question, and scores all options of all questions jointly.
+- **Output:** one logit per allowed option for each question. Apply a softmax per question to get
+  probabilities.
+
+## Files
+
+| File | Purpose |
+|---|---|
+| `model-*.safetensors`, `model.safetensors.index.json`, `config.json`, `generation_config.json` | Backbone, including the vision encoder |
+| `joint_head.safetensors`, `joint_head_config.json` | Joint schema head |
+| `joint_schema_model.py` | Record encoding, batching, the model, `load_release_model`, and `systemone` |
+| `tokenizer.json`, `tokenizer_config.json`, `chat_template.jinja`, `processor_config.json` | Tokenizer and image/video processor |
+| `LICENSE` | Apache-2.0 license |
+
+## Usage
+
+Tested with `torch` 2.11 and `transformers` 5.10.2 on a single H200. Image and video inputs also
+need `pillow`.
+
+```python
+import sys
+
+import torch
+from huggingface_hub import snapshot_download
+
+path = snapshot_download("Cloudflare/clef")
+sys.path.insert(0, path)
+from joint_schema_model import collate_records, encode_record, load_release_model
+
+model, processor = load_release_model(path, device="cuda")
+
+record = {
+    "state": {"invoice": {"vendor": "Acme", "total": 1250.0, "currency": "USD", "status": "overdue"}},
+    "questions": {
+        "status": {
+            "type": "choice",
+            "instructions": "What is the invoice status?",
+            "criteria": {"paid": "Invoice is paid.", "overdue": "Invoice is past due.", "draft": "Not sent."},
+        },
+        "large": {"type": "noul", "instructions": "Is the total above 1000 USD?"},
+    },
+}
+
+encoded = encode_record(processor.tokenizer, record, processor=processor)
+batch = collate_records([encoded], processor.tokenizer.pad_token_id, torch.device("cuda"))
+with torch.inference_mode():
+    logits = model(batch)[0]
+
+for question, question_logits in zip(encoded.questions, logits):
+    probabilities = question_logits.float().softmax(-1).tolist()
+    print(question.question_id, dict(zip(question.option_ids, probabilities)))
+```
+
+### SGLang
+
+Clef can be served with SGLang. See the [SGLang cookbook](https://docs.sglang.io/cookbook/autoregressive/Cloudflare/clef#hw=h200&variant=clef&quant=bf16&strategy=balanced&nodes=single) for
+launch commands on H200, B200, and B300. On a single H200:
+
+```bash
+docker run --gpus all \
+  --shm-size 32g \
+  -p 30000:30000 \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
+  --ipc=host \
+  lmsysorg/sglang:dev-clef \
+  sglang serve \
+    --model-path Cloudflare/clef \
+    --host 0.0.0.0 \
+    --port 30000
+```
+
+The server answers Jev/SystemOne requests at `/v1/systemone`:
+
+```bash
+curl http://localhost:30000/v1/systemone \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"Cloudflare/clef","state":"My Stripe integration keeps failing. Please help ASAP.","questions":{"urgency":{"type":"noul","instructions":"Does this message express urgency?"}}}'
+```
+
+### Jev / SystemOne API
+
+`systemone` takes a Jev/SystemOne `POST /v1/systemone` request body and returns the same response
+body: `model`, `answers` keyed by question ID, and `usage`. A `choice` answer has `choice`,
+`confidence`, and `probabilities`; a `score` answer has the expected `score`, `confidence`, `legend`,
+and `probabilities`; a `noul` answer has the probability of true. `instructions` is optional, and
+`images` and `videos` may be added to the request.
+
+```python
+from joint_schema_model import systemone
+
+response = systemone(model, processor, {
+    "model": "clef",
+    "state": "Our checkout started returning errors and orders are blocked.",
+    "questions": {
+        "department": {
+            "type": "choice",
+            "instructions": "Which team should handle the message?",
+            "criteria": {"billing": "Payments or invoices", "technical": "Bugs or outages"},
+        },
+        "urgency": {"type": "score", "criteria": ["Can wait", "This week", "Today"]},
+        "outage": {"type": "noul", "instructions": "Is a service down?"},
+    },
+})
+print(response["answers"])
+```
+
+### Images and video
+
+Add `images` (PIL images) or `videos` (frame arrays) to the record and pass the processor to
+`encode_record`. Optional processor arguments go in `media_kwargs`.
+
+```python
+from PIL import Image
+
+record = {
+    "state": {"task": "Review the attached receipt."},
+    "images": [Image.open("receipt.jpg")],
+    "questions": {
+        "legible": {"type": "noul", "instructions": "Is the receipt total legible?"},
+    },
+}
+encoded = encode_record(processor.tokenizer, record, processor=processor)
+```
+
+Text-only and multimodal records can be mixed in the same batch.
+
+## Input format
+
+| Field | Description |
+|---|---|
+| `state` | Any string or JSON value describing the situation to decide on |
+| `images`, `videos` | Optional lists of images or video frame arrays |
+| `media_kwargs` | Optional keyword arguments for the image/video processor |
+| `questions` | Mapping of question ID to question |
+
+Each question has:
+
+- `type`: `noul` (true/false), `choice` (named options), or `score` (ordered options)
+- `instructions`: what to decide; optional, and the question ID is used when it is omitted
+- `criteria`: for `choice`, a mapping of option ID to description; for `score`, a list of option
+  descriptions indexed from 0; for `noul`, optional descriptions for `true` and `false`
+
+`encode_record` accepts `max_length` (default 16,384 tokens) and `max_state_tokens` to bound the input.
+
+## Results
+
+### Decision Index
+
+Per-benchmark results from our internal run of the [Decision Index](https://clef-evals.workers-ai-mle.workers.dev) 0.2.1 suite. Scores are percentages; ForecastBench is a Brier score, where lower is better. The last two rows are request latency in milliseconds, where lower is better. The best value in each row is in bold.
+
+| Benchmark | Clef | Clef-flash | Jev | DiffusionGemma Jev | Kev 9B | Laya |
+|---|---|---|---|---|---|---|
+| BFCL (case exact accuracy) | 98.5 | **98.8** | 95.8 | 96.5 | 94.5 | 38.1 |
+| ToolRet (nDCG@10) | **69.2** | 66.4 | 65.3 | 61.2 | 64.3 | 12.8 |
+| API-Bank (accuracy) | 91.9 | **93.1** | 88.2 | 83.7 | 56.3 | 11.5 |
+| BANKING77 (macro-F1) | **94.2** | 90.9 | 79.7 | 74.3 | 84.8 | 14.3 |
+| CLINC150+OOS (macro-F1) | **97.4** | 66.8 | 89.3 | 83.5 | 79.0 | 3.2 |
+| RouterBench (selected quality) | 79.7 | 79.9 | 79.9 | 79.0 | **80.0** | 57.1 |
+| Home appliance simulator (case exact accuracy) | 83.0 | **97.7** | 52.3 | 42.0 | 25.0 | 0.0 |
+| SGD/SGD-X (macro-F1) | 43.8 | 34.2 | 43.0 | 40.6 | **64.0** | 42.4 |
+| ContractNLI (macro-F1) | 81.4 | **84.3** | 71.7 | 76.0 | 57.8 | 29.0 |
+| ANLI (macro-F1) | 69.8 | 59.1 | **74.8** | 66.4 | 56.3 | 48.7 |
+| BPoMP (accuracy) | **96.9** | 95.4 | 90.6 | 86.9 | 67.0 | 51.6 |
+| Humicroedit (accuracy) | 66.7 | **75.1** | 61.9 | 63.0 | 55.8 | 47.2 |
+| POP909-CL (accuracy) | 15.8 | 1.6 | **18.1** | 2.5 | 10.8 | 5.1 |
+| cfcolor (accuracy) | **66.0** | 65.8 | 64.7 | 58.2 | 56.3 | 52.3 |
+| MMLU (accuracy) | 90.3 | **91.8** | 91.7 | 79.3 | 75.3 | 30.7 |
+| GPQA Diamond (accuracy) | 48.0 | 51.0 | **78.3** | 44.9 | 38.8 | 27.6 |
+| ARC-Easy (accuracy) | 99.0 | **99.5** | 99.3 | 98.2 | 97.7 | 47.0 |
+| ARC-Challenge (accuracy) | 97.7 | **98.3** | 97.8 | 94.5 | 93.7 | 28.6 |
+| WinoGrande (accuracy) | 93.5 | **97.5** | 92.0 | 73.6 | 73.2 | 50.5 |
+| HellaSwag (accuracy) | 98.2 | **98.6** | 94.5 | 83.3 | 81.9 | 33.1 |
+| GSM8K (accuracy) | **80.8** | 67.3 | 79.9 | 50.3 | 48.7 | 21.6 |
+| ChessBench (accuracy) | **24.7** | 23.0 | 17.2 | 14.2 | 11.2 | 7.7 |
+| MuSR (accuracy) | 83.5 | **86.0** | 66.1 | 61.2 | 57.9 | 43.2 |
+| SATA-Bench (case exact accuracy) | 33.8 | **36.7** | 26.4 | 27.5 | 26.7 | 0.3 |
+| BRIGHT (nDCG@10) | 45.9 | 39.3 | **47.5** | 42.9 | 38.5 | 19.9 |
+| Amazon ESCI (macro-F1) | **57.5** | 57.4 | 55.2 | 53.4 | 49.2 | 24.4 |
+| ACOS (per-review F1) | **33.3** | 25.9 | 29.5 | 24.5 | 18.3 | 3.5 |
+| FinEntity (macro-F1) | 96.2 | **97.1** | 87.0 | 89.0 | 88.4 | 61.0 |
+| VAST (macro-F1) | 59.5 | 49.6 | **64.6** | 55.7 | 55.4 | 40.5 |
+| NLI4CT (macro-F1) | 82.9 | 78.6 | **84.1** | 78.4 | 74.9 | 47.7 |
+| CRUXEval (accuracy) | **86.7** | 86.1 | 73.0 | 64.7 | 51.2 | 40.2 |
+| CLadder (accuracy) | 94.0 | **97.7** | 72.6 | 67.8 | 62.0 | 52.9 |
+| ForecastBench (Brier, lower is better) | 13.9 | **10.6** | 17.4 | 29.6 | 17.6 | 41.1 |
+| Habermas Machine (accuracy) | 68.7 | **71.8** | 45.9 | 45.0 | 39.4 | 33.4 |
+| PhishNChips (accuracy) | 79.6 | 75.0 | 62.5 | **85.4** | 50.7 | 50.1 |
+| MMLU-Pro (accuracy) | 65.9 | 65.3 | **82.7** | 56.9 | 51.1 | 13.6 |
+| BBH (accuracy) | 73.7 | 68.9 | **92.9** | 70.7 | 65.2 | 34.1 |
+| RAGTruth (hallucination F1) | **79.4** | 35.6 | 76.5 | 70.4 | 46.2 | 48.8 |
+| HoVer (accuracy) | 65.2 | 61.2 | **72.9** | 70.9 | 58.8 | 55.8 |
+| When2Call MCQ (accuracy) | 72.4 | 65.6 | **81.0** | 75.4 | 49.6 | 11.9 |
+| New Yorker (accuracy) | 69.5 | 66.1 | **70.1** | 63.6 | 58.1 | 27.1 |
+| Median latency (ms) | 209.3 | 38.8 | 524.1 | 84.4 | 51.4 | **5.8** |
+| p95 latency (ms) | 238.6 | **122.4** | 536.0 | 211.2 | 187.9 | 222.5 |
+
+### Workflow evals
+
+Decision accuracy on four end-to-end business workflows from [Typesafe Evals](https://evals.typesafe.ai/), scored against consensus reference labels. All models are scored on the same dataset revision and case cohort.
+
+| Workflow | Metric | Clef | Clef-flash | Jev |
+|---|---|---:|---:|---:|
+| Invoice processing | Exact actions | **64.7** | 57.1 | 61.8 |
+| Invoice processing | Primary action | **86.2** | 73.3 | 83.1 |
+| Customer service | Exact actions | 76.3 | **77.0** | 76.0 |
+| Security incidents | Exact actions | **62.9** | 61.7 | 61.7 |
+| Agent trace observability | Primary action | 68.5 | 69.8 | **71.6** |
+
+## License
+
+Released under the Apache-2.0 license, following the base model
+[Qwen/Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B).
+
+
+
+================================================
+FILE: chat_template.jinja
+================================================
+{%- set image_count = namespace(value=0) %}
+{%- set video_count = namespace(value=0) %}
+{%- macro render_content(content, do_vision_count, is_system_content=false) %}
+    {%- if content is string %}
+        {{- content }}
+    {%- elif content is iterable and content is not mapping %}
+        {%- for item in content %}
+            {%- if 'image' in item or 'image_url' in item or item.type == 'image' %}
+                {%- if is_system_content %}
+                    {{- raise_exception('System message cannot contain images.') }}
+                {%- endif %}
+                {%- if do_vision_count %}
+                    {%- set image_count.value = image_count.value + 1 %}
+                {%- endif %}
+                {%- if add_vision_id %}
+                    {{- 'Picture ' ~ image_count.value ~ ': ' }}
+                {%- endif %}
+                {{- '<|vision_start|><|image_pad|><|vision_end|>' }}
+            {%- elif 'video' in item or item.type == 'video' %}
+                {%- if is_system_content %}
+                    {{- raise_exception('System message cannot contain videos.') }}
+                {%- endif %}
+                {%- if do_vision_count %}
+                    {%- set video_count.value = video_count.value + 1 %}
+                {%- endif %}
+                {%- if add_vision_id %}
+                    {{- 'Video ' ~ video_count.value ~ ': ' }}
+                {%- endif %}
+                {{- '<|vision_start|><|video_pad|><|vision_end|>' }}
+            {%- elif 'text' in item %}
+                {{- item.text }}
+            {%- else %}
+                {{- raise_exception('Unexpected item type in content.') }}
+            {%- endif %}
+        {%- endfor %}
+    {%- elif content is none or content is undefined %}
+        {{- '' }}
+    {%- else %}
+        {{- raise_exception('Unexpected content type.') }}
+    {%- endif %}
+{%- endmacro %}
+{%- if not messages %}
+    {{- raise_exception('No messages provided.') }}
+{%- endif %}
+{%- set reasoning_instructions = '' %}
+{%- if enable_thinking is undefined or enable_thinking is true %}
+    {%- set resolved_reasoning_effort = reasoning_effort|default('xhigh') %}
+    {%- if resolved_reasoning_effort not in ('xhigh', 'medium', 'low') %}
+        {{- raise_exception('Unexpected reasoning effort ' ~ reasoning_effort ~ '. Supported types are xhigh (default), medium, and low.') }}
+    {%- endif %}
+    {%- if resolved_reasoning_effort == 'xhigh' %}
+        {%- set reasoning_instructions = 'Reasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.' %}
+    {%- elif resolved_reasoning_effort == 'low' %}
+        {%- set reasoning_instructions = 'Reasoning effort is set to low. Keep your thinking brief and focused, moving directly to the conclusion without unnecessary elaboration.' %}
+    {%- endif %}
+{%- endif %}
+{%- if tools and tools is iterable and tools is not mapping %}
+    {{- '<|im_start|>system\n' }}
+    {%- if reasoning_instructions %}
+        {{- reasoning_instructions + '\n\n' }}
+    {%- endif %}
+    {{- "# Tools\n\nYou have access to the following functions:\n\n<tools>" }}
+    {%- for tool in tools %}
+        {{- "\n" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- "\n</tools>" }}
+    {{- '\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>' }}
+    {%- if messages[0].role == 'system' %}
+        {%- set content = render_content(messages[0].content, false, true)|trim %}
+        {%- if content %}
+            {{- '\n\n' + content }}
+        {%- endif %}
+    {%- endif %}
+    {{- '<|im_end|>\n' }}
+{%- else %}
+    {%- if messages[0].role == 'system' %}
+        {%- set content = render_content(messages[0].content, false, true)|trim %}
+        {%- if content %}
+            {{- '<|im_start|>system\n' + (reasoning_instructions + '\n\n' if reasoning_instructions else '')  + content + '<|im_end|>\n' }}
+        {%- elif reasoning_instructions %}
+            {{- '<|im_start|>system\n' + reasoning_instructions + '<|im_end|>\n' }}
+        {%- endif %}
+    {%- elif reasoning_instructions %}
+        {{- '<|im_start|>system\n' + reasoning_instructions + '<|im_end|>\n' }}
+    {%- endif %}
+{%- endif %}
+{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}
+{%- for message in messages[::-1] %}
+    {%- set index = (messages|length - 1) - loop.index0 %}
+    {%- if ns.multi_step_tool and message.role == "user" %}
+        {%- set content = render_content(message.content, false)|trim %}
+        {%- if not(content.startswith('<tool_response>') and content.endswith('</tool_response>')) %}
+            {%- set ns.multi_step_tool = false %}
+            {%- set ns.last_query_index = index %}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if ns.multi_step_tool %}
+    {{- raise_exception('No user query found in messages.') }}
+{%- endif %}
+{%- for message in messages %}
+    {%- set content = render_content(message.content, true)|trim %}
+    {%- if message.role == "system" %}
+        {%- if not loop.first %}
+            {{- raise_exception('System message must be at the beginning.') }}
+        {%- endif %}
+    {%- elif message.role == "user" %}
+        {{- '<|im_start|>' + message.role + '\n' + content + '<|im_end|>' + '\n' }}
+    {%- elif message.role == "assistant" %}
+        {%- set reasoning_content = '' %}
+        {%- if message.reasoning_content is string %}
+            {%- set reasoning_content = message.reasoning_content %}
+        {%- endif %}
+        {%- set reasoning_content = reasoning_content|trim %}
+        {%- if preserve_thinking is undefined or preserve_thinking is true or loop.index0 > ns.last_query_index %}
+            {{- '<|im_start|>' + message.role + '\n<think>\n' + reasoning_content + '\n</think>\n\n' + content }}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\n' + content }}
+        {%- endif %}
+        {%- if message.tool_calls and message.tool_calls is iterable and message.tool_calls is not mapping %}
+            {%- for tool_call in message.tool_calls %}
+                {%- if tool_call.function is defined %}
+                    {%- set tool_call = tool_call.function %}
+                {%- endif %}
+                {%- if loop.first %}
+                    {%- if content|trim %}
+                        {{- '\n\n<tool_call>\n<function=' + tool_call.name + '>\n' }}
+                    {%- else %}
+                        {{- '<tool_call>\n<function=' + tool_call.name + '>\n' }}
+                    {%- endif %}
+                {%- else %}
+                    {{- '\n<tool_call>\n<function=' + tool_call.name + '>\n' }}
+                {%- endif %}
+                {%- if tool_call.arguments is defined and tool_call.arguments != '' %}
+                    {%- for args_name, args_value in tool_call.arguments|items %}
+                        {{- '<parameter=' + args_name + '>\n' }}
+                        {%- set args_value = args_value | string if args_value is string else args_value | tojson | safe %}
+                        {{- args_value }}
+                        {{- '\n</parameter>\n' }}
+                    {%- endfor %}
+                {%- endif %}
+                {{- '</function>\n</tool_call>' }}
+            {%- endfor %}
+        {%- endif %}
+        {{- '<|im_end|>\n' }}
+    {%- elif message.role == "tool" %}
+        {%- if loop.previtem and loop.previtem.role != "tool" %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\n<tool_response>\n' }}
+        {{- content }}
+        {{- '\n</tool_response>' }}
+        {%- if not loop.last and loop.nextitem.role != "tool" %}
+            {{- '<|im_end|>\n' }}
+        {%- elif loop.last %}
+            {{- '<|im_end|>\n' }}
+        {%- endif %}
+    {%- else %}
+        {{- raise_exception('Unexpected message role.') }}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\n' }}
+    {%- if enable_thinking is defined and enable_thinking is false %}
+        {{- '<think>\n\n</think>\n\n' }}
+    {%- else %}
+        {{- '<think>\n' }}
+    {%- endif %}
+{%- endif %}
+
+
+================================================
+FILE: config.json
+================================================
+{
+  "architectures": [
+    "Qwen3_5ForConditionalGeneration"
+  ],
+  "dtype": "bfloat16",
+  "image_token_id": 248056,
+  "language_model_only": false,
+  "model_type": "qwen3_5",
+  "text_config": {
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "attn_output_gate": true,
+    "bos_token_id": 248044,
+    "dtype": "bfloat16",
+    "eos_token_id": 248044,
+    "full_attention_interval": 4,
+    "head_dim": 256,
+    "hidden_act": "silu",
+    "hidden_size": 5120,
+    "initializer_range": 0.02,
+    "intermediate_size": 17408,
+    "layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention",
+      "linear_attention",
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "linear_conv_kernel_dim": 4,
+    "linear_key_head_dim": 128,
+    "linear_num_key_heads": 16,
+    "linear_num_value_heads": 48,
+    "linear_value_head_dim": 128,
+    "mamba_ssm_dtype": "float32",
+    "max_position_embeddings": 262144,
+    "model_type": "qwen3_5_text",
+    "mtp_num_hidden_layers": 0,
+    "mtp_use_dedicated_embeddings": false,
+    "num_attention_heads": 24,
+    "num_hidden_layers": 64,
+    "num_key_value_heads": 4,
+    "output_gate_type": "swish",
+    "pad_token_id": null,
+    "partial_rotary_factor": 0.25,
+    "rms_norm_eps": 1e-06,
+    "rope_parameters": {
+      "mrope_interleaved": true,
+      "mrope_section": [
+        11,
+        11,
+        10
+      ],
+      "partial_rotary_factor": 0.25,
+      "rope_theta": 10000000,
+      "rope_type": "default"
+    },
+    "tie_word_embeddings": false,
+    "use_cache": true,
+    "vocab_size": 248320
+  },
+  "tie_word_embeddings": false,
+  "transformers_version": "5.10.2",
+  "video_token_id": 248057,
+  "vision_config": {
+    "deepstack_visual_indexes": [],
+    "depth": 27,
+    "dtype": "bfloat16",
+    "hidden_act": "gelu_pytorch_tanh",
+    "hidden_size": 1152,
+    "in_channels": 3,
+    "initializer_range": 0.02,
+    "intermediate_size": 4304,
+    "model_type": "qwen3_5_vision",
+    "num_heads": 16,
+    "num_position_embeddings": 2304,
+    "out_hidden_size": 5120,
+    "patch_size": 16,
+    "spatial_merge_size": 2,
+    "temporal_patch_size": 2
+  },
+  "vision_end_token_id": 248054,
+  "vision_start_token_id": 248053
+}
+
+
+
+================================================
+FILE: generation_config.json
+================================================
+{
+  "bos_token_id": 248044,
+  "do_sample": true,
+  "eos_token_id": [
+    248046,
+    248044
+  ],
+  "pad_token_id": 248044,
+  "temperature": 1.0,
+  "top_k": 20,
+  "top_p": 0.95,
+  "transformers_version": "5.10.2"
+}
+
+
+
+================================================
+FILE: joint_head_config.json
+================================================
+{
+  "hidden_size": 5120,
+  "width": 1024,
+  "routing_layers": 2,
+  "layers": 4,
+  "heads": 16,
+  "feedforward": 4096
+}
+
+
+
+================================================
+FILE: joint_schema_model.py
+================================================
+"""Clef: a multimodal Qwen backbone with a joint schema head for typed decisions.
+
+A record provides a ``state`` (any JSON value), optional ``images`` and ``videos``,
+and ``questions``. Each question has a ``type`` (``noul``, ``choice``, or ``score``),
+``instructions``, and, for ``choice`` and ``score``, ``criteria`` describing the
+allowed options. The model returns one logit per allowed option for every question.
+``systemone`` answers a Jev/SystemOne ``/v1/systemone`` request body with the same
+response body.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
+from pathlib import Path
+from typing import Any
+
+import torch
+import torch.nn.functional as functional
+
+
+SYSTEM_PROMPT = (
+    "Read the complete state and schema. Decide every field jointly. Each answer "
+    "must be exactly one of that field's allowed options."
+)
+IMAGE_PLACEHOLDER = "<|vision_start|><|image_pad|><|vision_end|>"
+VIDEO_PLACEHOLDER = "<|vision_start|><|video_pad|><|vision_end|>"
+MEDIA_BATCH_KEYS = ("pixel_values", "image_grid_thw", "pixel_values_videos", "video_grid_thw")
+MEDIA_TOKEN_KEYS = ("mm_token_type_ids",)
+QUESTION_TYPES = {"noul": 0, "choice": 1, "score": 2}
+
+
+def render(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+
+def question_options(question: dict[str, Any]) -> list[tuple[str, Any]]:
+    question_type = str(question["type"])
+    if question_type == "noul":
+        criteria = {
+            "true": "The proposition is true or the answer is yes.",
+            "false": "The proposition is false or the answer is no.",
+        }
+        criteria.update(question.get("criteria") or {})
+        return [(key, criteria[key]) for key in ("true", "false")]
+    if question_type == "choice":
+        return sorted((str(key), value) for key, value in question["criteria"].items())
+    return [(str(index), value) for index, value in enumerate(question["criteria"])]
+
+
+@dataclass(frozen=True)
+class EncodedQuestion:
+    question_id: str
+    question_type: int
+    question_span: tuple[int, int]
+    option_spans: tuple[tuple[int, int], ...]
+    option_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class EncodedRecord:
+    input_ids: tuple[int, ...]
+    questions: tuple[EncodedQuestion, ...]
+    record_id: str
+    media: dict[str, Any] | None = dataclass_field(default=None, compare=False, repr=False)
+
+
+def _tokens(tokenizer: Any, text: str) -> list[int]:
+    return tokenizer(text, add_special_tokens=False).input_ids
+
+
+def _encode_media(processor: Any, record: dict[str, Any]) -> tuple[list[int], dict[str, Any] | None]:
+    images = list(record.get("images") or [])
+    videos = list(record.get("videos") or [])
+    if not images and not videos:
+        return [], None
+    if processor is None:
+        raise ValueError("records with images or videos require a processor")
+    text = IMAGE_PLACEHOLDER * len(images) + VIDEO_PLACEHOLDER * len(videos) + "\n"
+    encoded = processor(
+        text=[text],
+        images=images or None,
+        videos=videos or None,
+        return_tensors="pt",
+        **(record.get("media_kwargs") or {}),
+    )
+    media = {key: encoded[key] for key in MEDIA_BATCH_KEYS if key in encoded}
+    for key in MEDIA_TOKEN_KEYS:
+        if key in encoded:
+            media[key] = encoded[key][0].tolist()
+    return encoded["input_ids"][0].tolist(), media
+
+
+def encode_record(
+    tokenizer: Any,
+    record: dict[str, Any],
+    max_length: int = 16384,
+    max_state_tokens: int | None = None,
+    processor: Any | None = None,
+) -> EncodedRecord:
+    schema_ids = _tokens(tokenizer, "\n\nSCHEMA FIELDS:\n")
+    questions: list[EncodedQuestion] = []
+    for question_index, (question_id, question) in enumerate(record["questions"].items()):
+        schema_ids.extend(
+            _tokens(
+                tokenizer,
+                f"\nFIELD {question_index + 1}\nID: {question_id}\nTYPE: {question['type']}\nINSTRUCTION: ",
+            )
+        )
+        question_start = len(schema_ids)
+        instructions = question.get("instructions")
+        if instructions is None or instructions == "":
+            instructions = str(question_id)
+        schema_ids.extend(_tokens(tokenizer, render(instructions)))
+        question_end = len(schema_ids)
+        schema_ids.extend(_tokens(tokenizer, "\nALLOWED OPTIONS:\n"))
+
+        option_spans: list[tuple[int, int]] = []
+        option_ids: list[str] = []
+        for option_index, (option_id, description) in enumerate(question_options(question)):
+            schema_ids.extend(_tokens(tokenizer, f"OPTION {option_index + 1}: "))
+            option_start = len(schema_ids)
+            semantics = {"option_id": option_id}
+            if description is not None:
+                semantics["description"] = description
+            schema_ids.extend(_tokens(tokenizer, render(semantics)))
+            option_spans.append((option_start, len(schema_ids)))
+            option_ids.append(option_id)
+            schema_ids.extend(_tokens(tokenizer, "\n"))
+        schema_ids.extend(_tokens(tokenizer, "END FIELD\n"))
+        questions.append(
+            EncodedQuestion(
+                question_id=str(question_id),
+                question_type=QUESTION_TYPES[str(question["type"])],
+                question_span=(question_start, question_end),
+                option_spans=tuple(option_spans),
+                option_ids=tuple(option_ids),
+            )
+        )
+
+    prefix_ids = _tokens(
+        tokenizer,
+        f"<|im_start|>system\n{SYSTEM_PROMPT}<|im_end|>\n<|im_start|>user\nSTATE:\n",
+    )
+    suffix_ids = _tokens(
+        tokenizer,
+        "\n<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nJOINT SCHEMA DECISIONS:",
+    )
+    media_ids, media = _encode_media(processor, record)
+    if media is not None:
+        media["token_offset"] = len(prefix_ids)
+        prefix_ids = prefix_ids + media_ids
+    state_ids = _tokens(tokenizer, render(record["state"]))
+    if max_state_tokens is not None:
+        state_ids = state_ids[:max_state_tokens]
+    fixed_length = len(prefix_ids) + len(schema_ids) + len(suffix_ids)
+    if fixed_length > max_length:
+        raise ValueError(
+            f"schema requires {fixed_length} tokens before state; maximum is {max_length}"
+        )
+    state_ids = state_ids[: max_length - fixed_length]
+    schema_offset = len(prefix_ids) + len(state_ids)
+    shifted_questions = tuple(
+        EncodedQuestion(
+            question_id=question.question_id,
+            question_type=question.question_type,
+            question_span=(
+                question.question_span[0] + schema_offset,
+                question.question_span[1] + schema_offset,
+            ),
+            option_spans=tuple(
+                (start + schema_offset, end + schema_offset)
+                for start, end in question.option_spans
+            ),
+            option_ids=question.option_ids,
+        )
+        for question in questions
+    )
+    input_ids = tuple(prefix_ids + state_ids + schema_ids + suffix_ids)
+    if not input_ids or not shifted_questions:
+        raise ValueError("record produced no model input or questions")
+    return EncodedRecord(
+        input_ids=input_ids,
+        questions=shifted_questions,
+        record_id=str(record.get("id", "unknown")),
+        media=media,
+    )
+
+
+def collate_records(
+    records: list[EncodedRecord],
+    pad_token_id: int,
+    device: torch.device,
+) -> dict[str, Any]:
+    maximum_length = max(len(record.input_ids) for record in records)
+    input_ids = torch.full(
+        (len(records), maximum_length),
+        pad_token_id,
+        dtype=torch.long,
+        device=device,
+    )
+    attention_mask = torch.zeros(
+        (len(records), maximum_length),
+        dtype=torch.long,
+        device=device,
+    )
+    for index, record in enumerate(records):
+        length = len(record.input_ids)
+        input_ids[index, :length] = torch.tensor(record.input_ids, device=device)
+        attention_mask[index, :length] = 1
+    media: dict[str, torch.Tensor] = {}
+    for key in MEDIA_BATCH_KEYS:
+        values = [record.media[key] for record in records if record.media and key in record.media]
+        if values:
+            media[key] = torch.cat(values, dim=0).to(device)
+    for key in MEDIA_TOKEN_KEYS:
+        if any(record.media and key in record.media for record in records):
+            token_values = torch.zeros((len(records), maximum_length), dtype=torch.long, device=device)
+            for index, record in enumerate(records):
+                if record.media and key in record.media:
+                    offset = record.media["token_offset"]
+                    values = torch.tensor(record.media[key], dtype=torch.long, device=device)
+                    token_values[index, offset : offset + len(values)] = values
+            media[key] = token_values
+    return {
+        "input_ids": input_ids,
+        "attention_mask": attention_mask,
+        "records": records,
+        "media": media,
+    }
+
+
+class EvidenceRoutingLayer(torch.nn.Module):
+    def __init__(
+        self,
+        width: int,
+        heads: int,
+        feedforward: int,
+        dropout: float = 0.0,
+    ) -> None:
+        super().__init__()
+        self.query_norm = torch.nn.LayerNorm(width)
+        self.memory_norm = torch.nn.LayerNorm(width)
+        self.attention = torch.nn.MultiheadAttention(
+            width,
+            heads,
+            dropout=dropout,
+            batch_first=True,
+        )
+        self.attention_dropout = torch.nn.Dropout(dropout)
+        self.feedforward_norm = torch.nn.LayerNorm(width)
+        self.feedforward = torch.nn.Sequential(
+            torch.nn.Linear(width, feedforward),
+            torch.nn.GELU(),
+            torch.nn.Dropout(dropout),
+            torch.nn.Linear(feedforward, width),
+            torch.nn.Dropout(dropout),
+        )
+
+    def forward(self, queries: torch.Tensor, memory: torch.Tensor) -> torch.Tensor:
+        normalized_queries = self.query_norm(queries)
+        routed, _ = self.attention(
+            normalized_queries,
+            self.memory_norm(memory),
+            self.memory_norm(memory),
+            need_weights=False,
+        )
+        queries = queries + self.attention_dropout(routed)
+        return queries + self.feedforward(self.feedforward_norm(queries))
+
+
+class JointSchemaHead(torch.nn.Module):
+    def __init__(
+        self,
+        hidden_size: int,
+        width: int,
+        routing_layers: int,
+        layers: int,
+        heads: int,
+        feedforward: int,
+        dropout: float = 0.0,
+    ) -> None:
+        super().__init__()
+        self.hidden_norm = torch.nn.LayerNorm(hidden_size)
+        self.memory_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.question_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.option_question_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.global_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.option_context_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.option_lexical_projection = torch.nn.Linear(hidden_size, width, bias=False)
+        self.type_embedding = torch.nn.Embedding(3, width)
+        self.evidence_layers = torch.nn.ModuleList(
+            [
+                EvidenceRoutingLayer(
+                    width=width,
+                    heads=heads,
+                    feedforward=feedforward,
+                    dropout=dropout,
+                )
+                for _ in range(routing_layers)
+            ]
+        )
+        self.option_summary_norm = torch.nn.LayerNorm(width)
+        self.layers = torch.nn.ModuleList(
+            [
+                torch.nn.TransformerDecoderLayer(
+                    d_model=width,
+                    nhead=heads,
+                    dim_feedforward=feedforward,
+                    dropout=dropout,
+                    activation="gelu",
+                    batch_first=True,
+                    norm_first=True,
+                )
+                for _ in range(layers)
+            ]
+        )
+        self.field_norm = torch.nn.LayerNorm(width)
+        self.option_norm = torch.nn.LayerNorm(width)
+        self.residual_scorer = torch.nn.Sequential(
+            torch.nn.Linear(width * 4, width),
+            torch.nn.GELU(),
+            torch.nn.Dropout(dropout),
+            torch.nn.Linear(width, 1),
+        )
+        self.prior_logit_scale = torch.nn.Parameter(torch.zeros(()))
+        self.joint_logit_scale = torch.nn.Parameter(torch.zeros(()))
+        self.residual_gate = torch.nn.Parameter(torch.zeros(()))
+
+    @staticmethod
+    def _mean_span(values: torch.Tensor, span: tuple[int, int]) -> torch.Tensor:
+        start, end = span
+        return values[start:end].mean(dim=0)
+
+    def forward(
+        self,
+        hidden_states: torch.Tensor,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor,
+        records: list[EncodedRecord],
+        output_embedding_weight: torch.Tensor,
+    ) -> list[list[torch.Tensor]]:
+        results: list[list[torch.Tensor]] = []
+        normalized_hidden = self.hidden_norm(hidden_states)
+        for batch_index, record in enumerate(records):
+            sequence_length = int(attention_mask[batch_index].sum().item())
+            sequence_hidden = normalized_hidden[batch_index, :sequence_length]
+            memory = self.memory_projection(sequence_hidden).unsqueeze(0)
+            global_vector = sequence_hidden[-1]
+            question_vectors = torch.stack(
+                [
+                    self._mean_span(sequence_hidden, question.question_span)
+                    for question in record.questions
+                ]
+            )
+            type_ids = torch.tensor(
+                [question.question_type for question in record.questions],
+                device=hidden_states.device,
+            )
+            option_contexts: list[torch.Tensor] = []
+            lexical_options: list[torch.Tensor] = []
+            option_counts = []
+            for question in record.questions:
+                context_vectors = torch.stack(
+                    [
+                        self._mean_span(sequence_hidden, span)
+                        for span in question.option_spans
+                    ]
+                )
+                lexical_vectors = []
+                for start, end in question.option_spans:
+                    token_ids = input_ids[batch_index, start:end]
+                    lexical_vectors.append(output_embedding_weight[token_ids].mean(dim=0))
+                lexical = torch.stack(lexical_vectors)
+                option_contexts.append(context_vectors)
+                lexical_options.append(lexical)
+                option_counts.append(len(question.option_spans))
+
+            option_queries = []
+            for question_index, (context_vectors, lexical) in enumerate(
+                zip(option_contexts, lexical_options)
+            ):
+                option_queries.append(
+                    self.option_context_projection(context_vectors)
+                    + self.option_lexical_projection(lexical)
+                    + self.option_question_projection(
+                        question_vectors[question_index]
+                    ).unsqueeze(0)
+                )
+            routed_options = torch.cat(option_queries, dim=0).unsqueeze(0)
+            for layer in self.evidence_layers:
+                routed_options = layer(routed_options, memory)
+            routed_options = routed_options[0]
+            split_options = list(torch.split(routed_options, option_counts, dim=0))
+
+            base_fields = self.question_projection(question_vectors)
+            option_summaries = []
+            for field, options in zip(base_fields, split_options):
+                routing_weights = torch.softmax(
+                    torch.matmul(options, field) / math.sqrt(options.shape[-1]),
+                    dim=0,
+                )
+                option_summaries.append(
+                    torch.sum(routing_weights.unsqueeze(-1) * options, dim=0)
+                )
+            fields = (
+                base_fields
+                + self.option_summary_norm(torch.stack(option_summaries))
+                + self.global_projection(global_vector).unsqueeze(0)
+                + self.type_embedding(type_ids)
+            )
+            fields = fields.unsqueeze(0)
+            for layer in self.layers:
+                fields = layer(fields, memory)
+            fields = self.field_norm(fields[0])
+
+            record_logits: list[torch.Tensor] = []
+            for field, question, lexical, routed in zip(
+                fields,
+                record.questions,
+                lexical_options,
+                split_options,
+            ):
+                anchor = functional.normalize(
+                    question_vectors[len(record_logits)] + global_vector,
+                    dim=-1,
+                )
+                lexical_anchor = functional.normalize(lexical, dim=-1)
+                prior_scale = self.prior_logit_scale.clamp(max=math.log(100.0)).exp()
+                prior = prior_scale * torch.matmul(lexical_anchor, anchor)
+                options = self.option_norm(routed)
+                repeated_field = field.unsqueeze(0).expand_as(options)
+                cosine = functional.cosine_similarity(repeated_field, options, dim=-1)
+                features = torch.cat(
+                    [
+                        repeated_field,
+                        options,
+                        repeated_field * options,
+                        torch.abs(repeated_field - options),
+                    ],
+                    dim=-1,
+                )
+                residual = self.residual_scorer(features).squeeze(-1)
+                joint_scale = self.joint_logit_scale.clamp(max=math.log(100.0)).exp()
+                joint = joint_scale * cosine + residual
+                record_logits.append(
+                    prior + torch.sigmoid(self.residual_gate) * joint
+                )
+            results.append(record_logits)
+        return results
+
+
+class ClefModel(torch.nn.Module):
+    def __init__(self, language_model: Any, head: JointSchemaHead) -> None:
+        super().__init__()
+        self.language_model = language_model
+        self.head = head
+
+    def forward(self, batch: dict[str, Any]) -> list[list[torch.Tensor]]:
+        base_model = (
+            self.language_model.get_base_model()
+            if hasattr(self.language_model, "get_base_model")
+            else self.language_model
+        )
+        media = batch.get("media") or {}
+        text_model = base_model.model
+        if not media and hasattr(text_model, "language_model"):
+            text_model = text_model.language_model
+        outputs = text_model(
+            input_ids=batch["input_ids"],
+            attention_mask=batch["attention_mask"],
+            use_cache=False,
+            return_dict=True,
+            **media,
+        )
+        return self.head(
+            outputs.last_hidden_state,
+            batch["input_ids"],
+            batch["attention_mask"],
+            batch["records"],
+            base_model.get_output_embeddings().weight,
+        )
+
+
+def load_release_model(
+    model_path: str | Path,
+    device: str | torch.device = "cuda",
+    dtype: torch.dtype = torch.bfloat16,
+    **from_pretrained_kwargs: Any,
+) -> tuple[ClefModel, Any]:
+    """Load a Clef release (merged backbone, joint schema head, and processor)."""
+    from huggingface_hub import snapshot_download
+    from safetensors.torch import load_file
+    from transformers import AutoProcessor, Qwen3_5ForConditionalGeneration
+
+    path = Path(model_path)
+    if not path.is_dir():
+        path = Path(snapshot_download(str(model_path)))
+    backbone = Qwen3_5ForConditionalGeneration.from_pretrained(
+        path,
+        dtype=dtype,
+        device_map={"": str(device)},
+        **from_pretrained_kwargs,
+    )
+    backbone.config.use_cache = False
+    head_config = json.loads((path / "joint_head_config.json").read_text())
+    head = JointSchemaHead(**head_config)
+    head.load_state_dict(load_file(path / "joint_head.safetensors"), strict=True)
+    head = head.to(device=device, dtype=dtype)
+    processor = AutoProcessor.from_pretrained(path)
+    return ClefModel(backbone, head).eval(), processor
+
+
+def systemone_answer(question: dict[str, Any], probabilities: dict[str, float]) -> dict[str, Any]:
+    """Convert per-option probabilities for one question into a SystemOne answer."""
+    if question["type"] == "noul":
+        return {"type": "noul", "noul": round(probabilities["true"], 4)}
+    if question["type"] == "choice":
+        options = [str(option) for option in question["criteria"]]
+        choice = max(options, key=probabilities.__getitem__)
+        return {
+            "type": "choice",
+            "choice": choice,
+            "confidence": round(probabilities[choice], 4),
+            "probabilities": {option: round(probabilities[option], 4) for option in options},
+        }
+    levels = [str(index) for index in range(len(question["criteria"]))]
+    return {
+        "type": "score",
+        "score": round(sum(index * probabilities[level] for index, level in enumerate(levels)), 4),
+        "confidence": round(max(probabilities[level] for level in levels), 4),
+        "legend": dict(zip(levels, question["criteria"])),
+        "probabilities": {level: round(probabilities[level], 4) for level in levels},
+    }
+
+
+@torch.inference_mode()
+def systemone(model: ClefModel, processor: Any, request: dict[str, Any], max_length: int = 16384) -> dict[str, Any]:
+    """Answer a Jev/SystemOne ``/v1/systemone`` request body with a SystemOne response body.
+
+    The request has ``model``, ``state``, and ``questions``, plus optional ``images`` and ``videos``.
+    """
+    questions = request.get("questions")
+    if not isinstance(request.get("model"), str) or "state" not in request:
+        raise ValueError("model and state are required")
+    if not isinstance(questions, dict) or not questions:
+        raise ValueError("at least one question is required")
+    for question_id, question in questions.items():
+        if question.get("type") not in QUESTION_TYPES:
+            raise ValueError(f"{question_id}: type must be noul, choice, or score")
+        if question["type"] != "noul" and not question.get("criteria"):
+            raise ValueError(f"{question_id}: criteria must not be empty")
+    encoded = encode_record(processor.tokenizer, request, max_length=max_length, processor=processor)
+    device = next(model.parameters()).device
+    logits = model(collate_records([encoded], processor.tokenizer.pad_token_id, device))[0]
+    answers = {
+        question.question_id: systemone_answer(
+            questions[question.question_id],
+            dict(zip(question.option_ids, question_logits.float().softmax(-1).tolist())),
+        )
+        for question, question_logits in zip(encoded.questions, logits)
+    }
+    return {
+        "model": request["model"],
+        "answers": answers,
+        "usage": {"input_tokens": len(encoded.input_ids), "output_tokens": 0},
+    }
+
+
+
+================================================
+FILE: LICENSE
+================================================
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright 2026 Alibaba Cloud
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+================================================
+FILE: processor_config.json
+================================================
+{
+  "image_processor": {
+    "do_convert_rgb": true,
+    "do_normalize": true,
+    "do_rescale": true,
+    "do_resize": true,
+    "image_mean": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "image_processor_type": "Qwen2VLImageProcessor",
+    "image_std": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "merge_size": 2,
+    "patch_size": 16,
+    "resample": 3,
+    "rescale_factor": 0.00392156862745098,
+    "size": {
+      "longest_edge": 16777216,
+      "shortest_edge": 65536
+    },
+    "temporal_patch_size": 2
+  },
+  "processor_class": "Qwen3VLProcessor",
+  "video_processor": {
+    "do_convert_rgb": true,
+    "do_normalize": true,
+    "do_rescale": true,
+    "do_resize": true,
+    "do_sample_frames": true,
+    "fps": 2,
+    "image_mean": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "image_std": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "max_frames": 768,
+    "merge_size": 2,
+    "min_frames": 4,
+    "patch_size": 16,
+    "resample": 3,
+    "rescale_factor": 0.00392156862745098,
+    "return_metadata": false,
+    "size": {
+      "longest_edge": 25165824,
+      "shortest_edge": 4096
+    },
+    "temporal_patch_size": 2,
+    "video_processor_type": "Qwen3VLVideoProcessor"
+  }
+}
+
+
+
+================================================
+FILE: tokenizer_config.json
+================================================
+{
+  "add_prefix_space": false,
+  "audio_bos_token": "<|audio_start|>",
+  "audio_eos_token": "<|audio_end|>",
+  "audio_token": "<|audio_pad|>",
+  "backend": "tokenizers",
+  "bos_token": null,
+  "clean_up_tokenization_spaces": false,
+  "eos_token": "<|im_end|>",
+  "errors": "replace",
+  "image_token": "<|image_pad|>",
+  "model_max_length": 262144,
+  "model_specific_special_tokens": {
+    "audio_bos_token": "<|audio_start|>",
+    "audio_eos_token": "<|audio_end|>",
+    "audio_token": "<|audio_pad|>",
+    "image_token": "<|image_pad|>",
+    "video_token": "<|video_pad|>",
+    "vision_bos_token": "<|vision_start|>",
+    "vision_eos_token": "<|vision_end|>"
+  },
+  "pad_token": "<|endoftext|>",
+  "pretokenize_regex": "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?[\\p{L}\\p{M}]+|\\p{N}| ?[^\\s\\p{L}\\p{M}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+",
+  "split_special_tokens": false,
+  "tokenizer_class": "Qwen2Tokenizer",
+  "unk_token": null,
+  "video_token": "<|video_pad|>",
+  "vision_bos_token": "<|vision_start|>",
+  "vision_eos_token": "<|vision_end|>"
+}
+
+
+
+================================================
+FILE: .eval_results/Cloudflare__clef.yaml
+================================================
+- dataset:
+    id: LocalLLaMA/typed-decisions
+    task_id: accuracy
+  value: 0.7275
+  date: "2026-10-16"
+  source:
+    url: https://huggingface.co/buckets/SaylorTwift/typed-decisions-evals
+    name: "Typed Decisions benchmark run 2026-10-16 (results + leaderboard.md in bucket)"
+- dataset:
+    id: LocalLLaMA/typed-decisions
+    task_id: kl_from_gold
+  value: 0.1907
+  date: "2026-10-16"
+  source:
+    url: https://huggingface.co/buckets/SaylorTwift/typed-decisions-evals
+    name: "Typed Decisions benchmark run 2026-10-16 (results + leaderboard.md in bucket)"
+- dataset:
+    id: LocalLLaMA/typed-decisions
+    task_id: brier
+  value: 0.1032
+  date: "2026-10-16"
+  source:
+    url: https://huggingface.co/buckets/SaylorTwift/typed-decisions-evals
+    name: "Typed Decisions benchmark run 2026-10-16 (results + leaderboard.md in bucket)"
+- dataset:
+    id: LocalLLaMA/typed-decisions
+    task_id: ece
+  value: 0.0253
+  date: "2026-10-16"
+  source:
+    url: https://huggingface.co/buckets/SaylorTwift/typed-decisions-evals
+    name: "Typed Decisions benchmark run 2026-10-16 (results + leaderboard.md in bucket)"
+
+

@@ -1,0 +1,1111 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://huggingface.co/LiquidAI/d1-omni-600M",
+  "revision": "02b55d7076f15129e59ab3f94783f32c4b088674",
+  "revision_date": "2026-10-07T20:22:38.000Z",
+  "slug": "LiquidAI/d1-omni-600M",
+  "retrieved_utc": "2026-10-20T08:58:56+00:00",
+  "identity_source": "https://www.liquid.ai/blog/d1-open",
+  "included_files": 9,
+  "excluded_files": 3,
+  "file_sha256": [
+    {
+      "path": "LICENSE",
+      "bytes": 10572,
+      "sha256": "9953509cbd8c1c6ce7b06ddf74fcc204a892692316201dd8f7400a84790d4120"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10384,
+      "sha256": "6577bee7b8cb23b595a90e99aa82007f57214d447f0ebcdfb2e812a7123d57bf"
+    },
+    {
+      "path": "audio.py",
+      "bytes": 11829,
+      "sha256": "c5ff09d52d6a079e79d0505c89dbd0582ba2bc9abf2b26595d8d5b1d0c347bdf"
+    },
+    {
+      "path": "config.json",
+      "bytes": 1993,
+      "sha256": "dfccae241822f81752426629c88c8b8d7efdd03dd19418b6645c604fad43d619"
+    },
+    {
+      "path": "encoder.py",
+      "bytes": 7732,
+      "sha256": "5f2e20319ee42a7367febf06c7653d7b3f9b28ef99a64cb9ec7739563dcfcffe"
+    },
+    {
+      "path": "modeling_d1.py",
+      "bytes": 8655,
+      "sha256": "2b71a5c909ec5d3aa6307378a41a0fd24af1e17d5c1c1f8d510582147051a686"
+    },
+    {
+      "path": "prompt.py",
+      "bytes": 6309,
+      "sha256": "a6b29a55ec8345f1fc1fdbfcc4b64d80d473dc4316f095a62c51cb6cce1194cf"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 259,
+      "sha256": "03efc74b752b899b6292ff7e607738be59e6f206fec9aca32bbc05e9184090fc"
+    },
+    {
+      "path": "vision.py",
+      "bytes": 5233,
+      "sha256": "43ad71029f82e20fd26b97574627773d47639d7a3742c8b04fe5bf55f41c4c28"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8f in position 2026: character maps to <undefined>
+
+
+================================================
+FILE: audio.py
+================================================
+"""Speech to prefix embeddings: a log-mel front end, a 17-layer FastConformer, an MLP adapter and a residual.
+
+16 kHz mono audio (up to 30 s; clips under 0.5 s are padded) -> 128 normalised log-mel features every 10 ms ->
+8x subsampling -> conformer -> adapter 512 -> 1024 -> residual correction. One prefix embedding per 80 ms.
+The conformer and adapter come from LFM2-Audio (NVIDIA Canary FastConformer lineage), with NeMo's module names.
+"""
+
+from __future__ import annotations
+
+import math
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+SAMPLE_RATE, MIN_SAMPLES, MAX_SECONDS = 16000, 8000, 30
+
+
+def waveform(audio) -> torch.Tensor:
+    """Mono 16 kHz int16 PCM or float samples in [-1, 1] -> float32 (1, N), cut to 30 s, padded to 0.5 s."""
+    x = audio.detach().cpu().numpy() if isinstance(audio, torch.Tensor) else np.asarray(audio)
+    if x.ndim != 1:
+        raise ValueError("audio must be mono: a 1-D array of 16 kHz samples")
+    x = x[: MAX_SECONDS * SAMPLE_RATE]
+    x = x.astype(np.float32) / np.float32(32768.0) if x.dtype == np.int16 else x.astype(np.float32)
+    if len(x) < MIN_SAMPLES:
+        x = np.pad(x, (0, MIN_SAMPLES - len(x)))
+    return torch.from_numpy(x)[None]
+
+
+def slaney_filterbank(sr: int = SAMPLE_RATE, n_fft: int = 512, n_mels: int = 128) -> np.ndarray:
+    """librosa.filters.mel(sr, n_fft, n_mels, norm="slaney") in float32, computed as librosa computes it."""
+    f_sp, min_log_hz, logstep = 200.0 / 3, 1000.0, np.log(6.4) / 27.0
+    min_log_mel = min_log_hz / f_sp
+
+    def hz_to_mel(f):
+        f = np.asanyarray(f, dtype=np.float64)[()]
+        return min_log_mel + np.log(f / min_log_hz) / logstep if f >= min_log_hz else f / f_sp
+
+    def mel_to_hz(m):
+        m = np.asanyarray(m, dtype=np.float64)
+        f = f_sp * m
+        high = m >= min_log_mel
+        f[high] = min_log_hz * np.exp(logstep * (m[high] - min_log_mel))
+        return f
+
+    weights = np.zeros((n_mels, 1 + n_fft // 2), dtype=np.float32)
+    mel_f = mel_to_hz(np.linspace(hz_to_mel(0.0), hz_to_mel(sr / 2), n_mels + 2))
+    fdiff = np.diff(mel_f)
+    ramps = np.subtract.outer(mel_f, np.fft.rfftfreq(n=n_fft, d=1.0 / sr))
+    for i in range(n_mels):
+        weights[i] = np.maximum(0, np.minimum(-ramps[i] / fdiff[i], ramps[i + 2] / fdiff[i + 1]))
+    weights *= (2.0 / (mel_f[2:n_mels + 2] - mel_f[:n_mels]))[:, np.newaxis]
+    return weights
+
+
+class MelFrontend(nn.Module):
+    """NeMo's FilterbankFeatures in eval mode: preemphasis, |STFT|^2, Slaney mel, log, per-feature norm.
+    Always float32, whatever the model's dtype."""
+
+    def __init__(self, features: int = 128, n_fft: int = 512, window: int = 400, hop: int = 160):
+        super().__init__()
+        self.n_fft, self.window, self.hop, self.features = n_fft, window, hop, features
+        self._fb = None  # built on first use, never a buffer, so it is never cast or put on the meta device
+
+    @torch.no_grad()
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        x = x.float()
+        n = torch.tensor([x.shape[1]], device=x.device)
+        frames = torch.floor_divide(n + self.n_fft // 2 * 2 - self.n_fft, self.hop)
+        x = torch.cat((x[:, :1], x[:, 1:] - 0.97 * x[:, :-1]), dim=1)
+        window = torch.hann_window(self.window, periodic=False).to(x.device)  # built on the CPU, as NeMo does
+        x = torch.stft(x, n_fft=self.n_fft, hop_length=self.hop, win_length=self.window, center=True,
+                       window=window, return_complex=True, pad_mode="constant")
+        x = torch.sqrt(torch.view_as_real(x).pow(2).sum(-1)).pow(2.0)
+        if self._fb is None or self._fb.device != x.device:
+            self._fb = torch.from_numpy(slaney_filterbank(n_fft=self.n_fft, n_mels=self.features))[None].to(x.device)
+        x = torch.log(torch.matmul(self._fb, x) + 2**-24)
+        valid = torch.arange(x.shape[2], device=x.device)[None] < frames[:, None]
+        count = valid.sum(1)
+        mean = torch.where(valid[:, None], x, 0.0).sum(2) / count[:, None]
+        std = torch.sqrt(torch.where(valid[:, None], x - mean[:, :, None], 0.0).pow(2).sum(2) / (count[:, None] - 1.0))
+        x = (x - mean[:, :, None]) / (std.masked_fill(std.isnan(), 0.0) + 1e-5)[:, :, None]
+        return x.masked_fill(~valid[:, None], 0.0), frames
+
+
+class ConvSubsampling(nn.Module):
+    """8x time subsampling: a 3x3 stride-2 conv, then two depthwise-separable stride-2 convs, then a linear."""
+
+    def __init__(self, feat_in: int, channels: int, d_model: int):
+        super().__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(1, channels, 3, 2, 1), nn.ReLU(True),
+            nn.Conv2d(channels, channels, 3, 2, 1, groups=channels), nn.Conv2d(channels, channels, 1), nn.ReLU(True),
+            nn.Conv2d(channels, channels, 3, 2, 1, groups=channels), nn.Conv2d(channels, channels, 1), nn.ReLU(True))
+        freq = feat_in
+        for _ in range(3):
+            freq = (freq - 1) // 2 + 1
+        self.out = nn.Linear(channels * freq, d_model)
+
+    def forward(self, x: torch.Tensor, lengths: torch.Tensor):
+        x = x.unsqueeze(1)
+        lengths = lengths.float()
+        for layer in self.conv:
+            x = x * _time_mask(x, lengths)
+            x = layer(x)
+            if isinstance(layer, nn.Conv2d) and layer.stride != (1, 1):
+                lengths = torch.div(lengths + 2 - 3, 2, rounding_mode="floor") + 1
+        x = x * _time_mask(x, lengths)
+        b, c, t, f = x.shape
+        return self.out(x.transpose(1, 2).reshape(b, t, c * f)), lengths.long()
+
+
+def _time_mask(x: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
+    t = torch.arange(x.shape[2], device=x.device)[None] < lengths.long()[:, None]
+    return t[:, None, :, None].to(x.dtype)
+
+
+class FeedForward(nn.Module):
+    def __init__(self, d: int, d_ff: int):
+        super().__init__()
+        self.linear1, self.linear2 = nn.Linear(d, d_ff), nn.Linear(d_ff, d)
+
+    def forward(self, x):
+        return self.linear2(F.silu(self.linear1(x)))
+
+
+class RelPositionAttention(nn.Module):
+    """Transformer-XL relative-position attention with per-layer biases u and v."""
+
+    def __init__(self, d: int, heads: int):
+        super().__init__()
+        self.h, self.d_k = heads, d // heads
+        self.linear_q, self.linear_k, self.linear_v = nn.Linear(d, d), nn.Linear(d, d), nn.Linear(d, d)
+        self.linear_out = nn.Linear(d, d)
+        self.linear_pos = nn.Linear(d, d, bias=False)
+        self.pos_bias_u = nn.Parameter(torch.zeros(heads, self.d_k))
+        self.pos_bias_v = nn.Parameter(torch.zeros(heads, self.d_k))
+
+    def forward(self, x, pos_emb, mask):
+        b, t, _ = x.shape
+        q = self.linear_q(x).view(b, t, self.h, self.d_k)
+        k = self.linear_k(x).view(b, t, self.h, self.d_k).transpose(1, 2)
+        v = self.linear_v(x).view(b, t, self.h, self.d_k).transpose(1, 2)
+        p = self.linear_pos(pos_emb).view(1, -1, self.h, self.d_k).transpose(1, 2)
+        ac = torch.matmul((q + self.pos_bias_u).transpose(1, 2), k.transpose(-2, -1))
+        bd = torch.matmul((q + self.pos_bias_v).transpose(1, 2), p.transpose(-2, -1))
+        bh, hh, qlen, pos_len = bd.shape
+        bd = F.pad(bd, (1, 0)).view(bh, hh, pos_len + 1, qlen)[:, :, 1:].view(bh, hh, qlen, pos_len)
+        scores = (ac + bd[:, :, :, :t]) / math.sqrt(self.d_k)
+        scores = scores.masked_fill(mask[:, None], -10000.0)
+        attn = torch.softmax(scores, dim=-1).masked_fill(mask[:, None], 0.0)
+        return self.linear_out(torch.matmul(attn, v).transpose(1, 2).reshape(b, t, -1))
+
+
+class ConvModule(nn.Module):
+    def __init__(self, d: int, kernel: int):
+        super().__init__()
+        self.pointwise_conv1 = nn.Conv1d(d, 2 * d, 1)
+        self.depthwise_conv = nn.Conv1d(d, d, kernel, groups=d)
+        self.batch_norm = nn.BatchNorm1d(d)
+        self.pointwise_conv2 = nn.Conv1d(d, d, 1)
+        self.pad = (kernel - 1) // 2
+
+    def forward(self, x, pad_mask):
+        x = F.glu(self.pointwise_conv1(x.transpose(1, 2)), dim=1)
+        x = self.depthwise_conv(F.pad(x.masked_fill(pad_mask[:, None], 0.0), (self.pad, self.pad)))
+        return self.pointwise_conv2(F.silu(self.batch_norm(x))).transpose(1, 2)
+
+
+class ConformerLayer(nn.Module):
+    def __init__(self, d: int, d_ff: int, heads: int, kernel: int):
+        super().__init__()
+        self.norm_feed_forward1, self.feed_forward1 = nn.LayerNorm(d), FeedForward(d, d_ff)
+        self.norm_self_att, self.self_attn = nn.LayerNorm(d), RelPositionAttention(d, heads)
+        self.norm_conv, self.conv = nn.LayerNorm(d), ConvModule(d, kernel)
+        self.norm_feed_forward2, self.feed_forward2 = nn.LayerNorm(d), FeedForward(d, d_ff)
+        self.norm_out = nn.LayerNorm(d)
+
+    def forward(self, x, pos_emb, att_mask, pad_mask):
+        x = x + self.feed_forward1(self.norm_feed_forward1(x)) * 0.5
+        x = x + self.self_attn(self.norm_self_att(x), pos_emb, att_mask)
+        x = x + self.conv(self.norm_conv(x), pad_mask)
+        x = x + self.feed_forward2(self.norm_feed_forward2(x)) * 0.5
+        return self.norm_out(x)
+
+
+class Conformer(nn.Module):
+    def __init__(self, cfg: dict):
+        super().__init__()
+        d = cfg["d_model"]
+        self.d_model = d
+        self.pre_encode = ConvSubsampling(cfg["feat_in"], cfg["subsampling_conv_channels"], d)
+        self.layers = nn.ModuleList(ConformerLayer(d, d * cfg["ff_expansion_factor"], cfg["n_heads"],
+                                                   cfg["conv_kernel_size"]) for _ in range(cfg["n_layers"]))
+
+    def pos_emb(self, t: int, device) -> torch.Tensor:
+        """Sinusoids for relative positions t-1 .. -(t-1), built on the CPU, as NeMo does."""
+        positions = torch.arange(t - 1, -t, -1, dtype=torch.float32)[:, None]
+        div = torch.exp(torch.arange(0, self.d_model, 2, dtype=torch.float32) * -(math.log(10000.0) / self.d_model))
+        pe = torch.zeros(len(positions), self.d_model)
+        pe[:, 0::2], pe[:, 1::2] = torch.sin(positions * div), torch.cos(positions * div)
+        return pe[None].to(device)
+
+    def forward(self, mel: torch.Tensor, lengths: torch.Tensor):
+        x, lengths = self.pre_encode(mel.transpose(1, 2), lengths)
+        t = x.shape[1]
+        valid = torch.arange(t, device=x.device)[None] < lengths[:, None]
+        att_mask = ~(valid[:, None, :] & valid[:, :, None])
+        pos_emb = self.pos_emb(t, x.device).to(x.dtype)
+        for layer in self.layers:
+            x = layer(x, pos_emb, att_mask, ~valid)
+        return x, lengths
+
+
+class Adapter(nn.Module):
+    def __init__(self, d_in: int, d_out: int):
+        super().__init__()
+        self.norm, self.linear_1, self.linear_2 = nn.LayerNorm(d_in), nn.Linear(d_in, d_out), nn.Linear(d_out, d_out)
+
+    def forward(self, x):
+        return self.linear_2(F.gelu(self.linear_1(self.norm(x))))
+
+
+class Residual(nn.Module):
+    """x + up(GELU(down(LN(x)))), trained with the trunk to fit the adapter's output to it."""
+
+    def __init__(self, d: int, width: int):
+        super().__init__()
+        self.ln, self.down, self.up = nn.LayerNorm(d), nn.Linear(d, width), nn.Linear(width, d)
+
+    def forward(self, x):
+        return x + self.up(F.gelu(self.down(self.ln(x))))
+
+
+class Audio(nn.Module):
+    def __init__(self, cfg: dict, out: int):
+        super().__init__()
+        self.frontend = MelFrontend(cfg["feat_in"])
+        self.encoder = Conformer(cfg)
+        self.adapter = Adapter(cfg["d_model"], out)
+        self.residual = Residual(out, cfg["residual_width"])
+
+    def forward(self, audio) -> torch.Tensor:
+        """One clip -> (1, P, D) prefix embeddings."""
+        param = next(self.encoder.parameters())
+        mel, frames = self.frontend(waveform(audio).to(param.device))
+        x, lengths = self.encoder(mel.to(param.dtype), frames)
+        return self.residual(self.adapter(x[:, : int(lengths[0])]))
+
+
+
+================================================
+FILE: config.json
+================================================
+{
+  "architectures": [
+    "D1OmniModel"
+  ],
+  "auto_map": {
+    "AutoConfig": "modeling_d1.D1OmniConfig",
+    "AutoModel": "modeling_d1.D1OmniModel"
+  },
+  "model_type": "d1_omni",
+  "dtype": "float32",
+  "max_length": 16384,
+  "image_text_length": 896,
+  "audio_text_length": 15360,
+  "head_layers": 2,
+  "projector_hidden_size": 2048,
+  "temperatures": {
+    "choice:11+": 1.372515082359314,
+    "choice:2": 1.7465145587921143,
+    "choice:3-5": 1.3998981714248657,
+    "choice:6-10": 1.1751071214675903,
+    "noul:2": 1.6663223505020142,
+    "score:3-5": 1.7301132678985596,
+    "score:6-10": 1.0,
+    "choice": 1.0,
+    "score": 1.0,
+    "noul": 1.0
+  },
+  "bos_token_id": 1,
+  "pad_token_id": 0,
+  "text_config": {
+    "vocab_size": 65536,
+    "hidden_size": 1024,
+    "intermediate_size": 6656,
+    "num_hidden_layers": 16,
+    "num_attention_heads": 16,
+    "num_key_value_heads": 8,
+    "layer_types": [
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv"
+    ],
+    "norm_eps": 1e-05,
+    "conv_L_cache": 3,
+    "block_ffn_dim_multiplier": 1.0,
+    "block_multiple_of": 256,
+    "max_position_embeddings": 128000,
+    "rope_theta": 1000000.0
+  },
+  "vision_config": {
+    "attention_dropout": 0.0,
+    "hidden_act": "gelu_pytorch_tanh",
+    "hidden_size": 768,
+    "intermediate_size": 3072,
+    "layer_norm_eps": 1e-06,
+    "model_type": "siglip2_vision_model",
+    "num_attention_heads": 12,
+    "num_channels": 3,
+    "num_hidden_layers": 12,
+    "num_patches": 256,
+    "patch_size": 16,
+    "vision_use_head": false
+  },
+  "audio_config": {
+    "feat_in": 128,
+    "n_layers": 17,
+    "d_model": 512,
+    "subsampling_conv_channels": 256,
+    "ff_expansion_factor": 4,
+    "n_heads": 8,
+    "conv_kernel_size": 9,
+    "residual_width": 512
+  }
+}
+
+
+
+================================================
+FILE: encoder.py
+================================================
+"""The shared trunk and the decision head.
+
+The trunk is LFM2.5-Encoder-350M: LFM2 blocks (10 short convolutions, 6 GQA attention layers) made bidirectional,
+with a centred 3-tap convolution and no causal mask. Module names follow Hugging Face's LFM2.
+
+An image or audio clip enters as a prefix of embeddings in front of the text. Prefix positions attend only to the
+prefix and the convolution never lets them read the text, so the prefix is a function of the media alone; text
+positions read everything. Text, image and audio calls run the same weights.
+
+The head adds a question-type embedding, runs two pre-norm transformer layers over the text positions, and scores
+the hidden state at each option marker with one shared MLP.
+"""
+
+from __future__ import annotations
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+NEG = -1e9
+
+
+class RMSNorm(nn.Module):
+    def __init__(self, dim: int, eps: float):
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(dim))
+        self.eps = eps
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        dtype = x.dtype
+        x = x.float()
+        x = x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
+        return self.weight * x.to(dtype)
+
+
+class Attention(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        d = cfg["hidden_size"]
+        self.heads, self.kv_heads = cfg["num_attention_heads"], cfg["num_key_value_heads"]
+        self.head_dim = d // self.heads
+        self.q_proj = nn.Linear(d, self.heads * self.head_dim, bias=False)
+        self.k_proj = nn.Linear(d, self.kv_heads * self.head_dim, bias=False)
+        self.v_proj = nn.Linear(d, self.kv_heads * self.head_dim, bias=False)
+        self.out_proj = nn.Linear(self.heads * self.head_dim, d, bias=False)
+        self.q_layernorm = RMSNorm(self.head_dim, cfg["norm_eps"])
+        self.k_layernorm = RMSNorm(self.head_dim, cfg["norm_eps"])
+
+    def forward(self, x, cos, sin, mask):
+        b, length, _ = x.shape
+        shape = (b, length, -1, self.head_dim)
+        q = self.q_layernorm(self.q_proj(x).view(shape)).transpose(1, 2)
+        k = self.k_layernorm(self.k_proj(x).view(shape)).transpose(1, 2)
+        v = self.v_proj(x).view(shape).transpose(1, 2)
+        q, k = q * cos + _rotate_half(q) * sin, k * cos + _rotate_half(k) * sin
+        groups = self.heads // self.kv_heads
+        k, v = k.repeat_interleave(groups, dim=1), v.repeat_interleave(groups, dim=1)
+        y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, scale=self.head_dim**-0.5)
+        return self.out_proj(y.transpose(1, 2).reshape(b, length, -1))
+
+
+class ShortConv(nn.Module):
+    """`out(C * conv(B * x))` with a centred 3-tap depthwise convolution."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        d = cfg["hidden_size"]
+        self.conv = nn.Conv1d(d, d, cfg["conv_L_cache"], groups=d, bias=False, padding=cfg["conv_L_cache"] - 1)
+        self.in_proj = nn.Linear(d, 3 * d, bias=False)
+        self.out_proj = nn.Linear(d, d, bias=False)
+
+    def forward(self, x, pad, keep_right):
+        b, c, u = self.in_proj(x * pad[:, :, None]).transpose(-1, -2).chunk(3, dim=-2)
+        bx = b * u
+        w = self.conv.weight[:, 0, :]
+        length = bx.shape[-1]
+        xp = F.pad(bx, (1, 1))
+        right = xp[..., 2:2 + length] * keep_right[:, None, :]  # media never reads the text
+        y = xp[..., 0:length] * w[:, 0, None]
+        y = y + xp[..., 1:1 + length] * w[:, 1, None]
+        y = y + right * w[:, 2, None]
+        return self.out_proj((c * y).transpose(-1, -2))
+
+
+class MLP(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        hidden = int(2 * cfg["intermediate_size"] / 3)
+        hidden = int(cfg["block_ffn_dim_multiplier"] * hidden)
+        hidden = cfg["block_multiple_of"] * ((hidden + cfg["block_multiple_of"] - 1) // cfg["block_multiple_of"])
+        d = cfg["hidden_size"]
+        self.w1 = nn.Linear(d, hidden, bias=False)
+        self.w3 = nn.Linear(d, hidden, bias=False)
+        self.w2 = nn.Linear(hidden, d, bias=False)
+
+    def forward(self, x):
+        return self.w2(F.silu(self.w1(x)) * self.w3(x))
+
+
+class Layer(nn.Module):
+    def __init__(self, cfg, kind: str):
+        super().__init__()
+        self.is_attention_layer = kind == "full_attention"
+        if self.is_attention_layer:
+            self.self_attn = Attention(cfg)
+        else:
+            self.conv = ShortConv(cfg)
+        self.feed_forward = MLP(cfg)
+        self.operator_norm = RMSNorm(cfg["hidden_size"], cfg["norm_eps"])
+        self.ffn_norm = RMSNorm(cfg["hidden_size"], cfg["norm_eps"])
+
+
+class Trunk(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        self.embed_tokens = nn.Embedding(cfg["vocab_size"], cfg["hidden_size"])
+        self.layers = nn.ModuleList(Layer(cfg, kind) for kind in cfg["layer_types"])
+        self.embedding_norm = RMSNorm(cfg["hidden_size"], cfg["norm_eps"])
+        self.rope_theta = cfg["rope_theta"]
+        self.head_dim = cfg["hidden_size"] // cfg["num_attention_heads"]
+
+    def rope(self, length: int, x: torch.Tensor):
+        exponent = torch.arange(0, self.head_dim, 2, dtype=torch.int64).float() / self.head_dim
+        inv_freq = (1.0 / (self.rope_theta**exponent)).to(x.device)  # on the CPU, as HF's LFM2 builds it
+        positions = torch.arange(length, device=x.device).float()
+        freqs = (inv_freq[None, :, None] @ positions[None, None, :]).transpose(1, 2)
+        emb = torch.cat((freqs, freqs), dim=-1)
+        return emb.cos().to(x.dtype)[:, None], emb.sin().to(x.dtype)[:, None]
+
+    def forward(self, h: torch.Tensor, pad: torch.Tensor, prefix: torch.Tensor) -> torch.Tensor:
+        """`h` (B, L, D) embeddings, `pad` (B, L) True on real tokens, `prefix` (B,) media lengths (0 for text)."""
+        batch, length, _ = h.shape
+        t = torch.arange(length, device=h.device)[None]
+        media_query = t < prefix[:, None]
+        text_key = t >= prefix[:, None]
+        neg = max(NEG, torch.finfo(h.dtype).min)  # -1e9 does not fit in float16
+        mask = torch.zeros(batch, 1, length, length, device=h.device, dtype=h.dtype)
+        mask = mask + ((~pad).float() * neg).to(h.dtype)[:, None, None, :]
+        mask = mask.masked_fill((media_query[:, :, None] & text_key[:, None, :])[:, None], neg)
+        keep_right = (t != prefix[:, None] - 1).to(h.dtype)
+        padf = pad.to(h.dtype)
+        cos, sin = self.rope(length, h)
+        for layer in self.layers:
+            x = layer.operator_norm(h)
+            if layer.is_attention_layer:
+                x = layer.self_attn(x, cos, sin, mask)
+            else:
+                x = layer.conv(x, padf, keep_right)
+            h = h + x
+            h = h + layer.feed_forward(layer.ffn_norm(h))
+        return self.embedding_norm(h)
+
+
+class DecisionHead(nn.Module):
+    def __init__(self, d: int, layers: int):
+        super().__init__()
+        self.type_emb = nn.Embedding(3, d)
+        layer = nn.TransformerEncoderLayer(d, d // 64, 4 * d, 0.0, batch_first=True, norm_first=True)
+        self.head = nn.TransformerEncoder(layer, layers, enable_nested_tensor=False)
+        self.scorer = nn.Sequential(nn.LayerNorm(d), nn.Linear(d, d), nn.GELU(), nn.Linear(d, 1))
+
+    def forward(self, h, pad, marker_pos, marker_mask, qtype):
+        h = h + self.type_emb(qtype)[:, None, :]
+        for layer in self.head.layers:
+            h = layer(h, src_key_padding_mask=~pad)
+        g = torch.gather(h, 1, marker_pos[:, :, None].expand(-1, -1, h.size(-1)))
+        return self.scorer(g).squeeze(-1).float().masked_fill(~marker_mask, -1e4)
+
+
+def _rotate_half(x: torch.Tensor) -> torch.Tensor:
+    x1, x2 = x.chunk(2, dim=-1)
+    return torch.cat((-x2, x1), dim=-1)
+
+
+
+================================================
+FILE: LICENSE
+================================================
+LFM Open License v1.0 
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by this document.
+
+"Licensor" shall mean Liquid AI, Inc.
+
+"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work.
+
+"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+
+"Commercial Use" shall mean any use of the Work for direct or indirect commercial advantage or monetary compensation.
+
+"Qualified Non-Profit Organization" shall mean a Legal Entity that is organized and operated exclusively for religious, charitable, scientific, testing for public safety, literary, or educational purposes, and which is exempt from federal income tax under Section 501(c)(3) of the United States Internal Revenue Code of 1986, as amended, or any equivalent non-profit or charitable organization in a foreign jurisdiction.
+"Non-Commercial or Research Purposes" shall mean purposes that do not involve any use of the Work or a Derivative Work for Commercial Use.
+
+"Threshold" shall mean annual revenue of 10 million United States dollars ($10,000,000) or more.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, including the Commercial Use limitation set forth in Section 5, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of this License, including the Commercial Use limitation set forth in Section 5, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
+
+(a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+(b) You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+(c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
+
+(d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
+
+You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
+
+5. Commercial Use Limitation.
+
+(a) The rights granted under this License for Commercial Use are conditioned upon You or Your Legal Entity not exceeding the Threshold.
+
+(b) Any Commercial Use of the Work or a Derivative Work by a Legal Entity that exceeds the Threshold is not licensed under this Agreement.
+
+(c) The Threshold shall not apply to a Qualified Non-Profit Organization's use of the Work or a Derivative Work for Non-Commercial or Research Purposes.
+
+6. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
+
+7. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except for the reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
+
+8. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+
+9. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
+
+10. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
+
+11. Termination. This License will terminate automatically and immediately if You fail to comply with any of its terms and conditions. Upon termination, You must cease all use of the Work and any Derivative Works and delete all copies in Your possession.
+
+END OF TERMS AND CONDITIONS
+
+
+================================================
+FILE: modeling_d1.py
+================================================
+"""`AutoModel.from_pretrained(repo, trust_remote_code=True)`: d1-omni with the System One API.
+
+    model.system_one(state, {name: question}, images=None, audio=None)
+    model.system_one_batch([(state, {name: question}[, images[, audio]]), ...])
+
+A state is a string or any JSON value. `images` is a PIL image or a list of them (in order); `audio` is one 16 kHz mono
+clip (int16 PCM or float samples). A request carries images or audio, not both.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from functools import cached_property
+from typing import Any
+
+import torch
+from transformers import PretrainedConfig, PreTrainedModel
+
+from .audio import Audio
+from .encoder import DecisionHead, Trunk
+from .prompt import QTYPES, Question, answer, as_question, encode, temperature_key
+from .vision import Vision
+
+YES_NO = {"false": "no", "true": "yes"}  # how image and audio questions were trained
+
+
+class D1OmniConfig(PretrainedConfig):
+    model_type = "d1_omni"
+
+    def __init__(self, text_config=None, vision_config=None, audio_config=None, projector_hidden_size=2048,
+                 head_layers=2, max_length=16384, image_text_length=896,
+                 audio_text_length=15360, temperatures=None, **kwargs):
+        self.text_config, self.vision_config, self.audio_config = text_config or {}, vision_config or {}, audio_config or {}
+        self.projector_hidden_size = projector_hidden_size
+        self.head_layers, self.max_length = head_layers, max_length
+        self.image_text_length, self.audio_text_length = image_text_length, audio_text_length
+        self.temperatures = temperatures or {}
+        super().__init__(**kwargs)
+
+
+class D1OmniModel(PreTrainedModel):
+    config_class = D1OmniConfig
+    base_model_prefix = "d1"
+    main_input_name = "input_ids"
+
+    def __init__(self, config: D1OmniConfig):
+        super().__init__(config)
+        d = config.text_config["hidden_size"]
+        self.encoder = Trunk(config.text_config)
+        self.head = DecisionHead(d, config.head_layers)
+        self.vision = Vision(config.vision_config, config.projector_hidden_size, d)
+        self.audio = Audio(config.audio_config, d)
+        self.post_init()
+
+    def _init_weights(self, module):
+        pass
+
+    @cached_property
+    def tokenizer(self):
+        from transformers import AutoTokenizer
+
+        return AutoTokenizer.from_pretrained(self.name_or_path, trust_remote_code=True)
+
+    # ------------------------------------------------------------------ API
+
+    def system_one(self, state: Any, questions: Mapping[str, Any], images: Sequence | None = None,
+                   audio=None) -> dict:
+        """Named questions over one state, and its images or audio if any:
+        `{"answers": {name: answer}, "usage": {"input_tokens": n, "output_tokens": 0}}`."""
+        return self.system_one_batch([(state, questions, images, audio)])[0]
+
+    def system_one_batch(self, requests: Sequence[tuple]) -> list[dict]:
+        """`(state, questions)`, `(state, questions, images)` or `(state, questions, images, audio)` requests."""
+        named = [{n: as_question(q) for n, q in r[1].items()} for r in requests]
+        done = self.probabilities_batch([(r[0], list(qs.values()), *r[2:]) for r, qs in zip(requests, named)],
+                                        _usage=True)
+        return [{"answers": {n: answer(q, p) for (n, q), p in zip(qs.items(), probs)},
+                 "usage": {"input_tokens": read, "output_tokens": 0}}
+                for qs, (probs, read) in zip(named, done)]
+
+    def probabilities(self, state: Any, questions: Sequence, images: Sequence | None = None, audio=None) -> list:
+        """Each question's distribution over its options, in option order (`yes`, `no` for a noul)."""
+        return self.probabilities_batch([(state, questions, images, audio)])[0]
+
+    @torch.no_grad()
+    def probabilities_batch(self, requests: Sequence[tuple], _usage: bool = False) -> list:
+        tok, rows, read = self.tokenizer, [], []
+        for r in requests:
+            state, questions = r[0], [as_question(q) for q in r[1]]
+            images, audio = (r[2] if len(r) > 2 else None) or None, r[3] if len(r) > 3 else None
+            if images is not None and audio is not None:
+                raise ValueError("a request carries images or audio, not both")
+            if images is not None:
+                prefix = self.vision([images] if hasattr(images, "convert") else list(images))
+                max_len, noul, calibrate, spoken = self.config.image_text_length, YES_NO, False, False
+            elif audio is not None:
+                prefix = self.audio(audio)
+                max_len, noul, calibrate, spoken = self.config.audio_text_length, YES_NO, False, True
+                state = {} if state is None else state  # how the audio questions were trained
+            else:
+                prefix, max_len, noul, calibrate, spoken = None, self.config.max_length, None, True, False
+            p = 0 if prefix is None else prefix.shape[1]
+            max_len = min(max_len, self.config.max_length - p)
+            if max_len < 64:
+                raise ValueError(f"the media take {p} of the {self.config.max_length} positions; send fewer images")
+            state = "" if state is None else state
+            seqs = [encode(tok, state, q, max_len, noul, spoken) for q in questions]
+            rows.append([(prefix, ids, markers, q, calibrate) for q, (ids, markers) in zip(questions, seqs)])
+            read.append(sum(p + len(ids) for ids, _ in seqs))
+        flat = [row for request in rows for row in request]
+        probs = self._run(flat)
+        out, i = [], 0
+        for request in rows:
+            out.append(probs[i:i + len(request)])
+            i += len(request)
+        return list(zip(out, read)) if _usage else out
+
+    # ------------------------------------------------------------------ forward
+
+    def _run(self, rows: list, max_tokens: int = 65536) -> list:
+        """Rows (prefix, ids, markers, question, calibrate) -> probabilities, batched by token budget."""
+        results = [None] * len(rows)
+        order = sorted(range(len(rows)), key=lambda i: _length(rows[i]), reverse=True)
+        while order:
+            longest, size = _length(rows[order[0]]), 1
+            while size < len(order) and (size + 1) * longest <= max_tokens:
+                size += 1
+            batch, order = order[:size], order[size:]
+            for i, p in zip(batch, self._forward([rows[i] for i in batch])):
+                results[i] = p
+        return results
+
+    def _forward(self, rows: list) -> list:
+        device, dtype = self.device, self.encoder.embed_tokens.weight.dtype
+        seqs, lengths, offsets = [], [], []
+        for prefix, ids, *_ in rows:
+            text = self.encoder.embed_tokens(torch.tensor(ids, device=device))
+            seqs.append(text if prefix is None else torch.cat([prefix[0].to(dtype), text]))
+            offsets.append(0 if prefix is None else prefix.shape[1])
+            lengths.append(len(ids))
+        h = torch.nn.utils.rnn.pad_sequence(seqs, batch_first=True)
+        total = torch.tensor([len(s) for s in seqs], device=device)
+        pad = torch.arange(h.shape[1], device=device)[None] < total[:, None]
+        h = self.encoder(h, pad, torch.tensor(offsets, device=device))
+        text = torch.nn.utils.rnn.pad_sequence([h[i, o:o + n] for i, (o, n) in enumerate(zip(offsets, lengths))],
+                                               batch_first=True)
+        k = max(len(r[2]) for r in rows)
+        text_pad = torch.arange(text.shape[1], device=device)[None] < torch.tensor(lengths, device=device)[:, None]
+        marker_pos = torch.zeros(len(rows), k, dtype=torch.long, device=device)
+        marker_mask = torch.zeros(len(rows), k, dtype=torch.bool, device=device)
+        for i, r in enumerate(rows):
+            marker_pos[i, :len(r[2])] = torch.tensor(r[2], device=device)
+            marker_mask[i, :len(r[2])] = True
+        qtype = torch.tensor([QTYPES[r[3].type] for r in rows], device=device)
+        logits = self.head(text, text_pad, marker_pos, marker_mask, qtype)
+        out = []
+        for row, z in zip(rows, logits):
+            q: Question = row[3]
+            z = z[:q.options]
+            if row[4]:
+                z = z / self.config.temperatures.get(temperature_key(q), self.config.temperatures.get(q.type, 1.0))
+            p = z.softmax(-1).tolist()
+            out.append(p[::-1] if q.type == "noul" else p)  # the model reads a noul as [false, true]
+        return out
+
+
+def _length(row) -> int:
+    return (0 if row[0] is None else row[0].shape[1]) + len(row[1])
+
+
+
+================================================
+FILE: prompt.py
+================================================
+"""Questions in, token sequences out, answers back.
+
+A question is a dict in the Decision Index schema: `type` (noul, choice or score), `instructions`, and
+`criteria`. Each question is rendered against the state as one sequence:
+
+    <bos> <state> state <q> instructions <opt> <mask> option_0 </opt> <opt> <mask> option_1 </opt> ... <decide>
+
+The model scores the hidden state at every `<mask>` and softmaxes over the question's options. Delimiters come
+from the tokenizer's reserved block, and `<|...|>` in caller text is rewritten so a state can never forge one.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from dataclasses import dataclass
+from typing import Any
+
+QTYPES = {"choice": 0, "score": 1, "noul": 2}
+DELIM = {"state": "<|reserved_7|>", "q": "<|reserved_8|>", "opt": "<|reserved_9|>", "opt_end": "<|reserved_10|>",
+         "decide": "<|reserved_11|>"}
+MARKER = "<|mask|>"
+_SPECIAL = re.compile(r"<\|([A-Za-z0-9_]+)\|>")
+
+
+@dataclass
+class Question:
+    type: str
+    instructions: str
+    criteria: Any = None
+
+    def __post_init__(self):
+        if self.type not in QTYPES:
+            raise ValueError(f"question type must be one of {sorted(QTYPES)}, got {self.type!r}")
+        if self.type == "choice" and (not isinstance(self.criteria, dict) or len(self.criteria) < 2):
+            raise ValueError("a choice needs criteria {name: description} with at least two options")
+        if self.type == "score" and (not isinstance(self.criteria, (list, tuple)) or not 2 <= len(self.criteria) <= 10):
+            raise ValueError("a score needs criteria: a list of 2 to 10 level descriptions, lowest first")
+        if self.type == "noul" and self.criteria is not None and not isinstance(self.criteria, dict):
+            raise ValueError('noul criteria are optional: {"true": "...", "false": "..."} (or "yes", "no")')
+
+    @property
+    def options(self) -> int:
+        return 2 if self.type == "noul" else len(self.criteria)
+
+
+def as_question(q: Any) -> Question:
+    if isinstance(q, Question):
+        return q
+    if not isinstance(q, dict) or "type" not in q or "instructions" not in q:
+        raise ValueError("a question is a dict with `type`, `instructions` and, for choice and score, `criteria`")
+    return Question(q["type"], str(q["instructions"]), q.get("criteria"))
+
+
+def escape(text: str) -> str:
+    """`<|name|>` -> `<Â¦nameÂ¦>`, so caller text cannot emit a delimiter or marker token."""
+    return _SPECIAL.sub(r"<Â¦\1Â¦>", text)
+
+
+def serialize(state: Any) -> str:
+    return state if isinstance(state, str) else json.dumps(state, ensure_ascii=False)
+
+
+def _criterion(value: Any) -> str:
+    return value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, separators=(", ", ": "),
+                                                           default=str)
+
+
+def render_options(q: Question, noul_default: dict | None = None, audio: bool = False) -> list[str]:
+    """Option texts in the model's order. A noul is read as [false, true]. After an audio prefix, options are
+    written as the audio questions were trained: `option_000: text`, and a noul as `false: no`, `true: yes`."""
+    if q.type == "choice":
+        if audio:
+            return [f"option_{i:03d}: {_criterion(k if v is None or v == '' else v)}"
+                    for i, (k, v) in enumerate(q.criteria.items())]
+        return [k if v is None or v == "" else f"{k}: {_criterion(v)}" for k, v in q.criteria.items()]
+    if q.type == "score":
+        return [f"level {i}: {_criterion(c)}" for i, c in enumerate(q.criteria)]
+    if audio:
+        return ["false: no", "true: yes"]
+    crit = q.criteria or noul_default or {}
+    false, true = crit.get("false", crit.get("no")), crit.get("true", crit.get("yes"))
+    return ["false: " + (_criterion(false) if false not in (None, "") else "no, the statement does not hold"),
+            "true: " + (_criterion(true) if true not in (None, "") else "yes, the statement holds")]
+
+
+def encode(tok, state: Any, q: Question, max_len: int, noul_default: dict | None = None, audio: bool = False,
+           per_option: int = 24) -> tuple[list[int], list[int]]:
+    """Token ids of one question over one state, and the position of each option's marker.
+
+    The option block gets max(96, min(24k + 32, max_len / 2)) tokens, shared out evenly; the state is
+    truncated on the right to the room that is left.
+    """
+    ids_of = tok.convert_tokens_to_ids
+    enc = lambda s: tok(escape(s), add_special_tokens=False)["input_ids"]  # noqa: E731
+    opts = render_options(q, noul_default, audio)
+    budget = max(96, min(len(opts) * per_option + 32, max_len // 2))
+    per = max(2, (budget - 3 * len(opts)) // len(opts))
+    question = ([ids_of(DELIM["q"])] + enc(q.instructions))[: max(16, budget)]
+    markers = []
+    for text in opts:
+        markers.append(len(question) + 1)
+        question += [ids_of(DELIM["opt"]), ids_of(MARKER)] + enc(" " + text)[:per] + [ids_of(DELIM["opt_end"])]
+    question.append(ids_of(DELIM["decide"]))
+    room = max(0, max_len - len(question) - 2)
+    state_ids = [ids_of(DELIM["state"])] + enc(serialize(state))[:room]
+    ids = ([tok.bos_token_id] + state_ids + question)[:max_len]
+    markers = [m + 1 + len(state_ids) for m in markers]
+    if markers[-1] >= max_len:
+        raise ValueError("the options do not fit in the context")
+    return ids, markers
+
+
+def answer(q: Question, probs: list[float]) -> dict:
+    """A noul's P(yes) (its probabilities are [yes, no]); a choice's pick and its probabilities; a score's
+    expected level."""
+    if q.type == "noul":
+        return {"type": "noul", "noul": probs[0]}
+    best = max(range(len(probs)), key=probs.__getitem__)
+    if q.type == "choice":
+        names = list(q.criteria)
+        return {"type": "choice", "choice": names[best], "confidence": probs[best],
+                "probabilities": dict(zip(names, probs))}
+    return {"type": "score", "score": sum(i * p for i, p in enumerate(probs)), "confidence": probs[best],
+            "probabilities": {str(i): p for i, p in enumerate(probs)},
+            "legend": {str(i): _criterion(text) for i, text in enumerate(q.criteria)}}
+
+
+def temperature_key(q: Question) -> str:
+    k = q.options
+    return f"{q.type}:" + ("2" if k <= 2 else "3-5" if k <= 5 else "6-10" if k <= 10 else "11+")
+
+
+
+================================================
+FILE: tokenizer_config.json
+================================================
+{
+  "backend": "tokenizers",
+  "bos_token": "<|startoftext|>",
+  "eos_token": "<|im_end|>",
+  "pad_token": "<|pad|>",
+  "mask_token": "<|mask|>",
+  "clean_up_tokenization_spaces": false,
+  "model_max_length": 16384,
+  "tokenizer_class": "TokenizersBackend"
+}
+
+
+
+================================================
+FILE: vision.py
+================================================
+"""Images to prefix embeddings: LFM2-VL's tiling, a SigLIP2 NaFlex tower, and a 2x2 pixel-unshuffle projector.
+
+A large image is cut into up to ten 512 px tiles plus a thumbnail; a small one is read whole. Each crop becomes
+(h/32) x (w/32) prefix embeddings, at most 256 per crop. Several images are concatenated in the order given.
+"""
+
+from __future__ import annotations
+
+import math
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+TILE, PATCH, MAX_PATCHES = 512, 16, 1024
+
+
+def layout(width: int, height: int) -> dict:
+    """LFM2-VL's smart resize, tile grid and thumbnail (projected-patch budget 64 to 256 per crop)."""
+    if min(width, height) < 1:
+        raise ValueError("empty image")
+    factor, maximum, minimum = 32, 256 * 1024, 64 * 1024
+    h, w = max(factor, round(height / factor) * factor), max(factor, round(width / factor) * factor)
+    if h * w > maximum:
+        beta = math.sqrt(height * width / maximum)
+        h = max(factor, math.floor(height / beta / factor) * factor)
+        w = max(factor, math.floor(width / beta / factor) * factor)
+    elif h * w < minimum:
+        beta = math.sqrt(minimum / (height * width))
+        h = math.ceil(height * beta / factor) * factor
+        w = math.ceil(width * beta / factor) * factor
+    large = max(16, round(height / factor) * factor) * max(16, round(width / factor) * factor) > maximum * 2
+    grid = (1, 1)
+    if large:
+        ratios = sorted({(x, y) for n in range(2, 11) for x in range(1, n + 1) for y in range(1, n + 1)
+                         if 2 <= x * y <= 10}, key=lambda r: r[0] * r[1])
+        best = float("inf")
+        for ratio in ratios:
+            diff = abs(width / height - ratio[0] / ratio[1])
+            if diff < best or (diff == best and width * height > 0.5 * TILE * TILE * ratio[0] * ratio[1]):
+                grid, best = ratio, diff
+    return {"grid": grid, "thumbnail": (h, w), "tiled": large}
+
+
+def preprocess(image) -> dict:
+    """A PIL image -> SigLIP2 NaFlex inputs for its tiles and thumbnail (RGB in [-1, 1], 16 px patches)."""
+    from torchvision.transforms.v2 import functional as tvf
+
+    image = image.convert("RGB")
+    plan = layout(*image.size)
+    x = tvf.pil_to_tensor(image)
+    crops = []
+    if plan["tiled"]:
+        gw, gh = plan["grid"]
+        big = tvf.resize(x, [gh * TILE, gw * TILE], interpolation=tvf.InterpolationMode.BILINEAR, antialias=True)
+        crops = [big[:, r * TILE:(r + 1) * TILE, c * TILE:(c + 1) * TILE] for r in range(gh) for c in range(gw)]
+    crops.append(tvf.resize(x, list(plan["thumbnail"]), interpolation=tvf.InterpolationMode.BILINEAR, antialias=True))
+    pixels, shapes, masks = [], [], []
+    for crop in crops:
+        crop = tvf.normalize(crop.to(torch.float32), [127.5] * 3, [127.5] * 3)
+        _, h, w = crop.shape
+        ph, pw = h // PATCH, w // PATCH
+        patches = crop.reshape(3, ph, PATCH, pw, PATCH).permute(1, 3, 2, 4, 0).reshape(ph * pw, 3 * PATCH * PATCH)
+        pixels.append(F.pad(patches, (0, 0, 0, MAX_PATCHES - ph * pw)))
+        shapes.append([ph, pw])
+        masks.append(torch.arange(MAX_PATCHES) < ph * pw)
+    return {"pixel_values": torch.stack(pixels), "spatial_shapes": torch.tensor(shapes),
+            "pixel_attention_mask": torch.stack(masks).to(torch.int32)}
+
+
+def prefix_length(inputs: dict) -> int:
+    return sum(h * w // 4 for h, w in inputs["spatial_shapes"].tolist())
+
+
+class Projector(nn.Module):
+    """LFM2-VL's 2x2 pixel unshuffle and two-layer GELU MLP into the trunk's width."""
+
+    def __init__(self, vision_dim: int, hidden: int, out: int, factor: int = 2):
+        super().__init__()
+        self.factor = factor
+        self.linear_1 = nn.Linear(vision_dim * factor**2, hidden)
+        self.linear_2 = nn.Linear(hidden, out)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        b, h, w, c = x.shape
+        f = self.factor
+        x = x.reshape(b, h, w // f, c * f).permute(0, 2, 1, 3)
+        x = x.reshape(b, w // f, h // f, c * f * f).permute(0, 2, 1, 3)
+        return self.linear_2(F.gelu(self.linear_1(x))).reshape(b, -1, self.linear_2.out_features)
+
+
+class Vision(nn.Module):
+    def __init__(self, vision_config: dict, projector_hidden: int, out: int):
+        super().__init__()
+        from transformers import Siglip2VisionConfig, Siglip2VisionModel
+
+        cfg = Siglip2VisionConfig(**vision_config)
+        cfg._attn_implementation = "sdpa"
+        self.tower = Siglip2VisionModel(cfg)
+        self.projector = Projector(cfg.hidden_size, projector_hidden, out)
+
+    def forward(self, images: list) -> torch.Tensor:
+        """PIL images -> (1, P, D) prefix embeddings, every image's tiles then thumbnail, images in order."""
+        param = next(self.tower.parameters())
+        out = []
+        for image in images:
+            inputs = preprocess(image)
+            inputs = {k: v.to(param.device, dtype=param.dtype if k == "pixel_values" else v.dtype)
+                      for k, v in inputs.items()}
+            hidden = self.tower(**inputs).last_hidden_state
+            for i, (h, w) in enumerate(inputs["spatial_shapes"].tolist()):
+                out.append(self.projector(hidden[i:i + 1, :h * w].reshape(1, h, w, -1)))
+        return torch.cat(out, dim=1)
+
+

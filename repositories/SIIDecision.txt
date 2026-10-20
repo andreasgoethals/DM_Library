@@ -1,0 +1,1946 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://github.com/amazingljy1206/SII-Decision",
+  "revision": "1723d83cbda69f48641c273280b5a2d06d6b3510",
+  "revision_date": "2026-10-13T11:53:18Z",
+  "slug": "amazingljy1206/SII-Decision",
+  "retrieved_utc": "2026-10-20T08:58:40+00:00",
+  "identity_source": "https://arxiv.org/html/2610.03935v2",
+  "included_files": 29,
+  "excluded_files": 4,
+  "file_sha256": [
+    {
+      "path": "LICENSE",
+      "bytes": 11322,
+      "sha256": "2bcc6092ec30888f8de686627dcc76d4aba8c72afa569cf842a98a85dfc8f3ad"
+    },
+    {
+      "path": "NOTICE",
+      "bytes": 143,
+      "sha256": "06da21fb32153842d92ab59884a356d4d36b14bcdcd889fca23193c6088cdca0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8520,
+      "sha256": "cb0fa8c2a29f569bbb48be7bcf6ffcd4aaa906810dc74e6e1b6b51b099e919a0"
+    },
+    {
+      "path": "configs/27B/full.json",
+      "bytes": 497,
+      "sha256": "b420987951a7723dafeca065d77172acf87b9118b5d244fbe729f6d80fc6324c"
+    },
+    {
+      "path": "configs/27B/lora.json",
+      "bytes": 495,
+      "sha256": "91d3f4f85ee4484f40ae2860a28eccd64da379f9a8e1ed65df998deba6c22a5b"
+    },
+    {
+      "path": "configs/27B/modules.json",
+      "bytes": 18429,
+      "sha256": "b04855622bed26c517b832a8ea35f624505dd18a1b05d7f7cd2eb247cd60ce8d"
+    },
+    {
+      "path": "configs/4B/full.json",
+      "bytes": 493,
+      "sha256": "3d0cc4a03bdb926d232822332980d40f65078afa8a06e3cee3acb66d5693c4bb"
+    },
+    {
+      "path": "configs/4B/lora.json",
+      "bytes": 492,
+      "sha256": "8852e87f6631bc5ff340dab9dd7772e3f320527eda680356f27f0f91972fd067"
+    },
+    {
+      "path": "configs/4B/modules.json",
+      "bytes": 9189,
+      "sha256": "656570dfcf0f23585c876028e5e52e98b9ca2716411b515bdc4a11c178a415d0"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "bytes": 2259,
+      "sha256": "b6a17a9df906b5e2e4d58b0cb0ddee77365be2ac7deb0fe37fc0419691d5d76f"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 640,
+      "sha256": "990b2cd69a3f82fdf9e01c920bba5f30b28bdcb2fde6ef0f172c4028b9647c9a"
+    },
+    {
+      "path": "scripts/infer_27b_dual_4090.sh",
+      "bytes": 350,
+      "sha256": "7f4d2d0eb9683fe5f4d82201278664b9c11838eb5578d116e4490aea82637fa0"
+    },
+    {
+      "path": "scripts/infer_27b_single_4090.sh",
+      "bytes": 330,
+      "sha256": "9a86f1a5589387fb4cbadeaf3e15063ee763082784f17766a880ff7dfb06afb2"
+    },
+    {
+      "path": "scripts/infer_4b_dual_4090.sh",
+      "bytes": 619,
+      "sha256": "57b4d0beea427e608c668122775c3ac9c7c09531a44c3d2a5d67a6ff0b4e8790"
+    },
+    {
+      "path": "scripts/infer_4b_single_4090.sh",
+      "bytes": 331,
+      "sha256": "2f8dce1d56e03eb90ff9e6183c0b61ee5d5450c20b2c54ba1f4f7dc8d068a1cd"
+    },
+    {
+      "path": "scripts/merge_lora.py",
+      "bytes": 1541,
+      "sha256": "06daf3b18c53f8aac10f77304b6c26d378ee531ae69e422550911c599a304b8e"
+    },
+    {
+      "path": "scripts/train_27b_full.sh",
+      "bytes": 222,
+      "sha256": "69c7c05a91bb53da960fffff4b90e52e1fd90f99f3b0951dda137146ea43a19a"
+    },
+    {
+      "path": "scripts/train_27b_lora.sh",
+      "bytes": 222,
+      "sha256": "3b6641170c869d42b262323e6ba5e6dcde4b612cc9282230ea3a1e9e0c1a57ad"
+    },
+    {
+      "path": "scripts/train_4b_full.sh",
+      "bytes": 221,
+      "sha256": "a9abc182278b0601e5139201f19bddc18c5c034ff27d7fe19d4f1f769bc6501c"
+    },
+    {
+      "path": "scripts/train_4b_lora.sh",
+      "bytes": 221,
+      "sha256": "ecdb5bc907704d8364252b495276a7c9eaf91734eaf21de4c59134e6544c5350"
+    },
+    {
+      "path": "sii_decision/__init__.py",
+      "bytes": 69,
+      "sha256": "90308ecc81e4c5349a1f568bdfa7475e92d0805add15557ea7d9b11d5e1d7aff"
+    },
+    {
+      "path": "sii_decision/data.py",
+      "bytes": 2861,
+      "sha256": "342ef156274b9bc59fe5f1d0bf1ca417044ff87f30b16ef85245425de64c4fa9"
+    },
+    {
+      "path": "sii_decision/evaluation.py",
+      "bytes": 2721,
+      "sha256": "9ad8e5b801aa776e5decd8ab8414f97f1a11134b734e4916f8b85de6131ae8ee"
+    },
+    {
+      "path": "sii_decision/infer.py",
+      "bytes": 7941,
+      "sha256": "8d1df4b2fa544674a6eaa3fad3a77637b743b21a7047e5a16751a66517608cb6"
+    },
+    {
+      "path": "sii_decision/learning.py",
+      "bytes": 2514,
+      "sha256": "536d97b3f180c420868b11e547d04a51b12c1e4fa4a71051b8d4ef1b9de512ab"
+    },
+    {
+      "path": "sii_decision/merge_predictions.py",
+      "bytes": 1206,
+      "sha256": "8b2c264dfc1a1d9ed959efc969817c523421cf78183b0650a15a72349c599568"
+    },
+    {
+      "path": "sii_decision/prompts.py",
+      "bytes": 1220,
+      "sha256": "4279021f139ac2d46f3bea29f5d2b2e60ce76cf8f79a691a9092607616ae0373"
+    },
+    {
+      "path": "sii_decision/scheduling.py",
+      "bytes": 1760,
+      "sha256": "89807003674ba411228e8121cc8115c84f6bc6aad9f88c7734d41b18d45f45bb"
+    },
+    {
+      "path": "sii_decision/train.py",
+      "bytes": 11468,
+      "sha256": "fe8327bd91283fb4ffe6618cae9ed5883da933877465fdb51209970e8ef95a08"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 8147: character maps to <undefined>
+
+
+================================================
+FILE: LICENSE
+================================================
+Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright 2026 SII-Decision contributors
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+
+================================================
+FILE: NOTICE
+================================================
+SII-Decision decision training and inference: SII-Decision contributors.
+Underlying Qwen models retain their original copyrights and licenses.
+
+
+
+================================================
+FILE: pyproject.toml
+================================================
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sii-decision"
+version = "1.0.0"
+description = "SII-Decision decision inference and same-size distribution distillation"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+dependencies = [
+  "torch==2.8.0",
+  "transformers==5.14.1",
+  "peft==0.21.0",
+  "accelerate==1.10.1",
+  "safetensors==0.8.0",
+  "huggingface-hub>=1.0,<3",
+  "tensorboard==2.20.0",
+]
+
+[project.optional-dependencies]
+quantization = ["bitsandbytes==0.47.0"]
+data = ["datasets>=4.0", "pyarrow>=21"]
+
+[tool.setuptools.packages.find]
+include = ["sii_decision*"]
+
+
+
+================================================
+FILE: configs/27B/full.json
+================================================
+{
+  "method": "full",
+  "base_model": "Qwen/Qwen3.8-27B",
+  "dataset": "jylin001206/SII-Decision-27B-Training-Data",
+  "training_rows": 39279,
+  "seed": 42,
+  "lr": 2e-06,
+  "micro": 2,
+  "gpus": 8,
+  "epochs": 1,
+  "checkpoint_steps": 492,
+  "max_input_tokens": 6000,
+  "trainable_parameters": 22817013760,
+  "type_weights": {
+    "choice": 1.0,
+    "noul": 1.1666667,
+    "score": 0.8
+  },
+  "modules": "configs/27B/modules.json",
+  "base_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
+}
+
+
+
+================================================
+FILE: configs/27B/lora.json
+================================================
+{
+  "method": "lora",
+  "base_model": "Qwen/Qwen3.8-27B",
+  "dataset": "jylin001206/SII-Decision-27B-Training-Data",
+  "training_rows": 39279,
+  "seed": 42,
+  "lr": 5e-05,
+  "micro": 2,
+  "gpus": 4,
+  "epochs": 1,
+  "checkpoint_steps": 492,
+  "max_input_tokens": 6000,
+  "trainable_parameters": 400556032,
+  "type_weights": {
+    "choice": 1.0,
+    "noul": 1.1666667,
+    "score": 0.8
+  },
+  "modules": "configs/27B/modules.json",
+  "base_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
+}
+
+
+
+================================================
+FILE: configs/27B/modules.json
+================================================
+[
+  "model.language_model.layers.0.linear_attn.out_proj",
+  "model.language_model.layers.0.linear_attn.in_proj_qkv",
+  "model.language_model.layers.0.mlp.gate_proj",
+  "model.language_model.layers.0.mlp.up_proj",
+  "model.language_model.layers.0.mlp.down_proj",
+  "model.language_model.layers.1.linear_attn.out_proj",
+  "model.language_model.layers.1.linear_attn.in_proj_qkv",
+  "model.language_model.layers.1.mlp.gate_proj",
+  "model.language_model.layers.1.mlp.up_proj",
+  "model.language_model.layers.1.mlp.down_proj",
+  "model.language_model.layers.2.linear_attn.out_proj",
+  "model.language_model.layers.2.linear_attn.in_proj_qkv",
+  "model.language_model.layers.2.mlp.gate_proj",
+  "model.language_model.layers.2.mlp.up_proj",
+  "model.language_model.layers.2.mlp.down_proj",
+  "model.language_model.layers.3.self_attn.q_proj",
+  "model.language_model.layers.3.self_attn.k_proj",
+  "model.language_model.layers.3.self_attn.v_proj",
+  "model.language_model.layers.3.self_attn.o_proj",
+  "model.language_model.layers.3.mlp.gate_proj",
+  "model.language_model.layers.3.mlp.up_proj",
+  "model.language_model.layers.3.mlp.down_proj",
+  "model.language_model.layers.4.linear_attn.out_proj",
+  "model.language_model.layers.4.linear_attn.in_proj_qkv",
+  "model.language_model.layers.4.mlp.gate_proj",
+  "model.language_model.layers.4.mlp.up_proj",
+  "model.language_model.layers.4.mlp.down_proj",
+  "model.language_model.layers.5.linear_attn.out_proj",
+  "model.language_model.layers.5.linear_attn.in_proj_qkv",
+  "model.language_model.layers.5.mlp.gate_proj",
+  "model.language_model.layers.5.mlp.up_proj",
+  "model.language_model.layers.5.mlp.down_proj",
+  "model.language_model.layers.6.linear_attn.out_proj",
+  "model.language_model.layers.6.linear_attn.in_proj_qkv",
+  "model.language_model.layers.6.mlp.gate_proj",
+  "model.language_model.layers.6.mlp.up_proj",
+  "model.language_model.layers.6.mlp.down_proj",
+  "model.language_model.layers.7.self_attn.q_proj",
+  "model.language_model.layers.7.self_attn.k_proj",
+  "model.language_model.layers.7.self_attn.v_proj",
+  "model.language_model.layers.7.self_attn.o_proj",
+  "model.language_model.layers.7.mlp.gate_proj",
+  "model.language_model.layers.7.mlp.up_proj",
+  "model.language_model.layers.7.mlp.down_proj",
+  "model.language_model.layers.8.linear_attn.out_proj",
+  "model.language_model.layers.8.linear_attn.in_proj_qkv",
+  "model.language_model.layers.8.mlp.gate_proj",
+  "model.language_model.layers.8.mlp.up_proj",
+  "model.language_model.layers.8.mlp.down_proj",
+  "model.language_model.layers.9.linear_attn.out_proj",
+  "model.language_model.layers.9.linear_attn.in_proj_qkv",
+  "model.language_model.layers.9.mlp.gate_proj",
+  "model.language_model.layers.9.mlp.up_proj",
+  "model.language_model.layers.9.mlp.down_proj",
+  "model.language_model.layers.10.linear_attn.out_proj",
+  "model.language_model.layers.10.linear_attn.in_proj_qkv",
+  "model.language_model.layers.10.mlp.gate_proj",
+  "model.language_model.layers.10.mlp.up_proj",
+  "model.language_model.layers.10.mlp.down_proj",
+  "model.language_model.layers.11.self_attn.q_proj",
+  "model.language_model.layers.11.self_attn.k_proj",
+  "model.language_model.layers.11.self_attn.v_proj",
+  "model.language_model.layers.11.self_attn.o_proj",
+  "model.language_model.layers.11.mlp.gate_proj",
+  "model.language_model.layers.11.mlp.up_proj",
+  "model.language_model.layers.11.mlp.down_proj",
+  "model.language_model.layers.12.linear_attn.out_proj",
+  "model.language_model.layers.12.linear_attn.in_proj_qkv",
+  "model.language_model.layers.12.mlp.gate_proj",
+  "model.language_model.layers.12.mlp.up_proj",
+  "model.language_model.layers.12.mlp.down_proj",
+  "model.language_model.layers.13.linear_attn.out_proj",
+  "model.language_model.layers.13.linear_attn.in_proj_qkv",
+  "model.language_model.layers.13.mlp.gate_proj",
+  "model.language_model.layers.13.mlp.up_proj",
+  "model.language_model.layers.13.mlp.down_proj",
+  "model.language_model.layers.14.linear_attn.out_proj",
+  "model.language_model.layers.14.linear_attn.in_proj_qkv",
+  "model.language_model.layers.14.mlp.gate_proj",
+  "model.language_model.layers.14.mlp.up_proj",
+  "model.language_model.layers.14.mlp.down_proj",
+  "model.language_model.layers.15.self_attn.q_proj",
+  "model.language_model.layers.15.self_attn.k_proj",
+  "model.language_model.layers.15.self_attn.v_proj",
+  "model.language_model.layers.15.self_attn.o_proj",
+  "model.language_model.layers.15.mlp.gate_proj",
+  "model.language_model.layers.15.mlp.up_proj",
+  "model.language_model.layers.15.mlp.down_proj",
+  "model.language_model.layers.16.linear_attn.out_proj",
+  "model.language_model.layers.16.linear_attn.in_proj_qkv",
+  "model.language_model.layers.16.mlp.gate_proj",
+  "model.language_model.layers.16.mlp.up_proj",
+  "model.language_model.layers.16.mlp.down_proj",
+  "model.language_model.layers.17.linear_attn.out_proj",
+  "model.language_model.layers.17.linear_attn.in_proj_qkv",
+  "model.language_model.layers.17.mlp.gate_proj",
+  "model.language_model.layers.17.mlp.up_proj",
+  "model.language_model.layers.17.mlp.down_proj",
+  "model.language_model.layers.18.linear_attn.out_proj",
+  "model.language_model.layers.18.linear_attn.in_proj_qkv",
+  "model.language_model.layers.18.mlp.gate_proj",
+  "model.language_model.layers.18.mlp.up_proj",
+  "model.language_model.layers.18.mlp.down_proj",
+  "model.language_model.layers.19.self_attn.q_proj",
+  "model.language_model.layers.19.self_attn.k_proj",
+  "model.language_model.layers.19.self_attn.v_proj",
+  "model.language_model.layers.19.self_attn.o_proj",
+  "model.language_model.layers.19.mlp.gate_proj",
+  "model.language_model.layers.19.mlp.up_proj",
+  "model.language_model.layers.19.mlp.down_proj",
+  "model.language_model.layers.20.linear_attn.out_proj",
+  "model.language_model.layers.20.linear_attn.in_proj_qkv",
+  "model.language_model.layers.20.mlp.gate_proj",
+  "model.language_model.layers.20.mlp.up_proj",
+  "model.language_model.layers.20.mlp.down_proj",
+  "model.language_model.layers.21.linear_attn.out_proj",
+  "model.language_model.layers.21.linear_attn.in_proj_qkv",
+  "model.language_model.layers.21.mlp.gate_proj",
+  "model.language_model.layers.21.mlp.up_proj",
+  "model.language_model.layers.21.mlp.down_proj",
+  "model.language_model.layers.22.linear_attn.out_proj",
+  "model.language_model.layers.22.linear_attn.in_proj_qkv",
+  "model.language_model.layers.22.mlp.gate_proj",
+  "model.language_model.layers.22.mlp.up_proj",
+  "model.language_model.layers.22.mlp.down_proj",
+  "model.language_model.layers.23.self_attn.q_proj",
+  "model.language_model.layers.23.self_attn.k_proj",
+  "model.language_model.layers.23.self_attn.v_proj",
+  "model.language_model.layers.23.self_attn.o_proj",
+  "model.language_model.layers.23.mlp.gate_proj",
+  "model.language_model.layers.23.mlp.up_proj",
+  "model.language_model.layers.23.mlp.down_proj",
+  "model.language_model.layers.24.linear_attn.out_proj",
+  "model.language_model.layers.24.linear_attn.in_proj_qkv",
+  "model.language_model.layers.24.mlp.gate_proj",
+  "model.language_model.layers.24.mlp.up_proj",
+  "model.language_model.layers.24.mlp.down_proj",
+  "model.language_model.layers.25.linear_attn.out_proj",
+  "model.language_model.layers.25.linear_attn.in_proj_qkv",
+  "model.language_model.layers.25.mlp.gate_proj",
+  "model.language_model.layers.25.mlp.up_proj",
+  "model.language_model.layers.25.mlp.down_proj",
+  "model.language_model.layers.26.linear_attn.out_proj",
+  "model.language_model.layers.26.linear_attn.in_proj_qkv",
+  "model.language_model.layers.26.mlp.gate_proj",
+  "model.language_model.layers.26.mlp.up_proj",
+  "model.language_model.layers.26.mlp.down_proj",
+  "model.language_model.layers.27.self_attn.q_proj",
+  "model.language_model.layers.27.self_attn.k_proj",
+  "model.language_model.layers.27.self_attn.v_proj",
+  "model.language_model.layers.27.self_attn.o_proj",
+  "model.language_model.layers.27.mlp.gate_proj",
+  "model.language_model.layers.27.mlp.up_proj",
+  "model.language_model.layers.27.mlp.down_proj",
+  "model.language_model.layers.28.linear_attn.out_proj",
+  "model.language_model.layers.28.linear_attn.in_proj_qkv",
+  "model.language_model.layers.28.mlp.gate_proj",
+  "model.language_model.layers.28.mlp.up_proj",
+  "model.language_model.layers.28.mlp.down_proj",
+  "model.language_model.layers.29.linear_attn.out_proj",
+  "model.language_model.layers.29.linear_attn.in_proj_qkv",
+  "model.language_model.layers.29.mlp.gate_proj",
+  "model.language_model.layers.29.mlp.up_proj",
+  "model.language_model.layers.29.mlp.down_proj",
+  "model.language_model.layers.30.linear_attn.out_proj",
+  "model.language_model.layers.30.linear_attn.in_proj_qkv",
+  "model.language_model.layers.30.mlp.gate_proj",
+  "model.language_model.layers.30.mlp.up_proj",
+  "model.language_model.layers.30.mlp.down_proj",
+  "model.language_model.layers.31.self_attn.q_proj",
+  "model.language_model.layers.31.self_attn.k_proj",
+  "model.language_model.layers.31.self_attn.v_proj",
+  "model.language_model.layers.31.self_attn.o_proj",
+  "model.language_model.layers.31.mlp.gate_proj",
+  "model.language_model.layers.31.mlp.up_proj",
+  "model.language_model.layers.31.mlp.down_proj",
+  "model.language_model.layers.32.linear_attn.out_proj",
+  "model.language_model.layers.32.linear_attn.in_proj_qkv",
+  "model.language_model.layers.32.mlp.gate_proj",
+  "model.language_model.layers.32.mlp.up_proj",
+  "model.language_model.layers.32.mlp.down_proj",
+  "model.language_model.layers.33.linear_attn.out_proj",
+  "model.language_model.layers.33.linear_attn.in_proj_qkv",
+  "model.language_model.layers.33.mlp.gate_proj",
+  "model.language_model.layers.33.mlp.up_proj",
+  "model.language_model.layers.33.mlp.down_proj",
+  "model.language_model.layers.34.linear_attn.out_proj",
+  "model.language_model.layers.34.linear_attn.in_proj_qkv",
+  "model.language_model.layers.34.mlp.gate_proj",
+  "model.language_model.layers.34.mlp.up_proj",
+  "model.language_model.layers.34.mlp.down_proj",
+  "model.language_model.layers.35.self_attn.q_proj",
+  "model.language_model.layers.35.self_attn.k_proj",
+  "model.language_model.layers.35.self_attn.v_proj",
+  "model.language_model.layers.35.self_attn.o_proj",
+  "model.language_model.layers.35.mlp.gate_proj",
+  "model.language_model.layers.35.mlp.up_proj",
+  "model.language_model.layers.35.mlp.down_proj",
+  "model.language_model.layers.36.linear_attn.out_proj",
+  "model.language_model.layers.36.linear_attn.in_proj_qkv",
+  "model.language_model.layers.36.mlp.gate_proj",
+  "model.language_model.layers.36.mlp.up_proj",
+  "model.language_model.layers.36.mlp.down_proj",
+  "model.language_model.layers.37.linear_attn.out_proj",
+  "model.language_model.layers.37.linear_attn.in_proj_qkv",
+  "model.language_model.layers.37.mlp.gate_proj",
+  "model.language_model.layers.37.mlp.up_proj",
+  "model.language_model.layers.37.mlp.down_proj",
+  "model.language_model.layers.38.linear_attn.out_proj",
+  "model.language_model.layers.38.linear_attn.in_proj_qkv",
+  "model.language_model.layers.38.mlp.gate_proj",
+  "model.language_model.layers.38.mlp.up_proj",
+  "model.language_model.layers.38.mlp.down_proj",
+  "model.language_model.layers.39.self_attn.q_proj",
+  "model.language_model.layers.39.self_attn.k_proj",
+  "model.language_model.layers.39.self_attn.v_proj",
+  "model.language_model.layers.39.self_attn.o_proj",
+  "model.language_model.layers.39.mlp.gate_proj",
+  "model.language_model.layers.39.mlp.up_proj",
+  "model.language_model.layers.39.mlp.down_proj",
+  "model.language_model.layers.40.linear_attn.out_proj",
+  "model.language_model.layers.40.linear_attn.in_proj_qkv",
+  "model.language_model.layers.40.mlp.gate_proj",
+  "model.language_model.layers.40.mlp.up_proj",
+  "model.language_model.layers.40.mlp.down_proj",
+  "model.language_model.layers.41.linear_attn.out_proj",
+  "model.language_model.layers.41.linear_attn.in_proj_qkv",
+  "model.language_model.layers.41.mlp.gate_proj",
+  "model.language_model.layers.41.mlp.up_proj",
+  "model.language_model.layers.41.mlp.down_proj",
+  "model.language_model.layers.42.linear_attn.out_proj",
+  "model.language_model.layers.42.linear_attn.in_proj_qkv",
+  "model.language_model.layers.42.mlp.gate_proj",
+  "model.language_model.layers.42.mlp.up_proj",
+  "model.language_model.layers.42.mlp.down_proj",
+  "model.language_model.layers.43.self_attn.q_proj",
+  "model.language_model.layers.43.self_attn.k_proj",
+  "model.language_model.layers.43.self_attn.v_proj",
+  "model.language_model.layers.43.self_attn.o_proj",
+  "model.language_model.layers.43.mlp.gate_proj",
+  "model.language_model.layers.43.mlp.up_proj",
+  "model.language_model.layers.43.mlp.down_proj",
+  "model.language_model.layers.44.linear_attn.out_proj",
+  "model.language_model.layers.44.linear_attn.in_proj_qkv",
+  "model.language_model.layers.44.mlp.gate_proj",
+  "model.language_model.layers.44.mlp.up_proj",
+  "model.language_model.layers.44.mlp.down_proj",
+  "model.language_model.layers.45.linear_attn.out_proj",
+  "model.language_model.layers.45.linear_attn.in_proj_qkv",
+  "model.language_model.layers.45.mlp.gate_proj",
+  "model.language_model.layers.45.mlp.up_proj",
+  "model.language_model.layers.45.mlp.down_proj",
+  "model.language_model.layers.46.linear_attn.out_proj",
+  "model.language_model.layers.46.linear_attn.in_proj_qkv",
+  "model.language_model.layers.46.mlp.gate_proj",
+  "model.language_model.layers.46.mlp.up_proj",
+  "model.language_model.layers.46.mlp.down_proj",
+  "model.language_model.layers.47.self_attn.q_proj",
+  "model.language_model.layers.47.self_attn.k_proj",
+  "model.language_model.layers.47.self_attn.v_proj",
+  "model.language_model.layers.47.self_attn.o_proj",
+  "model.language_model.layers.47.mlp.gate_proj",
+  "model.language_model.layers.47.mlp.up_proj",
+  "model.language_model.layers.47.mlp.down_proj",
+  "model.language_model.layers.48.linear_attn.out_proj",
+  "model.language_model.layers.48.linear_attn.in_proj_qkv",
+  "model.language_model.layers.48.mlp.gate_proj",
+  "model.language_model.layers.48.mlp.up_proj",
+  "model.language_model.layers.48.mlp.down_proj",
+  "model.language_model.layers.49.linear_attn.out_proj",
+  "model.language_model.layers.49.linear_attn.in_proj_qkv",
+  "model.language_model.layers.49.mlp.gate_proj",
+  "model.language_model.layers.49.mlp.up_proj",
+  "model.language_model.layers.49.mlp.down_proj",
+  "model.language_model.layers.50.linear_attn.out_proj",
+  "model.language_model.layers.50.linear_attn.in_proj_qkv",
+  "model.language_model.layers.50.mlp.gate_proj",
+  "model.language_model.layers.50.mlp.up_proj",
+  "model.language_model.layers.50.mlp.down_proj",
+  "model.language_model.layers.51.self_attn.q_proj",
+  "model.language_model.layers.51.self_attn.k_proj",
+  "model.language_model.layers.51.self_attn.v_proj",
+  "model.language_model.layers.51.self_attn.o_proj",
+  "model.language_model.layers.51.mlp.gate_proj",
+  "model.language_model.layers.51.mlp.up_proj",
+  "model.language_model.layers.51.mlp.down_proj",
+  "model.language_model.layers.52.linear_attn.out_proj",
+  "model.language_model.layers.52.linear_attn.in_proj_qkv",
+  "model.language_model.layers.52.mlp.gate_proj",
+  "model.language_model.layers.52.mlp.up_proj",
+  "model.language_model.layers.52.mlp.down_proj",
+  "model.language_model.layers.53.linear_attn.out_proj",
+  "model.language_model.layers.53.linear_attn.in_proj_qkv",
+  "model.language_model.layers.53.mlp.gate_proj",
+  "model.language_model.layers.53.mlp.up_proj",
+  "model.language_model.layers.53.mlp.down_proj",
+  "model.language_model.layers.54.linear_attn.out_proj",
+  "model.language_model.layers.54.linear_attn.in_proj_qkv",
+  "model.language_model.layers.54.mlp.gate_proj",
+  "model.language_model.layers.54.mlp.up_proj",
+  "model.language_model.layers.54.mlp.down_proj",
+  "model.language_model.layers.55.self_attn.q_proj",
+  "model.language_model.layers.55.self_attn.k_proj",
+  "model.language_model.layers.55.self_attn.v_proj",
+  "model.language_model.layers.55.self_attn.o_proj",
+  "model.language_model.layers.55.mlp.gate_proj",
+  "model.language_model.layers.55.mlp.up_proj",
+  "model.language_model.layers.55.mlp.down_proj",
+  "model.language_model.layers.56.linear_attn.out_proj",
+  "model.language_model.layers.56.linear_attn.in_proj_qkv",
+  "model.language_model.layers.56.mlp.gate_proj",
+  "model.language_model.layers.56.mlp.up_proj",
+  "model.language_model.layers.56.mlp.down_proj",
+  "model.language_model.layers.57.linear_attn.out_proj",
+  "model.language_model.layers.57.linear_attn.in_proj_qkv",
+  "model.language_model.layers.57.mlp.gate_proj",
+  "model.language_model.layers.57.mlp.up_proj",
+  "model.language_model.layers.57.mlp.down_proj",
+  "model.language_model.layers.58.linear_attn.out_proj",
+  "model.language_model.layers.58.linear_attn.in_proj_qkv",
+  "model.language_model.layers.58.mlp.gate_proj",
+  "model.language_model.layers.58.mlp.up_proj",
+  "model.language_model.layers.58.mlp.down_proj",
+  "model.language_model.layers.59.self_attn.q_proj",
+  "model.language_model.layers.59.self_attn.k_proj",
+  "model.language_model.layers.59.self_attn.v_proj",
+  "model.language_model.layers.59.self_attn.o_proj",
+  "model.language_model.layers.59.mlp.gate_proj",
+  "model.language_model.layers.59.mlp.up_proj",
+  "model.language_model.layers.59.mlp.down_proj",
+  "model.language_model.layers.60.linear_attn.out_proj",
+  "model.language_model.layers.60.linear_attn.in_proj_qkv",
+  "model.language_model.layers.60.mlp.gate_proj",
+  "model.language_model.layers.60.mlp.up_proj",
+  "model.language_model.layers.60.mlp.down_proj",
+  "model.language_model.layers.61.linear_attn.out_proj",
+  "model.language_model.layers.61.linear_attn.in_proj_qkv",
+  "model.language_model.layers.61.mlp.gate_proj",
+  "model.language_model.layers.61.mlp.up_proj",
+  "model.language_model.layers.61.mlp.down_proj",
+  "model.language_model.layers.62.linear_attn.out_proj",
+  "model.language_model.layers.62.linear_attn.in_proj_qkv",
+  "model.language_model.layers.62.mlp.gate_proj",
+  "model.language_model.layers.62.mlp.up_proj",
+  "model.language_model.layers.62.mlp.down_proj",
+  "model.language_model.layers.63.self_attn.q_proj",
+  "model.language_model.layers.63.self_attn.k_proj",
+  "model.language_model.layers.63.self_attn.v_proj",
+  "model.language_model.layers.63.self_attn.o_proj",
+  "model.language_model.layers.63.mlp.gate_proj",
+  "model.language_model.layers.63.mlp.up_proj",
+  "model.language_model.layers.63.mlp.down_proj"
+]
+
+
+
+================================================
+FILE: configs/4B/full.json
+================================================
+{
+  "method": "full",
+  "base_model": "Qwen/Qwen3.5-4B",
+  "dataset": "jylin001206/SII-Decision-4B-Training-Data",
+  "training_rows": 29326,
+  "seed": 43,
+  "lr": 2e-06,
+  "micro": 4,
+  "gpus": 4,
+  "epochs": 1,
+  "checkpoint_steps": 459,
+  "max_input_tokens": 6000,
+  "trainable_parameters": 3313500160,
+  "type_weights": {
+    "choice": 1.0,
+    "noul": 1.1666667,
+    "score": 0.8
+  },
+  "modules": "configs/4B/modules.json",
+  "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+}
+
+
+
+================================================
+FILE: configs/4B/lora.json
+================================================
+{
+  "method": "lora",
+  "base_model": "Qwen/Qwen3.5-4B",
+  "dataset": "jylin001206/SII-Decision-4B-Training-Data",
+  "training_rows": 29326,
+  "seed": 43,
+  "lr": 5e-05,
+  "micro": 4,
+  "gpus": 4,
+  "epochs": 1,
+  "checkpoint_steps": 276,
+  "max_input_tokens": 6000,
+  "trainable_parameters": 111673344,
+  "type_weights": {
+    "choice": 1.0,
+    "noul": 1.1666667,
+    "score": 0.8
+  },
+  "modules": "configs/4B/modules.json",
+  "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+}
+
+
+
+================================================
+FILE: configs/4B/modules.json
+================================================
+[
+  "model.language_model.layers.0.linear_attn.out_proj",
+  "model.language_model.layers.0.linear_attn.in_proj_qkv",
+  "model.language_model.layers.0.mlp.gate_proj",
+  "model.language_model.layers.0.mlp.up_proj",
+  "model.language_model.layers.0.mlp.down_proj",
+  "model.language_model.layers.1.linear_attn.out_proj",
+  "model.language_model.layers.1.linear_attn.in_proj_qkv",
+  "model.language_model.layers.1.mlp.gate_proj",
+  "model.language_model.layers.1.mlp.up_proj",
+  "model.language_model.layers.1.mlp.down_proj",
+  "model.language_model.layers.2.linear_attn.out_proj",
+  "model.language_model.layers.2.linear_attn.in_proj_qkv",
+  "model.language_model.layers.2.mlp.gate_proj",
+  "model.language_model.layers.2.mlp.up_proj",
+  "model.language_model.layers.2.mlp.down_proj",
+  "model.language_model.layers.3.self_attn.q_proj",
+  "model.language_model.layers.3.self_attn.k_proj",
+  "model.language_model.layers.3.self_attn.v_proj",
+  "model.language_model.layers.3.self_attn.o_proj",
+  "model.language_model.layers.3.mlp.gate_proj",
+  "model.language_model.layers.3.mlp.up_proj",
+  "model.language_model.layers.3.mlp.down_proj",
+  "model.language_model.layers.4.linear_attn.out_proj",
+  "model.language_model.layers.4.linear_attn.in_proj_qkv",
+  "model.language_model.layers.4.mlp.gate_proj",
+  "model.language_model.layers.4.mlp.up_proj",
+  "model.language_model.layers.4.mlp.down_proj",
+  "model.language_model.layers.5.linear_attn.out_proj",
+  "model.language_model.layers.5.linear_attn.in_proj_qkv",
+  "model.language_model.layers.5.mlp.gate_proj",
+  "model.language_model.layers.5.mlp.up_proj",
+  "model.language_model.layers.5.mlp.down_proj",
+  "model.language_model.layers.6.linear_attn.out_proj",
+  "model.language_model.layers.6.linear_attn.in_proj_qkv",
+  "model.language_model.layers.6.mlp.gate_proj",
+  "model.language_model.layers.6.mlp.up_proj",
+  "model.language_model.layers.6.mlp.down_proj",
+  "model.language_model.layers.7.self_attn.q_proj",
+  "model.language_model.layers.7.self_attn.k_proj",
+  "model.language_model.layers.7.self_attn.v_proj",
+  "model.language_model.layers.7.self_attn.o_proj",
+  "model.language_model.layers.7.mlp.gate_proj",
+  "model.language_model.layers.7.mlp.up_proj",
+  "model.language_model.layers.7.mlp.down_proj",
+  "model.language_model.layers.8.linear_attn.out_proj",
+  "model.language_model.layers.8.linear_attn.in_proj_qkv",
+  "model.language_model.layers.8.mlp.gate_proj",
+  "model.language_model.layers.8.mlp.up_proj",
+  "model.language_model.layers.8.mlp.down_proj",
+  "model.language_model.layers.9.linear_attn.out_proj",
+  "model.language_model.layers.9.linear_attn.in_proj_qkv",
+  "model.language_model.layers.9.mlp.gate_proj",
+  "model.language_model.layers.9.mlp.up_proj",
+  "model.language_model.layers.9.mlp.down_proj",
+  "model.language_model.layers.10.linear_attn.out_proj",
+  "model.language_model.layers.10.linear_attn.in_proj_qkv",
+  "model.language_model.layers.10.mlp.gate_proj",
+  "model.language_model.layers.10.mlp.up_proj",
+  "model.language_model.layers.10.mlp.down_proj",
+  "model.language_model.layers.11.self_attn.q_proj",
+  "model.language_model.layers.11.self_attn.k_proj",
+  "model.language_model.layers.11.self_attn.v_proj",
+  "model.language_model.layers.11.self_attn.o_proj",
+  "model.language_model.layers.11.mlp.gate_proj",
+  "model.language_model.layers.11.mlp.up_proj",
+  "model.language_model.layers.11.mlp.down_proj",
+  "model.language_model.layers.12.linear_attn.out_proj",
+  "model.language_model.layers.12.linear_attn.in_proj_qkv",
+  "model.language_model.layers.12.mlp.gate_proj",
+  "model.language_model.layers.12.mlp.up_proj",
+  "model.language_model.layers.12.mlp.down_proj",
+  "model.language_model.layers.13.linear_attn.out_proj",
+  "model.language_model.layers.13.linear_attn.in_proj_qkv",
+  "model.language_model.layers.13.mlp.gate_proj",
+  "model.language_model.layers.13.mlp.up_proj",
+  "model.language_model.layers.13.mlp.down_proj",
+  "model.language_model.layers.14.linear_attn.out_proj",
+  "model.language_model.layers.14.linear_attn.in_proj_qkv",
+  "model.language_model.layers.14.mlp.gate_proj",
+  "model.language_model.layers.14.mlp.up_proj",
+  "model.language_model.layers.14.mlp.down_proj",
+  "model.language_model.layers.15.self_attn.q_proj",
+  "model.language_model.layers.15.self_attn.k_proj",
+  "model.language_model.layers.15.self_attn.v_proj",
+  "model.language_model.layers.15.self_attn.o_proj",
+  "model.language_model.layers.15.mlp.gate_proj",
+  "model.language_model.layers.15.mlp.up_proj",
+  "model.language_model.layers.15.mlp.down_proj",
+  "model.language_model.layers.16.linear_attn.out_proj",
+  "model.language_model.layers.16.linear_attn.in_proj_qkv",
+  "model.language_model.layers.16.mlp.gate_proj",
+  "model.language_model.layers.16.mlp.up_proj",
+  "model.language_model.layers.16.mlp.down_proj",
+  "model.language_model.layers.17.linear_attn.out_proj",
+  "model.language_model.layers.17.linear_attn.in_proj_qkv",
+  "model.language_model.layers.17.mlp.gate_proj",
+  "model.language_model.layers.17.mlp.up_proj",
+  "model.language_model.layers.17.mlp.down_proj",
+  "model.language_model.layers.18.linear_attn.out_proj",
+  "model.language_model.layers.18.linear_attn.in_proj_qkv",
+  "model.language_model.layers.18.mlp.gate_proj",
+  "model.language_model.layers.18.mlp.up_proj",
+  "model.language_model.layers.18.mlp.down_proj",
+  "model.language_model.layers.19.self_attn.q_proj",
+  "model.language_model.layers.19.self_attn.k_proj",
+  "model.language_model.layers.19.self_attn.v_proj",
+  "model.language_model.layers.19.self_attn.o_proj",
+  "model.language_model.layers.19.mlp.gate_proj",
+  "model.language_model.layers.19.mlp.up_proj",
+  "model.language_model.layers.19.mlp.down_proj",
+  "model.language_model.layers.20.linear_attn.out_proj",
+  "model.language_model.layers.20.linear_attn.in_proj_qkv",
+  "model.language_model.layers.20.mlp.gate_proj",
+  "model.language_model.layers.20.mlp.up_proj",
+  "model.language_model.layers.20.mlp.down_proj",
+  "model.language_model.layers.21.linear_attn.out_proj",
+  "model.language_model.layers.21.linear_attn.in_proj_qkv",
+  "model.language_model.layers.21.mlp.gate_proj",
+  "model.language_model.layers.21.mlp.up_proj",
+  "model.language_model.layers.21.mlp.down_proj",
+  "model.language_model.layers.22.linear_attn.out_proj",
+  "model.language_model.layers.22.linear_attn.in_proj_qkv",
+  "model.language_model.layers.22.mlp.gate_proj",
+  "model.language_model.layers.22.mlp.up_proj",
+  "model.language_model.layers.22.mlp.down_proj",
+  "model.language_model.layers.23.self_attn.q_proj",
+  "model.language_model.layers.23.self_attn.k_proj",
+  "model.language_model.layers.23.self_attn.v_proj",
+  "model.language_model.layers.23.self_attn.o_proj",
+  "model.language_model.layers.23.mlp.gate_proj",
+  "model.language_model.layers.23.mlp.up_proj",
+  "model.language_model.layers.23.mlp.down_proj",
+  "model.language_model.layers.24.linear_attn.out_proj",
+  "model.language_model.layers.24.linear_attn.in_proj_qkv",
+  "model.language_model.layers.24.mlp.gate_proj",
+  "model.language_model.layers.24.mlp.up_proj",
+  "model.language_model.layers.24.mlp.down_proj",
+  "model.language_model.layers.25.linear_attn.out_proj",
+  "model.language_model.layers.25.linear_attn.in_proj_qkv",
+  "model.language_model.layers.25.mlp.gate_proj",
+  "model.language_model.layers.25.mlp.up_proj",
+  "model.language_model.layers.25.mlp.down_proj",
+  "model.language_model.layers.26.linear_attn.out_proj",
+  "model.language_model.layers.26.linear_attn.in_proj_qkv",
+  "model.language_model.layers.26.mlp.gate_proj",
+  "model.language_model.layers.26.mlp.up_proj",
+  "model.language_model.layers.26.mlp.down_proj",
+  "model.language_model.layers.27.self_attn.q_proj",
+  "model.language_model.layers.27.self_attn.k_proj",
+  "model.language_model.layers.27.self_attn.v_proj",
+  "model.language_model.layers.27.self_attn.o_proj",
+  "model.language_model.layers.27.mlp.gate_proj",
+  "model.language_model.layers.27.mlp.up_proj",
+  "model.language_model.layers.27.mlp.down_proj",
+  "model.language_model.layers.28.linear_attn.out_proj",
+  "model.language_model.layers.28.linear_attn.in_proj_qkv",
+  "model.language_model.layers.28.mlp.gate_proj",
+  "model.language_model.layers.28.mlp.up_proj",
+  "model.language_model.layers.28.mlp.down_proj",
+  "model.language_model.layers.29.linear_attn.out_proj",
+  "model.language_model.layers.29.linear_attn.in_proj_qkv",
+  "model.language_model.layers.29.mlp.gate_proj",
+  "model.language_model.layers.29.mlp.up_proj",
+  "model.language_model.layers.29.mlp.down_proj",
+  "model.language_model.layers.30.linear_attn.out_proj",
+  "model.language_model.layers.30.linear_attn.in_proj_qkv",
+  "model.language_model.layers.30.mlp.gate_proj",
+  "model.language_model.layers.30.mlp.up_proj",
+  "model.language_model.layers.30.mlp.down_proj",
+  "model.language_model.layers.31.self_attn.q_proj",
+  "model.language_model.layers.31.self_attn.k_proj",
+  "model.language_model.layers.31.self_attn.v_proj",
+  "model.language_model.layers.31.self_attn.o_proj",
+  "model.language_model.layers.31.mlp.gate_proj",
+  "model.language_model.layers.31.mlp.up_proj",
+  "model.language_model.layers.31.mlp.down_proj"
+]
+
+
+
+================================================
+FILE: docs/VALIDATION.md
+================================================
+# Release validation
+
+The full-weight loading and inference checks described below were completed on
+2026-10-02. The 2026-10-12 rename to SII-Decision preserved the model weights and
+dataset contents. Rename validation checked anonymous access to all six renamed
+Hugging Face repositories, unchanged weight/data hashes, complete dataset downloads,
+and prompt validation through all four new model IDs. Full-weight inference was
+not rerun for the rename.
+
+All four standalone model folders were loaded with the supplied decision engine on CPU.
+Each model completed three synthetic questions covering Choice, Noul and Score; the
+returned probability vectors were finite, correctly sized, and normalized.
+
+All four published Hugging Face repository IDs also passed anonymous metadata and
+weight-download access checks. Each cached weight file was hashed in full and matched
+the remote SHA-256 value; every remote weight shard's downloaded byte prefix matched
+the export. Configurations and tokenizer files were downloaded anonymously.
+The standard `from_pretrained` path then loaded each repository in BF16 on CPU using
+that verified cache. No separate base model or adapter was required; no missing or
+mismatched weights were reported. All four models completed the three decision tasks.
+
+The two datasets passed JSONL and Arrow validation. Their rendered prompts, teacher
+targets, baseline distributions, and deterministic training batch order match the
+inputs used to train the released checkpoints. The loss implementation and the
+capability-equal validation scoring were compared on CPU with zero numerical difference.
+
+Safetensors shard keys were checked against each model's index. Full-rank tensor files
+were copied without changing their values. LoRA-derived models contain merged weights
+and do not require adapter loading. File sizes and SHA-256 hashes are provided with
+the Hugging Face artifacts and verified after upload.
+
+The single-/dual-RTX-4090 launchers are provided, but RTX 4090 hardware execution has
+not been validated in this environment. CPU checks do not measure GPU memory peaks,
+quantized benchmark scores, latency or throughput. NF4/INT8 deployment therefore must
+not inherit the BF16 benchmark score as a measured quantized result.
+
+
+
+================================================
+FILE: scripts/infer_27b_dual_4090.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+if (( $# < 3 )); then
+  echo "Usage: $0 MODEL INPUT.jsonl OUTPUT.jsonl [extra inference arguments]" >&2
+  exit 2
+fi
+model="$1"; input="$2"; output="$3"; shift 3
+python -m sii_decision.infer --model "$model" --input "$input" --output "$output" \
+  --gpus 2 --precision int8 --gpu-memory 20GiB --batch-size 1 "$@"
+
+
+
+================================================
+FILE: scripts/infer_27b_single_4090.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+if (( $# < 3 )); then
+  echo "Usage: $0 MODEL INPUT.jsonl OUTPUT.jsonl [extra inference arguments]" >&2
+  exit 2
+fi
+model="$1"; input="$2"; output="$3"; shift 3
+python -m sii_decision.infer --model "$model" --input "$input" --output "$output" \
+  --gpus 1 --precision nf4 --batch-size 1 "$@"
+
+
+
+================================================
+FILE: scripts/infer_4b_dual_4090.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+if (( $# < 3 )); then
+  echo "Usage: $0 MODEL INPUT.jsonl OUTPUT.jsonl [extra inference arguments]" >&2
+  exit 2
+fi
+model="$1"; input="$2"; output="$3"; shift 3
+if [[ -e "$output" ]]; then
+  echo "Output already exists: $output" >&2
+  exit 2
+fi
+parts="$(mktemp -d)"
+trap 'rm -rf "$parts"' EXIT
+torchrun --standalone --nnodes 1 --nproc_per_node 2 -m sii_decision.infer \
+  --model "$model" --input "$input" --output "$parts" --replicas 2 \
+  --gpus 1 --precision bf16 --batch-size 4 "$@"
+python -m sii_decision.merge_predictions --input "$input" --parts "$parts" --output "$output"
+
+
+
+================================================
+FILE: scripts/infer_4b_single_4090.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+if (( $# < 3 )); then
+  echo "Usage: $0 MODEL INPUT.jsonl OUTPUT.jsonl [extra inference arguments]" >&2
+  exit 2
+fi
+model="$1"; input="$2"; output="$3"; shift 3
+python -m sii_decision.infer --model "$model" --input "$input" --output "$output" \
+  --gpus 1 --precision bf16 --batch-size 4 "$@"
+
+
+
+================================================
+FILE: scripts/merge_lora.py
+================================================
+#!/usr/bin/env python3
+"""Merge a LoRA adapter into a standalone BF16 Hugging Face model."""
+import argparse
+from pathlib import Path
+
+
+def main():
+    import torch
+    from peft import PeftModel
+    from transformers import AutoConfig, AutoTokenizer, Qwen3_5ForConditionalGeneration, Qwen3_5ForCausalLM
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--base', required=True)
+    parser.add_argument('--adapter', required=True)
+    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--device', default='cpu')
+    parser.add_argument('--threads', type=int, default=8)
+    args = parser.parse_args()
+    if args.output.exists() and any(args.output.glob('*.safetensors')):
+        parser.error('The output already contains model weights.')
+    torch.set_num_threads(args.threads)
+    config = AutoConfig.from_pretrained(args.base)
+    cls = Qwen3_5ForConditionalGeneration if config.model_type == 'qwen3_5' else Qwen3_5ForCausalLM
+    base = cls.from_pretrained(args.base, dtype=torch.bfloat16, device_map=args.device,
+                              attn_implementation='sdpa')
+    model = PeftModel.from_pretrained(base, args.adapter, is_trainable=False)
+    merged = model.merge_and_unload(safe_merge=True)
+    merged.save_pretrained(args.output, safe_serialization=True, max_shard_size='5GB')
+    AutoTokenizer.from_pretrained(args.base).save_pretrained(args.output)
+    print('Merged model saved to ' + str(args.output), flush=True)
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+================================================
+FILE: scripts/train_27b_full.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+torchrun --standalone --nnodes 1 --nproc_per_node 8 -m sii_decision.train \
+  --config "$root/configs/27B/full.json" "$@"
+
+
+
+================================================
+FILE: scripts/train_27b_lora.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+torchrun --standalone --nnodes 1 --nproc_per_node 4 -m sii_decision.train \
+  --config "$root/configs/27B/lora.json" "$@"
+
+
+
+================================================
+FILE: scripts/train_4b_full.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+torchrun --standalone --nnodes 1 --nproc_per_node 4 -m sii_decision.train \
+  --config "$root/configs/4B/full.json" "$@"
+
+
+
+================================================
+FILE: scripts/train_4b_lora.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+torchrun --standalone --nnodes 1 --nproc_per_node 4 -m sii_decision.train \
+  --config "$root/configs/4B/lora.json" "$@"
+
+
+
+================================================
+FILE: sii_decision/__init__.py
+================================================
+"""SII-Decision distribution distillation and decision inference."""
+
+
+
+================================================
+FILE: sii_decision/data.py
+================================================
+"""JSONL input validation and Hugging Face dataset resolution."""
+import json
+import math
+from pathlib import Path
+
+
+def read_rows(path, training=False, evaluation=False):
+    rows = []
+    seen = set()
+    with Path(path).open() as stream:
+        for line_number, line in enumerate(stream, 1):
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            ident = row.get('id')
+            if not isinstance(ident, str) or not ident or ident in seen:
+                raise ValueError(f'Line {line_number}: IDs must be unique nonempty strings.')
+            seen.add(ident)
+            if row.get('type') not in ('choice', 'noul', 'score') or 'state' not in row:
+                raise ValueError(f'{ident}: state and a supported type are required.')
+            if not isinstance(row.get('question'), str):
+                raise ValueError(f'{ident}: question must be text.')
+            options = row.get('options', [])
+            if not 2 <= len(options) <= 255:
+                raise ValueError(f'{ident}: requires 2â€“255 options.')
+            keys = [o.get('key') for o in options]
+            if len(set(keys)) != len(keys) or any(not isinstance(k, str) or not k for k in keys):
+                raise ValueError(f'{ident}: option keys must be unique strings.')
+            if any(not isinstance(o.get('desc'), str) for o in options):
+                raise ValueError(f'{ident}: option descriptions must be text.')
+            if row['type'] == 'noul' and len(options) != 2:
+                raise ValueError(f'{ident}: noul requires exactly two options.')
+            required = ['gold_target'] if evaluation or training else []
+            if training:
+                required += ['train_target', 'p0']
+            for field in required:
+                values = row.get(field, [])
+                if len(values) != len(options) or any(not math.isfinite(v) or v < 0 for v in values):
+                    raise ValueError(f'{ident}: invalid {field}.')
+                if abs(sum(values)-1) > 1e-5:
+                    raise ValueError(f'{ident}: {field} must sum to one.')
+            rows.append(row)
+    if not rows:
+        raise ValueError('The input is empty.')
+    return rows
+
+
+def resolve_data(dataset, local=None):
+    if local:
+        root = Path(local)
+        return root / 'train.jsonl', root / 'validation.jsonl'
+    from huggingface_hub import hf_hub_download
+    return tuple(Path(hf_hub_download(dataset, filename, repo_type='dataset'))
+                 for filename in ['train.jsonl', 'validation.jsonl'])
+
+
+def save_json(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + '.tmp')
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n')
+    temporary.replace(path)
+
+
+
+================================================
+FILE: sii_decision/evaluation.py
+================================================
+"""Capability-equal validation scoring; no test inputs are used here."""
+import collections
+import math
+
+
+def evaluate_predictions(rows, predictions):
+    lookup = predictions if isinstance(predictions, dict) else {r['id']: r for r in predictions}
+    if {r['id'] for r in rows} != set(lookup):
+        raise ValueError('Prediction and validation question IDs differ.')
+    grouped = collections.defaultdict(list)
+    capabilities = {}
+    for row in rows:
+        probs = lookup[row['id']]['probs']
+        target = row['gold_target']
+        if len(probs) != len(target):
+            raise ValueError('Probability/target lengths differ.')
+        nll = -sum(y*math.log(max(p, 1e-30)) for y, p in zip(target, probs))
+        if row['type'] == 'score':
+            pred = sum(i*p for i, p in enumerate(probs))
+            gold = row.get('gold_value')
+            if gold is None:
+                gold = sum(i*y for i, y in enumerate(target))
+            metric, value = 'score_nmae', abs(pred-gold)/(len(probs)-1)
+        elif row['type'] == 'noul' and max(target) < 1-1e-6:
+            index = next(i for i, option in enumerate(row['options']) if option['key'] in ('yes', 'true'))
+            metric, value = 'soft_noul_mae', abs(probs[index]-target[index])
+        else:
+            metric = 'accuracy'
+            value = int(max(range(len(probs)), key=probs.__getitem__)
+                        == max(range(len(target)), key=target.__getitem__))
+        source = row.get('evaluation_source', row['source'])
+        capabilities[source] = row['capability']
+        grouped[source].append((metric, value, nll))
+    sources = {}
+    for source, records in grouped.items():
+        by_metric = collections.defaultdict(list)
+        for metric, value, _ in records:
+            by_metric[metric].append(value)
+        values = {m: sum(v)/len(v) for m, v in by_metric.items()}
+        score = sum(v if m == 'accuracy' else 1-v for m, v in values.items())/len(values)
+        sources[source] = dict(n=len(records), score=100*score,
+                               nll=sum(r[2] for r in records)/len(records), **values)
+    groups = collections.defaultdict(list)
+    for source, value in sources.items():
+        groups[capabilities[source]].append(value)
+    summary = {group: dict(score=sum(r['score'] for r in values)/len(values),
+                            nll=sum(r['nll'] for r in values)/len(values),
+                            n=sum(r['n'] for r in values)) for group, values in groups.items()}
+    return dict(n=len(rows), score=sum(r['score'] for r in summary.values())/len(summary),
+                nll=sum(r['nll'] for r in summary.values())/len(summary), sources=sources,
+                capabilities=summary)
+
+
+
+================================================
+FILE: sii_decision/infer.py
+================================================
+"""Read decision probabilities with BF16, NF4, or INT8 weights."""
+import argparse
+import json
+import os
+from pathlib import Path
+
+from .data import read_rows
+from .prompts import option_labels, prompt
+
+
+class DecisionEngine:
+    def __init__(self, model_path, precision='bf16', gpus=1, gpu_index=0,
+                 gpu_memory='20GiB', cpu=False):
+        import torch
+        from transformers import AutoConfig, AutoTokenizer, BitsAndBytesConfig
+        from transformers import Qwen3_5ForConditionalGeneration, Qwen3_5ForCausalLM
+        self.torch = torch
+        self.name = model_path.rstrip('/').split('/')[-1]
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.tokenizer.padding_side = 'right'
+        self.labels = option_labels(self.tokenizer)
+        if cpu:
+            if precision != 'bf16' or gpus != 1:
+                raise ValueError('CPU smoke inference supports BF16 only.')
+            mapping, memory = 'cpu', None
+        else:
+            if not torch.cuda.is_available() or torch.cuda.device_count() < max(gpus, gpu_index+1):
+                raise RuntimeError('The requested CUDA devices are not available.')
+            torch.cuda.set_device(gpu_index)
+            mapping = {'': gpu_index} if gpus == 1 else 'balanced'
+            memory = None if gpus == 1 else {i: gpu_memory for i in range(gpus)}
+        config = AutoConfig.from_pretrained(model_path)
+        cls = Qwen3_5ForConditionalGeneration if config.model_type == 'qwen3_5' else Qwen3_5ForCausalLM
+        kwargs = dict(dtype=torch.bfloat16, device_map=mapping, attn_implementation='sdpa')
+        if memory is not None:
+            kwargs['max_memory'] = memory
+        if precision == 'nf4':
+            kwargs['quantization_config'] = BitsAndBytesConfig(load_in_4bit=True,
+                bnb_4bit_quant_type='nf4', bnb_4bit_compute_dtype=torch.bfloat16,
+                bnb_4bit_use_double_quant=True)
+        elif precision == 'int8':
+            kwargs['quantization_config'] = BitsAndBytesConfig(load_in_8bit=True)
+        elif precision != 'bf16':
+            raise ValueError('Unsupported precision.')
+        self.model, info = cls.from_pretrained(model_path, output_loading_info=True, **kwargs)
+        if info.get('missing_keys') or info.get('mismatched_keys'):
+            raise RuntimeError('Incomplete model loading: ' + str(info))
+        if not cpu and any(v in ('cpu', 'disk') for v in getattr(self.model, 'hf_device_map', {}).values()):
+            raise RuntimeError('The selected precision requires more GPU memory; CPU offload is not enabled.')
+        self.model.eval()
+        self.backbone = getattr(self.model.model, 'language_model', self.model.model)
+        self.head = self.model.get_output_embeddings()
+        self.input_device = self.model.get_input_embeddings().weight.device
+        self.label_ids = torch.tensor([self.tokenizer.encode(s, add_special_tokens=False)[0] for s in self.labels],
+                                      device=self.head.weight.device)
+        self.precision = precision
+
+    def predict(self, rows, max_input_tokens=6000):
+        torch = self.torch
+        encoded = self.tokenizer([prompt(self.tokenizer, row, self.labels) for row in rows],
+                                 padding=True, return_tensors='pt', add_special_tokens=False)
+        lengths = encoded['attention_mask'].sum(-1)
+        if int(lengths.max()) > max_input_tokens:
+            raise ValueError('The input exceeds the token limit; no truncation is performed.')
+        encoded = {key: value.to(self.input_device) for key, value in encoded.items()}
+        with torch.inference_mode():
+            hidden = self.backbone(**encoded, use_cache=False, return_dict=True).last_hidden_state
+            end = (lengths-1).to(hidden.device)
+            slot = hidden[torch.arange(len(rows), device=hidden.device), end].to(self.head.weight.device)
+            logits = self.head(slot).float().index_select(-1, self.label_ids)
+        output = []
+        for i, row in enumerate(rows):
+            n = len(row['options'])
+            probs = logits[i, :n].softmax(-1).cpu().tolist()
+            index = max(range(n), key=probs.__getitem__)
+            keys = [o['key'] for o in row['options']]
+            result = dict(id=row['id'], model=self.name, type=row['type'], precision=self.precision,
+                          probs=probs, probabilities=dict(zip(keys, probs)), predicted_index=index,
+                          predicted_key=keys[index], input_tokens=int(lengths[i]))
+            if row['type'] == 'noul':
+                yes = next((j for j, key in enumerate(keys) if key in ('yes', 'true')), None)
+                if yes is not None:
+                    result['noul'] = probs[yes]
+            if row['type'] == 'score':
+                result['score'] = sum(j*p for j, p in enumerate(probs))
+                if 'score_values' in row:
+                    if len(row['score_values']) != n:
+                        raise ValueError('score_values must match the ordered options.')
+                    result['expected_score_value'] = sum(v*p for v, p in zip(row['score_values'], probs))
+            output.append(result)
+        return output
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--model', required=True)
+    parser.add_argument('--input', required=True, type=Path)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--precision', choices=['bf16', 'nf4', 'int8'], default='bf16')
+    parser.add_argument('--gpus', type=int, choices=[1, 2], default=1)
+    parser.add_argument('--replicas', type=int, choices=[1, 2], default=1)
+    parser.add_argument('--gpu-memory', default='20GiB')
+    parser.add_argument('--batch-size', type=int, default=1)
+    parser.add_argument('--max-input-tokens', type=int, default=6000)
+    parser.add_argument('--validate-only', action='store_true')
+    parser.add_argument('--cpu', action='store_true')
+    args = parser.parse_args()
+    if args.batch_size < 1 or args.max_input_tokens < 1:
+        parser.error('Batch size and token limit must be positive.')
+    rows = read_rows(args.input)
+    from transformers import AutoTokenizer
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    labels = option_labels(tokenizer)
+    lengths = [len(tokenizer.encode(prompt(tokenizer, row, labels), add_special_tokens=False)) for row in rows]
+    if max(lengths) > args.max_input_tokens:
+        raise ValueError('The input exceeds the token limit; no truncation is performed.')
+    if args.validate_only:
+        print(json.dumps(dict(rows=len(rows), max_input_tokens=max(lengths), option_labels=len(labels))))
+        return
+    if args.output is None:
+        parser.error('--output is required for inference.')
+    rank = int(os.environ.get('LOCAL_RANK', '0')) if args.replicas > 1 else 0
+    if args.replicas > 1:
+        if args.gpus != 1 or int(os.environ.get('WORLD_SIZE', '1')) != args.replicas:
+            parser.error('Replicas require torchrun and one GPU per process.')
+        rows = rows[rank::args.replicas]
+        args.output.mkdir(parents=True, exist_ok=True)
+        output = args.output / f'part-{rank:05d}.jsonl'
+    else:
+        output = args.output
+        output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists():
+        raise FileExistsError('Choose a new output file.')
+    engine = DecisionEngine(args.model, args.precision, args.gpus, rank, args.gpu_memory, args.cpu)
+    temporary = output.with_suffix(output.suffix + '.partial')
+    with temporary.open('w') as stream:
+        for offset in range(0, len(rows), args.batch_size):
+            for prediction in engine.predict(rows[offset:offset+args.batch_size], args.max_input_tokens):
+                stream.write(json.dumps(prediction, ensure_ascii=False, allow_nan=False) + '\n')
+            stream.flush()
+    temporary.replace(output)
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+================================================
+FILE: sii_decision/learning.py
+================================================
+"""Answer-slot projection and same-size distribution distillation loss."""
+import torch
+import torch.nn.functional as F
+
+
+class Readout(torch.nn.Module):
+    def __init__(self, base, label_ids, full_rank):
+        super().__init__()
+        self.base = base
+        self.full_rank = full_rank
+        self.register_buffer('label_ids', torch.tensor(label_ids), persistent=False)
+        if not full_rank:
+            weight = base.get_base_model().get_output_embeddings().weight[label_ids].detach().clone()
+            self.register_buffer('legal_weight', weight, persistent=False)
+
+    def forward(self, input_ids, attention_mask):
+        base = self.base if self.full_rank else self.base.get_base_model()
+        backbone = getattr(base.model, 'language_model', base.model)
+        hidden = backbone(input_ids=input_ids, attention_mask=attention_mask,
+                          use_cache=False, return_dict=True).last_hidden_state
+        slot = hidden[torch.arange(len(hidden), device=hidden.device), attention_mask.sum(-1)-1]
+        weight = (base.get_output_embeddings().weight.index_select(0, self.label_ids)
+                  if self.full_rank else self.legal_weight)
+        return F.linear(slot, weight).float()
+
+
+def loss_terms(logits, rows, weights):
+    lengths = torch.tensor([len(row['options']) for row in rows], device=logits.device)
+    masked = logits.masked_fill(torch.arange(logits.shape[-1], device=logits.device)[None, :]
+                                >= lengths[:, None], -1e9)
+    logs = masked.log_softmax(-1)
+    teacher = torch.zeros_like(logits)
+    baseline = torch.zeros_like(logits)
+    for i, row in enumerate(rows):
+        teacher[i, :lengths[i]] = torch.tensor(row['train_target'], device=logits.device)
+        baseline[i, :lengths[i]] = torch.tensor(row['p0'], device=logits.device)
+    weight = torch.tensor([weights[row['type']] for row in rows], device=logits.device)
+    ce = weight * -(teacher * logs).sum(-1)
+    ordinal = weight * .5 * torch.tensor([row['type'] == 'score' for row in rows], device=logits.device)
+    ordinal = ordinal * ((logs.exp()-teacher) * torch.arange(logits.shape[-1], device=logits.device)).sum(-1).square()
+    ordinal = ordinal / (lengths-1).square()
+    kappa = torch.tensor([.2 if row['type'] == 'noul' and max(row['gold_target']) >= 1-1e-6
+                          else .05 for row in rows], device=logits.device)
+    kl = kappa * (baseline * (baseline.clamp_min(1e-30).log()-logs)).sum(-1)
+    return ce + ordinal + kl, ce, ordinal, kl
+
+
+
+================================================
+FILE: sii_decision/merge_predictions.py
+================================================
+"""Merge replica outputs while preserving original input order."""
+import argparse
+import json
+from pathlib import Path
+from .data import read_rows
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', required=True)
+    parser.add_argument('--parts', required=True, type=Path)
+    parser.add_argument('--output', required=True, type=Path)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise FileExistsError('Choose a new output file.')
+    rows = read_rows(args.input)
+    lookup = {}
+    for part in sorted(args.parts.glob('part-*.jsonl')):
+        for line in part.open():
+            pred = json.loads(line)
+            if pred['id'] in lookup:
+                raise ValueError('Duplicate prediction ID.')
+            lookup[pred['id']] = pred
+    if set(lookup) != {row['id'] for row in rows}:
+        raise ValueError('The replica outputs do not cover exactly the input IDs.')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open('w') as stream:
+        for row in rows:
+            stream.write(json.dumps(lookup[row['id']], ensure_ascii=False) + '\n')
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+================================================
+FILE: sii_decision/prompts.py
+================================================
+"""The shared training and inference answer-slot prompt."""
+import json
+import string
+
+ANSWER_CUE = 'The correct answer is ('
+
+
+def text(value):
+    return value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, sort_keys=True)
+
+
+def option_labels(tokenizer):
+    candidates = list(string.ascii_uppercase) + [a+b for a in string.ascii_uppercase for b in string.ascii_uppercase]
+    labels = [label for label in candidates
+              if len(tokenizer.encode(label, add_special_tokens=False)) == 1][:255]
+    if len(labels) != 255:
+        raise ValueError('The tokenizer must provide the original 255 single-token option labels.')
+    return labels
+
+
+def body(row, labels):
+    choices = '\n'.join(f'({labels[i]}) {o["key"]}: {o["desc"]}' for i, o in enumerate(row['options']))
+    return f'State:\n{text(row["state"])}\nQuestion: {text(row["question"])}\nOptions:\n{choices}'.rstrip()
+
+
+def prompt(tokenizer, row, labels):
+    prefix = tokenizer.apply_chat_template([{'role': 'user', 'content': body(row, labels)}],
+                                          tokenize=False, add_generation_prompt=True,
+                                          enable_thinking=False)
+    return prefix + ANSWER_CUE
+
+
+
+================================================
+FILE: sii_decision/scheduling.py
+================================================
+"""Deterministic length buckets, equal distributed microbatches, and LR schedule."""
+import hashlib
+import json
+import math
+import random
+
+
+def batch_plan(rows, lengths, seed, epochs=1):
+    result = []
+    for epoch in range(epochs):
+        def ordering(index):
+            row = rows[index]
+            key = row.get('ordering_key') if epoch == 0 else None
+            if key is None:
+                key = hashlib.sha256(json.dumps([seed, epoch, row['id']], sort_keys=True).encode()).hexdigest()
+            return lengths[index], key
+        order = sorted(range(len(rows)), key=ordering)
+        batches = [order[i:i+64] for i in range(0, len(order), 64)]
+        random.Random(seed + epoch).shuffle(batches)
+        result.extend(batches)
+    return result
+
+
+def split_batch(indices, lengths, world, micro, budget=8192):
+    padded = indices + [indices[-1]] * (64-len(indices))
+    micro = min(micro, 64 // world)
+    while micro > 1 and micro * max(lengths[i] for i in indices) > budget:
+        micro //= 2
+    if max(lengths[i] for i in indices) > budget or 64 % (world*micro):
+        raise ValueError('Incompatible microbatch, world size, or token budget.')
+    return [[[(j, padded[j]) for j in range(offset + rank*micro, offset + (rank+1)*micro)]
+             for offset in range(0, 64, world*micro)] for rank in range(world)]
+
+
+def lr_factor(step, total):
+    index = step-1
+    warmup = max(1, math.ceil(.03*total))
+    return step/warmup if index < warmup else .5*(1+math.cos(math.pi*(index-warmup)/max(1, total-warmup)))
+
+
+def select_checkpoint(entries):
+    top = max(entry['score'] for entry in entries)
+    return min((entry for entry in entries if top-entry['score'] < .1),
+               key=lambda entry: (entry['nll'], entry['step']))
+
+
+
+================================================
+FILE: sii_decision/train.py
+================================================
+"""LoRA DDP or matched language-linear full-rank FSDP training."""
+import argparse
+import json
+import math
+import os
+import time
+from functools import partial
+from pathlib import Path
+
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, MixedPrecision
+from torch.distributed.fsdp import StateDictType, FullStateDictConfig
+from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
+
+from .data import read_rows, resolve_data, save_json
+from .evaluation import evaluate_predictions
+from .learning import Readout, loss_terms
+from .prompts import option_labels, prompt
+from .scheduling import batch_plan, split_batch, lr_factor, select_checkpoint
+
+
+def main():
+    from transformers import AutoConfig, AutoTokenizer, Qwen3_5ForConditionalGeneration, Qwen3_5ForCausalLM
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', required=True, type=Path)
+    parser.add_argument('--base-model')
+    parser.add_argument('--data-dir', type=Path)
+    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--validate-only', action='store_true')
+    args = parser.parse_args()
+    cfg = json.loads(args.config.read_text())
+    root = Path(__file__).resolve().parents[1]
+    modules_path = root / cfg['modules']
+    targets = json.loads(modules_path.read_text())
+    train_path, dev_path = resolve_data(cfg['dataset'], args.data_dir)
+    rows = read_rows(train_path, training=True)
+    dev = read_rows(dev_path, evaluation=True)
+    if len(rows) != cfg['training_rows']:
+        raise ValueError('The dataset size does not match the release configuration.')
+    base_path = args.base_model or cfg['base_model']
+    base_kwargs = {} if args.base_model else {'revision': cfg.get('base_revision')}
+    tokenizer = AutoTokenizer.from_pretrained(base_path, **base_kwargs)
+    tokenizer.padding_side = 'right'
+    labels = option_labels(tokenizer)
+    label_ids = [tokenizer.encode(label, add_special_tokens=False)[0] for label in labels]
+    lengths = [len(tokenizer.encode(prompt(tokenizer, row, labels), add_special_tokens=False)) for row in rows]
+    dev_lengths = [len(tokenizer.encode(prompt(tokenizer, row, labels), add_special_tokens=False)) for row in dev]
+    if max(lengths) > cfg['max_input_tokens'] or max(dev_lengths) > cfg['max_input_tokens']:
+        raise ValueError('An input exceeds the token limit; inputs are never truncated.')
+    batches = batch_plan(rows, lengths, cfg['seed'], cfg['epochs'])
+    planned_steps = len(batches)
+    total = min(planned_steps, cfg['checkpoint_steps'])
+    if args.validate_only:
+        print(json.dumps(dict(train_n=len(rows), validation_n=len(dev), planned_steps=planned_steps,
+                              checkpoint_steps=total, max_train_tokens=max(lengths),
+                              modules=len(targets), option_labels=len(labels))), flush=True)
+        return
+    if not torch.cuda.is_available():
+        raise RuntimeError('Training requires CUDA. Use --validate-only for CPU validation.')
+    rank = int(os.environ.get('RANK', '0'))
+    world = int(os.environ.get('WORLD_SIZE', '1'))
+    local = int(os.environ.get('LOCAL_RANK', '0'))
+    if world != cfg['gpus'] or 64 % world:
+        raise ValueError(f"Use torchrun with {cfg['gpus']} GPUs for this configuration.")
+    torch.cuda.set_device(local)
+    dist.init_process_group('nccl')
+    device = torch.device('cuda', local)
+    torch.manual_seed(cfg['seed'])
+    output = args.output
+    if rank == 0:
+        output.mkdir(parents=True, exist_ok=True)
+        if (output / 'training_complete.json').exists():
+            raise ValueError('The output already contains a completed run.')
+    dist.barrier()
+    conf = AutoConfig.from_pretrained(base_path, **base_kwargs)
+    cls = Qwen3_5ForConditionalGeneration if conf.model_type == 'qwen3_5' else Qwen3_5ForCausalLM
+    full = cfg['method'] == 'full'
+    base = cls.from_pretrained(base_path, dtype=torch.float32 if full else torch.bfloat16,
+                              device_map='cpu' if full else str(device), attn_implementation='sdpa',
+                              **base_kwargs)
+    base.requires_grad_(False)
+    if full:
+        modules = dict(base.named_modules())
+        for name in targets:
+            if not isinstance(modules[name], torch.nn.Linear):
+                raise TypeError('The full-rank module list must contain language linear layers.')
+            modules[name].requires_grad_(True)
+    else:
+        from peft import LoraConfig, get_peft_model
+        torch.manual_seed(cfg['seed'])
+        base = get_peft_model(base, LoraConfig(r=64, lora_alpha=128, lora_dropout=0.,
+                                              target_modules=targets, bias='none'))
+    trainable = sum(p.numel() for p in base.parameters() if p.requires_grad)
+    if trainable != cfg['trainable_parameters']:
+        raise ValueError('The trainable parameter count differs from the release configuration.')
+    base.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
+    base.config.use_cache = False
+    wrapper = Readout(base, label_ids, full)
+    if full:
+        model = FSDP(wrapper, auto_wrap_policy=partial(transformer_auto_wrap_policy,
+                     transformer_layer_cls={type(base.model.language_model.layers[0])}),
+                     mixed_precision=MixedPrecision(param_dtype=torch.bfloat16,
+                                                     reduce_dtype=torch.float32, buffer_dtype=torch.bfloat16),
+                     device_id=device, use_orig_params=True, limit_all_gathers=True)
+    else:
+        model = DDP(wrapper.to(device), device_ids=[local], broadcast_buffers=False)
+    params = [p for p in model.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(params, lr=cfg['lr'], betas=(.9, .999), eps=1e-8,
+                                 weight_decay=0., foreach=False)
+    if rank == 0:
+        from torch.utils.tensorboard import SummaryWriter
+        writer = SummaryWriter(output / 'tensorboard')
+        save_json(output / 'training_config.json', dict(**cfg, planned_steps=planned_steps))
+    entries = []
+    dev_order = sorted(range(len(dev)), key=lambda i: (dev_lengths[i], dev[i].get('ordering_key', dev[i]['id'])))
+    evaluate_steps = {math.ceil(planned_steps*i/10) for i in range(1, 11)} | {total}
+
+    def encode(part):
+        encoded = tokenizer([prompt(tokenizer, row, labels) for row in part], padding=True,
+                            return_tensors='pt', add_special_tokens=False)
+        return {key: value.to(device) for key, value in encoded.items()}
+
+    @torch.no_grad()
+    def evaluate(step):
+        model.eval()
+        predictions = []
+        offset = 0
+        while offset < len(dev_order):
+            micro = 8
+            maximum = max(dev_lengths[i] for i in dev_order[offset:offset+world*micro])
+            while micro > 1 and micro*maximum > 8192:
+                micro //= 2
+            indices = dev_order[offset:offset+world*micro]
+            count = len(indices)
+            padded = indices + [indices[-1]] * (world*micro-count)
+            own = padded[rank*micro:(rank+1)*micro]
+            logits = model(**encode([dev[i] for i in own]))
+            for j, index in enumerate(own):
+                if rank*micro+j < count:
+                    predictions.append(dict(id=dev[index]['id'],
+                                            probs=logits[j, :len(dev[index]['options'])].softmax(-1).cpu().tolist()))
+            offset += count
+        gathered = [None] * world
+        dist.all_gather_object(gathered, predictions)
+        result = evaluate_predictions(dev, [p for part in gathered for p in part])
+        result['step'] = step
+        if rank == 0:
+            save_json(output / f'validation_{step:06d}.json', result)
+            writer.add_scalar('validation/score', result['score'], step)
+            writer.add_scalar('validation/nll', result['nll'], step)
+            writer.flush()
+        model.train()
+        return dict(step=step, score=result['score'], nll=result['nll'])
+
+    def export(step):
+        destination = output / f'checkpoint-{step}'
+        state = None
+        if full:
+            with FSDP.state_dict_type(model, StateDictType.FULL_STATE_DICT,
+                                     FullStateDictConfig(offload_to_cpu=True, rank0_only=True)):
+                state = model.state_dict()
+        if rank == 0:
+            if full:
+                exported = {key.removeprefix('base.'): value.to(dtype=torch.bfloat16)
+                            for key, value in state.items()}
+                base.save_pretrained(destination, state_dict=exported,
+                                    safe_serialization=True, max_shard_size='5GB')
+            else:
+                base.save_pretrained(destination, safe_serialization=True)
+            tokenizer.save_pretrained(destination)
+        del state
+        dist.barrier()
+
+    model.train()
+    for index, indices in enumerate(batches[:total]):
+        step = index+1
+        begin = time.monotonic()
+        count = len(indices)
+        for group in optimizer.param_groups:
+            group['lr'] = cfg['lr'] * lr_factor(step, planned_steps)
+        optimizer.zero_grad(set_to_none=True)
+        sums = torch.zeros(5, device=device, dtype=torch.float64)
+        for part in split_batch(indices, lengths, world, cfg['micro'])[rank]:
+            batch = [rows[i] for position, i in part]
+            terms = loss_terms(model(**encode(batch)), batch, cfg['type_weights'])
+            active = torch.tensor([position < count for position, i in part], device=device)
+            (terms[0]*active).sum().mul(world/count).backward()
+            for j, term in enumerate(terms):
+                sums[j] += (term.detach()*active).sum()
+            sums[4] += active.sum()
+        dist.all_reduce(sums)
+        grad = model.clip_grad_norm_(1.) if full else torch.nn.utils.clip_grad_norm_(params, 1.)
+        if not torch.isfinite(sums).all() or not torch.isfinite(grad):
+            raise FloatingPointError('Non-finite loss or gradient.')
+        optimizer.step()
+        record = dict(step=step, planned_steps=planned_steps, loss=float(sums[0]/sums[4]),
+                      ce=float(sums[1]/sums[4]), score_loss=float(sums[2]/sums[4]),
+                      kl=float(sums[3]/sums[4]), grad=float(grad), lr=optimizer.param_groups[0]['lr'],
+                      seconds=time.monotonic()-begin)
+        if rank == 0:
+            with (output / 'training.jsonl').open('a') as stream:
+                stream.write(json.dumps(record)+'\n')
+            for key in ['loss', 'ce', 'score_loss', 'kl', 'lr']:
+                writer.add_scalar('train/'+key, record[key], step)
+            print(json.dumps(record), flush=True)
+        if step in evaluate_steps:
+            optimizer.zero_grad(set_to_none=True)
+            entries.append(evaluate(step))
+            chosen = select_checkpoint(entries)
+            if step == total or chosen['step'] == step:
+                export(step)
+            if rank == 0:
+                save_json(output / 'selection.json', chosen)
+    if rank == 0:
+        save_json(output / 'training_complete.json', dict(steps=total, selected=select_checkpoint(entries)))
+        writer.close()
+    dist.barrier()
+    dist.destroy_process_group()
+
+
+if __name__ == '__main__':
+    main()
+
+

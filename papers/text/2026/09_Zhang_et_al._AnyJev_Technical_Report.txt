@@ -1,0 +1,1010 @@
+AnyJev Technical Report
+AnyJev Technical Report
+Typed Decisions from One Prefill of Any Open LLM
+Jiamu Zhang1 Tianze Y ang1 Yucheng Shi2 Evan Chen1
+Zixiang Nie1 Kelly Wan1 Liangjie Hong1 Ninghao Liu3 Liang Wu1
+1Nokia, Sunnyvale, CA, USA 2Tencent Hunyuan
+3The Hong Kong Polytechnic University
+Abstract
+A typed decision is a choice among a fixed set of options, returned as a probability rather than as
+text. Systems that need typed decisions today use models trained for that purpose. This report
+describes AnyJev, which reads a typed decision from one prefill of a pretrained instruction-tuned
+language model. The readout restricts the next-token distribution at the answer position to the
+option tokens. It has two defects: the model assigns higher probability to some labels whatever the
+input, and to some positions in the option list. AnyJev corrects both with no gradient steps and no
+parameter changes: it divides out a label prior estimated from unlabelled inputs, and it averages
+log-probabilities over the𝐾 cyclic rotations of the option list. On two 20-option tasks the rotations
+lower the order-flip rate from 0.33 to 0.14 and from 0.33 to 0.18, and raise accuracy on 11 of 11
+models on both. Reading every rotation requires𝐾 prefills. A stopping rule selected against the
+full-rotation decision on unlabelled states cuts that. Selecting the threshold on one unlabelled split
+andboundingitsdisagreementonasecond,itreads10.6rotationsof18ataverified0.008boundon
+two of four cells; selected and bounded on one split, as our serving run did, it reads 7.3 and serves
+2.2 times as many decisions per second on vLLM. The code is open source.
+/githubnokia-applied-research/AnyJev
+Early report on work in development
+1 Introduction
+An agent system has to make many small decisions that are not text: route this request to one of twenty skills,
+decide whether this input is an injection attempt, score this answer from one to five. A language model can be
+asked for these in prose, but the caller then has to parse the reply, and gets no probability it can threshold. A
+typed decisionfixes the interface instead. The caller supplies a state and a question with a fixed set of options,
+and the system returns a distribution over those options. The interface was made popular by a hosted service,
+and open implementations now include both trained decision models and frozen-model readouts (Section 2).
+This report takes a different position (Figure 1). The capability is already present in the pretrained
+instruction-tuned models we tested, and what needs correcting is the readout rather than the model. AnyJev
+builds one prompt from the state and the question, runs a single prefill, and reads the decision from the
+next-token distribution at the answer position, restricted to the tokens that name the options. No parameter
+AnyJev 1
+arXiv:2610.00831v1  [cs.LG]  30 Sep 2026
+
+(a) Generation
+Same frozen base model
+state + question
+3 options
+A
+= refund
+B
+= balance
+C
+= card
+LLM
+frozen weights
+“Looking at the state,
+I would say 
+C.
+”
+×
+T
+ decode steps
+parse the reply
+Answer: C (card)
+no probability to threshold
+(b) Typed readout (AnyJev L0)
+state + question
+label A
+label B
+label C
+refund
+balance
+card
+balance
+card
+refund
+card
+refund
+balance
+K
+ cyclic rotations
+first option moves to the end
+LLM
+frozen weights
+one prefill
+per rotation
+Next-token distribution
+one rotation shown
+keep A, B, C only
+and renormalize
+correct the
+label prior
+map labels back
+to options
+log-space mean
+over 
+K
+ rotations
+Answer probabilities
+refund
+0.11
+balance
+0.07
+card
+0.82
+distribution over all options
+Illustrative probabilities
+(c) L2-mono
+one truncated prefill
+state + question
+3 options
+A
+= refund
+B
+= balance
+C
+= card
+skip remaining blocks
+LLM
+blocks 
+1 … b
+frozen weights
+h
+Affine translator
+A h + c
+into the final-layer space
+Original
+LM head
+same output weights
+Answer probabilities
+P(refund)
+P(balance)
+P(card)
+restrict to A, B, C
+and renormalize
+Offline, once
+(no task labels)
+Fit A and c to the model’s full-depth hidden states on unlabelled inputs;
+choose exit block b by agreement with its full-depth answer.
+the
+A
+Sure
+B
+I
+C
+…
+Figure 1.The same base model, three decision paths. (a) Asking for the answer in text costs one forward pass per
+generated token and returns prose the caller has to parse, with no probability attached. (b) AnyJev L0 runs one prefill
+per cyclic rotation. It restricts the next-token distribution to the option-label tokens and renormalises, corrects the label
+prior, maps each position back to its option, and averages in log space across the𝐾 rotations before renormalising.
+A, B and C are position labels whose option assignments change across rotations; the final distribution is indexed by
+option. Probabilities are illustrative, and one rotation’s token distribution is shown. L0 debiases the readout; confidence
+calibration is a separate L1 step. (c) L2-mono truncates the forward at a selected block, translates the hidden state into
+the final-layer space with an affine map, and uses the original output head for the option readout. The translator is
+fitted once on unlabelled inputs to the model’s full-depth hidden states; the exit depth is selected by agreement with its
+full-depth answers, without task labels. The L2-mono output is symbolic. All three paths keep the base-model weights
+fixed.
+changes, no generated tokens, and no second model.
+Read that way, the distribution is usable and wrong in two specific ways. The model assigns higher
+probability to some labels whatever the state says, and it assigns higher probability to some positions in the
+optionlist. Theseconddefectistheoneacallernotices. Ona20-optiontask, reversingtheoptionlistchanges
+the answer on 33% of items, averaged over eleven models. Both defects are properties of the readout rather
+than of the model’s knowledge, Section 4 corrects both with no gradient steps, from the model’s own outputs
+on unlabelled inputs.
+Accuracy varies with the base model and changes little under the corrections. On the public subset of a
+typed-decision benchmark the eight models we ran span 0.549 to 0.798, and the debiasing does not change
+accuracy there by a measurable amount. It supplies a large reduction in order dependence and, with a small
+labelled set, calibrated confidence. Section 7 separates the two and reports each with the interval it was
+measured to.
+AnyJev 2
+
+2 Related Work
+2.1 Typed decision models and open implementations
+Jev popularizes probabilisticChoice, Score, andNoul interfaces [2], building on the broader connection
+between language-model predictions and classification [40, 15]. Frozen-model implementations include
+Yinsongxu’s LLM2Jev, which scores candidates independently, tic-top’s llm2jev, which reads labels from a
+joint option prompt, and SemIf, which supports shared-state execution [31, 32, 41]. NanoJev, Kev, Laya, and
+related releases explore learned scorers and local decision services [35, 24, 6, 27, 33, 22, 13]. Visual Jev
+extendsshared-contextdecisionstoimages, whileNumericJevobtainsnumericaloutputsthroughmulti-round
+interval refinement [52, 51].
+2.2 Probability readouts and calibration
+Label-probability readouts inherit surface-form and option-order biases [20, 56]. AnyJev combines prior
+correctionrelatedtocontent-freeandbatchcalibrationwithtemperaturescaling[ 55,58,19],whilemeasuring
+the prefill cost of averaging layouts. Recent Jev studies expose sensitivity to option-name semantics and
+inconsistency across logically linked questions [43,29]. These distinguish schema validity from semantic
+correctness and probability quality; AnyJev focuses on label and position bias and calibrated confidence on
+frozen backbones.
+2.3 Decision components in agent systems
+Model cascades and Jev-based judging use confidence to accept or escalate decisions, although correlated
+errors can limit fallback gains [8, 48, 30, 39]. Open applications use typed decisions for browser control,
+historypruning,andcoderetrieval[ 21,12,11]. SuchcomponentscomplementNokia’sKV-cachecompression,
+context management, and MoE paging work [54, 34, 53]. AnyJev could also support production agents
+in autonomous networks, motivated by AI-native 6G visions and Jev-based edge orchestration [47, 28].
+Self-Evolving Code-with-Image Reasoning and Field-Aware Agent Skill Retrieval suggest roles in solver
+invocation and skill selection [50, 16]; recommendation and time-series systems provide further domain
+contexts [45, 57, 9]. These proposed combinations require application-level evaluation.
+3 The readout
+Prompt.A decision has a state 𝑠 and a question with𝐾 options 𝑜1, . . . , 𝑜𝐾. AnyJev gives eachpositionin
+the printed list a single-token labelℓ1, . . . , ℓ𝐾: letters for a choice,Yesand Nofor a binary question, digits for
+an ordinal score. A layout𝜋 maps positions to options, so position𝑗 shows option𝜋(𝑗) . The prompt𝑥(𝑠, 𝜋)
+places a fixed instruction and the state, then the question, then one lineℓ 𝑗.𝑜 𝜋(𝑗) per position, then a line
+telling the model to answer with the label only. The state precedes the options, so a backend can reuse the
+prefix across layouts of the same question.
+Decision.We run one prefill of 𝑥(𝑠, 𝜋) and read the next-token distribution𝑝 at the last position. Only the
+𝐾label tokens can be answers, so we restrict and renormalise:
+𝑚(𝑠, 𝜋)=
+𝐾∑︁
+𝑗=1
+𝑝(ℓ 𝑗),˜𝑝 𝑗 = 𝑝(ℓ 𝑗)
+𝑚(𝑠, 𝜋) .(1)
+The decision is˜𝑝mapped from positions back to options. The model generates nothing, so one decision costs
+one prefill. Scoring single-token labels rather than the option strings also removes surface-form competition,
+where a correct option receives lower probability because it is spelled in more tokens or rarer ones [20].
+AnyJev 3
+
+Answer mass.The normaliser 𝑚 is the share of the model’s own probability that reaches the option tokens,
+and it reports whether the last prompt token is the position the model would answer at. A chat template that
+puts something else there still yields an argmax over the label tokens, and that argmax can still be correct
+often enough to resemble a working readout. We report𝑚 before any accuracy and exclude a row whose𝑚 is
+low rather than average it in. One template fault was found this way: the harmony format used by gpt-oss
+ends the prompt at the assistant header, before the channel marker, which gave𝑚=0.000 while the answers
+still looked plausible.
+Every benchmark row here has median𝑚≥0.995 (Table 2). On the 20-option sweep three rows fall
+below 0.99, all on the binaryinjectiontask: 0.408 on SmolLM2-1.7B, 0.710 on OLMo-2-7B and 0.976 on
+Granite-3.3-8B. We exclude those three from every statistic for that task. Appendix A prints𝑚 for every row.
+Two defects.The model assigns higher probability to some labels whatever the state says, higher toYes
+than toNo and to earlier letters than to later ones. It also assigns higher probability to some positions in the
+printed list, so the decision depends on the order the caller wrote the options in. Averaged over eleven models,
+reversing the option list changes the argmax on 32.8% ofbanking20 items and on 33.4% ofnewsgroups
+items.
+4 Correcting the two defects
+4.1 The label prior
+The label prior is a distributionˆ𝑞over positions that the model applies regardless of the state. We estimate it
+from unlabelled inputs and divide it out:
+𝑝dbs ∝˜𝑝/ˆ𝑞 𝛼,(2)
+renormalised over the𝐾options, with𝛼∈ [0,1]setting how much of the prior we remove. We takeˆ𝑞to be
+the running mean of˜𝑝over the inputs the system has already scored, which is batch calibration [58], held per
+question and per layout. The estimate uses the model’s own outputs and no gold label. A second estimator
+computesˆ𝑞from content-free probes instead [55]; AnyJev offers it and we do not use it here.
+We set𝛼=0.75 , taken from a separate sweep over 230 (model, question) pairs scored against gold labels,
+so 𝛼 is the second place a label enters this system, alongside the temperature of Section 4.3. Eq.(2) also
+assumes the label marginal of the inputs is not extreme, and it lowers accuracy where that assumption fails.
+4.2 Position bias
+Position bias needs no estimator, because the layout is ours to choose. We read the same decision under the𝐾
+cyclic rotations𝜋𝑡 (𝑗)=(𝑗+𝑡)mod𝐾 , so that every option occupies every position once, and we average in
+log space [56]:
+¯𝑧𝑖 = 1
+𝐾
+𝐾−1∑︁
+𝑡=0
+log𝑞 𝑡 (𝑖), 𝑝 𝐿0 =softmax(¯𝑧),(3)
+where𝑞 𝑡 (𝑖)is the restricted probability of Eq. (1) for option𝑖under rotation𝑡, before the label prior.
+The log-space average makes the correction exact under a stated model of the bias. Suppose the logit
+for option𝑖 at position 𝑗 separates as𝑐𝑖 +𝑏 𝑗. Then log𝑞 𝑡 (𝑖)=𝑐 𝑖 +𝑏 𝑗(𝑡 ,𝑖) −log𝑍 𝑡, where𝑍𝑡 normalises
+rotation 𝑡. Summing over all𝐾 rotations sends option𝑖 through every position once, soÍ
+𝑡 𝑏 𝑗(𝑡 ,𝑖) = Í
+𝑗 𝑏 𝑗 for
+every 𝑖, and the two remaining terms do not depend on𝑖. Hencesoftmax(¯𝑧)=softmax(𝑐) exactly. Averaging
+probabilities instead of their logarithms does not have this property.
+Two qualifications follow. The label prior is held per layout, so applying it before the average contributes
+a further term that cancels only whenˆ𝑞depends on position alone; AnyJev therefore averages the pre-prior
+quantity. Andtheadditivemodelisanapproximation. Underitreversingtheoptionlistwouldchangenothing,
+AnyJev 4
+
+and reversal still changes the answer on 0.138 ofbanking20items and 0.183 ofnewsgroupsitems after the
+average (Table 1).
+Canonical order.Reading every rotation gives each option each position, but it does not fix which options
+are adjacent, and the options attend to one another inside the prompt. Sorting the option list by its text before
+rotating it removes that remaining dependence: the prompt set becomes a function of the optionset, so any
+listing of the same options produces the same prompts and the same probabilities, at any rotation budget,
+whichfollowsfromtheconstruction. Therunsreportedhererotatethecaller’slisting, sowedonotmeasureit.
+4.3 Confidence
+Neither correction makes the model’s confidence match its accuracy, and we did not measure a label-free
+procedure that detects this. One temperature, fitted on 100 to 500 labelled examples of the same question,
+is the correction AnyJev applies for it [19]. A single positive temperature rescales¯𝑧and leaves the argmax
+unchanged. The level we report as+temperaturealso re-estimatesˆ𝑞from the calibration set alone, so its
+accuracy differs from the debiased level by up to 0.013; we report it for calibration and read accuracy off the
+debiased level.
+5 Reading fewer rotations
+Eq. (3)requires 𝐾 prefills per decision. On the 18-option routing question used for timing, that is 18 prefills
+where the naive readout uses one. Two changes can reduce it: make each rotation cheaper, or read fewer of
+them.
+Section 8 reports what the first achieved. The𝐾 prompts share every token up to the option list, so an
+engine that caches the shared prefix already recovers most of the cost, and packing all𝐾 rotations into one
+forward then runs 1.20 times as fast as that path on a short state. This section reads fewer rotations instead.
+Reading order.Consecutive rotations are nearly the same layout, because𝜋𝑡+1 moves every option one
+position from𝜋𝑡. AnyJev therefore reads rotations in the order0, 𝐾/2, 𝐾/4,3𝐾/4, 𝐾/8, . . . , the van der
+Corput sequence scaled to𝐾, so that a short prefix places each option in well separated positions.
+When to stop.After reading a subset of rotations we hold a running average¯𝑧. The obvious statistic is the
+gap between its top two probabilities, and that gap saturates at 1. Once the average is peaked it no longer
+separates a settled decision from one settled by a wide margin, which is the regime the rule acts in. We use
+the same gap in log space,
+𝜇(¯𝑧)=¯𝑧 (1) −¯𝑧(2) ,(4)
+which is unbounded and unchanged by renormalisation of¯𝑧. The rule stops at the first rotation where𝜇≥𝜏 ,
+after a minimum of two.
+Choosing the threshold without labels.The guarantee we can state without labels is not about accuracy.
+We state it against our own full-rotation decision instead:the budget returns the decision that reading every
+rotation would have returned, on at least1−𝜀 of inputs. That target needs only the model’s own output on
+unlabelled states.
+Given 𝑛 unlabelled states we read every rotation of each once. For a candidate𝜏 let 𝑑(𝜏) count the states
+whose stopped decision differs from the full-rotation decision, and take the smallest𝜏on a grid for which
+𝑈𝑑(𝜏), 𝑛, 𝛿  ≤𝜀,(5)
+AnyJev 5
+
+where 𝑈 is the Clopper–Pearson upper confidence bound [10] at confidence1−𝛿 , with𝛿=0.05 . If no𝜏
+satisfies Eq. (5), the question reads every rotation.
+Eq.(5)is evaluated at every candidate on the grid, so a bound taken from the states that chose𝜏 applies to
+each candidate separately and not to the selected one. We therefore select and verify on disjoint states:𝜏
+comes from one third of an unlabelled batch, and the bound the target must clear is computed on the other
+two thirds, for that single threshold. The arithmetic sets the split. At𝛿=0.05 a verification split of𝑛 states
+with one disagreement gives a bound near4.7/𝑛, so a 1% target needs roughly 500 states, and 300 cannot
+certify 1% unless no disagreement occurs.
+Onfourcellstheprocedurecertifiestwo. Qwen2.5-7Breachesaverifiedboundof0.0079onbothtasks,at
+10.61of18rotationsand9.01of20,whichis1.70and2.22timesfewer(Table10). Qwen3-8Bonnewsgroups
+misses at 0.0105, and onmassive_route no threshold on the grid clears the target on the selection split.
+Selecting and verifying on the same states, as the runs in Section 7 did, returns a smaller threshold and a
+larger saving, and its bound does not cover the selection.
+Table 11 reports which statistic satisfies Eq.(5)at 𝜀=0.01 . The log-odds margin certifies all four cells;
+the probability gap certifies two, and on the other two no threshold clears the target at any budget.
+The cost of a round.The budget requests rotations from the engine in rounds, and every request in a batch
+must finish a round before the next starts. Reading one rotation per round issues the fewest forwards and the
+most rounds. Section 7 measures both, and the two engines rank them differently.
+6 Experimental setup
+Models.For the 20-option, JevBench and serving experiments, we ran thirteen instruction-tuned models
+from eight organisations at their released weights, inbfloat16: Qwen3 at 1.7B, 4B, 8B, 32B and 30B-
+A3B [49], Qwen2.5-7B [38], Llama-3.2-3B [18], Mistral-7B-v0.3 [23], Granite-3.3-8B [17], Phi-4-mini [1],
+SmolLM2-1.7B [5], OLMo-2-7B [44] and gpt-oss-20b [37] at its low reasoning setting. The 20-option sweep
+covers eleven of them from six organisations, the benchmark run eight from five. We fine-tuned, quantised
+and modified nothing.
+Tasks.The 20-option sweep uses three tasks:banking20, twenty banking intents from BANKING77 [7];
+newsgroups, the twenty classes of 20 Newsgroups [26]; andinjection, a binary question over prompt
+injections. Each cell uses 300 held-out items. Timing uses an 18-option utterance routing question built from
+MASSIVE [14].
+Benchmark.We also ran the public subset of JevBench [42], a public set of typed decisions for this class of
+system. It publishes 231 items in three files. Its overall score averages three difficulty tiers that partition a
+larger set than the public files, so we report the public subset and do not place it against leaderboard entries.
+We score 213 of the 231. The other 18 state an expected value that is not one of the listed options: twelve are
+ordinal and six are otherwise irregular, and we skip them rather than guess a mapping.
+What is fitted on what.The rotation average uses no labels. Two quantities are fitted against gold labels
+and we name both: the prior strength𝛼, selected once on a separate sweep (Section 4), and the temperature,
+fitted out of fold over items, five folds taken over the pooled items rather than within a difficulty tier. A
+temperature fitted on one tier alone would misfit the others. The stopping threshold of Section 5 is selected on
+unlabelled states of the same question.
+AnyJev 6
+
+Model
+(a) Order-flip rate
+lower is better
+banking20
+0%
+50%
+100%
+20 newsgroups
+0%
+50%
+100%
+(b) Accuracy
+higher is better
+banking20
+0%
+50%
+100%
+20 newsgroups
+0%
+50%
+100%
+SmolLM2-1.7B
+Phi-4-mini
+Mistral-7B
+OLMo-2-7B
+Granite-3.3-8B
+Qwen2.5-7B
+Qwen3-1.7B
+Qwen3-4B
+Qwen3-8B
+Qwen3-30B-A3B
+Qwen3-32B
+11 models × 2 tasks, 20 options per task; label prior off
+Raw readout
++ Rotation average
+Figure 2.Rotation averaging on two 20-option tasks. Each row is one model, with separate subpanels forbanking20
+and 20 newsgroups under each metric. Hollow points show the raw readout; filled points show the rotation average
+of Eq.(3). Left: the order-flip rate, the share of items whose answer changes when the option list is reversed. Right:
+accuracy. Axes are shown as percentages. All 22 model–task pairs have a lower order-flip rate and higher accuracy after
+averaging. The label prior is switched off, so the changes are due to rotations alone.
+Settings and hardware.The main tables read every rotation, combine in log space, and rotate the caller’s
+listing rather than a canonical one. The 20-option sweep applies the label prior of Eq.(2); the benchmark run
+doesnot,soitsdebiasedcolumnisolatestherotations. TheseexperimentsusedoneH100NVL,PyTorch2.5.1
+with CUDA 12.4 and Transformers 4.55.4 [46]. The serving comparison additionally used vLLM 0.7.0 [25]
+on the same host, measured serially on an otherwise idle machine, because an earlier pair of runs that shared
+the host returned a different ratio.
+Additional full-split evaluation.We separately evaluate the default BEV Decision Mix test split on two
+AnyJev base models and four published baseline interfaces. Its readouts, calibration protocol and software
+settings are specified in Appendix E; the temperature fit and hardware configuration above do not describe
+that separate evaluation.
+7 Results
+7.1 Order dependence falls on every model tested
+The rotations lower the order-flip rate on 11 of 11 models on both 20-option tasks, from 0.328 to 0.138 on
+banking20 and from 0.334 to 0.183 onnewsgroups (Table 1, Figure 2). They raise accuracy on 11 of 11
+models on both, by 7.2 and 5.9 points on the means. An exact sign test over the eleven models puts each of
+those counts at𝑝=4.9×10 −4.
+The size of the effect depends on the number of options. On the binaryinjection task the rotations
+remove order dependence completely, from 0.180 to 0.000 on the eight rows that pass the answer-mass gate,
+and they do not raise accuracy: they win on 3 of the 7 rows that are not ties, at𝑝=0.77 . With two options
+there are two positions, and little position bias to average away.
+Calibration moves under the temperature rather than under the rotations. The rotations and the prior take
+the calibration error from 0.251 to 0.223 onbanking20, and the temperature takes it to 0.088.
+AnyJev 7
+
+banking20 20 newsgroups injection
+𝐾=20𝐾=20𝐾=2
+Accuracy
+raw readout 0.665 0.609 0.720
++ rotations 0.737 0.668 0.733
++ rotations + label prior 0.752 0.675 0.762
+Order-flip rate
+raw readout 0.328 0.334 0.180
++ rotations 0.138 0.183 0.000
+Calibration error
+raw readout 0.251 0.276 0.202
++ rotations + label prior 0.223 0.285 0.170
++ temperature 0.088 0.099 0.095
+Models passing the answer-mass gate 11 of 11 11 of 11 8 of 11
+Rotations raise accuracy on 11/11 11/11 3/7
+Rotations lower the flip rate on 11/11 11/11 8/8
+Table 1.Means over the models that pass the answer-mass gate, 300 items per cell. The lower block counts models
+rather than items. Under a coin flip, 11 of 11 occurs with probability4.9×10 −4 (exact sign test, one-sided). The
+injection accuracy row is 3 of 7 after dropping one tie, at𝑝=0.77.
+−0.04 −0.02 0.00 0.02 0.04 0.06
+debiased − raw, accuracy
+Qwen3-1.7B
+Llama-3.2-3B
+Mistral-7B
+Qwen2.5-7B
+Granite-3.3-8B
+Qwen3-8B
+gpt-oss-20b
+Qwen3-32B
+−0.3 −0.2 −0.1 0.0 0.1
+with temperature − debiased, ECE
+Figure 3.Differences on the JevBench public subset with 95% bootstrap intervals over 2000 resamples, paired over
+items, one row per model. Left: debiased minus raw accuracy; every interval contains zero. Right: the change in
+calibration error from adding the temperature; four of the eight intervals exclude zero, and all four are improvements.
+Coloured intervals exclude zero.
+7.2 The benchmark
+Accuracy on this subset spans 0.549 for Qwen3-1.7B to 0.798 for Qwen3-32B (Table 2). The spread belongs
+to the models. The debiasing does not change accuracy here by a measurable amount: no per-model interval
+excludes zero, and pooling all8×213=1704 decisions gives a difference of+0.006 with a 95% interval of
+[−0.004,+0.018].
+Section 4 predicts that the effect grows with the number of options, and this benchmark has few. Its
+items have 2 to 6 options, 3.6 on average over the 213 scored. Table 8 splits the pooled decisions by option
+AnyJev 8
+
+Model Answer mass Raw Debiased ECE raw ECE debiased ECE + temp.
+Qwen3-32B 1.000 0.798 0.789 0.140 0.128 0.091
+Qwen3-8B 1.000 0.704 0.714 0.278 0.263 0.114
+gpt-oss-20b 0.999 0.704 0.714 0.140 0.154 0.102
+Granite-3.3-8B 0.999 0.690 0.700 0.280 0.270 0.301
+Qwen2.5-7B 0.996 0.676 0.685 0.259 0.243 0.085
+Mistral-7B 0.999 0.615 0.624 0.322 0.333 0.104
+Llama-3.2-3B 0.999 0.563 0.559 0.174 0.163 0.107
+Qwen3-1.7B 1.000 0.549 0.568 0.395 0.380 0.105
+Table 2.JevBench public subset, 213 items scored per model. Answer mass is the normaliser of Eq.(1). ECE is
+expected calibration error over 15 equal-mass bins. Intervals for the differences are in Figure 3 and Table 7.
+count. The 𝐾=6 interval excludes zero, but it is one of five intervals. Were they independent, the chance
+that at least one of five 95% intervals excludes zero under the null would be 0.23; they share models and the
+resampling is clustered, so that figure is indicative rather than exact. Testing the trend once, by regressing
+the per-decision difference on𝐾 and bootstrapping the slope clustered by item, gives+0.0059 accuracy per
+additional option with an interval of[−0.0012,+0.0132] . The sign matches the prediction and the sample
+does not resolve it. We therefore report no accuracy effect on this benchmark.
+Thetemperaturelowerscalibrationerroronsevenoftheeightmodelsandraisesitonone. Fouroftheeight
+intervals exclude zero, all of them improvements: Qwen3-8B, Qwen2.5-7B, Mistral-7B and Qwen3-1.7B,
+between −0.149 and −0.276. On Granite-3.3-8B the error rises from 0.270 to 0.301, with an interval that
+contains zero. One global temperature cannot correct a model whose confidence is wrong in different
+directions on different items.
+7.3 Full BEV Decision Mix evaluation
+On the full test split of the default BEV Decision Mix configuration [3], all systems are scored on the
+same 46320 decisions (Appendix E, Table 14). With the label prior off, rotation averaging reaches 68.01%
+on Qwen3.5-9B and 67.59% on Qwen3-32B, compared with 67.85% and 67.03% for their raw readouts.
+Bespoke-Nimble-9B reaches 70.57%; its 2.56-point lead over the 9B rotation average is an observed system
+difference, not an isolated estimate of the effect of fine-tuning. Adding the batch prior at𝛼=0.75 lowers
+accuracy to 65.01% and 65.55%, respectively, although it improves the 9B model’s ECE from 0.0490 to
+0.0418. Thus the prior’s accuracy benefit does not transfer to this evaluation. The evaluated affine-map
+L2-mono variant reads block 29 of 32 and scores 67.24%, 0.61 points below the same model’s full-depth,
+single-forward readout; latency was not measured.
+7.4 Serving cost
+On the 18-option routing question, Eq.(5) returns a threshold of 6.0 from 600 unlabelled states, with one
+disagreement and a Clopper–Pearson upper bound of 0.0079 against a 1% target. Reading two rotations per
+engine call, the budget then reads 7.3 of the 18 and returned the full-rotation decision on 98.7% of held-out
+decisions(Table3). Thatisadisagreementrateof0.013,or4decisionsof300. Thisrunselecteditsthreshold
+and took its bound from the same states, so the bound does not cover the selection, and the rate is the one to
+read. Section 5 reports the same cell under selection and verification on disjoint states: the threshold rises
+from 6.0 to 10.25, the rotations read from 7.3 to 10.6, and the bound becomes one a deployment can rely on.
+We quote 6.0 here because it is the threshold the serving run used.
+The round size matters as much as the rotation count, and the two engines rank it differently. On vLLM,
+reading one rotation per round issues the fewest rotations, 7.2 of 18, and reaches 22.1 decisions per second.
+AnyJev 9
+
+Engine Readout Decisions/s Speed-up Rotations read Accuracy Agreement
+vLLM all 18 rotations 16.7 1.00 18.0 0.697 1.000
+budget, wave 1 22.1 1.32 7.2 0.703 0.987
+budget, wave 2 37.2 2.22 7.3 0.703 0.987
+budget, wave 4 31.8 1.90 9.3 0.703 0.987
+budget, wave 6 29.2 1.74 10.9 0.700 0.987
+Transformers all 18 rotations 7.0 1.00 18.0 0.697 1.000
+budget, wave 1 16.5 2.34 7.2 0.703 0.987
+budget, wave 2 16.5 2.34 7.4 0.703 0.987
+budget, wave 4 13.1 1.87 9.2 0.703 0.987
+budget, wave 6 11.4 1.62 10.8 0.700 0.990
+Table 3.300 decisions of an 18-option question on one H100. The wave is how many rotations a decision requests
+per engine call. Accuracy spans 0.697 to 0.703 across the rows, and agreement is measured against the full-rotation
+decision. Speed-up is against the all-rotations row of the same engine.
+Reading two per round issues 7.3 and reaches 37.2, which is 2.22 times the all-rotations rate. At four per
+round the rate falls to 31.8. On Transformers the first two rounds sizes are level at 16.5 decisions per second,
+2.34 times the all-rotations rate, and larger rounds are slower.
+We also measured whether the decision can be read from a truncated forward, by fitting a label-free affine
+map from an intermediate block into the final basis [4]. At a 0.98 agreement target six of the eight models
+save no blocks. Appendix D reports the depths.
+8 What did not work
+Each mechanism below does what its design says, to the precision quoted, and a measurement rather than a
+fault stopped each one.
+A question-agnostic head.A closed-form head fitted on one question’s gold labels against the model’s
+hidden states scores 0.13 above the debiased readout at the same depth, and it is fitted per question. Leaving
+out one of twenty questions at a time and fitting on the other nineteen, four extraction variants, five depths
+and four functional forms all score below the raw readout on the held-out question. The best reaches 0.580,
+against 0.635 for the debiased readout and 0.628 for the raw one, and its flip rate under reversal is 0.17 to 0.30,
+against 0.07 for the raw readout on the same questions. The signal is present per question; a shared linear rule
+that reaches an unseen question is not.
+Reusing the question block’s cache.The question and its options are identical across requests to a given
+endpoint, but they follow the state, so no prefix cache reaches them. On a short state they are most of the
+prompt: 159 fixed tokens of which 42 precede the state, against a median routing utterance of 7 tokens.
+Splicing the cached block into a new request and rotating its positions is exact to7.0×10 −5 in fp32 across all
+28 layers. The reused block then reproduces the previous state’s decision in the new request.
+Making the options a set.The 𝐾 rotations exist because the options are written in sequence, so option 5
+attendstooptions1through4andoption1tononeofthem. Amaskinwhicheveryoptionspanseestheprefix
+and itself, each starting at the same position index, makes the options exchangeable by construction: shuffling
+the spans moves the output by3.7×10 −6 under it, against2.2×10 −3 under the causal mask. Accuracy then
+falls to chance. On Qwen2.5-7B and the 18-option routing question it scores 0.042 against 0.633 for the
+AnyJev 10
+
+rotation average, where chance is 0.056. Masking the options from each other while leaving their positions
+alone already scores 0.092, so the loss comes from the blinding rather than the shared positions. The model
+uses the other options when it selects among them.
+Packing the rotations into one forward.Laying the𝐾 option blocks end to end, each at the same starting
+position index and masked to see only the prefix and itself, reproduces𝐾 independent prefills to2.2×10 −5
+and returns an identical decision. It runs 5.9 times as fast as𝐾 independent prefills, and 1.20 times as fast as
+the shared-prefix path an engine already provides on a 10-token state, 1.11 times on a 200-token state. This is
+why Section 5 reduces the number of rotations instead of their unit cost.
+9 Limitations
+• One prefill sets a ceiling.The readout generates nothing, so it cannot reason. On the hardest tier of the
+JevBench subset the eight models span 0.343 to 0.590.
+• JevBench has few options.Its scored items average 3.6 options, the range where the rotation average has
+least to remove. We do not have a public many-option benchmark, and one would test the mechanism
+where it operates.
+• Eighteen JevBench items are unscored.Twelve of the 231 public items are ordinal, where the expected
+value names a level rather than one of the listed options.
+• The 20-option results have no intervals.Those runs record aggregates rather than per-item outcomes, so
+the strongest statement available from them is the sign test over eleven models.
+• The intervals are over items, not over runs.They state what a different sample of items would have
+given. They do not cover seed, host, or the effect of batch composition onbfloat16logits.
+• The threshold is selected and certified on the same sample.The bound therefore covers each candidate
+on the grid and not the selected one. On the serving run the held-out rate was 0.013 on 300 decisions,
+whose 95% interval[0.004,0.034] contains the 0.01 target, so that run neither confirms nor refutes it.
+Selecting on one unlabelled split and measuring on a second would settle it; we did not do that here.
+• The efficiency and accuracy measurements use different tasks.The JevBench subset’s𝐾 is 2 to 6, so a
+rotation budget has little to save there.
+• Hidden-state readouts need a local backend.The affine map of Appendix D and the per-question head
+need hidden states, which a hosted API does not expose. The readout of Section 4 needs only next-token
+log-probabilities.
+10 Conclusion
+The decision capability measured here is the base model’s. What AnyJev supplies is a readout with the label
+prior divided out and the position term averaged away, at one prefill per rotation and no parameter changes.
+On both 20-option tasks that readout lowered the order-flip rate on every model we tested, from 0.33 to 0.138
+and 0.183, and a stopping rule selected against its own full-rotation decision reduced the number of rotations
+read. AnyJev is open source.
+Status.This is an early report on work that is still in development. It covers the readout, the corrections and
+their serving cost; the labelled head is not evaluated. The evidence includes the 213-item JevBench public
+subset, three tasks of our own, and 46320 decisions from the default BEV Decision Mix test split, including
+comparisons with published decision systems. On that full split, the best AnyJev accuracy uses rotations
+AnyJev 11
+
+without the label prior; the prior’s benefit is therefore task-dependent. These are early measurements, not a
+settled ranking of decision systems.
+References
+[1] Abdelrahman Abouelenin, Atabak Ashfaq, Adam Atkinson, et al. Phi-4-mini technical report: Compact
+yet powerful multimodal language models via mixture-of-LoRAs. arXiv preprint arXiv:2503.01743,
+2025.
+[2] Diogo Almeida. Introducing System One models & Jev. TypeSafe AI blog,https://typesafe.
+ai/blog/introducing-system-one-models-and-jev,September2026. Published15September
+2026.
+[3] avbiswas. BEV Decision Mix. Hugging Face dataset, https://huggingface.co/datasets/
+avbiswas/bev-decision, 2026. Default configuration; accessed September 30, 2026.
+[4] Nora Belrose, Igor Ostrovsky, Lev McKinney, Zach Furman, Logan Smith, Danny Halawi, Stella
+Biderman, and Jacob Steinhardt. Eliciting latent predictions from transformers with the tuned lens.
+arXiv preprint arXiv:2303.08112, 2023.
+[5] Loubna Ben Allal, Anton Lozhkov, Elie Bakouch, et al. SmolLM2: When smol goes big – data-centric
+training of a small language model. arXiv preprint arXiv:2502.02737, 2025.
+[6] Bespoke Labs and Maheswaran Sathiamoorthy. Nimble. GitHub repository,https://github.com/
+bespokelabsai/nimble, 2026. Accessed 29 September 2026.
+[7] Iñigo Casanueva, Tadas Temčinas, Daniela Gerz, Matthew Henderson, and Ivan Vulić. Efficient intent
+detection with dual sentence encoders. InProceedings of the 2nd Workshop on Natural Language
+Processing for Conversational AI, pages 38–45. Association for Computational Linguistics, 2020.
+Introduces the BANKING77 dataset.
+[8] Lingjiao Chen, Matei Zaharia, and James Zou. FrugalGPT: How to Use Large Language Models While
+Reducing Cost and Improving Performance.Transactions on Machine Learning Research, 2024. Code:
+https://github.com/stanford-futuredata/FrugalGPT.
+[9] Yilong Chen, Xiao Qin, Chenghao Liu, Liang Wu, Noelle I. Samia, and Kaize Ding. LLM agents for
+time-series: A survey. arXiv preprint arXiv:2608.26226, 2026. Accepted to Findings of EMNLP 2026.
+[10] C. J. Clopper and E. S. Pearson. The use of confidence or fiducial limits illustrated in the case of the
+binomial.Biometrika, 26(4):404–413, 1934.
+[11] dzhng. jevgrep. GitHub repository, https://github.com/dzhng/jevgrep, 2026. Accessed 29
+September 2026.
+[12] fast-jev-compaction. GitHub repository, https://github.com/tamaratran/
+fast-jev-compaction, 2026. Accessed 29 September 2026.
+[13] feder-cr. jevos. GitHub repository, https://github.com/feder-cr/jev, 2026. Accessed 29
+September 2026.
+[14] Jack FitzGerald, Christopher Hench, Charith Peris, Scott Mackie, Kay Rottmann, Ana Sanchez, Aaron
+Nash, Liam Urbach, Vishesh Kakarala, Richa Singh, Swetha Ranganath, Laurie Crist, Misha Britan,
+Wouter Leeuwis, Gokhan Tur, and Prem Natarajan. MASSIVE: A 1M-example multilingual natural
+AnyJev 12
+
+language understanding dataset with 51 typologically-diverse languages. InProceedings of the 61st
+Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages
+4277–4302. Association for Computational Linguistics, 2023.
+[15] Tianyu Gao, Adam Fisch, and Danqi Chen. Making Pre-trained Language Models Better Few-shot
+Learners. InProceedings of the 59th Annual Meeting of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers),
+pages 3816–3830. Association for Computational Linguistics, 2021.
+[16] Paimon Goulart, Liang Wu, Kelly Wan, Evangelos E. Papalexakis, and Liangjie Hong. Field-aware
+agent skill retrieval. arXiv preprint arXiv:2608.02880, 2026.
+[17] Granite Team, IBM. Granite 3.0 language models. Technical report, https://github.com/
+ibm-granite/granite-3.0-language-models/, October 2024.
+[18] Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, et al. The llama 3 herd of models. arXiv preprint
+arXiv:2407.21783, 2024.
+[19] Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. On calibration of modern neural networks.
+InProceedings of the 34th International Conference on Machine Learning, volume 70 ofProceedings
+of Machine Learning Research, pages 1321–1330. PMLR, 2017.
+[20] Ari Holtzman, Peter West, Vered Shwartz, YejinChoi, and Luke Zettlemoyer. Surfaceformcompetition:
+Why the highest probability answer isn’t always right. InProceedings of the 2021 Conference on
+Empirical Methods in Natural Language Processing, pages 7038–7051. Association for Computational
+Linguistics, 2021.
+[21] Jev Ultrafast. GitHub repository, https://github.com/browser-use/jev-ultrafast, 2026.
+Accessed 29 September 2026.
+[22] Jevlike. GitHub repository,https://github.com/vinnylarouge/jevlike, 2026. Accessed 29
+September 2026.
+[23] Albert Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot,
+DiegodelasCasas,FlorianBressand,GiannaLengyel,GuillaumeLample,LucileSaulnier,LélioRenard
+Lavaud, Marie-Anne Lachaux, Pierre Stock, Teven Le Scao, Thibaut Lavril, Thomas Wang, Timothée
+Lacroix, and William El Sayed. Mistral 7B. arXiv preprint arXiv:2310.06825, 2023.
+[24] Kev. GitHub repository,https://github.com/jaredpalmer/kev, 2026. Accessed 29 September
+2026.
+[25] Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E.
+Gonzalez, Hao Zhang, and Ion Stoica. Efficient memory management for large language model serving
+with PagedAttention. InProceedings of the 29th Symposium on Operating Systems Principles (SOSP),
+pages 611–626. ACM, 2023.
+[26] Ken Lang. NewsWeeder: Learning to filter netnews. InMachine Learning Proceedings 1995:
+Proceedings of the Twelfth International Conference on Machine Learning, pages 331–339. Morgan
+Kaufmann, 1995. Original source of the 20 Newsgroups dataset.
+[27] Laya: Multilingual,non-autoregressivesystem1decisionengine. GitHubrepository, https://github.
+com/NandhaKishorM/laya, 2026. Accessed 29 September 2026.
+AnyJev 13
+
+[28] Delong Li, Xu Wang, Haochen Gong, Rui Lang, and Guangsheng Yu. Fast Intent-Driven Service
+Orchestration with Jev for 6G Edge Networks. arXiv preprint arXiv:2609.23136, 2026.
+[29] Keyi Li, Yihao He, and Quanyi Li. Beyond Calibration: Do a Typed-Decision Model’s Probabilities
+Obey the Probability Axioms? arXiv preprint arXiv:2609.33209, 2026. Code:https://github.
+com/bro789/typed-decision-coherence.
+[30] Yubo Li, Yidi Miao, Ramayya Krishnan, and Rema Padman. JEV-as-a-Judge: Accept When Confident,
+Escalate When Unsure. arXiv preprint arXiv:2609.26550, 2026.
+[31] LLM2Jev: Turn LLMs into Jev-Style Decision Models. GitHub repository,https://github.com/
+Yinsongxu/LLM2Jev, 2026. Accessed 29 September 2026.
+[32] llm2jev.GitHubrepository, https://github.com/tic-top/llm2jev,2026.Accessed29September
+2026.
+[33] Mark Marosi. decider: one-pass typed decisions with calibrated probabilities. GitHub repository,
+https://github.com/Mapika/decider, 2026.
+[34] Guanghui Min, Liang Wu, Mayank Darbari, Chen Chen, and Liangjie Hong. Toward reliable context
+compression for long-horizon agents: An empirical study of execution instability. arXiv preprint
+arXiv:2608.06503, 2026. Code:https://github.com/nokia-applied-research/Trace.
+[35] NanoJev: A nano replica of Jev. GitHub repository, https://github.com/TianyuCodings/
+NanoJev, 2026. Accessed 29 September 2026.
+[36] nostalgebraist. interpreting GPT: the logit lens. LessWrong,https://www.lesswrong.com/posts/
+AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens, August 2020. Published 31 August
+2020.
+[37] OpenAI. gpt-oss-120b & gpt-oss-20b model card. arXiv preprint arXiv:2508.10925, 2025.
+[38] Qwen, An Yang, Baosong Yang, Beichen Zhang, et al. Qwen2.5 technical report. arXiv preprint
+arXiv:2412.15115, 2024.
+[39] Delip Rao and Chris Callison-Burch. JEV vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in
+the Same Places. arXiv preprint arXiv:2609.29769, 2026.
+[40] Timo Schick and Hinrich Schütze. Exploiting Cloze-Questions for Few-Shot Text Classification and
+Natural Language Inference. InProceedings of the 16th Conference of the European Chapter of the
+AssociationforComputationalLinguistics: MainVolume,pages255–269.AssociationforComputational
+Linguistics, 2021.
+[41] SemIf (formerly OpenJev). GitHub repository,https://github.com/TheoLeeCJ/SemIf-OpenJev,
+2026. Accessed 29 September 2026.
+[42] Florian Standhartinger. JevBench: a benchmark for typed decision models. Hugging Face dataset,
+https://huggingface.co/datasets/fstandhartinger/jevbench, 2026. Public subset used
+here: 231 items indatasets/public/.
+[43] Yu Sun, Junhao Xu, Jiajia Shi, and Zijin Yang. Type-Safe Is Not Error-Free: A Constrained Decision
+Head Follows the Option Name, Not the Rubric Bound to It. arXiv preprint arXiv:2609.26758, 2026.
+AnyJev 14
+
+[44] Team OLMo, Pete Walsh, Luca Soldaini, Dirk Groeneveld, et al. 2 OLMo 2 furious. arXiv preprint
+arXiv:2501.00656, 2024.
+[45] XinyuanWang,LiangWu,DongjieWang,andYanjieFu. PageLLM:Amulti-grainedrewardframework
+for whole-page optimization with large language models. arXiv preprint arXiv:2506.09084, 2026.
+[46] Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue, Anthony Moi,
+PierricCistac,TimRault,RemiLouf,MorganFuntowicz,JoeDavison,SamShleifer,PatrickvonPlaten,
+Clara Ma, Yacine Jernite, Julien Plu, Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame,
+Quentin Lhoest, and Alexander Rush. Transformers: State-of-the-art natural language processing. In
+Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System
+Demonstrations, pages 38–45. Association for Computational Linguistics, 2020.
+[47] LiangWu,KellyWan,MayankDarbari,andLiangjieHong. Towardsresilientandautonomousnetworks:
+A BlueSky vision on AI-native 6G. arXiv preprint arXiv:2605.21395, 2026. Accepted at KDD 2026.
+[48] Tiantong Wu and Wei Yang Bryan Lim. REFLEX with Jev for Efficient Selective Control in LLM
+Agents. arXiv preprint arXiv:2609.26532, 2026.
+[49] An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, et al. Qwen3 technical report. arXiv preprint
+arXiv:2505.09388, 2025.
+[50] Tianze Yang, Liang Wu, Ruitong Sun, Yucheng Shi, Yanqiao Wang, Mayank Darbari, Ninghao Liu, Jin
+Sun, and Liangjie Hong. Self-evolving code-with-image reasoning. arXiv preprint arXiv:2608.11292,
+2026.
+[51] Weiwei Ye, Hangchen Liu, and Renhe Jiang. NumericJev: Jev-like LLM Numerical Decoding with
+Multiway Decision Trees. arXiv preprint arXiv:2609.28587, 2026.
+[52] Guanxu Yu and Yuhang Yao. Visual Jev: Accurate and Efficient Decisions from Shared Visual Context.
+arXiv preprint arXiv:2609.25845, 2026. Code:https://github.com/guanxuyu-sv/Visual-Jev.
+[53] Jiamu Zhang, Liang Wu, Mayank Darbari, and Liangjie Hong. WiSP: A working-set view of mixture-
+of-experts serving on extremely low-resource hardware. arXiv preprint arXiv:2606.21868, 2026. Code:
+https://github.com/nokia-applied-research/WiSP.
+[54] Jiamu Zhang, Liang Wu, Kelly Wan, Hanjie Chen, and Liangjie Hong. SPECTRA: Pushing the KV
+cache beyond the 2-bit cliff via spectral transform coding. arXiv preprint arXiv:2608.07915, 2026.
+Code:https://github.com/nokia-applied-research/SPECTRA.
+[55] Zihao Zhao, Eric Wallace, Shi Feng, Dan Klein, and Sameer Singh. Calibrate before use: Improving
+few-shot performance of language models. InProceedings of the 38th International Conference on
+Machine Learning, volume 139 ofProceedings of Machine Learning Research, pages 12697–12706.
+PMLR, 2021.
+[56] Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou, and Minlie Huang. Large language models are
+not robust multiple choice selectors. InInternational Conference on Learning Representations (ICLR),
+2024.
+[57] Zaiyi Zheng, Liang Wu, Guanghui Min, Yaochen Zhu, Liangjie Hong, Chen Chen, and Jundong Li.
+SAPO:Step-alignedpolicyoptimizationforreasoning-basedgenerativerecommendation. arXivpreprint
+arXiv:2605.17648, 2026.
+AnyJev 15
+
+[58] Han Zhou, Xingchen Wan, Lev Proleev, Diana Mincu, Jilin Chen, Katherine Heller, and Subhrajit
+Roy. Batch calibration: Rethinking calibration for in-context learning and prompt engineering. In
+International Conference on Learning Representations (ICLR), 2024.
+A Per-model results on the 20-option tasks
+Table 1 reports means. The three tables below give each model separately.massis the answer mass of Eq.(1),
+in bold where it falls below the 0.99 gate.rot.is the rotation average of Eq.(3)with the label prior switched
+off,prioradds Eq. (2), andtemp.adds the fitted temperature.cov@5%is the share of items the system can
+answer, taken in confidence order, before the error rate on the answered set passes 5%.
+Model mass raw +rot. +prior ECE raw ECE +temp. flip raw flip +rot. cov@5% raw cov@5% +temp.
+Granite-3.3-8B 1.000 0.657 0.810 0.807 0.293 0.052 0.353 0.143 0.033 0.523
+Qwen3-8B 1.000 0.747 0.800 0.803 0.240 0.095 0.230 0.077 0.077 0.520
+Phi-4-mini 0.999 0.707 0.767 0.783 0.185 0.065 0.277 0.130 0.017 0.480
+Qwen3-32B 1.000 0.720 0.777 0.780 0.227 0.064 0.213 0.080 0.017 0.443
+Qwen3-30B-A3B 1.000 0.730 0.757 0.770 0.249 0.086 0.143 0.103 0.277 0.470
+Qwen3-4B 1.000 0.733 0.757 0.760 0.254 0.098 0.197 0.110 0.103 0.423
+Qwen2.5-7B 0.998 0.723 0.750 0.757 0.237 0.070 0.197 0.073 0.180 0.223
+Mistral-7B 1.000 0.693 0.727 0.740 0.287 0.113 0.290 0.137 0.100 0.347
+SmolLM2-1.7B 0.992 0.407 0.667 0.717 0.219 0.102 0.867 0.263 0.093 0.360
+OLMo-2-7B 0.999 0.600 0.633 0.680 0.185 0.105 0.403 0.203 0.003 0.037
+Qwen3-1.7B 1.000 0.597 0.667 0.670 0.383 0.121 0.433 0.197 0.027 0.260
+Table 4.banking20,𝐾=20, 300 items per model. All eleven rows pass the gate.
+Model mass raw +rot. +prior ECE raw ECE +temp. flip raw flip +rot. cov@5% raw cov@5% +temp.
+Qwen3-30B-A3B 1.000 0.737 0.743 0.740 0.242 0.096 0.140 0.087 0.303 0.003
+Qwen3-32B 1.000 0.717 0.733 0.737 0.236 0.063 0.170 0.090 0.557 0.410
+Qwen2.5-7B 0.998 0.663 0.703 0.710 0.273 0.096 0.237 0.133 0.047 0.407
+Granite-3.3-8B 1.000 0.660 0.690 0.693 0.328 0.111 0.303 0.187 0.000 0.183
+OLMo-2-7B 0.999 0.573 0.660 0.683 0.203 0.047 0.457 0.240 0.283 0.290
+Mistral-7B 0.995 0.647 0.663 0.673 0.315 0.096 0.317 0.167 0.007 0.073
+Qwen3-4B 1.000 0.633 0.667 0.667 0.341 0.138 0.273 0.200 0.000 0.157
+Qwen3-8B 0.999 0.637 0.660 0.660 0.334 0.138 0.233 0.173 0.013 0.237
+SmolLM2-1.7B 0.994 0.257 0.610 0.637 0.097 0.089 0.920 0.243 0.003 0.137
+Phi-4-mini 0.999 0.593 0.613 0.617 0.272 0.110 0.310 0.233 0.080 0.217
+Qwen3-1.7B 1.000 0.580 0.603 0.610 0.394 0.106 0.313 0.257 0.010 0.000
+Table 5.newsgroups,𝐾=20, 300 items per model. All eleven rows pass the gate.
+AnyJev 16
+
+Model mass raw +rot. +prior ECE raw ECE +temp. flip raw flip +rot. cov@5% raw cov@5% +temp.
+Qwen3-32B 0.999 0.857 0.833 0.827 0.062 0.067 0.073 0.000 0.550 0.483
+Phi-4-mini 0.994 0.707 0.790 0.807 0.133 0.106 0.427 0.000 0.017 0.010
+Qwen3-4B 1.000 0.683 0.783 0.797 0.298 0.081 0.203 0.000 0.117 0.100
+Qwen2.5-7B 0.999 0.737 0.720 0.790 0.188 0.049 0.070 0.000 0.367 0.380
+Qwen3-30B-A3B 0.995 0.730 0.730 0.757 0.248 0.090 0.103 0.000 0.410 0.410
+Mistral-7B 0.995 0.697 0.707 0.733 0.167 0.069 0.333 0.000 0.017 0.143
+Qwen3-8B 1.000 0.693 0.677 0.700 0.288 0.161 0.060 0.000 0.313 0.313
+Qwen3-1.7B 0.992 0.657 0.627 0.683 0.231 0.135 0.170 0.000 0.000 0.000
+SmolLM2-1.7B0.4080.593 0.593 0.670 0.215 0.095 0.000 0.000 0.030 0.000
+Granite-3.3-8B0.9760.627 0.637 0.647 0.302 0.103 0.100 0.000 0.000 0.003
+OLMo-2-7B0.7100.593 0.593 0.593 0.367 0.083 0.003 0.000 0.000 0.000
+Table 6. injection, 𝐾=2 , 300 items per model. Three rows fall below the answer-mass gate and are excluded from
+every statistic reported for this task. The rotation average removes order dependence on every row that passes.
+B Benchmark detail
+Model raw debiased diff. 95% CI ECE deb. ECE +temp. diff. 95% CI
+Qwen3-32B 0.798 0.789 -0.009 [-0.042, +0.019] 0.128 0.091 -0.037 [-0.082, +0.010]
+Qwen3-8B 0.704 0.714 +0.009 [-0.009, +0.028] 0.263 0.114 -0.149 [-0.179, -0.076]
+gpt-oss-20b 0.704 0.714 +0.009 [-0.033, +0.052] 0.154 0.102 -0.052 [-0.092, +0.004]
+Granite-3.3-8B 0.690 0.700 +0.009 [-0.019, +0.038] 0.270 0.301 +0.030 [-0.038, +0.124]
+Qwen2.5-7B 0.676 0.685 +0.009 [-0.009, +0.033] 0.243 0.085 -0.159 [-0.177, -0.068]
+Mistral-7B 0.615 0.624 +0.009 [-0.019, +0.038] 0.333 0.104 -0.229 [-0.251, -0.121]
+Qwen3-1.7B 0.549 0.568 +0.019 [-0.023, +0.066] 0.380 0.105 -0.276 [-0.297, -0.179]
+Llama-3.2-3B 0.563 0.559 -0.005 [-0.042, +0.033] 0.163 0.107 -0.057 [-0.093, +0.019]
+Table 7.Per-model differences with 95% bootstrap intervals over 2000 resamples, paired over items. The temperature
+is refitted inside every resample. Reusing a fit made on the full sample would place the whole sample inside every draw
+and narrow the interval.
+Options𝐾Items Decisions Raw Debiased Difference 95% CI
+2 74 592 0.677 0.676 -0.002 [-0.017, +0.015]
+3 15 120 0.333 0.317 -0.017 [-0.050, +0.017]
+4 53 424 0.649 0.665 +0.017 [-0.012, +0.045]
+5 55 440 0.805 0.811 +0.007 [-0.016, +0.030]
+6 16 128 0.461 0.492 +0.031 [+0.008, +0.062]
+Slope of the difference on𝐾+0.0059 [-0.0012, +0.0132]
+Pooled over all 1704 decisions +0.0065 [-0.0041, +0.0176]
+Table 8.The difference against the number of options, all eight models pooled. Resampling is clustered by item, so a
+drawn item contributes all eight models’ decisions. The final two rows replace those five interval tests with a single test
+of the trend.
+AnyJev 17
+
+Model easy (48) original (72) hard (111)
+Qwen3-32B 1.000 0.967 0.590
+Qwen3-8B 1.000 0.817 0.524
+gpt-oss-20b 1.000 0.850 0.505
+Granite-3.3-8B 1.000 0.900 0.448
+Qwen2.5-7B 1.000 0.867 0.438
+Mistral-7B 1.000 0.717 0.400
+Llama-3.2-3B 0.917 0.650 0.343
+Qwen3-1.7B 1.000 0.600 0.352
+Table 9.Accuracybydifficultytierofthepublicsubset. Thesearethethreepublicfiles,notthepartitionthebenchmark’s
+overall score uses. The counts in the header are the published items per file; the accuracies are over the scored items
+only, which are 48 easy, 60 original and 105 hard, because the 18 unscored items fall in the second and third files.
+C Rotations and the certificate
+0.60 0.65 0.70 0.75
+accuracy
+Qwen2.5-7B
+massive_route
+Qwen2.5-7B
+newsgroups
+Qwen3-8B
+massive_route
+Qwen3-8B
+newsgroups
+one rotation
+full cycle
+5 10 15
+rotations read before stopping
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6share of decisions
+Figure 4.Left: every cyclic rotation scored on its own, against the full-rotation average, on four (model, task) cells. On
+all four the average falls at or below the best single rotation, by 0.3 to 2.3 points, and above the worst by 3.5 to 9.3 points.
+Right: where the budget stops on one 18-option cell, over 600 decisions, for a rule with no minimum-rotation floor; the
+shipped default reads two rotations before it may stop, which moves the leftmost bar.
+The left panel states what the rotations do. They do not raise accuracy above the best single rotation.
+They remove the caller’s ability to select a poor one, and they reduce how far the result depends on the order
+the options were written in.
+D Reading a truncated forward
+Truncating the forward at block𝑏 leaves the residual stream outside the basis that the output head reads.
+We fit an affine map from block𝑏 into that basis, targeting the model’s own full-depth state on unlabelled
+inputs, which is a tuned lens [4]. We select the depth on a calibration corpus disjoint from every evaluation
+set. Reading the truncated state through the output head without the map is the logit lens [36]. The quantity
+throughout is agreement with the model’s own full-depth decision, not accuracy.
+Across the eight models the transition is sharp. Seven never exceed 0.47 agreement at any depth below
+AnyJev 18
+
+Model Task𝐾Threshold Verify rate Verify bound Clears 1% Rotations vs.𝐾
+Qwen2.5-7B massive_route 18 10.25 0.0017 0.0079 yes 10.61 1.70×
+Qwen2.5-7B newsgroups 20 9.50 0.0017 0.0079 yes 9.01 2.22×
+Qwen3-8B massive_route 18 — — — — — —
+Qwen3-8B newsgroups 20 9.00 0.0033 0.0105 no 5.31 3.77×
+Table 10.The certificate with the threshold selected on one third of an unlabelled batch and the bound computed on the
+other two thirds, for that one threshold. The verify bound carries no selection multiplicity. Two of the four cells clear a
+1% target this way; onmassive_routewith Qwen3-8B no threshold on the grid cleared it on the selection split.
+Stopping statistic Cells certified Mean rotations saved
+log-odds margin alone 4 of 4 3.46×
+log-odds margin + unanimity 4 of 4 2.91×
+probability gap alone 2 of 4 3.19×
+probability gap + unanimity 2 of 4 2.64×
+Table 11.Which stopping statistic satisfies Eq.(5)at 𝜀=0.01 , over four (model, task) cells. A rule with fewer certified
+cells did not run worse: no threshold on the grid cleared the target on those cells at any budget.
+the crossing, and then reach 0.90 in a single measured step. The depth at which that happens ranges from
+66% to 100% of blocks and does not follow parameter count. At a 0.98 target six of the eight models save no
+blocks. The two that do are Mistral-7B at 66% of blocks and Qwen3-8B at 89%.
+Part of what the table charges to truncation is the map’s own error. At full depth no truncation occurs,
+so any agreement below 1.000 in the last column is the map alone. It is 0.000 on Mistral-7B and 0.007 on
+Qwen3-8B, the two models that save blocks, and 0.040 on Llama-3.2-3B, which is why that model reaches no
+depth at the 0.98 target.
+40 50 60 70 80 90 100
+share of the model's blocks executed (%)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0agreement with the full-depth answer
+gpt-oss-20b (24)
+Qwen2.5-7B (28)
+Qwen3-1.7B (28)
+Llama-3.2-3B (28)
+Mistral-7B (32)
+Qwen3-8B (36)
+Granite-3.3-8B (40)
+Qwen3-32B (64)
+Figure 5.Agreement against depth, eight models. Markers are the depths we ran, and the curve is drawn through
+them rather than smoothed, because the intermediate depths were not measured. Hollow markers show the first depth
+reaching 0.95. Dashed lines mark 0.95 and 0.98.
+AnyJev 19
+
+Stopping statistic Model Task𝐾Threshold Rotations vs.𝐾Disagreement
+log-odds margin alone Qwen2.5-7B massive_route 18 4.5 6.12 2.94×0.0083
+Qwen2.5-7B newsgroups 20 6.0 6.00 3.34×0.0000
+Qwen3-8B massive_route 18 9.5 5.37 3.36×0.0000
+Qwen3-8B newsgroups 20 8.25 4.75 4.21×0.0033
+log-odds margin + unanimity Qwen2.5-7B massive_route 18 4.25 7.96 2.26×0.0083
+Qwen2.5-7B newsgroups 20 6.0 6.63 3.02×0.0000
+Qwen3-8B massive_route 18 9.5 6.38 2.82×0.0000
+Qwen3-8B newsgroups 20 8.25 5.63 3.55×0.0017
+probability gap alone Qwen2.5-7B massive_route 18 0.97 5.87 3.07×0.0083
+Qwen2.5-7B newsgroups 20 0.995 6.05 3.30×0.0000
+probability gap + unanimity Qwen2.5-7B massive_route 18 0.965 7.89 2.28×0.0083
+Qwen2.5-7B newsgroups 20 0.995 6.69 2.99×0.0000
+Table 12.Every cell each stopping rule certifies at𝜀=0.01 , with its threshold and the rotations it then reads. Rules
+with two rows did not certify the other two cells at any threshold on the grid. These thresholds come from a different
+calibration sample than the serving run of Section 7, which is why the same cell appears there at 6.0.
+Model Blocks Depth at 0.98 Depth at 0.95 Before crossing At crossing Agreement at full depth
+Mistral-7B 32 66% 66% 0.320 at 59% 0.985 at 66% 1.000
+Qwen3-8B 36 89% 69% 0.087 at 64% 0.965 at 69% 0.993
+Qwen3-1.7B 28 100% 79% 0.188 at 75% 0.958 at 79% 0.990
+Qwen2.5-7B 28 100% 89% 0.420 at 79% 0.950 at 89% 0.983
+Qwen3-32B 64 100% 91% 0.228 at 80% 0.973 at 91% 0.990
+gpt-oss-20b 24 100% 92% 0.207 at 79% 0.950 at 92% 0.983
+Granite-3.3-8B 40 100% 100% 0.193 at 80% 0.915 at 90% 0.995
+Llama-3.2-3B 28 not reached 100% 0.770 at 89% 0.960 at 100% 0.960
+Table 13.Agreement with the model’s own full-depth decision, for a readout taken at a fraction of the blocks and
+mapped into the final basis.Before crossingandat crossingare the last depth measured below 0.90 agreement and the
+first at or above it.
+AnyJev 20
+
+E Full BEV Decision Mix results
+We evaluate the originaldefault configuration of BEV Decision Mix [3]. Its 24386 test rows expand to
+46320 state–question decisions: 18808 choices among 2–10 options, 17572 yes/no decisions (noul), and
+9940 ordinal scores with 3–7 levels. Table 14 summarizes all readouts evaluated on the full test split. The
+sampled Qwen2.5-7B depth experiment is excluded from this comparison.
+Table 14.All full-split BEV Decision Mix results. Accuracy and its intervals are in percent; ECE is on a 0–1 scale.
+Higher accuracy and lower ECE are better. Bold marks the best measured system in each metric, including ties.
+System / readout Overall↑95% CI Choice Yes/no Ordinal ECE↓
+𝑛=18,808𝑛=17,572𝑛=9,940(shard mean)
+Reference rules (not learned systems)
+Uniform random (expected) 34.29 — 25.77 50.00 22.63 —
+Majority by question (test oracle) 54.28 — 41.42 73.57 44.51 —
+Published baseline interfaces
+Bespoke-Nimble-9B70.57[70.16, 70.99]73.6081.06 46.33 0.0889
+Laya typed-decisions 56.20 [55.75, 56.65] 55.94 72.97 27.05 0.0444
+Qwen3-Reranker-0.6B 40.50 [40.05, 40.95] 52.47 37.46 23.22 0.2249
+NanoJev 32.99 [32.56, 33.42] 35.43 34.57 25.55 0.2151
+AnyJev on Qwen3.5-9B
+Raw (one forward) 67.85 [67.43, 68.28] 67.46 81.20 45.00 0.0699
+L0: rotations, prior off 68.01 [67.59, 68.43] 67.6981.3745.00 0.0490
+L0: batch prior,𝛼=0.7565.01 [64.58, 65.45] 66.37 74.60 45.500.0418
+Rotations + batch prior,𝛼=1.062.21 [61.77, 62.65] 63.70 70.69 44.42 0.0565
+Rotations + content-free,𝛼=0.564.45 [64.01, 64.88] 69.39 71.86 41.99 0.0839
+Rotations + content-free,𝛼=0.7562.10 [61.66, 62.54] 69.52 66.38 40.48 0.1122
+Rotations + content-free,𝛼=1.058.95 [58.50, 59.40] 68.55 60.68 37.75 0.1483
+L2-mono (affine map, block 29/32) 67.24 [66.81, 67.66] 66.80 81.31 43.20 0.0888
+AnyJev on Qwen3-32B
+Raw (one forward) 67.03 [66.60, 67.46] 69.49 75.4547.510.1982
+L0: rotations, prior off 67.59 [67.17, 68.02] 70.40 75.9647.510.1907
+L0: batch prior,𝛼=0.7565.55 [65.12, 65.99] 68.16 72.99 47.48 0.1899
+Rotations + batch prior,𝛼=1.062.80 [62.36, 63.24] 64.95 70.10 45.86 0.2063
+Rotations + content-free,𝛼=0.563.51 [63.07, 63.95] 70.39 66.56 45.10 0.2388
+Rotations + content-free,𝛼=0.7561.62 [61.18, 62.07] 70.06 62.39 44.31 0.2613
+Rotations + content-free,𝛼=1.059.24 [58.79, 59.68] 68.88 58.20 42.82 0.2854
+Notes.Every measured row contains 46320 decisions. Accuracy pools correct counts across shards. ECE uses 15 equal-mass bins
+within each shard; the reported value is their mean (four shards for AnyJev and Nimble, one for the other baselines). It is not pooled
+ECE. Wilson intervals treat decisions as independent and do not account for repeated states or questions; they are descriptive, not a
+test of between-system differences. The majority reference chooses its class from test labels within each question-ID/option-count
+group and is an oracle diagnostic, not a deployable baseline. Uniform random is its analytic expected accuracy. Neither reference has
+a reported confidence interval or ECE.
+Readout protocol.Raw reads the listed order once. L0 with the prior off averages every cyclic rotation in
+log space; ordered score levels retain their original order, so their raw and rotation results coincide. The batch
+prior subtracts the question-wise mean option log-score within each evaluation shard at the displayed strength,
+for groups of at least 20 items; it uses test inputs but no test labels. The content-free alternative subtracts
+scores from three neutral inputs (empty text,N/A, and[MASK]). Both are applied after rotation averaging. No
+temperature is fitted, and no row represents L1 or the supervised L2 head.
+AnyJev 21
+
+Systems and interpretation.AnyJev keeps the released base-model weights frozen. Nimble [6], Laya [27]
+and NanoJev [35] use their published prediction interfaces; Qwen3-Reranker-0.6B scores each option
+separately using its yes/no reranking template. Question labels are excluded from model inputs. The dataset
+stores each label inside the same object as its question text, so the one run made before that exclusion was in
+place, Laya, was repeated with it; the two runs agree on all 46 320 decisions. None of the four baselines was
+trained on this dataset: Nimble on its own synthetic set, Laya onLocalLLaMA/typed-decisions, NanoJev
+on recorded expert episodes from four game environments, and Qwen3-Reranker on retrieval data. Their
+results here measure transfer rather than performance on the workloads they were built for. Nimble uses a
+Qwen3.5-9B LoRA adapter, so it shares AnyJev’s base architecture but not its final weights or prompt. Its
+70.57% overall accuracy exceeds the best AnyJev result of 68.01%; the latter has lower ECE (0.0490 versus
+0.0889). The two systems are close on yes/no decisions (81.37% for AnyJev versus 81.06% for Nimble),
+while Nimble leads on choices (73.60% versus 67.69%). All measured systems have their lowest accuracy on
+ordinal scores. Every tested prior correction lowers overall accuracy relative to rotation averaging alone on its
+respective base model, even where ECE improves.
+The evaluated L2-mono variant.This run fits an affine map to the model’s own full-depth states on 1500
+training-split prompts, without gold labels. The first two thirds fit the map; the remaining third selects ridge
+strength and the earliest tested block reaching 95% agreement with the full-depth, single-forward decision. It
+selects block 29/32, with 95.6% calibration agreement. Its 67.24% test accuracy is 0.61 points below the
+raw single forward and 0.77 points below the rotation average. The 9.4% reduction in block count is not a
+measured latency improvement, and the calibration agreement is not a test-set guarantee.
+Scope.These measurements use two AnyJev bases on one dataset configuration. We use Transformers 4.55
+for Qwen3-32B and Qwen3-Reranker-0.6B, and 5.17 for Qwen3.5-9B, Nimble and NanoJev; Laya uses its
+own package. AnyJev prompts are capped at 2048 tokens, whereas the Nimble interface supports up to 8192,
+so this is a comparison of evaluated systems rather than an equal-context ablation. No cross-system latency or
+memory comparison was measured.
+AnyJev 22

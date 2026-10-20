@@ -1,0 +1,11 @@
+# Downstream-local annotations; never part of shared knowledge.
+PROJECT_SPECIFIC.md
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+Thumbs.db
+.DS_Store
+# Failed/interrupted atomic refresh scratch files.
+repositories/*.tmp
+# Files above 95 MB must be listed explicitly below and documented as regenerable.

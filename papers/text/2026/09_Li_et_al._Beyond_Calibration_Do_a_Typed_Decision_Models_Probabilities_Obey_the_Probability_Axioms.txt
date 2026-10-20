@@ -1,0 +1,945 @@
+BEYONDCALIBRATION: DO ATYPED-DECISIONMODEL’S
+PROBABILITIESOBEY THEPROBABILITYAXIOMS?
+A PREPRINT
+Keyi Li Yihao He Quanyi Li
+Software College, Northeastern University
+Shenyang, China
+September 29, 2026
+ABSTRACT
+Typed-decision models such as TypeSafe’s Jev answer a declared yes/no or multiple-choice question
+about a state with a probability instead of text, and their evaluations report accuracy and calibration.
+Neither requires that the probabilities a model gives to logically related questions fit together item by
+item, which is what a system that acts on those probabilities needs. We test this property, coherence,
+with a battery of logically linked questions that needs no labels. For 160 items from ChaosNLI and
+PubMedQA, each with three mutually exclusive labels, we ask whether the label is X, whether it
+is not X, whether it is one of the other two labels, and which label applies. On 480 negation pairs,
+Jev’s probabilities for “the label isX” and “the label is not X” miss summing to one by 0.064 on
+average (95% CI 0.055 to 0.072). Qwen3.8-27B, run from its official BF16 weights, misses by 0.293
+with first-token probabilities and by 0.122 with verbalized probabilities. The gap to the first-token
+readout persists on pairs where both systems give similar probabilities, without double-negation
+labels, and after averaging Jev’s repeated calls. Jev is not coherent either: its violations are about five
+times its repeat noise, and it over-endorses statements about single labels, so that its three single-label
+probabilities sum to 1.14 on average. The two systems also fail differently. Qwen3.8-27B’s first-token
+readout under-endorses the complement of a label whether or not the question contains “not”, rejecting
+both a statement and its negation in 196 of 480 pairs, and it does not become more coherent where it
+is more confident, whereas Jev’s violations concentrate where its answer is uncertain. Because the
+checks need no labels, they expose biases that appear only when question forms are compared, and
+inconsistencies within items.
+Keywordsprobabilistic coherence·calibration·negation·typed-decision models·probability elicitation
+1 Introduction
+Automated pipelines increasingly act on model probabilities. A threshold on P(yes) decides whether a claim is
+flagged, an expected-cost rule decides whether to escalate to a human, and several probabilities about the same case are
+combined into one decision. A recent class oftyped-decisionmodels is built for this use. TypeSafe’s Jev, described
+by its developer as a “System One” model trained for calibrated decisions, reads an unstructured state and answers
+declared questions: anoulquestion returns the probability of “yes”, and achoicequestion returns a distribution over the
+declared options [1, 2]. Because the probability is the product, evaluations of Jev and similar models measure accuracy,
+proper scores, and calibration [3–5].
+These measures leave a gap. Calibration compares stated probabilities with outcome frequencies, averaged over many
+cases [6], and proper scores reward it together with sharpness [7]. A system can still assign probability 0.7 to “the claim
+is supported” and 0.6 to “the claim is not supported” for the same case. Such an assignment violates the probability
+axioms [8], and a decision maker who acts on it can be led into a sure loss [9]. In a pipeline the failure is concrete: the
+action depends on whether the question was phrased positively or negatively, or on whether the options were asked
+about one at a time or together. Coherence, the agreement of probabilities across logically related questions, is therefore
+arXiv:2609.33209v1  [cs.CL]  27 Sep 2026
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+a property that users of native probabilities rely on. It is related to calibration, since a coherent forecaster expects to be
+calibrated [10] and incoherent forecasts are dominated under proper scoring rules [11], but calibration measured on one
+question form does not establish agreement across forms, a distinction recently drawn for the confidence estimates of
+LLMs [12].
+For large language models, incoherence is well documented. Their probability judgments violate identities that
+hold for any probability measure [13], their forecasts fail negation and monotonicity checks [14, 15], their answers
+change under negation and paraphrase [ 16–18], and different ways of eliciting a probability from the same model
+disagree [19, 20]. For typed-decision models the question is newer. Benchmark evaluations of Jev score each question
+in a single form [21], so an inconsistency between forms does not show up in them. The developer states that such
+invariants are not guaranteed [22]. Community audits released in the model’s first week measured violations of negation
+complementarity and of agreement between yes/no and choice questions [23–25], and one found Jev more coherent
+than untuned open-LLM readouts on an aggregate score [26] (Section 2). They leave open how large each violation is
+relative to repeat noise, whether further identities fail, and whether a comparison with an LLM survives differences in
+confidence, readout, and double negation.
+We test coherence directly. For each item we fix a state and an explicit partition into three mutually exclusive, exhaustive
+labels, and we ask ten questions: whether the label is Xk, whether it is not Xk, whether it is one of the other two labels,
+and which label applies. Probability theory fixes the relations among the ten answers, so every item provides several
+checks that need no gold label (Section 3). We compare Jev with the official release of Qwen3.8-27B, an open-weight
+LLM run in BF16, on identical questions under two probability readouts, the first-token probability of the answer and a
+probability stated in JSON (Section 4).
+The results support three claims.
+• Jev violates negation complementarity less than either LLM readout, and far less than the first-token
+readout.Its mean absolute violation of sk +n k = 1 is 0.064, against 0.293 for Qwen3.8-27B’s first-token
+readout, a 4.6-fold difference, and 0.122 for its verbalized readout. The difference holds on pairs where
+both systems give similar probabilities, without the two labels whose negation is a double negative, and after
+averaging Jev’s repeated calls (Sections 5.1 and 5.2). The verbalized readout deviates by more than 0.1 less
+often than Jev does, in 11.9% of pairs against 19.0%, but by much more when it does.
+• Jev is not coherent.Its violation is about five times its repeat-noise floor. A label-free decomposition locates
+the systematic part: Jev gives single-label statements an average probability of 0.380 where coherence requires
+1/3, which also makes its three single-label probabilities sum to 1.14. Its yes/no and choice probabilities for
+the same label differ by 0.09 (Sections 5.3 and 5.4).
+• The failure signatures differ.Qwen3.8-27B’s first-token readout under-endorses the complement of a label
+whether it is phrased with “not” or as a disjunction, answers “no” to both a statement and its negation in 196
+of 480 pairs, and violates the identity no less where it is confident than where it is not. Its verbalized readout
+errs in the opposite direction. Jev’s violations concentrate where its answer is uncertain (Section 5.5).
+We contribute an identity-by-identity coherence battery for typed decisions with a measured repeat-noise floor and
+controls for confidence, readout, and double negation, and we use it to compare a typed-decision model with two
+readouts of an LLM on identical questions. In an exploratory analysis we add a label-free decomposition that locates
+each system’s systematic deviations in specific question forms. The direction of our main result agrees with earlier
+community audits [26]. Of two patterns that support theory predicts for human judgment, subadditivity over a partition
+appears in Jev but not in Qwen3.8-27B, and neither system shows the unpacking effect.
+2 Background and related work
+Typed-decision models.Jev is a closed model, served through an API, that answers typed questions about a state in a
+single call [1]. Open imitations and related typed-decision models followed its release [ 5, 27, 28]. Evaluations and
+applications so far concern accuracy, calibration, and confidence-based escalation [3, 4, 25, 29, 30]. Sun et al. [31] show
+that a constrained decision head can follow the option name rather than the rubric attached to it, which also concerns
+how the question is worded. The independent Jevals benchmark scores native Jev probabilities against verbalized LLM
+probabilities, which it notes tend to cluster on round values [21]. Its measures are proper scores, calibration, and flip
+rates under repeats and option reordering, none of which asks logically related questions about the same state.
+Coherence of probability judgments.Coherence is the classical requirement for a set of probability assessments:
+violating the axioms exposes the assessor to a sure loss [ 8, 9]. Its relation to calibration has a long history in the
+forecasting literature [10, 11, 32]. Human judgments are incoherent in systematic ways. Support theory [33, 34] predicts
+2
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+that judgments of a hypothesis and its complement sum to about one, that judgments of three or more exhaustive
+hypotheses sum to more than one, and that describing a hypothesis as an explicit disjunction of its parts raises its judged
+probability. The conjunction fallacy is another classic violation [35]. Noise-based accounts explain why some identities
+hold on average while others fail [36, 37]. We borrow these identities and test two of the support-theory patterns on
+both systems.
+Consistency of language models.Consistency checks for language models cover paraphrase [ 17], negation, symmetry,
+and transitivity [18, 38], negated probes [16, 39–41], and systems of beliefs [42–44]. Negation consistency, p(x+)≈
+1−p(x −), also serves as an unsupervised objective for probes that recover latent knowledge from hidden states [45].
+For probabilities specifically, consistency checks detect errors of forecasters without ground truth [ 14, 15], LLM
+probability judgments are incoherent in ways reminiscent of human judgments [ 13], and fact-checking answers to
+queries with negation, conjunction, and disjunction are often logically inconsistent [46]. Direct tests of probabilistic
+coherence cover complementarity and monotonicity under prompted and logit readouts [47], logical constraints on token
+probabilities across model families [48], Dutch-book arbitrage over verbalized forecasts [49], and, earlier, the coherence
+of a non-chat model’s token probabilities [50]. Results depend on the model: GPT-5 satisfies binary complementarity
+almost perfectly in a comparison with human judges [ 51], and interventions that reduce calibration error can leave
+structural violations unchanged [12]. Training objectives that enforce logical constraints have been proposed [52], as
+have checks for self-contradiction and for agreement between generating and validating an answer [53, 54]. Behavioral
+test suites such as CheckList [55] use the same logic of invariance tests.
+Coherence audits of Jev.Several audits of Jev’s coherence appeared as code repositories within days of its release.
+The closest to our study, Jevify, builds 4,749 families of related questions, including negation pairs and yes/no versions
+of choice options, and reports a de Finetti sure loss of 0.081 for Jev against 0.141 to 0.205 for untuned open-LLM
+readouts [26]. Other audits report complements that sum to between 0.71 and 1.42 and yes/no and two-option choice
+answers that differ by 0.125 on average [ 23], negation violations of 0.016 on topic classification that are no larger
+than those produced by a paraphrase [24], and, on 48 judging examples, a complement residual of 0.045 and a choice-
+versus-yes/no gap of 0.055 [25]. Rafe and Das [4] show that Jev’s probabilities lie on a 0.01 grid and never reached 0 in
+2.4 million answers. Negation complementarity and cross-format agreement have therefore been measured before, in
+aggregate or separately. Our study adds a battery that reports each identity against a measured noise floor, repeats the
+comparison with an LLM under controls for confidence, readout, and double negation, and adds checks of additivity,
+description invariance, and monotonicity.
+Eliciting probabilities from LLMs.An LLM has no single probability for an answer. Token probabilities of an
+answer can be informative about correctness [56–58], verbalized probabilities are an alternative for instruction-tuned
+models [19, 59], and the two can disagree. The first-token probability of an answer option need not match the answer the
+model would write [20, 60], probability mass is split across surface forms [61], and label tokens carry prior biases [62].
+These effects are why we report two readouts of Qwen3.8-27B and check whether the comparison with Jev points in the
+same direction under both.
+3 A coherence battery for typed decisions
+Questions.Each item consists of a state x and three labels X0, X1, X2 that are mutually exclusive and exhaustive.
+Every question repeats the same definition paragraph, which defines the three labels and states that exactly one applies.
+For each labelkwe ask three yes/no questions and, once per item, one choice question:
+Sk :“Is it true that the label isX k?”N k :“Is it true that the label is notX k?”
+Dk :“Is it true that the label is eitherX i orX j?”CH:“Which label applies?”
+where {i, j}={0,1,2} \ {k} . Sk and Nk differ only by the word “not”. We use “Is it true that the label is notXk?”
+rather than “Is the label not Xk?” because English negative questions can be read as leading questions. Nk and Dk
+describe the same event, the complement of Xk, once through negation and once as an explicit disjunction. Appendix A
+gives the full text.
+Identities.Write sk, nk, dk for the probabilities of “yes” to Sk, Nk, Dk, and ck for the probability of Xk in the
+choice question. If all ten answers come from one probability measure P over the labels, then sk =c k =P(X k) and
+3
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+nk =d k = 1−P(X k). The battery checks the consequences:
+negation complement:s k +n k = 1,partition additivity: P
+k sk = 1,
+disjunctive complement:s k +d k = 1,disjunction additivity:d k =s i +s j,
+description invariance:d k =n k,monotonicity:s m ≤d k, s m ≤n k (m̸=k),
+cross-format consistency:s k =c k.
+(1)
+A further invariance concerns the request rather than the question. Jev accepts several questions in one request, so we
+also ask all ten questions of an item together and compare the answers with those of separate requests. None of these
+checks uses the gold label. Jev’s developer notes that separately asked questions need not satisfy such identities, and
+that a choice question is relative to its options while a yes/no question is absolute [22]. Our questions state the partition
+explicitly, so each identity follows from the question text alone, and the battery measures how far the answers depart
+from it.
+Measures.The primary measure is the mean absolute violation of negation complementarity,
+MADneg = 1
+|I|
+X
+i∈I
+1
+|Ki|
+X
+k∈Ki
+sik +n ik −1
+,(2)
+where Ki holds the labels of item i whose pair (Sk, Nk) was answered by both systems, so every item has equal weight
+and both systems are compared on the same pairs. The signed mean of sk +n k −1 gives the direction: positive values
+mean that the two answers of a pair together give too much probability to “yes”. The same-side rate is the share of
+pairs answered on the same side of 0.5, (sk −0.5)(n k −0.5)>0 , which a threshold decision turns into accepting or
+rejecting both a statement and its negation. The other identities in Eq. (1) are measured by item means of the absolute
+and signed deviations, and monotonicity by the mean of max(0, sm −q) with q∈ {d k, nk} the consequent, together
+with the share of checks violated by more than 0.05.
+Confounds.Four confounds could make one system look more coherent than another without being so. We address
+each with a dedicated check.Confidence.On the probability scale, a system that answers near 0 or 1 has little room
+for |sk +n k −1| , so a more confident or better-memorizing system looks more coherent. We therefore compare the
+systems on pairs where they give similar probabilities to Sk, |sJ
+k −s Q
+k | ≤0.10 . We also report the logit-scale violation
+|logits k + logitn k| with probabilities clipped to [0.01,0.99] . It weights deviations near 0 and 1 more heavily and
+depends on the clipping bound, so it serves as a secondary check.Readout.A difference could reflect how probabilities
+are extracted from the LLM rather than the LLM itself, so we compare Jev with both readouts.Polarity.Two of our
+labels,contradictionin NLI andnegativein PubMedQA, denote falsity, so “not contradiction” is semantically a double
+negative that a model may read as the opposite label. We repeat the comparison without these labels.Repeat noise.
+Identical requests to Jev return slightly different answers, and noise alone inflates |sk +n k −1| . We ask every Jev
+question twice and estimate a noise floor
+NF = 1
+|I|
+X
+i
+1
+|Ki|
+X
+k
+(s(0)
+ik −s (1)
+ik ) + (n(0)
+ik −n (1)
+ik )
+
+√
+2 ,(3)
+the violation that a coherent system with the same repeat noise would show. For independent Gaussian noise the
+numerator has
+√
+2times the standard deviation of the noise part ofs k +n k −1, so the correction is exact in that case
+and approximate for the discrete noise we observe. We also compare after averaging the two repeats, and we measure
+the noise floor of the LLM readout in the same way on repeats of 20 items (Section 5.1).
+4 Experimental setup
+Materials.The NLI domain uses 100 items drawn at random from the 1,599 ChaosNLI items built on MNLI [ 63, 64].
+Each ChaosNLI item carries 100 human labels, and we use their entropy to measure human disagreement. The median
+entropy of the sampled items is 1.11 bits. The state is the premise and hypothesis, and the labels are entailment, neutral,
+and contradiction. The PubMedQA domain uses 60 expert-labelled items [65], 20 per final decision, with the research
+question and context passages as the state and the conclusion paragraph withheld. We rename the answers yes, no, and
+maybe toaffirmative,negative, andinconclusiveto avoid questions such as “is the label not no?”. Nineteen of the 60
+PubMedQA items belong to the public Jevals suite [3], on which Jev may have been evaluated or tuned, and we report
+them separately. Items were sampled with fixed seeds, and the option order of the choice question cycles through the
+six permutations within each domain.
+4
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+Table 1:Negation complementarity. Item means with 95% bootstrap CIs (160 items, 480 pairs). The same-side rate is the share of
+pairs answered on the same side of 0.5.
+MAD, mean|s k +n k −1|Signed deviation Same-side
+System All (160 items) NLI (100) PubMedQA (60) mean(s k +n k −1)rate
+Jev (native)0.064
+[0.055,0.072]
+0.080
+[0.068,0.092]
+0.036
+[0.026,0.047]
++0.054
+[0.045,0.063]
+0.067
+[0.046,0.090]
+Qwen3.8-27B (first-token)0.293
+[0.270,0.316]
+0.306
+[0.279,0.334]
+0.270
+[0.230,0.310]
+−0.264
+[−0.291,−0.238]
+0.417
+[0.367,0.465]
+Difference (Jev−Qwen)−0.229
+[−0.253,−0.206]
+−0.226
+[−0.257,−0.195]
+−0.234
+[−0.272,−0.196]
++0.318
+[0.290,0.346]
+−0.350
+[−0.402,−0.298]
+Qwen3.8-27B (verbalized)0.122
+[0.098,0.148]
+– –+0.054
+[0.029,0.081]
+0.119
+[0.092,0.148]
+Systems.We query Jev ( typesafe/jev-1.13) through OpenRouter’s decisions endpoint. All 3,360 responses report
+the same version, jev-1.13-20260917. Jev returns probabilities with two decimals. Each question is sent in its own
+request, and all requests are repeated once after the first pass is complete, a few minutes later. For the bundling check,
+each item is also sent once as a single request containing its ten questions under opaque identifiers in shuffled order, so
+the identifiers do not reveal the logical structure. The comparison LLM is Qwen3.8-27B [66, 67], run from the official
+weights in BF16 without quantization or fine-tuning. The weights come from a mirror of the official repository, and
+every file the model loads is identical to the Hugging Face release. We serve the model with vLLM 0.19.1 [ 68] on
+two RTX A6000 GPUs and disable thinking. Both readouts use the same state, definitions, and question text as Jev,
+preceded by a short system prompt (Appendix A). Thefirst-tokenreadout applies the model’s chat template, scores the
+next token, and sums the probability of the tokens among the 100 most likely that equal “yes” or “no” after whitespace
+stripping and lowercasing, or the option letters for the choice question, then renormalizes over the answer labels. The
+unnormalized total is logged as themassof the readout. Theverbalizedreadout asks the model to reply with JSON
+probabilities for “yes” and “no” and normalizes them. Both readouts are rounded to two decimals to match Jev’s
+resolution. The verbalized readout was collected for the 960S k andN k questions only.
+Protocol and statistics.We collected 3,360 Jev calls, 1,720 first-token calls (including a repeat of the Sk and Nk
+questions for 20 items), and 960 verbalized calls. Every call returned a parseable answer. The Jev calls cost US$0.076
+in total. Confidence intervals for means are percentile intervals from a paired item bootstrap [69] stratified by domain,
+with 5,000 resamples and seed 0, and the two systems share the resampled items. Intervals for correlations resample
+pairs or items, as stated where they appear, and whenever items are resampled the pairs of an item stay together. A pair
+enters a comparison only if both systems answered both of its questions, and for the primary difference we also run a
+sign-flip permutation test with 10,000 permutations. Re-running the analysis from the raw logs reproduces its output
+exactly. Analyses marked as exploratory were added after the main analysis and are listed in Appendix D.
+5 Results
+5.1 Negation complementarity
+Figure 1 plots every negation pair, and Table 1 summarizes them. Jev’s pairs lie close to the line sk +n k = 1 : the
+mean violation is 0.064 (95% CI 0.055 to 0.072), and 19.0% of its pairs deviate by more than 0.1. Qwen3.8-27B’s
+first-token pairs scatter widely, with a mean violation of 0.293 (0.270 to 0.316) and 66.5% of pairs beyond 0.1. The
+difference, −0.229 (−0.253 to −0.206), holds in both domains, and none of 10,000 sign-flip permutations reached it
+(p≈10 −4, the smallest value the test can return). Qwen3.8-27B’s verbalized readout violates the identity by 0.122
+(0.098 to 0.148), less than half as much as its first-token readout but about twice as much as Jev, a difference of −0.058
+(−0.083 to −0.035). It deviates by more than 0.1 less often than Jev (11.9% against 19.0% of pairs), yet it answers a
+statement and its negation on the same side of 0.5 in 57 pairs, against 32 for Jev. Its violations are rarer than Jev’s but
+large when they occur.
+The signed deviations point in different directions. Jev’s mean sk +n k −1 is +0.054, and most of its violation is
+systematic, since its mean absolute violation is only slightly larger. Qwen3.8-27B’s first-token deviation is−0.264,
+and its verbalized deviation is +0.054, the same as Jev’s, so the two readouts of the same model violate the identity
+in opposite directions. Section 5.4 traces these shifts to specific question forms. In pair counts, Jev answers “yes” to
+both questions of a pair in 31 of 480 pairs and “no” to both in one. The first-token readout answers “no” to both in 196
+pairs and “yes” to both in 4, and the verbalized readout answers “yes” to both in 47 pairs and “no” to both in 10. The
+5
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+0 .25 .5 .75 1
+P(yes) for “label is Xk”
+0
+.25
+.5
+.75
+1
+P(yes) for “label is not Xk”
+(a) Jev, native
+MAD 0.064 [0.055, 0.072], 480 pairs
+reject both: 1; accept both: 31
+0 .25 .5 .75 1
+P(yes) for “label is Xk”
+(b) Qwen3.8-27B, first-token
+MAD 0.293 [0.270, 0.316], 480 pairs
+reject both: 196; accept both: 4
+0 .25 .5 .75 1
+P(yes) for “label is Xk”
+(c) Qwen3.8-27B, verbalized
+MAD 0.122 [0.098, 0.148], 480 pairs
+reject both: 10; accept both: 47
+pairs per point: 1 10 100 coherent, sk + nk = 1 |sk + nk − 1| ≤ 0.1
+Figure 1:Negation pairs. Each point is one pair (sk, nk) for an item and label, and point area is proportional to the number of pairs
+at that grid value. Coherent answers lie on the line sk +n k = 1, and the band marks deviations of at most 0.1. Pairs in the shaded
+lower-left quadrant answer “no” to both “the label isXk” and “the label is not Xk”, and pairs in the upper-right quadrant answer
+“yes” to both. MAD is the item-averaged|s k +n k −1|with its 95% bootstrap CI. All three panels show the same 480 pairs.
+verbalized readout is also coarse: its 960 answers take eight distinct values, 96.5% of them take one of five, and 0.95
+and 0.05 account for 70.1%.
+Jev is not coherent. Its two repeats of identical requests differ by 0.012 per answer on average and are identical in
+39.1% of cases, which gives a noise floor of NF = 0.013 (Eq. 3). The lower confidence bound of its violation, 0.055,
+is more than three times this floor, so the violation is not an artifact of repeat noise. Both systems violate negation
+complementarity, Jev the least. Qwen3.8-27B’s first-token readout was not fully deterministic either: on the 20 repeated
+items its answers differ by 0.005 on average and are identical in 75.8% of cases, a noise floor of 0.006, far below its
+violation of 0.293.
+5.2 Robustness of the difference
+Table 2 repeats the comparison under each check. On the 253 pairs from 140 items where both systems give similar
+probabilities to Sk, Jev’s violation falls to 0.028 while Qwen3.8-27B’s stays at 0.257, so the gap,−0.229 (−0.264 to
+−0.195), is as large as in the full sample. The more confident system is not simply the more coherent one. Without the
+two double-negation labels, Jev’s violation is 0.057 and Qwen3.8-27B’s rises to 0.385: the pairs that remain are the ones
+on which Qwen3.8-27B is least coherent (Section 5.5), so a misreading of double negatives does not explain the gap.
+Averaging Jev’s two repeats leaves its violation at 0.063, and replacing the first repeat by the second gives 0.065. The
+remaining checks change the difference by at most 0.016: restricting both systems to mid-range probabilities, dropping
+low-mass first-token readouts, using unrounded probabilities, and splitting PubMedQA by membership in the Jevals
+suite. The in-suite items give about the same difference as the others (−0.218 and −0.241), so the items Jev may have
+seen during evaluation do not drive it, although this subset has only 19 items.
+On logit scale the violations are 0.41 and 2.15. This check depends on the clipping bound and here works against
+Qwen3.8-27B rather than against the more confident system: after rounding, 18.1% of Qwen3.8-27B’s answers toSk
+and Nk sit at the bound of 0.01 or 0.99, against 0.5% of Jev’s, although Jev’s answers are on average further from 0.5
+(0.337 against 0.317). With a bound of 0.05 the difference shrinks from −1.74 to −1.24 (−1.37 to −1.12) and stays
+far from zero (exploratory). The confidence-matched comparison is therefore the stronger guard against a confidence
+confound.
+Qwen3.8-27B’s readout quality does not explain the gap either. The median mass of its first-token readout is 0.968
+(0.979 for Sk questions, 0.974 for Nk), and keeping only readouts with mass at least 0.8 changes the difference from
+−0.229 to −0.228. As a check that coherence did not come at the cost of informativeness, the label with the highest sk
+matches the reference label in 63.8% of items for Jev and 56.3% for Qwen3.8-27B.
+6
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+Table 2:Robustness of the difference in negation violation, MADneg(Jev) −MAD neg(Qwen3.8-27B), for Qwen3.8-27B’s first-token
+readout unless stated. Confidence-matched pairs satisfy |sJ
+k −s Q
+k | ≤0.10 ; choice-matched pairs |cJ
+k −c Q
+k | ≤0.10 . Matched subsets
+are averaged within items first. The double-negation labels arecontradictionandnegative. “Mass” is the probability the first-token
+readout assigns to the answer labels before renormalization, and a pair is dropped when either of its readouts falls below the bound.
+The logit row reports |logits k + logitn k|. The first block gives the main comparison and the checks for the four confounds of
+Section 3.
+Comparison Items (pairs) Jev Qwen Difference [95% CI]
+Main comparison and confound checks
+Main comparison 160 (480)0.064 0.293−0.229[−0.253,−0.206]
+Jev repeats averaged 160 (480)0.063 0.293−0.229[−0.253,−0.206]
+Confidence-matched pairs 140 (253)0.028 0.257−0.229[−0.264,−0.195]
+Qwen verbalized readout 160 (480)0.064 0.122−0.058[−0.083,−0.035]
+Double-negation labels removed 160 (320)0.057 0.385−0.328[−0.360,−0.297]
+Further checks
+Choice-matched pairs 148 (316)0.033 0.254−0.220[−0.251,−0.188]
+Boths k ∈[0.1,0.9]114 (191)0.099 0.332−0.232[−0.272,−0.194]
+Boths k ∈[0.05,0.95]144 (259)0.087 0.300−0.213[−0.246,−0.180]
+Qwen probabilities not rounded 160 (480)0.064 0.292−0.229[−0.253,−0.206]
+Qwen readouts with mass≥0.5160 (480)0.064 0.293−0.229[−0.253,−0.206]
+Qwen readouts with mass≥0.8160 (465)0.064 0.292−0.228[−0.252,−0.205]
+Jev second repeat instead of first 160 (480)0.065 0.293−0.228[−0.252,−0.205]
+Logit scale 160 (480)0.41 2.15−1.74[−1.90,−1.59]
+PubMedQA items in the Jevals suite 19 (57)0.027 0.245−0.218[−0.272,−0.161]
+PubMedQA items outside the suite 41 (123)0.040 0.281−0.241[−0.292,−0.190]
+Table 3:Other coherence identities (160 items). Item means with 95% bootstrap CIs. The difference is Jev minus Qwen3.8-27B. For
+monotonicity,qis the consequent probability (d k orn k,m̸=k), and the share counts checks violated by more than 0.05.
+Identity Statistic Jev Qwen (first-token) Difference
+Negation|s k +n k −1|0.064[0.055,0.072]0.293[0.270,0.316]−0.229[−0.253,−0.206]
+sk +n k −1 +0.054[0.045,0.063]−0.264[−0.291,−0.238]+0.318[0.290,0.346]
+Disjunctive complement|s k +d k −1|0.054[0.048,0.061]0.343[0.319,0.369]−0.289[−0.315,−0.264]
+sk +d k −1 +0.004[−0.004,0.012]−0.327[−0.356,−0.299]+0.331[0.302,0.360]
+Partition additivity| P
+k sk −1|0.141[0.123,0.159]0.319[0.288,0.352]−0.178[−0.214,−0.144]P
+k sk −1 +0.141[0.123,0.159]−0.286[−0.324,−0.250]+0.427[0.384,0.470]
+Disjunction additivity|d k −s i −s j|0.138[0.126,0.150]0.158[0.146,0.170]−0.019[−0.037,−0.002]
+dk −s i −s j −0.137[−0.150,−0.125]−0.041[−0.061,−0.021]−0.096[−0.121,−0.071]
+Unpacking|d k −n k|0.060[0.053,0.067]0.106[0.098,0.115]−0.046[−0.055,−0.038]
+dk −n k −0.050[−0.057,−0.044]−0.063[−0.073,−0.053]+0.013[0.003,0.022]
+Monotonicitymax(0, s m −q) 0.013[0.011,0.016]0.033[0.028,0.039]−0.020[−0.026,−0.014]
+share>0.05 8.4%[6.8,10.0]14.5%[12.9,16.1]−6.1%[−8.4,−3.9]
+Cross-format|s k −c k|0.091[0.085,0.098]0.131[0.120,0.142]−0.040[−0.050,−0.030]
+|sk/ P
+j sj −c k|0.096[0.089,0.102]0.085[0.074,0.097]+0.010[−0.003,0.023]
+5.3 Other identities
+Table 3 reports the other identities of Eq. (1). Jev violates most of them less than Qwen3.8-27B’s first-token readout.
+The exceptions are disjunction additivity, where the two are close (0.138 against 0.158), and agreement between yes/no
+and choice probabilities after normalization, where Qwen3.8-27B is no worse (0.085 against 0.096). Several of Jev’s
+violations are larger than its negation violation, so good negation complementarity does not imply coherence in general.
+Additivity over the partition.Asked separately whether each of the three labels applies, Jev gives probabilities
+that sum to 1.14 on average and to more than one on 159 of 160 items. Complementarity for two hypotheses holds
+much better (0.064) than additivity over three (0.141), the pattern support theory describes for human judgment [33].
+Section 5.4 shows that both numbers reflect the same over-endorsement of single-label statements, counted once in
+a negation pair and three times in a partition. Qwen3.8-27B’s first-token probabilities sum to 0.71 on average and
+to less than one on 132 items, the opposite of the human pattern, although its partition error (0.319) is still slightly
+7
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+Table 4:Decomposition by question form (exploratory). Mean probability of “yes” per question form minus the value that any
+coherent assignment implies when exactly one of three labels applies (Target), with 95% bootstrap CIs. The verbalized readout was
+asked only theS k andN k questions.
+System Question form Target All NLI PubMedQA
+Jev (native)S k (isX k)1/3 +0.047[0.041,0.053]+0.045[0.038,0.052]+0.050[0.040,0.062]
+Nk (is notX k)2/3 +0.007[0.002,0.013]+0.029[0.021,0.037]−0.029[−0.036,−0.023]
+Dk (isX i orX j)2/3−0.043[−0.048,−0.039]−0.043[−0.049,−0.038]−0.043[−0.050,−0.037]
+Qwen (first-token)S k (isX k)1/3−0.095[−0.108,−0.083]−0.117[−0.132,−0.102]−0.059[−0.081,−0.037]
+Nk (is notX k)2/3−0.169[−0.185,−0.153]−0.173[−0.190,−0.156]−0.162[−0.194,−0.130]
+Dk (isX i orX j)2/3−0.232[−0.251,−0.213]−0.271[−0.294,−0.249]−0.165[−0.200,−0.131]
+Qwen (verbalized)S k (isX k)1/3 +0.009[−0.009,0.026]−0.030[−0.050,−0.010]+0.072[0.042,0.103]
+Nk (is notX k)2/3 +0.046[0.024,0.069]+0.056[0.032,0.083]+0.029[−0.012,0.074]
+larger than its negation error (0.293). Both systems give an explicit disjunction less probability than the sum of its parts,
+dk < s i +s j, Jev by 0.137 and Qwen3.8-27B by 0.041.
+Negation versus explicit disjunction.Support theory also predicts that describing the complement of Xk as an
+explicit disjunction, “Xi or Xj”, raises its judged probability relative to the implicit description “not Xk” [33, 34],
+that is, dk > n k. Both systems show the reverse: dk −n k is −0.050 for Jev and −0.063 for Qwen3.8-27B. The two
+wordings of the complement differ by 0.060 on average for Jev and 0.106 for Qwen3.8-27B, and for Jev the complement
+phrased as a disjunction violates complementarity about as much as the negated one (0.054 against 0.064) but with a
+signed deviation near zero (+0.004, CI−0.004to 0.012).
+Monotonicity, formats, and bundling.Monotonicity violations are small for both systems. Label Xm implies the
+complement of Xk for m̸=k , so its probability should not exceed that ofDk or Nk. The mean shortfall max(0, sm −q)
+is 0.013 for Jev and exceeds 0.05 in 8.4% of checks, against 0.033 and 14.5% for Qwen3.8-27B. The yes/no and choice
+formats disagree for the same label by 0.091 for Jev and 0.131 for Qwen3.8-27B. Rescaling the yes/no probabilities to
+sum to one leaves a disagreement of 0.096 for Jev and 0.085 for Qwen3.8-27B, so for both systems the two formats
+carry different information rather than differing by a normalization. Jev’s choice probabilities always sum to one.
+Asking all ten questions in one request changes Jev’s answers no more than repeating a request does: its negation
+violation is 0.064 in bundled and single requests (difference +0.0004, CI −0.0021 to 0.0029), and bundling shifts its
+answers by 0.0116 on average, against 0.0118 between repeats. Many of Qwen3.8-27B’s disjunction readouts put little
+mass on the answer tokens (29.8% below 0.8). Keeping only readouts with mass at least 0.8, its disjunctive-complement
+violation is 0.278 on 335 pairs instead of 0.343 (exploratory), still far above Jev’s.
+5.4 Where the systematic deviations come from
+Because exactly one of the three labels applies, any coherent assignment gives the three single-label questions of an
+item an average probability of 1/3 and the complement questions, negated or disjunctive, an average of 2/3, whatever
+the gold label is. These values are also the base rates of the events over our items, so a departure from them is at once
+an incoherence and a calibration-in-the-large error [ 10], and it can be measured without labels. Table 4 reports the
+departures by question form. This decomposition is exploratory.
+For Jev, single-label statements are over-endorsed by 0.047, an average probability of 0.380 for a statement that is
+true one time in three. Disjunctions are under-endorsed by 0.043, and negated statements are close to their target
+(+0.007). The signed negation deviation of +0.054 is the sum of the Sk and Nk departures, so most of it comes from the
+single-label questions rather than from the negated wording, and the partition excess of 0.141 is the same single-label
+departure summed over three labels. The disjunctive complement shows almost no signed deviation because the Sk and
+Dk departures cancel. A small yes-lean of the negated questions themselves appears only in NLI (+0.029) and reverses
+in PubMedQA (−0.029). Qwen3.8-27B’s first-token readout under-endorses all three forms, and the complements
+most: −0.169 with “not” and −0.232 as a disjunction, against −0.095 for single labels. Its deficit therefore concerns
+mainly complement statements rather than the word “not”, although foraffirmativethe negated form is under-endorsed
+more than the disjunctive one (Appendix Table 5). The verbalized readout gives single-label statements about their
+coherent probability (+0.009) and over-endorses negated statements (+0.046). Its pairs therefore lean toward “yes” by
+about as much as Jev’s, but through the negated wording, whereas Jev’s lean comes from the single-label statements.
+These departures show what single-form evaluations can and cannot see. A calibration report on Jev’s yes/no answers
+to single-label questions would find the excess, because it is a calibration-in-the-large error, but a report on choice
+8
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+entailment neutral
+contradiction†
+affirmativenegative†
+inconclusive
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+mean |sk + nk − 1|
+NLI PubMedQA
+(a) Violation magnitude
+entailment neutral
+contradiction†
+affirmativenegative†
+inconclusive
+−0.6
+−0.4
+−0.2
+0.0
+0.2
+mean (sk + nk − 1)
+NLI PubMedQA
+(b) Signed deviation
+Jev (native) Qwen3.8-27B (first-token)
+Figure 2:Negation violations by label, with 95% bootstrap CIs (100 NLI and 60 PubMedQA items). †Labels that denote falsity,
+whose negation is a double negative. (a) Mean |sk +n k −1| . (b) Mean sk +n k −1 , where negative values mean that the two
+answers of a pair together give too little probability to “yes”.
+questions would not, because Jev’s choice probabilities are normalized. The coherence checks find it without labels,
+and they also expose item-level scatter, which averages out in calibration: Qwen3.8-27B’s mean absolute negation
+violation exceeds the magnitude of its mean signed deviation, 0.293 against 0.264 for the first-token readout and 0.122
+against 0.054 for the verbalized one, so its violations are not a constant shift, least of all in the verbalized readout.
+5.5 Where the violations occur
+The two systems agree on which labels are likely: the Spearman correlation of their sk is 0.87 (0.84 to 0.89; bootstrap
+over pairs). They overlap little on where coherence fails: the correlation of their violation magnitudes |sk +n k −1| is
+0.18 (0.07 to 0.27; exploratory, bootstrap over items).
+Figure 2 breaks the violations down by label. Qwen3.8-27B’s first-token violations are largest forentailment(0.477)
+andaffirmative(0.372), with signed deviations of −0.472 and −0.305. Forentailment, Qwen3.8-27B gives on average
+0.11 to “the label is entailment” and only 0.42 to “the label is not entailment”. Its violations are smallest for the two
+double-negation labels (0.105 and 0.114). Jev’s largest violation is oncontradiction(0.100), and its signed deviations
+are positive for all six labels. Appendix Table 5 gives the numbers.
+Figure 3 relates the violations to confidence. Jev’s violations shrink as its answer toSk becomes more confident, from
+0.142 (0.124 to 0.162) for pairs with |sk −0.5|<0.2 to 0.018 (0.010 to 0.029) for pairs with |sk −0.5| ≥0.4 . The
+probability scale leaves little room for deviation in the most confident group, but the drop remains on logit scale, from
+0.64 to 0.24. Jev’s yes-lean is concentrated in the same place: its signed deviation falls from +0.13 (0.11 to 0.15) in the
+least confident group to +0.01 (0.00 to 0.02) in the most confident, and 22 of its 31 “yes to both” pairs fall in the least
+confident group. Qwen3.8-27B’s violations do not shrink with confidence. On probability scale they are 0.296, 0.333,
+and 0.272 across the three groups, and on logit scale they are largest on the 264 pairs where it is most confident (2.64).
+Many of these pairs have sk near 0 and nk well below 1 (Figure 1b): the readout is confident that the label is not Xk
+and still does not endorse the statement that the label is not Xk. Its rate of answering “no” to both is highest where it is
+least confident, 60%, 58%, and 26% of pairs across the three groups.
+On the NLI items, Qwen3.8-27B’s item-level violation increases with the entropy of the human labels (ρ= 0.45 , 0.28
+to 0.60). For Jev the correlation is 0.08 (−0.13 to 0.29), and we detect no association. The two correlations differ by
+0.37 (0.10 to 0.63; exploratory, bootstrap over items).
+9
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+[0, . 2) [. 2, . 4) [. 4, . 5]
+confidence |sk − 0.5|
+0.0
+0.1
+0.2
+0.3
+0.4
+mean |sk + nk − 1|
+85
+185
+210
+91
+125
+264
+(a) Probability scale
+[0, . 2) [. 2, . 4) [. 4, . 5]
+confidence |sk − 0.5|
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+3.5
+mean |logit sk + logit nk|
+(b) Logit scale
+0.5 1.0 1.5
+human label entropy (bits)
+0.0
+0.2
+0.4
+0.6
+0.8
+item mean |sk + nk − 1|
+Jev: ρ = 0.08 [-0.13, 0.29]
+Qwen3.8-27B: ρ = 0.45 [0.28, 0.60]
+(c) Human disagreement (NLI)
+Jev (native) Qwen3.8-27B (first-token)
+Figure 3:(a, b) Mean negation violation by the confidence of the answer to Sk, |sk −0.5| , on the probability and logit scales, with
+the number of pairs above the bars in (a) and 95% intervals from a bootstrap over items. (c) Item-level violation against the entropy
+of 100 human labels on ChaosNLI. Lines are running means over 25 items, and ρ is the Spearman correlation with its 95% bootstrap
+CI.
+6 Discussion
+Coherence and calibration.Coherence and calibration overlap but do not coincide. When a partition is known,
+the systematic part of an incoherence is also a calibration-in-the-large error, as Jev’s over-endorsement of single-label
+statements shows. Coherence checks find such biases without labels, attribute them to question forms, and add the
+item-level inconsistencies that calibration averages away. Jev gives a statement and its negation nearly complementary
+probabilities, with residual violations that are small and concentrated on uncertain cases. Its larger violations appear
+when more than two outcomes are involved, because the single-label excess accumulates over a partition: three separate
+yes/no questions overcount it by 0.14 on average, and yes/no and choice probabilities for the same label differ by 0.09.
+In practice, probabilities from different question forms should not be mixed in one decision rule, a set of per-option
+yes/no probabilities should not be treated as a distribution, and the choice question is coherent by construction for a
+partition. The developer’s own guidance, not to carry a threshold tuned on one format over to another [22], is consistent
+with these measurements.
+What LLM baselines measure.The two readouts of Qwen3.8-27B differ in size and direction. The first-token readout
+under-endorses complements and rejects both a statement and its negation in 196 of 480 pairs. The verbalized readout
+leans toward accepting both and violates the identity less than half as much (0.122 against 0.293). The incoherence
+we observe is therefore partly a property of the readout rather than of the model’s underlying judgment, in line with
+evidence that first-token probabilities and written answers diverge [ 20]. Benchmarks that compare typed-decision
+models with LLM baselines through a single readout, as current evaluations do [21], measure a combination of model
+and elicitation method. A coherence battery makes this visible because it asks the same system logically equivalent
+questions.
+Relation to earlier audits.Our results agree in direction with the community audits of Jev: Jevify’s aggregate
+sure loss is lower for Jev than for untuned open-LLM readouts [ 26], and we find the same ordering for negation
+complementarity once confidence, readout, and double negation are controlled. The disagreement between yes/no
+and choice probabilities, 0.09 in our data, lies between the 0.055 and 0.125 reported for judging tasks and two-option
+choices [23, 25]. Our study has no paraphrase control, and one audit found negation violations no larger than those
+produced by rewording a question [24]. Within our battery, the two wordings of the complement differ by 0.060 on
+average, about as much as the negation violation itself, so part of what we measure may be sensitivity to wording rather
+than to the logical relation.
+10
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+Mechanism.Jev’s architecture is not public, and its developer describes the training only as reinforcement learning for
+calibrated decisions [1], so we cannot attribute its coherence to a mechanism. The observations constrain explanations.
+Jev’s systematic departures are tied to question forms, over-endorsing single labels and under-endorsing explicit
+disjunctions, and its residual violations shrink with confidence on both scales and do not track human disagreement.
+Qwen3.8-27B’s first-token readout under-endorses complement statements in either wording, and its violations do not
+shrink where it is confident about the label, which points to how the readout handles complement questions rather than
+to uncertainty about the label. Jev’s yes/no probabilities also never reached 0 or 1: all 4,320 of its yes/no answers,
+across both repeats and the bundled requests, lie in [0.01,0.99] , in line with the two-decimal output grid documented at
+larger scale [4].
+7 Limitations
+The study is small by design: 160 items, 480 negation pairs, two English domains with three-label partitions, and one
+wording each for negation and disjunction, without a paraphrase control (Section 6). The confidence intervals are narrow
+for the main comparison, but per-label and subset estimates rest on 19 to 100 items. The comparison LLM is a single
+model, run with thinking disabled. Larger models, other model families, or reasoning modes may be more coherent, as
+GPT-5’s near-perfect binary complementarity suggests [51], so our comparison speaks to this model and these readouts
+rather than to LLMs in general. We tested one Jev version through one gateway, and a closed, versioned service can
+change. Both datasets are public, so memorization cannot be excluded, although the Jevals-suite items behaved like the
+others. Finally, coherence is necessary for useful probabilities but not sufficient: a system that answers 1/3 to every
+single-label question and 2/3 to every complement question satisfies every identity in our battery and conveys nothing
+about the item. The accuracy check in Section 5.2 shows that Jev’s answers were informative in this sample.
+8 Conclusion
+A battery of logically linked questions shows that Jev’s native probabilities come closer to the probability axioms
+than two readouts of an open-weight LLM on the same questions: its violation of negation complementarity is 0.064,
+against 0.293 and 0.122 for the first-token and verbalized readouts of the official Qwen3.8-27B weights. The difference
+survives controls for confidence, readout, double negation, and repeat noise. Jev’s probabilities are still not coherent.
+It over-endorses single-label statements, which overcounts a three-way partition by 0.14 and accounts for most of its
+residual negation deviation, and its yes/no and choice probabilities differ. Coherence checks need no labels and cost
+little. Applied alongside calibration, they tell users of native probabilities which question forms they can combine.
+Data and code availability
+The stimuli, raw request and response logs, analysis code, and the scripts that produce every table and figure are
+available athttps://github.com/bro789/typed-decision-coherence.
+References
+[1] Diogo Almeida. Introducing System One models & Jev. TypeSafe AI blog, https://typesafe.ai/blog/
+introducing-system-one-models-and-jev , September 2026. Published 15 September 2026; accessed 26
+September 2026.
+[2] OpenRouter. Jev documentation: Using the TypeSafe decision model on OpenRouter. https://openrouter.
+ai/docs/guides/community/jev, 2026. Decisions API (alpha); model page https://openrouter.ai/
+typesafe/jev-1.13; accessed 26 September 2026.
+[3] Jevals. Jevals: Independent benchmark data for Jev and Jev-type models. https://github.com/Jevals/
+jevals-data, 2026. Release 2026-09-18, suite 0.1.0, CC-BY-4.0; accessed 26 September 2026.
+[4] Amir Rafe and Subasish Das. Calibrated decisions at scale: Converting police crash narratives into probabilistic
+crash variables with a System One model (Jev).arXiv preprint arXiv:2609.24052, 2026.
+[5] Zehua Cheng, Wei Dai, and Jiahao Sun. this-that-model-1.0: A typed decision model that decides in 30 ms, for a
+millionth of a cent.arXiv preprint arXiv:2609.23886, 2026.
+[6] Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. On calibration of modern neural networks. In
+Proceedings of the 34th International Conference on Machine Learning, volume 70 ofProceedings of Machine
+Learning Research, pages 1321–1330. PMLR, 2017. URL https://proceedings.mlr.press/v70/guo17a.
+html.
+11
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+[7] Tilmann Gneiting and Adrian E. Raftery. Strictly proper scoring rules, prediction, and estimation.Journal of the
+American Statistical Association, 102(477):359–378, 2007. doi: 10.1198/016214506000001437.
+[8] A. N. Kolmogorov.Foundations of the Theory of Probability. Chelsea Publishing Company, New York, second
+English edition, 1956. Translation edited by Nathan Morrison. Original:Grundbegriffe der Wahrscheinlichkeit-
+srechnung, Springer, Berlin, 1933.
+[9] Bruno de Finetti.Theory of Probability: A Critical Introductory Treatment, volume 1. Wiley, London and New
+York, 1974. Translated from the Italian by Antonio Machì and Adrian Smith.
+[10] A. P. Dawid. The well-calibrated Bayesian.Journal of the American Statistical Association, 77(379):605–610,
+1982. doi: 10.1080/01621459.1982.10477856.
+[11] Joel B. Predd, Robert Seiringer, Elliott H. Lieb, Daniel N. Osherson, H. Vincent Poor, and Sanjeev R. Kulkarni.
+Probabilistic coherence and proper scoring rules.IEEE Transactions on Information Theory, 55(10):4786–4792,
+2009. doi: 10.1109/TIT.2009.2027573.
+[12] Krish Matta, Atharv Naphade, and Andy Zou. Rethinking uncertainty evaluation in large language models.arXiv
+preprint arXiv:2607.19367, 2026.
+[13] Jian-Qiao Zhu and Thomas L. Griffiths. Incoherent probability judgments in large language models. InProceedings
+of the Annual Meeting of the Cognitive Science Society, volume 46, 2024. URL https://escholarship.org/
+uc/item/2r68p98c.
+[14] Lukas Fluri, Daniel Paleka, and Florian Tramèr. Evaluating superhuman models with consistency checks. In
+2024 IEEE Conference on Secure and Trustworthy Machine Learning (SaTML), pages 194–232. IEEE, 2024. doi:
+10.1109/SaTML59370.2024.00017.
+[15] Daniel Paleka, Abhimanyu Pallavi Sudhir, Alejandro Alvarez, Vineeth Bhat, Adam Shen, Evan Wang, and Florian
+Tramèr. Consistency checks for language model forecasters. InThe Thirteenth International Conference on
+Learning Representations (ICLR), 2025. URLhttps://openreview.net/forum?id=r5IXBlTCGc.
+[16] Nora Kassner and Hinrich Schütze. Negated and misprimed probes for pretrained language models: Birds can
+talk, but cannot fly. InProceedings of the 58th Annual Meeting of the Association for Computational Linguistics,
+pages 7811–7818. Association for Computational Linguistics, 2020. doi: 10.18653/v1/2020.acl-main.698.
+[17] Yanai Elazar, Nora Kassner, Shauli Ravfogel, Abhilasha Ravichander, Eduard Hovy, Hinrich Schütze, and Yoav
+Goldberg. Measuring and improving consistency in pretrained language models.Transactions of the Association
+for Computational Linguistics, 9:1012–1031, 2021. doi: 10.1162/tacl_a_00410.
+[18] Myeongjun Jang, Deuk Sin Kwon, and Thomas Lukasiewicz. BECEL: Benchmark for consistency evaluation
+of language models. InProceedings of the 29th International Conference on Computational Linguistics, pages
+3680–3696, Gyeongju, Republic of Korea, 2022. International Committee on Computational Linguistics. URL
+https://aclanthology.org/2022.coling-1.324/.
+[19] Katherine Tian, Eric Mitchell, Allan Zhou, Archit Sharma, Rafael Rafailov, Huaxiu Yao, Chelsea Finn, and
+Christopher Manning. Just ask for calibration: Strategies for eliciting calibrated confidence scores from language
+models fine-tuned with human feedback. InProceedings of the 2023 Conference on Empirical Methods in
+Natural Language Processing, pages 5433–5442, Singapore, 2023. Association for Computational Linguistics.
+doi: 10.18653/v1/2023.emnlp-main.330.
+[20] Xinpeng Wang, Bolei Ma, Chengzhi Hu, Leon Weber-Genzel, Paul Röttger, Frauke Kreuter, Dirk Hovy, and
+Barbara Plank. “My answer is C”: First-token probabilities do not match text answers in instruction-tuned
+language models. InFindings of the Association for Computational Linguistics: ACL 2024, pages 7407–7416,
+Bangkok, Thailand, 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.findings-acl.441.
+[21] Jevals. Methodology: how Jevals scores a decision. https://jevals.com/methodology/, 2026. Suite 0.1.0;
+accessed 26 September 2026.
+[22] TypeSafe AI. Jev 1.13 jaggedness. TypeSafe documentation, https://docs.typesafe.ai/
+model-jaggedness/jev-1.13, 2026. Last reviewed 17 September 2026; accessed 26 September 2026.
+[23] jujumilk3. jev-calibration-audit. GitHub repository, https://github.com/jujumilk3/
+jev-calibration-audit, 2026. Accessed 26 September 2026.
+[24] yodablocks. jev-orderby-bench. GitHub repository, https://github.com/yodablocks/
+jev-orderby-bench, 2026. Accessed 26 September 2026.
+[25] Yubo Li, Yidi Miao, Ramayya Krishnan, and Rema Padman. JEV-as-a-judge: Accept when confident, escalate
+when unsure.arXiv preprint arXiv:2609.26550, 2026.
+12
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+[26] uspraveen. Jevify. GitHub repository, https://github.com/uspraveen/Jevify, 2026. Coherence results in
+docs/FINDINGS.md; accessed 26 September 2026.
+[27] Convai Innovations and Nandakishor M. Laya. https://github.com/NandhaKishorM/laya, 2026. Open
+weights, v0.3.20 (24 September 2026); accessed 26 September 2026.
+[28] Simiao Ren, Kidus Zewde, Xingyu Shen, Yuchen Zhou, Dennis Ng, Ankit Raj, Tommy Duong, Yuxin Zhang, and
+Neo Tiangratanakul. Open-Jev judgments on CallScreenBench: Calibrated one-pass scam screening with a small
+language model.arXiv preprint arXiv:2609.23959, 2026.
+[29] Tiantong Wu and Wei Yang Bryan Lim. REFLEX with Jev for efficient selective control in LLM agents.arXiv
+preprint arXiv:2609.26532, 2026.
+[30] Boyuan Deng, Shuyi Fan, Hongyang Zhang, and Xinhong Xie. Jev for scientific decisions: Evaluating semantic
+choices and their consequences.arXiv preprint arXiv:2609.24965, 2026.
+[31] Yu Sun, Junhao Xu, Jiajia Shi, and Zijin Yang. Type-safe is not error-free: A constrained decision head follows
+the option name, not the rubric bound to it.arXiv preprint arXiv:2609.26758, 2026.
+[32] Teddy Seidenfeld. Calibration, coherence, and scoring rules.Philosophy of Science, 52(2):274–294, 1985. doi:
+10.1086/289244.
+[33] Amos Tversky and Derek J. Koehler. Support theory: A nonextensional representation of subjective probability.
+Psychological Review, 101(4):547–567, 1994. doi: 10.1037/0033-295X.101.4.547.
+[34] Yuval Rottenstreich and Amos Tversky. Unpacking, repacking, and anchoring: Advances in support theory.
+Psychological Review, 104(2):406–415, 1997. doi: 10.1037/0033-295X.104.2.406.
+[35] Amos Tversky and Daniel Kahneman. Extensional versus intuitive reasoning: The conjunction fallacy in
+probability judgment.Psychological Review, 90(4):293–315, 1983. doi: 10.1037/0033-295X.90.4.293.
+[36] Fintan Costello and Paul Watts. Surprisingly rational: Probability theory plus noise explains biases in judgment.
+Psychological Review, 121(3):463–480, 2014. doi: 10.1037/a0037010.
+[37] Jian-Qiao Zhu, Adam N. Sanborn, and Nick Chater. The Bayesian sampler: Generic Bayesian inference causes
+incoherence in human probability judgments.Psychological Review, 127(5):719–748, 2020. doi: 10.1037/
+rev0000190.
+[38] Myeongjun Jang and Thomas Lukasiewicz. Consistency analysis of ChatGPT. InProceedings of the 2023
+Conference on Empirical Methods in Natural Language Processing, pages 15970–15985, Singapore, 2023.
+Association for Computational Linguistics. doi: 10.18653/v1/2023.emnlp-main.991.
+[39] Arian Hosseini, Siva Reddy, Dzmitry Bahdanau, R Devon Hjelm, Alessandro Sordoni, and Aaron Courville.
+Understanding by understanding not: Modeling negation in language models. InProceedings of the 2021
+Conference of the North American Chapter of the Association for Computational Linguistics: Human Language
+Technologies, pages 1301–1312. Association for Computational Linguistics, 2021. doi: 10.18653/v1/2021.
+naacl-main.102.
+[40] Thinh Hung Truong, Timothy Baldwin, Karin Verspoor, and Trevor Cohn. Language models are not naysayers: an
+analysis of language models on negation benchmarks. InProceedings of the 12th Joint Conference on Lexical and
+Computational Semantics (*SEM 2023), pages 101–114, Toronto, Canada, 2023. Association for Computational
+Linguistics. doi: 10.18653/v1/2023.starsem-1.10.
+[41] Iker García-Ferrero, Begoña Altuna, Javier Alvez, Itziar Gonzalez-Dios, and German Rigau. This is not a
+dataset: A large negation benchmark to challenge large language models. InProceedings of the 2023 Conference
+on Empirical Methods in Natural Language Processing, pages 8596–8615, Singapore, 2023. Association for
+Computational Linguistics. doi: 10.18653/v1/2023.emnlp-main.531.
+[42] Nora Kassner, Oyvind Tafjord, Hinrich Schütze, and Peter Clark. BeliefBank: Adding memory to a pre-trained
+language model for a systematic notion of belief. InProceedings of the 2021 Conference on Empirical Methods
+in Natural Language Processing, pages 8849–8861. Association for Computational Linguistics, 2021. doi:
+10.18653/v1/2021.emnlp-main.697.
+[43] Eric Mitchell, Joseph Noh, Siyan Li, Will Armstrong, Ananth Agarwal, Patrick Liu, Chelsea Finn, and Christopher
+Manning. Enhancing self-consistency and performance of pre-trained language models through natural language
+inference. InProceedings of the 2022 Conference on Empirical Methods in Natural Language Processing,
+pages 1754–1768, Abu Dhabi, United Arab Emirates, 2022. Association for Computational Linguistics. doi:
+10.18653/v1/2022.emnlp-main.115.
+13
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+[44] Peter Hase, Mona Diab, Asli Celikyilmaz, Xian Li, Zornitsa Kozareva, Veselin Stoyanov, Mohit Bansal, and
+Srinivasan Iyer. Methods for measuring, updating, and visualizing factual beliefs in language models. In
+Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics,
+pages 2714–2731, Dubrovnik, Croatia, 2023. Association for Computational Linguistics. doi: 10.18653/v1/2023.
+eacl-main.199.
+[45] Collin Burns, Haotian Ye, Dan Klein, and Jacob Steinhardt. Discovering latent knowledge in language models
+without supervision. InThe Eleventh International Conference on Learning Representations (ICLR), 2023. URL
+https://openreview.net/forum?id=ETKGuby0hcs.
+[46] Bishwamittra Ghosh, Sarah Hasan, Naheed Anjum Arafat, and Arijit Khan. Logical consistency of large language
+models in fact-checking. InThe Thirteenth International Conference on Learning Representations (ICLR), 2025.
+URLhttps://openreview.net/forum?id=SimlDuN0YT.
+[47] Gabriel Freedman and Francesca Toni. Exploring the potential for large language models to demonstrate rational
+probabilistic beliefs.The International FLAIRS Conference Proceedings, 38, 2025. doi: 10.32473/flairs.38.1.
+138892.
+[48] Kyle Richardson, Cullen Anderson, Pranav Balakrishnan, Takuto Ban, Daksha Ladia, Ankita Gupta, and Marisa
+Hudspeth. From token probabilities to semantic constraints: Towards declarative probabilistic evaluation of
+language models.arXiv preprint arXiv:2609.13520, 2026.
+[49] Isaiah Andrews and Suproteem Sarkar. Dutch books for language models.arXiv preprint arXiv:2609.02797,
+2026.
+[50] Gregor Betz and Kyle Richardson. Probabilistic coherence, logical consistency, and Bayesian learning: Neural
+language models as epistemic agents.PLOS ONE, 18(2):e0281372, 2023. doi: 10.1371/journal.pone.0281372.
+[51] Pegah Imannezhad, Emmanuel M. Pothos, and Andy J. Wills. Divergent patterns of probabilistic reasoning in
+humans and GPT-5.Frontiers in Psychology, 17:1782184, 2026. doi: 10.3389/fpsyg.2026.1782184.
+[52] Diego Calanzone, Stefano Teso, and Antonio Vergari. Logically consistent language models via neuro-symbolic
+integration. InThe Thirteenth International Conference on Learning Representations (ICLR), 2025. URL
+https://openreview.net/forum?id=7PGluppo4k.
+[53] Niels Mündler, Jingxuan He, Slobodan Jenko, and Martin Vechev. Self-contradictory hallucinations of large
+language models: Evaluation, detection and mitigation. InThe Twelfth International Conference on Learning
+Representations (ICLR), 2024. URLhttps://openreview.net/forum?id=EmQSOi1X2f.
+[54] Xiang Lisa Li, Vaishnavi Shrivastava, Siyan Li, Tatsunori Hashimoto, and Percy Liang. Benchmarking and
+improving generator-validator consistency of language models. InThe Twelfth International Conference on
+Learning Representations (ICLR), 2024. URLhttps://openreview.net/forum?id=phBS6YpTzC.
+[55] Marco Tulio Ribeiro, Tongshuang Wu, Carlos Guestrin, and Sameer Singh. Beyond accuracy: Behavioral testing
+of NLP models with CheckList. InProceedings of the 58th Annual Meeting of the Association for Computational
+Linguistics, pages 4902–4912. Association for Computational Linguistics, 2020. doi: 10.18653/v1/2020.acl-main.
+442.
+[56] Saurav Kadavath, Tom Conerly, Amanda Askell, Tom Henighan, Dawn Drain, Ethan Perez, Nicholas Schiefer,
+Zac Hatfield-Dodds, Nova DasSarma, Eli Tran-Johnson, Scott Johnston, Sheer El-Showk, Andy Jones, Nelson
+Elhage, Tristan Hume, Anna Chen, Yuntao Bai, Sam Bowman, Stanislav Fort, Deep Ganguli, Danny Hernandez,
+Josh Jacobson, Jackson Kernion, Shauna Kravec, Liane Lovitt, Kamal Ndousse, Catherine Olsson, Sam Ringer,
+Dario Amodei, Tom Brown, Jack Clark, Nicholas Joseph, Ben Mann, Sam McCandlish, Chris Olah, and Jared
+Kaplan. Language models (mostly) know what they know.arXiv preprint arXiv:2207.05221, 2022.
+[57] Zhengbao Jiang, Jun Araki, Haibo Ding, and Graham Neubig. How can we know when language models know?
+on the calibration of language models for question answering.Transactions of the Association for Computational
+Linguistics, 9:962–977, 2021. doi: 10.1162/tacl_a_00407.
+[58] Shrey Desai and Greg Durrett. Calibration of pre-trained transformers. InProceedings of the 2020 Conference on
+Empirical Methods in Natural Language Processing (EMNLP), pages 295–302. Association for Computational
+Linguistics, 2020. doi: 10.18653/v1/2020.emnlp-main.21.
+[59] Miao Xiong, Zhiyuan Hu, Xinyang Lu, Yifei Li, Jie Fu, Junxian He, and Bryan Hooi. Can LLMs express their
+uncertainty? an empirical evaluation of confidence elicitation in LLMs. InThe Twelfth International Conference
+on Learning Representations (ICLR), pages 23650–23678, 2024. URL https://openreview.net/forum?id=
+gjeQKFxFpZ.
+14
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+[60] Xinpeng Wang, Chengzhi Hu, Bolei Ma, Paul Röttger, and Barbara Plank. Look at the text: Instruction-tuned
+language models are more robust multiple choice selectors than you think. InFirst Conference on Language
+Modeling (COLM), 2024. URLhttps://openreview.net/forum?id=qHdSA85GyZ.
+[61] Ari Holtzman, Peter West, Vered Shwartz, Yejin Choi, and Luke Zettlemoyer. Surface form competition: Why
+the highest probability answer isn’t always right. InProceedings of the 2021 Conference on Empirical Methods
+in Natural Language Processing, pages 7038–7051. Association for Computational Linguistics, 2021. doi:
+10.18653/v1/2021.emnlp-main.564.
+[62] Zihao Zhao, Eric Wallace, Shi Feng, Dan Klein, and Sameer Singh. Calibrate before use: Improving few-shot
+performance of language models. InProceedings of the 38th International Conference on Machine Learning,
+volume 139 ofProceedings of Machine Learning Research, pages 12697–12706. PMLR, 2021. URL https:
+//proceedings.mlr.press/v139/zhao21c.html.
+[63] Yixin Nie, Xiang Zhou, and Mohit Bansal. What can we learn from collective human opinions on natural
+language inference data? InProceedings of the 2020 Conference on Empirical Methods in Natural Language
+Processing (EMNLP), pages 9131–9143. Association for Computational Linguistics, 2020. doi: 10.18653/v1/
+2020.emnlp-main.734.
+[64] Adina Williams, Nikita Nangia, and Samuel R. Bowman. A broad-coverage challenge corpus for sentence
+understanding through inference. InProceedings of the 2018 Conference of the North American Chapter of the
+Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers), pages 1112–
+1122, New Orleans, Louisiana, 2018. Association for Computational Linguistics. doi: 10.18653/v1/N18-1101.
+[65] Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William Cohen, and Xinghua Lu. PubMedQA: A dataset for
+biomedical research question answering. InProceedings of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International Joint Conference on Natural Language Processing
+(EMNLP-IJCNLP), pages 2567–2577, Hong Kong, China, 2019. Association for Computational Linguistics. doi:
+10.18653/v1/D19-1259.
+[66] Qwen Team. Qwen3.8-Max: A new bar for coding and cowork. https://qwen.ai/blog?id=qwen3.8, August
+2026. Citation requested by the Qwen3.8 model releases; accessed 2026-09-26.
+[67] Qwen Team. Qwen3.8-27B. Hugging Face model card,https://huggingface.co/Qwen/Qwen3.8-27B, 2026.
+Released 2026-08-14; accessed 2026-09-26.
+[68] Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph Gonzalez, Hao
+Zhang, and Ion Stoica. Efficient memory management for large language model serving with PagedAttention.
+InProceedings of the 29th Symposium on Operating Systems Principles, pages 611–626. ACM, 2023. doi:
+10.1145/3600006.3613165.
+[69] Bradley Efron and Robert J. Tibshirani.An Introduction to the Bootstrap. Number 57 in Monographs on Statistics
+and Applied Probability. Chapman & Hall, New York, 1993.
+15
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+A Question text, prompts, and reproducibility details
+Definitions.Every question of an item begins with the definition paragraph of its domain.
+NLI.Classify the relation between the premise and the hypothesis. There are exactly three mutually exclusive
+labels: entailment (given the premise, the hypothesis is definitely true), neutral (given the premise, the
+hypothesis might or might not be true), and contradiction (given the premise, the hypothesis is definitely false).
+PubMedQA.Classify the conclusion that the context passages support for the research question. There are
+exactly three mutually exclusive labels: affirmative (the passages support answering the research question
+‘yes’), negative (the passages support answering the research question ‘no’), and inconclusive (the evidence in
+the passages leaves the answer uncertain: ‘maybe’).
+Questions.The definition paragraph is followed by one of: “Is it true that the label is Xk?”; “Is it true that the label is
+not Xk?”; “Is it true that the label is either Xi or Xj?”; or “Which label applies?”. Jev receives the state as thestate
+field and each question as a noul question (the three yes/no forms, without optional criteria) or a choice question
+whose options carry the label definitions. For Qwen3.8-27B, the system prompt is “You answer typed decision questions
+about a state. Base your answer on the state. Follow the answer format exactly.” The user message is “State:” followed
+by the state, “Question:” followed by the question, and the instruction “Answer with one word: yes or no.” for yes/no
+questions or a lettered option list with “Reply with the letter of the single best option only.” for the choice question.
+The verbalized readout replaces the last instruction with “Give a probability for each answer. Reply only with JSON:
+{"probabilities": {"yes": <p>, "no": <p>}}”.
+Example.NLI item 104395c:Premise: Routine screening and intervention will require engendering a sense of
+role responsibility among emergency department clinicians towards addressing substance abuse. Hypothesis: Routine
+screening has no impact on substance abuse prevention.The 100 human annotators chose entailment, neutral, and
+contradiction with frequencies 0.03, 0.37, and 0.60. One of its ten questions is the definition paragraph followed by “Is
+it true that the label is not entailment?”.
+Readout details.The messages for Qwen3.8-27B are rendered with the model’s own chat template. The first-token
+readout requests the 100 most probable next tokens at temperature 0, with log-probabilities taken before any sampling
+adjustment, strips whitespace from each token, lowercases it for yes/no questions, and sums the probability of the
+tokens that match an answer label. The verbalized readout generates at most 300 tokens at temperature 0 with thinking
+disabled, parses the text between the first opening and the last closing brace of the reply as JSON, keeps the entries for
+“yes” and “no”, and renormalizes them. All 960 replies yielded usable probabilities. Jev answers that were not valid
+probabilities would have been re-asked once, which never occurred. The bootstrap and permutation seeds are 0. The
+Jev calls were made on 25 September 2026 and the Qwen3.8-27B calls on 26 September 2026.
+B Results by label
+Table 5:Negation violations by (domain, label). †Double-negation labels. The logit MAD is the mean of |logits k + logitn k| with
+probabilities clipped to[0.01,0.99].
+|sk +n k −1|s k +n k −1d k −n k logit MAD
+Domain LabelX k Jev Qwen Difference [95% CI] Jev Qwen Jev Qwen Jev Qwen
+NLI entailment0.078 0.477−0.398[−0.444,−0.351]+0.075−0.472−0.057−0.043 0.57 3.77
+neutral0.063 0.336−0.274[−0.317,−0.231]+0.052−0.324−0.022−0.159 0.36 1.85
+contradiction† 0.100 0.105−0.005[−0.037,0.025]+0.095−0.071−0.138−0.094 0.63 1.26
+PubMedQA affirmative0.033 0.372−0.339[−0.392,−0.285]+0.012−0.305−0.022 +0.080 0.23 2.94
+negative† 0.041 0.114−0.073[−0.107,−0.039]+0.027−0.038−0.014−0.099 0.28 0.80
+inconclusive0.034 0.324−0.289[−0.343,−0.237]+0.024−0.322−0.006 +0.010 0.19 2.01
+16
+
+Beyond Calibration: Probability Axioms for Typed DecisionsA PREPRINT
+C Readout quality, noise, and cost
+Table 6:Calls, readout quality, repeat noise, and cost. During data collection the Qwen3.8-27B model server handled no other
+requests and its GPUs ran no other jobs. Its latency is the wall-clock time of a first-token call with four calls in flight.
+Quantity Value
+Jev calls (single-question + bundled) 3,360 (3,360 succeeded)
+Qwen first-token calls 1,720 (1,720 parsed)
+Qwen verbalized calls 960 (960 parsed)
+Jev total cost $0.0757
+Jev latency, median / p95 (s) 0.64 / 0.75
+Qwen first-token latency, median / p95 (s) 0.44 / 0.90
+Qwen label mass, median: all / S / N / D / choice 0.968 / 0.979 / 0.974 / 0.877 / 0.995
+Qwen label mass<0.8: all / S / N / D / choice 9.2% / 1.5% / 1.5% / 29.8% / 0.0%
+Jev repeat noise: mean|p (1) −p (0)|; identical share 0.0118; 39.1%
+Jev noise floorNF[95% CI] 0.0127 [0.0112, 0.0142]
+Qwen repeat noise (20 items): mean|p (1) −p (0)|; identical share 0.0051; 75.8%
+Qwen noise floorNF[95% CI] 0.0065 [0.0042, 0.0087]
+D Exploratory analyses
+The following quantities were computed after the main analysis, from the same parsed answers, by the script that
+produces the tables and figures:
+• quadrant and confidence-bin counts of pairs answered “yes” to both or “no” to both questions;
+• the same-side rate and the share of deviations above 0.1 for the verbalized readout;
+• the decomposition by question form (Table 4);
+• the correlation of violation magnitudes between the systems, and the difference between their human-
+disagreement correlations;
+• the logit-scale confidence bins and all confidence-bin intervals;
+• the clipping sensitivity of the logit measure and the mass-filtered disjunctive identities;
+• the counts of items whose single-label probabilities sum above or below one, and the mean probabilities for
+entailment;
+• the value range of Jev’s yes/no answers and the value distribution of the verbalized readout.
+They describe the data further and are not used to test the main comparison.
+17
