@@ -3,7 +3,7 @@
 Establish which checkout you are in before writing. The canonical DM Library
 checkout is editable when the owner requests work here or from the parent
 Literature workspace. A downstream project's
-`decision-models-library/` is a pinned, read-only Git submodule. Never edit its
+`dm-library/` is a pinned, read-only Git submodule. Never edit its
 shared files from a consumer. Report corrections to the owner for the canonical
 checkout. The sole downstream-local exception is the ignored `PROJECT_SPECIFIC.md`
 created from [the template](PROJECT_SPECIFIC.template.md).
@@ -80,7 +80,7 @@ They are not fake PDFs. A research paper missing its PDF remains a reported issu
 Only initialize local Git when authorized. Do not commit, push, create a hosted
 repository, change remotes/history, or update real downstream projects unless the
 owner explicitly asks. Display name: DM Library. Canonical public remote:
-`https://github.com/andreasgoethals/DM_Library`. Mountpoint: `decision-models-library/`.
+`https://github.com/andreasgoethals/DM_Library`. Mountpoint: `dm-library/`.
 
 After owner publication, propagation discovers consumers through this checkout's
 own remote identity, verifies a clean published exact commit, and updates only

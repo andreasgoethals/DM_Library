@@ -243,27 +243,27 @@ URLs, version identifiers and retained upstream notices document provenance.
 From a consumer repository, add the published library:
 
 ```powershell
-git submodule add https://github.com/andreasgoethals/DM_Library.git decision-models-library
+git submodule add https://github.com/andreasgoethals/DM_Library.git dm-library
 ```
 
 For an existing consumer checkout:
 
 ```powershell
-git submodule update --init --recursive decision-models-library
+git submodule update --init --recursive dm-library
 ```
 
 To review and pin a specific **published** library commit:
 
 ```powershell
-git -C decision-models-library fetch origin
+git -C dm-library fetch origin
 ```
 
 ```powershell
-git -C decision-models-library checkout --detach PUBLISHED_COMMIT_SHA
+git -C dm-library checkout --detach PUBLISHED_COMMIT_SHA
 ```
 
 ```powershell
-git add -- decision-models-library
+git add -- dm-library
 ```
 
 The owner can then commit the reviewed pin. Read `CHANGELOG.md` first; downstream
@@ -293,7 +293,7 @@ canonical remote and explicitly authorized consumer repositories:
 2. Dispatch a `dm-library-updated` event to each explicitly registered consumer,
    carrying the canonical repository identity and the exact validated commit SHA.
 3. In each consumer, verify the expected source identity and commit ancestry, fetch
-   that SHA, and update only `decision-models-library`. An old or duplicate event
+   that SHA, and update only `dm-library`. An old or duplicate event
    must not roll a newer pin back. Serialize updates per consumer.
 4. Open a pin-only pull request and enable automatic merging after the consumer's
    required checks succeed. The consumer's branch rules must permit this; a failing

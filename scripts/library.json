@@ -3,7 +3,7 @@
   "id": "dm",
   "name": "DM Library",
   "origin": "https://github.com/andreasgoethals/DM_Library.git",
-  "mountpoint": "decision-models-library",
+  "mountpoint": "dm-library",
   "stages": {
     "text": {
       "command": [

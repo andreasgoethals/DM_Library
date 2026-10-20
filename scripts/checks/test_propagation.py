@@ -58,7 +58,7 @@ class PropagationTests(unittest.TestCase):
         (self.consumer / "consumer.txt").write_text("initial", encoding="utf-8")
         git(self.consumer, "add", "consumer.txt")
         git(self.consumer, "commit", "-m", "Initial fixture")
-        git(self.consumer, "submodule", "add", str(self.remote), "decision-models-library")
+        git(self.consumer, "submodule", "add", str(self.remote), "dm-library")
         git(self.consumer, "commit", "-am", "Add fixture submodule")
         self.patch = patch.object(propagation, "_ROOT", self.library)
         self.patch.start()
@@ -91,7 +91,7 @@ class PropagationTests(unittest.TestCase):
         self.assertEqual(self.call("--dry-run"), 0)
         self.assertEqual(before, fingerprint(self.root))
         projects = propagation.discover([self.root], propagation.normalise_remote(str(self.remote)), 2)
-        self.assertEqual([(project.repo, project.sub_path) for project in projects], [(self.consumer, "decision-models-library")])
+        self.assertEqual([(project.repo, project.sub_path) for project in projects], [(self.consumer, "dm-library")])
 
     def test_dirty_and_unpublished_updates_refused(self):
         self.commit_library("unpublished")
@@ -125,7 +125,7 @@ class PropagationTests(unittest.TestCase):
         git(self.library, "push")
         self.assertEqual(self.call("--push"), 0)
         self.assertEqual(git(consumer_remote, "rev-parse", "main"), git(self.consumer, "rev-parse", "HEAD"))
-        self.assertIn(target, git(consumer_remote, "ls-tree", "main", "decision-models-library"))
+        self.assertIn(target, git(consumer_remote, "ls-tree", "main", "dm-library"))
 
     def test_exact_older_published_commit_and_unrelated_staging_preserved(self):
         target = self.commit_library("second")
@@ -136,15 +136,15 @@ class PropagationTests(unittest.TestCase):
         git(self.consumer, "add", "unrelated.txt")
         (self.consumer / "consumer.txt").write_text("keep unstaged", encoding="utf-8")
         self.assertEqual(self.call(), 0)
-        self.assertEqual(git(self.consumer / "decision-models-library", "rev-parse", "HEAD"), target)
-        self.assertEqual(git(self.consumer, "show", "--format=", "--name-only", "HEAD"), "decision-models-library")
+        self.assertEqual(git(self.consumer / "dm-library", "rev-parse", "HEAD"), target)
+        self.assertEqual(git(self.consumer, "show", "--format=", "--name-only", "HEAD"), "dm-library")
         self.assertEqual(git(self.consumer, "diff", "--cached", "--name-only"), "unrelated.txt")
         self.assertEqual(git(self.consumer, "diff", "--name-only"), "consumer.txt")
 
     def test_dirty_downstream_submodule_preserved(self):
         self.commit_library("second")
         git(self.library, "push")
-        sub = self.consumer / "decision-models-library"
+        sub = self.consumer / "dm-library"
         (sub / "knowledge.txt").write_text("local consumer edit", encoding="utf-8")
         before = git(self.consumer, "rev-parse", "HEAD")
         self.assertEqual(self.call(), 1)
@@ -154,7 +154,7 @@ class PropagationTests(unittest.TestCase):
     def test_reconfigured_submodule_origin_refused(self):
         self.commit_library("second")
         git(self.library, "push")
-        sub = self.consumer / "decision-models-library"
+        sub = self.consumer / "dm-library"
         wrong_remote = self.root / "unrelated.git"
         git(self.root, "init", "--bare", str(wrong_remote))
         git(sub, "remote", "set-url", "origin", str(wrong_remote))

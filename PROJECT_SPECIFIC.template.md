@@ -1,13 +1,13 @@
 # Project-specific notes — template
 
 Copy this file to `PROJECT_SPECIFIC.md` inside your project's
-`decision-models-library/` submodule. That filename is ignored by this library;
+`dm-library/` submodule. That filename is ignored by this library;
 it is the only downstream-local write allowed inside the submodule. Keep an
 external backup if these untracked notes matter: Git does not preserve them when
 the submodule directory is removed or force-cleaned.
 
 ```powershell
-Copy-Item decision-models-library/PROJECT_SPECIFIC.template.md decision-models-library/PROJECT_SPECIFIC.md
+Copy-Item dm-library/PROJECT_SPECIFIC.template.md dm-library/PROJECT_SPECIFIC.md
 ```
 
 Use one section per paper or code snapshot, matching its shared-document title.
@@ -21,7 +21,7 @@ canonical checkout. Do not copy project notes into shared documents.
 # Project-specific notes — <project>
 
 Project: <purpose>
-Library pin: <full commit SHA from git -C decision-models-library rev-parse HEAD>
+Library pin: <full commit SHA from git -C dm-library rev-parse HEAD>
 Maintainer: <name>
 Reviewed: <YYYY-MM-DD>
 

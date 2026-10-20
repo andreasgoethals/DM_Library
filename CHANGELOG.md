@@ -2,6 +2,8 @@
 
 ## 2026-10-20
 
+- Standardized the downstream submodule mountpoint as `dm-library` in configuration, instructions, examples and propagation fixtures.
+
 - Refreshed all 13 registered implementation snapshots and revalidated 163 cited symbols, the live 20-item Zotero corpus and all 13 filed arXiv versions.
 
 - Joined the local Literature workspace while retaining an independent GitHub repository. Standardized configurable maintenance and exact-published-commit propagation; added consumer registration and unrelated-commit safeguards. Canonical edits are allowed from the parent workspace; downstream shared files remain read-only.
