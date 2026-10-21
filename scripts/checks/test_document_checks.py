@@ -86,6 +86,17 @@ class DocumentFixtures(unittest.TestCase):
         self.assertTrue(any("citation key" in message for message in problems))
         self.assertTrue(any("unfinished" in message for message in problems))
 
+    def test_quiet_mode_still_lists_each_problem(self):
+        summary = (self.root / "SUMMARIES.md").read_text(encoding="utf-8")
+        self.write("SUMMARIES.md", summary + "\nTODO(new-paper)\n")
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(docs.main(["--quiet"]), 1)
+        text = output.getvalue()
+        self.assertIn("[PROBLEM] SUMMARIES.md:", text)
+        self.assertIn("unfinished new-paper scaffold", text)
+        self.assertIn("document problem(s)", text)
+
     def test_cross_document_urlencoded_anchor_and_duplicate_heading(self):
         self.write("README.md", "[one](AGENTS.md#timeline--lineage) [two](AGENTS.md#timeline--lineage-1)\n")
         self.write("AGENTS.md", "# Timeline & lineage\n# Timeline & lineage\n")

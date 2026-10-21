@@ -111,6 +111,43 @@ class SnapshotTests(unittest.TestCase):
 
     def test_large_selected_file_is_excluded(self):
         self.assertFalse(refresh._selected("config.json", refresh._MAX_FILE_BYTES + 1, refresh.entry_patterns({})))
+        # GitHub listings report no size; the limit is applied on download instead.
+        self.assertTrue(refresh._selected("config.json", None, refresh.entry_patterns({})))
+
+    def test_oversized_and_undecodable_downloads_are_recorded_not_fatal(self):
+        bodies = {"main.py": b"print('kept')\n", "big.json": b"x" * 20, "latin.md": b"caf\xe9\n"}
+        files = [{"path": path, "size": None, "url": path} for path in bodies]
+        provenance = {"upstream": "https://github.com/example/source", "revision": "abc123",
+                      "revision_date": "2026-10-20", "slug": "example/source"}
+        def get(url, timeout, max_bytes=None):
+            if max_bytes is not None and len(bodies[url]) > max_bytes:
+                raise refresh.OversizedFile(url)
+            return bodies[url], {}
+        with patch.object(refresh, "_remote_tree", return_value=(provenance, files)), \
+             patch.object(refresh, "_get", side_effect=get), \
+             patch.object(refresh, "_MAX_FILE_BYTES", 16):
+            refresh._write_snapshot("https://github.com/example/source", self.target,
+                                    timeout=5, patterns=refresh.entry_patterns({}))
+        text = self.target.read_text(encoding="utf-8")
+        self.assertIn("FILE: main.py\n", text)
+        self.assertNotIn("FILE: big.json", text)
+        self.assertIn('"skipped": "exceeds 16 bytes"', text)
+        self.assertIn('"skipped": "not UTF-8 text"', text)
+        self.assertIn('"included_files": 1', text)
+
+    def test_timestamp_only_refresh_keeps_existing_file_untouched(self):
+        def snapshot(stamp, body):
+            return ('Header\n{\n  "revision": "abc",\n  "retrieved_utc": "' + stamp + '",\n  "included_files": 1\n}\n\n' + body).encode()
+        self.target.write_bytes(snapshot("2026-01-01T00:00:00+00:00", "same\n"))
+        before = (self.target.read_bytes(), self.target.stat().st_mtime_ns)
+        with patch.object(refresh.os, "replace", side_effect=AssertionError("must not rewrite")):
+            result = self.run_refresh(lambda url, output, **kw: output.write_bytes(snapshot("2026-10-20T08:00:00+00:00", "same\n")))
+        self.assertEqual((result.status, result.reason), ("OK", "unchanged"))
+        self.assertEqual((self.target.read_bytes(), self.target.stat().st_mtime_ns), before)
+        self.assertEqual(list(self.directory.iterdir()), [self.target])
+        result = self.run_refresh(lambda url, output, **kw: output.write_bytes(snapshot("2026-10-20T08:00:00+00:00", "new\n")))
+        self.assertEqual(result.status, "OK")
+        self.assertIn(b"new", self.target.read_bytes())
 
     def test_targets_preserve_names_deduplicate_and_reject_unknown(self):
         self.assertEqual(refresh._resolve_targets(["JevOut", "JevOut.txt", "SearchJev"]), ["JevOut.txt", "SearchJev.txt"])

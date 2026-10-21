@@ -331,8 +331,9 @@ def main(argv: list[str] | None = None) -> int:
     if not args.quiet:
         for key, value in counts.items():
             print(f"{key}: {value}")
-        for problem in rep.problems:
-            print(f"[PROBLEM] {problem}")
+    # --quiet suppresses success chatter only; every problem stays visible.
+    for problem in rep.problems:
+        print(f"[PROBLEM] {problem}")
     print(f"{len(rep.problems)} document problem(s)." if rep.problems else "Documents are internally consistent.")
     return int(bool(rep.problems))
 

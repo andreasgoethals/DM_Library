@@ -2,6 +2,11 @@
 
 ## 2026-10-20
 
+- Audited all thirteen paper summaries against the generated paper text and corrected mislabelled method details: AnyJev's batch (not contextual) calibration; JEV-as-a-Judge's point rule in §8 versus lower-bound rule in §9 and its 183-item adjudication; LLM-as-Jev's illegal-exit-token anchor; Beyond Calibration's controls; SearchJev's Appendix E.2 and Intern-Decision's Tables 5–7 pointers.
+- Added each paper's own headline results, which were previously omitted (StartLux AutoThink gains, SII-Decision-27B vs Jev, SearchJev-0.8B tying the Jev hybrid, Jev versus GPT-6 as a standalone judge, Rafe and Das's model families and parity results, TypedBench cost tables, Imperatrice effect sizes), and trimmed redundant caveats.
+- SYNTHESIS: fixed a sentence that attributed SearchJev's fallback-call finding to the τ-bench experiment, disambiguated the two Li et al. papers, unified the timeline citation format and rebalanced comparisons with the added positive results.
+- Tooling: `check_docs.py --quiet` now lists each problem; propagation restores the previous pin and checkout if the consumer pin commit fails; post-refresh rechecks run once with all flags; snapshot refresh applies the size limit to downloaded bytes, records skipped oversized/undecodable files instead of failing, and leaves a dump untouched when only its timestamp would change; text extraction detects stale text for a replaced PDF via recorded hashes (`papers/text_sources.json`). New regression tests (74 total).
+
 - Standardized the downstream submodule mountpoint as `dm-library` in configuration, instructions, examples and propagation fixtures.
 
 - Refreshed all 13 registered implementation snapshots and revalidated 163 cited symbols, the live 20-item Zotero corpus and all 13 filed arXiv versions.

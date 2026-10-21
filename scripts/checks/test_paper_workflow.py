@@ -121,6 +121,27 @@ class WorkflowCase(unittest.TestCase):
         self.assertIn("1955-06", self.synthesis.read_text())
         self.assertEqual(self.compare()[1].total, 0)
 
+    def test_replaced_pdf_text_is_reported_then_regenerated(self):
+        self.assertEqual(self.run_ingest(), 0)
+        filed = next((self.papers / "1955").glob("*.pdf"))
+        text = extraction.text_path_for(filed)
+        def run(*args):
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                return extraction.main(list(args)), output.getvalue()
+        self.assertEqual(run("--check")[0], 0)
+        write_pdf(filed, "A replacement PDF revision with corrected decision results.")
+        before = text.read_bytes()
+        code, output = run("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("STALE TEXT", output)
+        self.assertEqual(text.read_bytes(), before)  # check mode writes nothing
+        self.assertFalse((self.papers / "text_sources.json").exists())
+        self.assertEqual(run("--all")[0], 0)
+        self.assertIn("replacement PDF revision", text.read_text(encoding="utf-8"))
+        sources = json.loads((self.papers / "text_sources.json").read_text(encoding="utf-8"))["sources"]
+        self.assertEqual(sources["1955/" + filed.name], hashlib.sha256(filed.read_bytes()).hexdigest())
+        self.assertEqual(run("--check")[0], 0)
+
     def test_year_only_never_invents_month_and_override_works(self):
         reference = item(date="1850")
         self.assertEqual(self.run_ingest(reference), 1)

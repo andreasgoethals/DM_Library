@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import fnmatch
 import hashlib
+import io
+import itertools
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -92,9 +94,13 @@ def _license(path: str) -> bool:
     return any(word in PurePosixPath(path).name.upper() for word in ("LICENSE", "LICENCE", "NOTICE", "COPYING"))
 
 
-def _selected(path: str, size: int, patterns: dict) -> bool:
-    """Keep source/configuration and notices, including generators under data/."""
-    if size > _MAX_FILE_BYTES:
+def _selected(path: str, size: int | None, patterns: dict) -> bool:
+    """Keep source/configuration and notices, including generators under data/.
+
+    ``size`` is None when the listing cannot report it without downloading the
+    blob; the byte limit is then enforced on the downloaded body instead.
+    """
+    if size is not None and size > _MAX_FILE_BYTES:
         return False
     if _license(path):
         return True
@@ -106,13 +112,41 @@ def _selected(path: str, size: int, patterns: dict) -> bool:
                for p in patterns.get("include_patterns", _TEXT))
 
 
+class OversizedFile(ValueError):
+    """A remote file is larger than the per-file snapshot limit."""
+
+
 def _get(url: str, timeout: int, max_bytes: int | None = None) -> tuple[bytes, object]:
     request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
     with urlopen(request, timeout=timeout) as response:
         body = response.read(None if max_bytes is None else max_bytes + 1)
         if max_bytes is not None and len(body) > max_bytes:
-            raise ValueError(f"Remote file exceeds {max_bytes} bytes: {url}")
+            raise OversizedFile(f"Remote file exceeds {max_bytes} bytes: {url}")
         return body, response.headers
+
+
+_TIMESTAMP_LINE = re.compile(rb'^\s*"retrieved_utc": ')
+
+
+def _without_timestamp(stream):
+    skipped = False
+    for line in stream:
+        if not skipped and _TIMESTAMP_LINE.match(line):
+            skipped = True
+            continue
+        yield line
+
+
+def unchanged_except_timestamp(new: Path | bytes, existing: Path) -> bool:
+    """True when only the retrieval timestamp differs from the existing snapshot.
+
+    The comparison streams both files, so multi-hundred-megabyte dumps are not
+    loaded into memory. An unchanged snapshot is then left byte-for-byte alone.
+    """
+    if not existing.is_file():
+        return False
+    with (io.BytesIO(new) if isinstance(new, bytes) else new.open("rb")) as fresh, existing.open("rb") as old:
+        return all(a == b for a, b in itertools.zip_longest(_without_timestamp(fresh), _without_timestamp(old)))
 
 
 def _json(url: str, timeout: int):
@@ -154,7 +188,8 @@ def _remote_tree(url: str, timeout: int, revision: str | None = None) -> tuple[d
                     continue
                 meta, path = line.split("\t", 1)
                 if meta.split()[1] == "blob":
-                    files.append({"path": path, "size": 0,
+                    # Size is unknown without hydrating the blob; download enforces it.
+                    files.append({"path": path, "size": None,
                                   "url": f"https://raw.githubusercontent.com/{slug}/{sha}/{quote(path, safe='/')}"})
     else:
         base = f"https://huggingface.co/api/models/{slug}"
@@ -164,7 +199,7 @@ def _remote_tree(url: str, timeout: int, revision: str | None = None) -> tuple[d
         files = []
         while next_url:
             tree, headers = _json(next_url, timeout)
-            files += [{"path": f["path"], "size": f.get("size", 0),
+            files += [{"path": f["path"], "size": f.get("size"),
                        "url": f"https://huggingface.co/{slug}/resolve/{sha}/{quote(f['path'], safe='/')}"}
                       for f in tree if f["type"] == "file"]
             match = re.search(r'<([^>]+)>;\s*rel="next"', headers.get("Link", ""))
@@ -198,14 +233,26 @@ def _write_snapshot(url: str, output: Path, *, timeout: int, patterns: dict,
             # on Windows (GetFinalPathNameByHandle partial-path fallbacks).
             if not dest.is_relative_to(checkout):
                 raise ValueError(f"Upstream path escapes source directory: {item['path']!r}")
-            body, _ = _get(item["url"], timeout, _MAX_FILE_BYTES)
-            body.decode("utf-8")  # fail rather than silently drop undecodable source
+            try:
+                body, _ = _get(item["url"], timeout, _MAX_FILE_BYTES)
+            except OversizedFile:
+                return {"path": item["path"], "skipped": f"exceeds {_MAX_FILE_BYTES} bytes"}
+            try:
+                body.decode("utf-8")
+            except UnicodeDecodeError:
+                # Record rather than silently drop, or fail the whole snapshot.
+                return {"path": item["path"], "skipped": "not UTF-8 text",
+                        "sha256": hashlib.sha256(body).hexdigest()}
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(body)
             return {"path": item["path"], "bytes": len(body), "sha256": hashlib.sha256(body).hexdigest()}
 
         with ThreadPoolExecutor(max_workers=8) as pool:
-            manifest = list(pool.map(download, selected))
+            downloaded = list(pool.map(download, selected))
+        manifest = [f for f in downloaded if "skipped" not in f]
+        skipped = [f for f in downloaded if "skipped" in f]
+        if not manifest:
+            raise ValueError("Every selected source file was skipped; refusing an empty snapshot")
         # The temporary tree already contains only selected source. Gitingest
         # subtracts exact include patterns from its default ignore set; "*" alone
         # does not override exclusions such as bin/ and package-lock.json.
@@ -220,6 +267,8 @@ def _write_snapshot(url: str, output: Path, *, timeout: int, patterns: dict,
         provenance["identity_source"] = next((e["identity"] for e in REPOSITORIES.values() if e["url"] == url), None)
         provenance["included_files"] = len(manifest)
         provenance["excluded_files"] = len(remote_files) - len(manifest)
+        if skipped:
+            provenance["skipped_files"] = skipped
         provenance["file_sha256"] = manifest
         header = "DM Library source snapshot\nDo not edit: regenerate with scripts/dumps/refresh_repositories.py\n"
         output.write_text(header + json.dumps(provenance, indent=2, ensure_ascii=False) + "\n\n" + content,
@@ -243,6 +292,10 @@ def refresh_one(filename: str, url: str, *, repositories_dir: Path,
         size = tmp.stat().st_size
         if not size:
             raise ValueError("Snapshot is empty")
+        if unchanged_except_timestamp(tmp, target):
+            # Same revision and content: keep the existing file untouched.
+            return _Result(filename, url, "OK", target.stat().st_size / 1024,
+                           time.monotonic() - start, reason="unchanged")
         if target.exists() and not force_shrink and size < target.stat().st_size * _SHRINK_GUARD_RATIO:
             raise ValueError("Shrink guard: snapshot is below 50% of the previous size. Existing file kept; review upstream before --force-shrink.")
         if size > _GIT_LIMIT:
@@ -292,7 +345,8 @@ def refresh_all(*, only: list[str] | None = None, repositories_dir: Path | None 
 
 def _print_summary(results: list[_Result]) -> None:
     for result in results:
-        detail = f"{result.size_kb:.1f} KB" if result.status == "OK" else result.reason
+        detail = (f"{result.size_kb:.1f} KB" + (f" ({result.reason})" if result.reason else "")
+                  if result.status == "OK" else result.reason)
         print(f"[{result.status}] {result.filename}: {detail}")
     print(f"OK: {sum(r.status == 'OK' for r in results)}; FAIL: {sum(r.status == 'FAIL' for r in results)}")
 

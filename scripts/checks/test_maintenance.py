@@ -35,6 +35,27 @@ class MaintenanceTests(unittest.TestCase):
             self.assertEqual(maintenance.main(["--only", "docs", "--only", "symbols"]), 1)
         self.assertEqual(calls, ["docs", "symbols"])
 
+    def test_post_refresh_rechecks_run_once_after_all_mutating_stages(self):
+        stages = {
+            "first": {"command": ["first.py"], "mutating": True, "description": "first", "post_checks": ["check", "docs"]},
+            "second": {"command": ["second.py"], "mutating": True, "description": "second", "post_checks": ["check"]},
+            "check": {"command": ["check.py"], "description": "check", "strict_review": True},
+            "docs": {"command": ["docs.py"], "description": "docs"},
+        }
+        calls = []
+        def stage(name, argv):
+            calls.append((name, argv))
+            return 0, 0.0, ""
+        probe = subprocess.CompletedProcess([], 0, stdout="", stderr="")
+        with patch.dict(maintenance.CONFIG, {"stages": stages}), \
+             patch.object(maintenance, "STAGES", {name: ([sys.executable, "-B", *item["command"]], item.get("mutating", False), item["description"]) for name, item in stages.items()}), \
+             patch.object(maintenance.subprocess, "run", return_value=probe), \
+             patch.object(maintenance, "run_stage", stage), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(maintenance.main(["--only", "first", "--only", "second", "--strict-review"]), 0)
+        self.assertEqual([name for name, _ in calls], ["first", "second", "check", "docs"])
+        self.assertEqual(calls[2][1][-1], "--strict-review")
+        self.assertNotIn("--strict-review", calls[3][1])
+
     def test_subprocess_imports_leave_no_bytecode(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

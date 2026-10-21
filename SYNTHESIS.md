@@ -22,14 +22,14 @@ are not claims about training-data inheritance or priority.
 | Date | Paper | What it added | Builds on |
 |---|---|---|---|
 | 2026-09 | Li et al. (2026), [Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms?](SUMMARIES.md#beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms) | Label-free logical checks expose inconsistency between negation, disjunction, yes/no and categorical probabilities. | Probability coherence beyond marginal calibration |
-| 2026-09 | Deußer et al. 2026 — [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | Frozen-template evaluation distinguishes calibration across output primitives | Typed choice, binary and ordinal interfaces |
+| 2026-09 | Deußer et al. (2026), [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | Frozen-template evaluation distinguishes calibration across output primitives | Typed choice, binary and ordinal interfaces |
 | 2026-09 | Zhang et al. (2026), [AnyJev Technical Report](SUMMARIES.md#anyjev-technical-report) | Frozen-LLM readouts separate label-prior correction, option-order averaging, calibration and adaptive rotation cost. | Restricted next-token probabilities and permutation averaging |
-| 2026-10 | Cao et al. 2026 — [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning and delegation; filed 4 October | Direct readout and hybrid search control |
+| 2026-10 | Cao et al. (2026), [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning and delegation; filed 4 October | Direct readout and hybrid search control |
 | 2026-10 | Rafe and Das (2026), [Benchmarking System One decision models against trained classifiers and language models for automated decision gates](SUMMARIES.md#benchmarking-system-one-decision-models-against-trained-classifiers-and-language-models-for-automated-decision-gates) | Matched decision gates compare specialist models, trained classifiers and LLM readouts under calibration, rejection and cascade costs. | Supervised baselines, selective risk and application-level routing |
-| 2026-10 | Xu et al. 2026 — [JevOut: Natural Context Can Flip Decision Models](SUMMARIES.md#jevout) | Answer-preserving context search exposes confident errors; filed 8 October | Input invariance and robustness |
-| 2026-10 | Li et al. 2026 — [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 9 October | Selective prediction and cascaded judging |
+| 2026-10 | Xu et al. (2026), [JevOut: Natural Context Can Flip Decision Models](SUMMARIES.md#jevout) | Answer-preserving context search exposes confident errors; filed 8 October | Input invariance and robustness |
+| 2026-10 | Li et al. (2026), [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 9 October | Selective prediction and cascaded judging |
 | 2026-10 | Sharma et al. (2026), [TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models](SUMMARIES.md#typedbench-a-benchmark-for-calibration-framing-sensitivity-and-cost-in-system-one-decision-models) | Policy-generated tasks evaluate wording robustness, calibration noise floors and decisions under asymmetric costs. | Typed interfaces, programmatic ground truth and selective prediction |
-| 2026-10 | Duan et al. 2026 — [General Decision Models: Benchmarking and Insights Beyond Jev](SUMMARIES.md#general-decision-models) | Analytic uncertainty, system failures and reasoning distillation; filed 12 October | Typed decisions and agent evaluation |
+| 2026-10 | Duan et al. (2026), [General Decision Models: Benchmarking and Insights Beyond Jev](SUMMARIES.md#general-decision-models) | Analytic uncertainty, system failures and reasoning distillation; filed 12 October | Typed decisions and agent evaluation |
 | 2026-10 | Zhuang et al. (2026), [StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions](SUMMARIES.md#startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions) | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | Direct option scoring, reasoning supervision and proper scoring rules |
 | 2026-10 | Li and Wagle (2026), [LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them](SUMMARIES.md#llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them) | Prefix-free candidate scoring tests when frozen LLMs suffice and when anchored fine-tuning or bounded reasoning helps. | Joint candidate likelihood, constrained readout and KL-regularized adaptation |
 | 2026-10 | Imperatrice et al. (2026), [Are AI Decision Models Biased? A Case Study of Jev](SUMMARIES.md#are-ai-decision-models-biased-a-case-study-of-jev) | Behavioral tasks distinguish selected answers from probability shifts under irrelevant context, framing and option order. | Cognitive-bias paradigms and controlled input variation |
@@ -90,10 +90,14 @@ A schema constrains output form, not correct interpretation of the evidence.
 Zhang et al. 2026 (*AnyJev Technical Report*) and Li and Wagle 2026
 (*LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to
 Fine-Tune Them*) make unchanged backbones essential controls. The former averages
-option rotations and optionally corrects label priors; the latter scores
-prefix-free numeric suffixes jointly. Their computation differs: one prefill per
-rotation is not one prefill for a decision, and suffix scoring may require short
-additional forward steps. Neither procedure creates new model knowledge.
+option rotations and divides out a label prior estimated by batch calibration;
+the latter scores prefix-free numeric suffixes jointly. Both show that readout
+alone recovers much capability: AnyJev's adaptive stopping reads 7.3 of 18
+rotations and serves 2.22× as many decisions per second on vLLM, and a frozen
+4B backbone reaches 81.4% on public JevBench, or 94.8% with budgeted native
+thinking, matching GPT-5.6 Sol. Their computation differs: one prefill per
+rotation is not one prefill for a decision, and suffix scoring or thinking adds
+forward steps. Neither procedure creates new model knowledge.
 
 Zhu et al. 2026 (*Intern-Decision: Efficient Multimodal Decision Making with
 Autoregressive Masked Language Modeling*) instead train masked answer positions
@@ -105,8 +109,13 @@ prompt attention and reasoning budgets therefore need separate accounting.
 Large candidate lists may require grouping or additional scoring, even when all
 systems expose a similarly shaped API.
 
-The adaptation evidence is conditional. LLM-as-Jev and StartLux-Decision find
-large benefits on represented task families and limited transfer elsewhere.
+The adaptation evidence is substantial but conditional. LLM-as-Jev and
+StartLux-Decision find large benefits on represented task families and limited
+transfer elsewhere. StartLux's AutoThink gains 11.5–18.4 points of DecisionPivot
+pair accuracy over Instant (86.9% at 27B), and RLCD² cuts reasoning length by up
+to 65%. Duan et al. 2026 (*General Decision Models: Benchmarking and Insights
+Beyond Jev*) show that an open self-distilled model, SII-Decision-27B, slightly
+exceeds Jev on JEVal (79.24 versus 78.38) with the lowest ECE in that benchmark.
 Intern-Decision's pilot evaluates exact distributions separately from task
 accuracy. Improvements from supervision, temperature scaling, changed attention,
 longer reasoning or a different backbone should not be pooled into a single
@@ -133,7 +142,9 @@ one ECE value as a deployment certificate.
 Sharma et al. 2026 (*TypedBench: A Benchmark for Calibration, Framing
 Sensitivity, and Cost in System One Decision Models*) add a matched finite-sample
 calibration reference and show that asymmetric decision cost can rank systems
-differently from accuracy. Li, He and Li 2026 (*Beyond Calibration: Do a
+differently from accuracy: Jev is systematically under-confident yet ranks its
+own errors best, while acting on its probabilities under a 2:1 cost doubles its
+cost relative to its top answer. Li, He and Li 2026 (*Beyond Calibration: Do a
 Typed-Decision Model's Probabilities Obey the Probability Axioms?*) test a
 different requirement: probabilities assigned to related questions should obey
 the explicitly stated partition. Their controls show that the LLM readout
@@ -159,22 +170,29 @@ weighted scores or population estimates.
 
 **Local speed versus system reliability.** Cao et al. 2026 (*SearchJev: A Fast and
 Calibrated System-1 Model for Search Agents*) improve final answer accuracy and
-active search time. Duan et al. 2026 (*General Decision Models: Benchmarking and
+active search time: on 100 BrowseComp-Plus questions, hybrids with SearchJev-4B
+reach 54% versus 45% for System 2 alone and 46% for a Jev 1.13 hybrid, while
+SearchJev-0.8B ties the Jev hybrid at lower time. The SearchJev runs record no
+explicit short-decision fallback calls, so these gains do not isolate the
+confidence gate. Duan et al. 2026 (*General Decision Models: Benchmarking and
 Insights Beyond Jev*) lower τ-bench success and worsen tail latency after replacing
-action selection. These are different outcomes, but not matched replications:
-SearchJev is task-trained and specifies uncertainty delegation through a search controller;
-the τ-bench intervention uses general Jev while another model generates arguments.
-Its reported runs record no explicit short-decision fallback calls, so the measured gains do not isolate the confidence gate. Models, datasets and interventions differ. Together they support measuring whole-
+action selection, although median episode time falls. These are different
+outcomes, but not matched replications: SearchJev is task-trained and embedded in
+a search controller, whereas the τ-bench intervention uses general Jev while
+another model generates arguments. Together they support measuring whole-
 controller success, recovery and tail latency rather than extrapolating call speed.
 
 **Useful confidence versus confident failure.** Li et al. 2026 (*JEV-as-a-Judge:
-Accept When Confident, Escalate When Unsure*) route many errors to a stronger judge
-under the tested workloads. Xu et al. 2026 (*JevOut: Natural Context Can Flip
-Decision Models*) obtain confident wrong answers through adaptive context search.
-Useful ranking on ordinary examples does not imply robustness to optimized inputs.
-JevOut's conditional search-success rate is not a natural-traffic error rate;
-average calibration is not an invariance test. Li's style-adversarial and reference-
-free prose results expose a related boundary using a different protocol.
+Accept When Confident, Escalate When Unsure*) find Jev within three points of GPT-6
+as a standalone judge wherever the verdict can be read off the text, at 0.36% of
+its fee, and a frozen cascade that beats GPT-6 by 0.9 points at 41% of its fee;
+confidence routes most errors to the stronger judge. Xu et al. 2026 (*JevOut:
+Natural Context Can Flip Decision Models*) obtain confident wrong answers through
+adaptive context search. Useful ranking on ordinary examples does not imply
+robustness to optimized inputs. JevOut's conditional search-success rate is not a
+natural-traffic error rate; average calibration is not an invariance test. The
+JEV-as-a-Judge results on style-adversarial pairs and reference-free prose expose a
+related boundary using a different protocol.
 
 **Reasoning versus benchmark success.** Deußer et al. 2026 (*Evaluating and
 Benchmarking the System One Model Jev*) report unusually strong MMLU mathematics
@@ -207,7 +225,9 @@ and compute; improvements should not all be attributed to a new architecture.
 
 Li et al. 2026 (*JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*)
 separate post hoc sweeps, frozen held-out policies, live replication and prospective
-testing. Strong savings on a favorable mixture shrink on harder new workloads.
+testing. Strong savings on a favorable mixture shrink on harder new workloads,
+yet the prospectively selected cascade still matches the fallback's accuracy at
+75.5% of its fee.
 Xu et al. 2026 (*JevOut: Natural Context Can Flip Decision Models*) make the
 initially-correct denominator and accepted-query budget essential to robustness
 interpretation. Neither an exploratory optimum nor a conditional attack rate is
@@ -216,7 +236,9 @@ an unconditional deployment estimate.
 Rafe and Das 2026 (*Benchmarking System One decision models against trained
 classifiers and language models for automated decision gates*) introduce an
 application-relevant supervision comparison: when labels and a stable taxonomy
-exist, a trained classifier can be preferable. This does not establish a
+exist, a trained classifier can be preferable. Without labels, no open decision
+model is significantly more accurate than Jev, while a large generative model
+can match it at higher cost. This does not establish a
 supervision-matched architectural advantage. Their offline cascade costs also
 depend on utilization and composed latency rather than a live end-to-end run.
 Sharma et al. 2026 (*TypedBench: A Benchmark for Calibration, Framing

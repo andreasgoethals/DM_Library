@@ -141,6 +141,27 @@ class PropagationTests(unittest.TestCase):
         self.assertEqual(git(self.consumer, "diff", "--cached", "--name-only"), "unrelated.txt")
         self.assertEqual(git(self.consumer, "diff", "--name-only"), "consumer.txt")
 
+    def test_failed_pin_commit_restores_index_and_checkout(self):
+        self.commit_library("second")
+        git(self.library, "push")
+        sub = self.consumer / "dm-library"
+        old = git(sub, "rev-parse", "HEAD")
+        before = git(self.consumer, "rev-parse", "HEAD")
+        hooks = self.root / "failing-hooks"
+        hooks.mkdir()
+        git(self.consumer, "config", "core.hooksPath", str(hooks))
+        (hooks / "pre-commit").write_bytes(b"#!/bin/sh\necho 'fixture hook rejects commits' >&2\nexit 1\n")
+        (hooks / "pre-commit").chmod(0o755)
+        self.assertEqual(self.call(), 1)
+        self.assertEqual(before, git(self.consumer, "rev-parse", "HEAD"))
+        self.assertEqual(git(self.consumer, "diff", "--cached", "--name-only"), "")
+        self.assertEqual(git(sub, "rev-parse", "HEAD"), old)
+        self.assertEqual(git(self.consumer, "status", "--porcelain"), "")
+        # Once the hook stops failing, the next run is not blocked by leftovers.
+        (hooks / "pre-commit").unlink()
+        self.assertEqual(self.call(), 0)
+        self.assertNotEqual(old, git(sub, "rev-parse", "HEAD"))
+
     def test_dirty_downstream_submodule_preserved(self):
         self.commit_library("second")
         git(self.library, "push")

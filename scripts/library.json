@@ -15,7 +15,7 @@
         "--check"
       ],
       "mutating": true,
-      "description": "extract missing paper text"
+      "description": "extract missing or stale paper text"
     },
     "docs": {
       "command": [
