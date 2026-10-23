@@ -2,13 +2,13 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/nokia-applied-research/AnyJev",
-  "revision": "b03158e9ba18e84c01054aaa393481925088db07",
-  "revision_date": "2026-10-12T17:15:28-05:00",
+  "revision": "35311c58955716cb8955ce1368a665988bc63735",
+  "revision_date": "2026-10-21T15:30:57-05:00",
   "slug": "nokia-applied-research/AnyJev",
-  "retrieved_utc": "2026-10-20T10:35:07+00:00",
+  "retrieved_utc": "2026-10-23T08:25:07+00:00",
   "identity_source": "https://arxiv.org/html/2610.00831v1",
   "included_files": 66,
-  "excluded_files": 51,
+  "excluded_files": 52,
   "file_sha256": [
     {
       "path": ".github/workflows/ci.yml",
@@ -27,8 +27,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 38439,
-      "sha256": "e7f0fa6f2bc55b62df06829535bb21411b02a285ae3b777a1e231fd725d33b0d"
+      "bytes": 39010,
+      "sha256": "8a6456a3df3aaf81edbbe149e3f6552bc6c2674921a2a556f90dcd044b9096fa"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -47,13 +47,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 15994,
-      "sha256": "91bb57a8c1f66191b414f1687f8340c056a4cd74d826d909104cf419f35d7cda"
+      "bytes": 18151,
+      "sha256": "618fc6d7f0e4f49061c234fcd36fbd9ce4137f237c21a8eaf663df85adf4cb79"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 16296,
-      "sha256": "ce1fe4b6a91573db41d49da587a9e0ab30a4519be0061791d8264b999122a077"
+      "bytes": 18421,
+      "sha256": "0689fc3f2bf3d1552a81118f5c92078579bd98e04eab1b8658d1720877e8fc9d"
     },
     {
       "path": "ROADMAP.md",
@@ -302,8 +302,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_readme_numbers.py",
-      "bytes": 2924,
-      "sha256": "080bb28ba5a97a45cff66b922d4250db2b91138801dcfdda6c59bf19d721bde0"
+      "bytes": 3961,
+      "sha256": "237e31c29cc3e7bc82a388c069db27b3d5cda2763249580b9684f665fb6e36df"
     },
     {
       "path": "tests/test_require.py",
@@ -346,7 +346,298 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 ================================================
 FILE: README.md
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8f in position 1558: character maps to <undefined>
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/nokia-applied-research/AnyJev/main/assets/banner.png" width="100%" alt="AnyJev: turn any LLM into a Jev-style decision model. Typed decisions, real probabilities, training-free or self-distilled. Qwen3-8B on BANKING77-20, raw readout to L0 with no labels: order-flip rate 0.230 to 0.073, accuracy 0.747 to 0.803, auto-decidable at 5% risk 7.7% to 46.3%.">
+
+[![PyPI](https://img.shields.io/pypi/v/anyjev?color=3b82f6)](https://pypi.org/project/anyjev/)
+[![Python](https://img.shields.io/pypi/pyversions/anyjev)](https://pypi.org/project/anyjev/)
+[![CI](https://github.com/nokia-applied-research/AnyJev/actions/workflows/ci.yml/badge.svg)](https://github.com/nokia-applied-research/AnyJev/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://github.com/nokia-applied-research/AnyJev/blob/main/LICENSE)
+[![Technical Report](https://img.shields.io/badge/Technical%20Report-PDF-b31b1b?logo=adobeacrobatreader&logoColor=white)](https://arxiv.org/pdf/2610.00831)
+[![Models](https://img.shields.io/badge/%F0%9F%A4%97%20Tacit-models-yellow)](https://huggingface.co/collections/morriszjm/tacit-6ac41d0b50af9e5417c5c234)
+[![Tacitus](https://img.shields.io/badge/%F0%9F%A4%97%20Tacitus-31B-f97316)](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B)
+[![Decision Index](https://img.shields.io/badge/Decision%20Index%200.3-60.22-8b5cf6)](https://huggingface.co/spaces/multimodalart/jev-decision-index)
+[![Decision Index 0.4.1](https://img.shields.io/badge/Decision%20Index%200.4.1-Tacitus%2066.47-6d28d9)](https://huggingface.co/spaces/multimodalart/jev-decision-index)
+
+**English** · [简体中文](https://github.com/nokia-applied-research/AnyJev/blob/main/README.zh-CN.md) · [⚡ Serve it](#-serve-it) · [📊 Results](#-tacit-results) · [🏆 Leaderboard](#-anyjev-tacitus-on-the-decision-index) · [🧭 Roadmap](#-roadmap) · [📖 Levels](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/levels.md)
+
+</div>
+
+<p align="center">
+  <b>Jiamu Zhang</b><sup>1</sup> &nbsp;&nbsp;&nbsp; <b>Tianze Yang</b><sup>1</sup> &nbsp;&nbsp;&nbsp; <b>Yucheng Shi</b><sup>2</sup> &nbsp;&nbsp;&nbsp; <b>Evan Chen</b><sup>1</sup>
+  <br>
+  <b>Zixiang Nie</b><sup>1</sup> &nbsp;&nbsp;&nbsp; <b>Kelly Wan</b><sup>1</sup> &nbsp;&nbsp;&nbsp; <b>Liangjie Hong</b><sup>1</sup> &nbsp;&nbsp;&nbsp; <b>Ninghao Liu</b><sup>3</sup> &nbsp;&nbsp;&nbsp; <b>Liang Wu</b><sup>1</sup>
+</p>
+<p align="center">
+  <sub><sup>1</sup>&nbsp;Nokia, Sunnyvale, CA, USA &nbsp;&nbsp;&nbsp;&nbsp; <sup>2</sup>&nbsp;Tencent Hunyuan &nbsp;&nbsp;&nbsp;&nbsp; <sup>3</sup>&nbsp;The Hong Kong Polytechnic University</sub>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nokia-applied-research/AnyJev/main/assets/flip.gif" width="100%" alt="Reverse the option order: the raw logit readout flips its answer, AnyJev L0 gives the same answer both ways">
+  <br>
+  <sub>Qwen3-8B on a real BANKING77 item. Every number is a model output.</sub>
+</p>
+
+> [!TIP]
+> **🆕 Tacit: AnyJev's self-distilled models, 1.7B to 9B, are on
+> [Hugging Face](https://huggingface.co/collections/morriszjm/tacit-6ac41d0b50af9e5417c5c234).** One
+> forward pass per decision. With `adaptive=True`, a capped share of low-confidence decisions goes to
+> the model's own reasoning. They run on transformers, in-process vLLM or a stock `vllm serve`.
+> `pip install "anyjev[hf]"`, then `Tacit.from_pretrained("morriszjm/Tacit-9B")`.
+> [Start here ↓](#-serve-it)
+
+> [!NOTE]
+> **🏆 AnyJev Tacitus on the Decision Index 0.4.1.** [AnyJev Tacitus 31B](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B), fine-tuned from
+> Gemma-4-31B and read with AnyJev, has a Full score of **66.47**, tied 3rd on the board on 2026-10-21.
+> [Details ↓](#-anyjev-tacitus-on-the-decision-index)
+
+> [!NOTE]
+> **🏆 No training, on a public leaderboard.** The training-free `Decider` (L0, two rotations) on the
+> unchanged Gemma-4-31B has a Full score of **60.22** on the [Decision Index 0.3](https://huggingface.co/spaces/multimodalart/jev-decision-index),
+> 5th of 149 entries on 2026-10-12. [Details ↓](#-training-free-on-the-decision-index)
+
+## ⚡ Serve it
+
+**A Tacit model, in Python.**
+
+```python
+from anyjev import Tacit
+
+tacit = Tacit.from_pretrained("morriszjm/Tacit-9B")          # transformers, one GPU
+d = tacit.decide(state="Customer: my package was due last Monday and it still has not arrived.",
+                 question="What does the customer want?",
+                 options=["track_order", "cancel_order", "refund", "change_address"])
+d["answer"], d["probs"], d["route"]    # an option, {option: probability}, "one_forward" or "cot"
+```
+
+`kind` is `"choice"` (default), `"yes_no"` or `"score"` (`options` are ordered levels, lowest
+first, numbered from 1; `first_level=0` numbers them from 0). `decide_batch([...])` takes a list of such dicts.
+
+**Send the hardest decisions to reasoning, with a cap.**
+
+```python
+tacit = Tacit.from_pretrained("morriszjm/Tacit-9B", adaptive=True, tau=0.5, max_cot_share=0.2, cot_window=1000)
+```
+
+A decision whose top two options are less than `tau` apart in log-probability is answered again with
+thinking on. After the reasoning, the answer is read as a label distribution, so it also has
+probabilities and cannot fail to parse. At most `max_cot_share` of the last `cot_window` decisions
+escalate, however hard the traffic gets. Every escalation is reported (`route == "cot"`, with the
+first pass kept), and `tacit.stats` counts them.
+
+**On vLLM.** A stock server; the client needs only the tokenizer.
+
+```bash
+pip install "anyjev[client]"
+vllm serve morriszjm/Tacit-9B --host 127.0.0.1 --port 8000
+```
+
+```python
+tacit = Tacit.from_pretrained("morriszjm/Tacit-9B", engine="server",
+                              base_url="http://127.0.0.1:8000", adaptive=True)
+```
+
+`engine="vllm"` (`pip install "anyjev[vllm]"`) runs vLLM in the same process instead.
+
+**An HTTP endpoint for many clients sharing one cap.**
+
+```bash
+python -m anyjev.serve --model morriszjm/Tacit-9B --upstream http://127.0.0.1:8000 --adaptive --port 8100
+curl -s 127.0.0.1:8100/v1/decide -H 'Content-Type: application/json' \
+  -d '{"state": "Customer: my package has not arrived.", "question": "What does the customer want?", "options": ["track_order", "refund"]}'
+```
+
+`POST /v1/decide` takes one decision or `{"items": [...]}`; `GET /v1/stats` reports the escalation
+share. The gateway listens on 127.0.0.1 and has no authentication of its own.
+
+| argument | default | meaning |
+|---|---|---|
+| `adaptive` | `False` | send low-confidence decisions to the model's own reasoning |
+| `tau` | `0.5` | low confidence: the log-probability gap between the top two options is below `tau` |
+| `max_cot_share` | `0.2` | at most this share of the last `cot_window` decisions escalates; `None` removes the cap |
+| `cot_window` | `1000` | how many recent decisions the cap counts; `None` counts every decision since loading |
+| `cot_max_tokens` | `8192` | reasoning budget of one decision |
+| `engine` | `"transformers"` | `"vllm"` runs vLLM in this process; `"server"` uses a running `vllm serve` at `base_url` |
+
+**Any other model, training-free.** The `Decider` reads the same typed decisions from any open
+causal LM, with no training and no labels.
+
+```python
+from anyjev import Decider, Question
+from anyjev.backends.hf import HFBackend          # or VLLMBackend / SGLangBackend(url, model), LlamaCppBackend(gguf)
+
+d = Decider(HFBackend("Qwen/Qwen3-8B"))           # level="L0" by default
+route = Question.choice("Which team should handle this?",
+                        ["billing", "technical", "sales", "other"], name="route")
+r = d.decide("My card was charged twice for one order.", [route])["route"]
+r.distribution, r.level                           # {option: probability}, "L0"
+```
+
+L0 reads a K-option choice once per rotation of the options. With the **rotation budget**, it reads
+only as many rotations as the decision needs:
+
+```python
+d = Decider(backend, adaptive_shifts=True, canonical_order=True)
+d.calibrate_adaptive(route, unlabelled_tickets, target=0.01)   # a few hundred states, no labels
+```
+
+The stopping threshold is calibrated against our own full-cycle answer, so it needs no labels. At a
+certified 1% disagreement it read 7.2 rotations instead of 18. That was 2.2× the decisions per second
+on vLLM and 2.3×–2.7× on transformers, with accuracy unchanged
+([docs/rotation_budget.md](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/rotation_budget.md)).
+
+## ✨ What it is
+
+Give the model a state and a **typed question** (a choice, a yes/no or a score). You get back a
+**decision with a probability over the options**, read from the model's next-token distribution.
+Nothing is parsed. There are two ways in:
+
+- **AnyJev Training-Free (`Decider`)** works on any open LLM, with no training. Raw label logits
+  change their answer when the options are reordered and carry the model's preference for some
+  labels. L0 removes both without a single label.
+- **AnyJev Self-Distilled (`Tacit`)** uses the Tacit checkpoints. They are trained by
+  self-distillation: the model learns to give, in one forward pass, the answers it reaches when it
+  reasons. No human labels and no other model are involved. One prefill per decision; with
+  `adaptive=True`, a capped share of decisions goes to reasoning.
+
+<div align="center">
+
+| | ⚪&nbsp;raw&nbsp;logits | 🔵&nbsp;**L0**<br><sub>zero labels</sub> |
+|:--|:--:|:--:|
+| Labels required | none | **none** |
+| Answer flips when options are reversed | 0.230 | **0.073** |
+| Accuracy | 0.747 | **0.803** |
+| Calibration error (ECE) | 0.240 | **0.184** |
+| **Auto-decidable at ≤5% error** | **7.7%** | **46.3%** |
+
+<sub>Qwen3-8B, BANKING77 20-way, 300 test items · `bench/results_v01/2026-09-22/Qwen__Qwen3-8B.json`</sub>
+
+</div>
+
+The last row matters most. Accuracy moves six points, but the share of decisions confident enough to
+automate at ≤5% error goes from **7.7% to 46.3%**, with no labels at all.
+
+## 📊 Tacit results
+
+<div align="center">
+
+| model | base | JevBench public (231) | adaptive | bev-decision test (46,320) | adaptive |
+|:--|:--|:--:|:--:|:--:|:--:|
+| [Tacit-9B](https://huggingface.co/morriszjm/Tacit-9B) | Qwen3.5-9B | 0.823 | **0.887** <sub>15.2%</sub> | 0.727 | **0.755** <sub>18.1%</sub> |
+| [Tacit-8B](https://huggingface.co/morriszjm/Tacit-8B) | Qwen3-8B | 0.736 | — | 0.663 | — |
+| [Tacit-4B](https://huggingface.co/morriszjm/Tacit-4B) | Qwen3-4B | 0.723 | **0.758** <sub>14.3%</sub> | 0.663 | **0.704** <sub>17.8%</sub> |
+| [Tacit-2B](https://huggingface.co/morriszjm/Tacit-2B) | Qwen3.5-2B | 0.671 | — | 0.626 | — |
+| [Tacit-1.7B](https://huggingface.co/morriszjm/Tacit-1.7B) | Qwen3-1.7B | 0.619 | — | 0.598 | — |
+
+<sub>Accuracy on every item of both sets ([JevBench](https://github.com/fstandhartinger/jevbench) public
+set; [bev-decision](https://huggingface.co/datasets/avbiswas/bev-decision) test split), in the order they
+are stored. First column: one forward pass per decision (`adaptive=False`). Adaptive: `adaptive=True` at
+the defaults (`tau=0.5`, at most 20% of every 1,000 decisions), with the share of decisions sent to
+reasoning in small print. Served by `vllm serve` (vLLM 0.17.1), run with `scripts/eval_tacit.py` · `bench/results_tacit/2026-10-06/`</sub>
+
+</div>
+
+On average, escalation adds 567 (JevBench) and 458 (bev-decision) generated tokens per decision for Tacit-9B,
+and 305 and 187 for Tacit-4B. Results with escalation for Tacit-8B, Tacit-2B and Tacit-1.7B come next.
+
+## 🏆 AnyJev Tacitus on the Decision Index
+
+[AnyJev Tacitus 31B](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B) is a decision model fine-tuned from
+[`google/gemma-4-31B-it`](https://huggingface.co/google/gemma-4-31B-it), with an inference technique designed together with
+the training. It reads every decision from one prefill through AnyJev's readout, with no generated tokens. On the
+[Decision Index 0.4.1](https://huggingface.co/spaces/multimodalart/jev-decision-index) board it is tied 3rd by Full score (2026-10-21);
+from edition 0.4 the Full score counts the private parts only.
+
+<div align="center">
+
+| Full score | same skills, private <sub>60%</sub> | new domains, private <sub>40%</sub> | public <sub>not counted</sub> | latency median / mean / p95 |
+|:--:|:--:|:--:|:--:|:--:|
+| **66.47** | 62.48 | 56.93 | 65.52 | 95 / 265 / 1,000 ms |
+
+<sub>The board's maintainers ran the two private parts and measured the latency (single process, one RTX PRO 6000).
+Served by vLLM 0.29.0 with FP8 at load and the model's vLLM plugin, anyjev 0.3.0. Engine, plugin and run settings:
+[MorrisZJ/anyjev-tacitus](https://github.com/MorrisZJ/anyjev-tacitus); results: [decision-index-results](https://huggingface.co/datasets/morriszjm/decision-index-results/tree/d82c491a187b0f015b589ba813084fb695d98b78/runs/anyjev-tacitus-31b-v1) ·
+`bench/results_decision_index/2026-10-21/anyjev-tacitus-31b.json`</sub>
+
+</div>
+
+## 🏆 Training-free on the Decision Index
+
+The `Decider` at L0 on the unchanged [`google/gemma-4-31B-it`](https://huggingface.co/google/gemma-4-31B-it):
+no training, no labels, two rotations per decision. On the [Decision Index 0.3](https://huggingface.co/spaces/multimodalart/jev-decision-index) board it is
+5th of 149 entries by Full score (2026-10-12).
+
+<div align="center">
+
+| Full score | public <sub>20%</sub> | same skills, private <sub>50%</sub> | new domains, private <sub>30%</sub> | latency median / mean / p95 |
+|:--:|:--:|:--:|:--:|:--:|
+| **60.22** | 59.79 | 59.13 | 52.98 | 98 / 260 / 1,080 ms |
+
+<sub>The board's maintainers ran the two private parts and measured the latency (single process, one RTX PRO 6000).
+Served by `vllm serve --quantization fp8` (vLLM 0.29.0) with anyjev 0.3.0. Engine and run settings:
+[examples/decision_index](https://github.com/nokia-applied-research/AnyJev/tree/main/examples/decision_index) (submitted as
+[anyjev-l0-gemma](https://github.com/MorrisZJ/anyjev-l0-gemma)); model card:
+[AnyJev-L0-Gemma-4-31B](https://huggingface.co/morriszjm/AnyJev-L0-Gemma-4-31B) ·
+`bench/results_decision_index/2026-10-12/anyjev-l0-gemma-4-31b.json`</sub>
+
+</div>
+
+## 🧠 How it works
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nokia-applied-research/AnyJev/main/assets/how_it_works.png" width="100%" alt="How one decision is read: ask a typed question, read it over every cyclic shift of the options, divide out the label prior estimated without labels, and return a decision that carries its level">
+</p>
+
+| | needs | does | does **not** |
+|---|---|---|---|
+| `raw` | nothing | one prompt, softmax restricted to the option labels | correct order or label bias |
+| `L0` | nothing | averages position bias out over the K rotations, divides out the label prior | calibrate against labels |
+| Tacit `one_forward` | a Tacit checkpoint | one prompt, read like `raw` from a model trained to answer in one pass | correct order bias |
+| Tacit `cot` | `adaptive=True` | reasons first, then reads the label distribution after the thought | run beyond its cap |
+
+Every `Decision` carries its `level`, and `require="L0"` makes downstream code refuse a weaker one.
+Every Tacit decision carries its `route`.
+[The contract in full →](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/levels.md)
+
+<sub>Every number in this README is read from committed JSON. Not affiliated with TypeSafe AI or Jev.</sub>
+
+## 🧭 Roadmap
+
+- [x] `choice`, `noul` and `score` from one prefill; L0 with zero labels
+- [x] The rotation budget: L0 at about 7 of 18 rotations, with a stopping threshold certified without labels
+- [x] **Tacit-1.7B, 2B, 4B, 8B and 9B** on Hugging Face; `Tacit` in the library on transformers, vLLM and `vllm serve`, with capped escalation to reasoning and an HTTP gateway
+- [x] The evaluation harness (`scripts/eval_tacit.py`); results with escalation for Tacit-9B and Tacit-4B
+- [x] The training-free path on the public Decision Index 0.3 board ([L0 on Gemma-4-31B](#-training-free-on-the-decision-index))
+- [x] **AnyJev Tacitus 31B** on the Decision Index 0.4.1 board, tied 3rd ([details](#-anyjev-tacitus-on-the-decision-index))
+- [ ] 🚧 Results with escalation for Tacit-8B, Tacit-2B and Tacit-1.7B
+- [ ] 🚧 Label-free early exit: read a decision from part of the model's depth, choosing the depth by agreement with the full model
+- [ ] **Agent-loop evaluation**: the same decisions inside a real agent
+- [x] SGLang backend (`anyjev.backends.sglang`), contributed by @shentonyan
+- [x] llama.cpp backend for GGUF models (`anyjev.backends.llamacpp`), contributed by @Tusm11
+- [ ] More log-prob backends (MLX, Ollama), span readout beyond 26 options
+
+Dated plan and help-wanted files: [ROADMAP.md](https://github.com/nokia-applied-research/AnyJev/blob/main/ROADMAP.md). Known limitations: [docs/limitations.md](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/limitations.md).
+
+## 🤝 Contributing and citation
+
+Backends are one file each, and several are **help wanted** ([ROADMAP.md](https://github.com/nokia-applied-research/AnyJev/blob/main/ROADMAP.md), [CONTRIBUTING.md](https://github.com/nokia-applied-research/AnyJev/blob/main/CONTRIBUTING.md)). Changes: [CHANGELOG.md](https://github.com/nokia-applied-research/AnyJev/blob/main/CHANGELOG.md). Credits: [CREDITS.md](https://github.com/nokia-applied-research/AnyJev/blob/main/CREDITS.md).
+
+Technical Report:
+```bibtex
+@misc{zhang2026anyjevtechnicalreport,
+      title={AnyJev Technical Report}, 
+      author={Jiamu Zhang and Tianze Yang and Yucheng Shi and Evan Chen and Zixiang Nie and Kelly Wan and Liangjie Hong and Ninghao Liu and Liang Wu},
+      year={2026},
+      eprint={2610.00831},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2610.00831}, 
+}
+```
+
+Apache-2.0, see [LICENSE](https://github.com/nokia-applied-research/AnyJev/blob/main/LICENSE). The Tacit models carry their base models' Apache-2.0 license. Datasets keep their own licenses, see [THIRD_PARTY.md](https://github.com/nokia-applied-research/AnyJev/blob/main/THIRD_PARTY.md).
+
 
 
 ================================================
@@ -362,9 +653,11 @@ FILE: README.zh-CN.md
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://github.com/nokia-applied-research/AnyJev/blob/main/LICENSE)
 [![Technical Report](https://img.shields.io/badge/Technical%20Report-PDF-b31b1b?logo=adobeacrobatreader&logoColor=white)](https://arxiv.org/pdf/2610.00831)
 [![Models](https://img.shields.io/badge/%F0%9F%A4%97%20Tacit-models-yellow)](https://huggingface.co/collections/morriszjm/tacit-6ac41d0b50af9e5417c5c234)
+[![Tacitus](https://img.shields.io/badge/%F0%9F%A4%97%20Tacitus-31B-f97316)](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B)
 [![Decision Index](https://img.shields.io/badge/Decision%20Index%200.3-60.22-8b5cf6)](https://huggingface.co/spaces/multimodalart/jev-decision-index)
+[![Decision Index 0.4.1](https://img.shields.io/badge/Decision%20Index%200.4.1-Tacitus%2066.47-6d28d9)](https://huggingface.co/spaces/multimodalart/jev-decision-index)
 
-[English](https://github.com/nokia-applied-research/AnyJev/blob/main/README.md) · **简体中文** · [⚡ 跑起来](#-跑起来) · [📊 结果](#-tacit-结果) · [🏆 排行榜](#-decision-index-上的免训练结果) · [🧭 路线图](#-路线图) · [📖 档位约定](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/levels.md)
+[English](https://github.com/nokia-applied-research/AnyJev/blob/main/README.md) · **简体中文** · [⚡ 跑起来](#-跑起来) · [📊 结果](#-tacit-结果) · [🏆 排行榜](#-decision-index-上的-anyjev-tacitus) · [🧭 路线图](#-路线图) · [📖 档位约定](https://github.com/nokia-applied-research/AnyJev/blob/main/docs/levels.md)
 
 </div>
 
@@ -390,6 +683,11 @@ FILE: README.zh-CN.md
 > 支持 transformers、进程内 vLLM 和原版 `vllm serve`。
 > `pip install "anyjev[hf]"`，然后 `Tacit.from_pretrained("morriszjm/Tacit-9B")`。
 > [从这里开始 ↓](#-跑起来)
+
+> [!NOTE]
+> **🏆 Decision Index 0.4.1 上的 AnyJev Tacitus。** [AnyJev Tacitus 31B](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B) 从 Gemma-4-31B
+> 微调、用 AnyJev 读出，总分（Full score）**66.47**，2026-10-21 在排行榜上并列第 3。
+> [详情 ↓](#-decision-index-上的-anyjev-tacitus)
 
 > [!NOTE]
 > **🏆 不训练，上公开排行榜。** 免训练的 `Decider`（L0，两次轮换）用原版 Gemma-4-31B，在
@@ -529,6 +827,25 @@ vLLM 上每秒决策数是原来的 2.2×，transformers 上是 2.3×–2.7×，
 
 打开转推理后，平均每个决策多生成的 token：Tacit-9B 在 JevBench 上 567 个、bev-decision 上 458 个；Tacit-4B 分别是 305 和 187 个。Tacit-8B、2B、1.7B 打开转推理的结果随后补上。
 
+## 🏆 Decision Index 上的 AnyJev Tacitus
+
+[AnyJev Tacitus 31B](https://huggingface.co/morriszjm/AnyJev-Tacitus-31B) 是从 [`google/gemma-4-31B-it`](https://huggingface.co/google/gemma-4-31B-it)
+微调出来的决策模型，推理技术和训练一起设计。每个决策都用 AnyJev 的读出方式一次 prefill 读出，不生成 token。在
+[Decision Index 0.4.1](https://huggingface.co/spaces/multimodalart/jev-decision-index) 排行榜上，按总分（Full score）并列第 3（2026-10-21）；
+从 0.4 版起，总分只计私有部分。
+
+<div align="center">
+
+| 总分 | 同技能私有测试 <sub>60%</sub> | 新领域私有测试 <sub>40%</sub> | 公开部分 <sub>不计分</sub> | 延迟 中位数 / 平均 / p95 |
+|:--:|:--:|:--:|:--:|:--:|
+| **66.47** | 62.48 | 56.93 | 65.52 | 95 / 265 / 1,000 ms |
+
+<sub>两个私有部分和延迟由排行榜维护者测量（单进程，一张 RTX PRO 6000）。用 vLLM 0.29.0 加载时转 FP8，加上模型自带的 vLLM 插件，
+anyjev 0.3.0。引擎、插件和运行设置：[MorrisZJ/anyjev-tacitus](https://github.com/MorrisZJ/anyjev-tacitus)；结果：[decision-index-results](https://huggingface.co/datasets/morriszjm/decision-index-results/tree/d82c491a187b0f015b589ba813084fb695d98b78/runs/anyjev-tacitus-31b-v1) ·
+`bench/results_decision_index/2026-10-21/anyjev-tacitus-31b.json`</sub>
+
+</div>
+
 ## 🏆 Decision Index 上的免训练结果
 
 L0 档的 `Decider`，用未改动的 [`google/gemma-4-31B-it`](https://huggingface.co/google/gemma-4-31B-it)：不训练、不用标签，
@@ -573,6 +890,7 @@ L0 档的 `Decider`，用未改动的 [`google/gemma-4-31B-it`](https://huggingf
 - [x] **Tacit-1.7B、2B、4B、8B、9B** 发布在 Hugging Face；库里的 `Tacit` 支持 transformers、vLLM 和 `vllm serve`，带有上限的转推理和 HTTP 网关
 - [x] 评测代码（`scripts/eval_tacit.py`）；Tacit-9B 和 Tacit-4B 打开转推理的结果
 - [x] 免训练路线上了公开的 Decision Index 0.3 排行榜（[Gemma-4-31B 上的 L0](#-decision-index-上的免训练结果)）
+- [x] **AnyJev Tacitus 31B** 上了 Decision Index 0.4.1 排行榜，并列第 3（[详情](#-decision-index-上的-anyjev-tacitus)）
 - [ ] 🚧 Tacit-8B、2B、1.7B 打开转推理的结果
 - [ ] 🚧 无标签的提前退出：只用模型的一部分层读出决策，层数按与完整模型的一致率来选
 - [ ] **Agent 循环里的评测**：把同样的决策放进真实的 agent 里
@@ -648,6 +966,12 @@ FILE: CHANGELOG.md
 
 ## Unreleased
 
+- **README: AnyJev Tacitus 31B on the Decision Index 0.4.1 board.** A decision model fine-tuned from
+  google/gemma-4-31B-it and read with AnyJev (github.com/MorrisZJ/anyjev-tacitus, weights
+  morriszjm/AnyJev-Tacitus-31B): Full score 66.47, tied 3rd on 2026-10-21, with the private parts and the latency
+  measured by the board's maintainers. A second badge and section; the Decision Index 0.3 badge and section of the
+  training-free path stay as they were. The numbers are in `bench/results_decision_index/2026-10-21/` and checked by
+  `tests/test_readme_numbers.py`.
 - **New: `examples/decision_index/`**, the engine behind the Decision Index board entry (L0 on
   google/gemma-4-31B-it): `anyjev_engine.py`, `serve.sh`, `run.sh` and `requirements.txt`, unchanged from the
   submitted run (github.com/MorrisZJ/anyjev-l0-gemma at 50476e9, which the board links to and which stays as it
@@ -680,10 +1004,10 @@ FILE: CHANGELOG.md
 - **README: results with escalation.** Tacit-9B and Tacit-4B at the default `adaptive=True` settings;
   every Tacit number now comes from `bench/results_tacit/2026-10-06/` (`scripts/eval_tacit.py`), which
   replaces `bench/results_tacit/2026-10-05/one_forward.json` (the maintainers' transformers evaluation).
-  Through `vllm serve` one forward stays within bf16 noise of that evaluation on bev-decision (âˆ’31 to
-  +80 decisions of 46,320) and differs by at most three items of 231 on JevBench (Tacit-8B 0.749 â†’ 0.736,
-  Tacit-1.7B 0.623 â†’ 0.619; the other three unchanged). With escalation: Tacit-9B JevBench 0.887, bev-decision
-  0.755; Tacit-4B 0.758 and 0.704, with 14â€“18% of decisions sent to reasoning.
+  Through `vllm serve` one forward stays within bf16 noise of that evaluation on bev-decision (−31 to
+  +80 decisions of 46,320) and differs by at most three items of 231 on JevBench (Tacit-8B 0.749 → 0.736,
+  Tacit-1.7B 0.623 → 0.619; the other three unchanged). With escalation: Tacit-9B JevBench 0.887, bev-decision
+  0.755; Tacit-4B 0.758 and 0.704, with 14–18% of decisions sent to reasoning.
 - `Tacit`: a `score` decision can number its levels from 0 (`first_level=0`, also in the gateway's
   JSON), for rubrics that count from 0; the prompt shows and reads `0..K-1`. Default unchanged (1).
 - **New: `LlamaCppBackend`** (`anyjev/backends/llamacpp.py`, extra `anyjev[llamacpp]`, llama-cpp-python>=0.3.16)
@@ -764,7 +1088,7 @@ tag `v0.2.0`.
   0.000-0.008, and accuracy is within 0.5 points of the full cycle either way. End to end at a certified
   1% target on 300 states: **2.22x the decisions per second on a vLLM server and 2.3x-2.7x on the transformers
   backend** (two runs; the adaptive rows are stable and the full-cycle reference varies, so the ratio
-  inherits its variance â€” `docs/rotation_budget.md` states both), 7.2 requests per decision instead of 18, agreement 0.987, accuracy 0.703 against 0.697
+  inherits its variance — `docs/rotation_budget.md` states both), 7.2 requests per decision instead of 18, agreement 0.987, accuracy 0.703 against 0.697
   (`bench/results_layout/2026-09-27/`, `docs/rotation_budget.md`, research log entries 23 and 24).
   `Decider(adaptive_wave=n)` asks for n rotations per backend call; the default is 2 because a round is a
   barrier the whole batch waits behind -- on vLLM, waves of 1 and 2 issue the same requests and differ by
@@ -919,18 +1243,18 @@ AnyJev stands on other people's work. Attribution lives here, not in identifiers
 People outside the project whose reports and patches changed the code. Issue numbers are in the
 CHANGELOG next to what they fixed.
 
-- **[@efronh](https://github.com/efronh)** â€” found that L2 was broken on transformers 5 and
+- **[@efronh](https://github.com/efronh)** — found that L2 was broken on transformers 5 and
   identified the renamed `create_causal_mask` argument in the report (#4).
-- **[@lws2004](https://github.com/lws2004)** â€” found that the `hf` extra could not build a backend
+- **[@lws2004](https://github.com/lws2004)** — found that the `hf` extra could not build a backend
   at all, traced it to `device_map` and the undeclared `accelerate`, and supplied the change that
   fixes that, the Apple Silicon segfault and the `.model` assumption together (#5).
-- **[@shentonyan](https://github.com/shentonyan)** â€” wrote the SGLang backend (`anyjev/backends/sglang.py`)
+- **[@shentonyan](https://github.com/shentonyan)** — wrote the SGLang backend (`anyjev/backends/sglang.py`)
   with its parity script and contract tests, and reworked it onto SGLang's real response shape (#12).
-- **[@tak-bro](https://github.com/tak-bro)** â€” found that `VLLMBackend` silently read a label missing from
+- **[@tak-bro](https://github.com/tak-bro)** — found that `VLLMBackend` silently read a label missing from
   the server's top log-probabilities as -30, and traced it to vLLM's raw log-probability mode (#13).
-- **[@Tusm11](https://github.com/Tusm11)** â€” wrote the llama.cpp backend (`anyjev/backends/llamacpp.py`) with its
+- **[@Tusm11](https://github.com/Tusm11)** — wrote the llama.cpp backend (`anyjev/backends/llamacpp.py`) with its
   parity script, parity runs and stub-engine tests, and carried it through two rounds of review (#1, #2).
-- **[@monke-sniper](https://github.com/monke-sniper)** â€” reproduced the llama.cpp backend independently on Windows
+- **[@monke-sniper](https://github.com/monke-sniper)** — reproduced the llama.cpp backend independently on Windows
   and found that the prebuilt CUDA wheel traps on CPUs without AVX-512 (#2).
 
 ## Methods implemented
@@ -3924,7 +4248,7 @@ class GGUFTokenizer:
     def apply_chat_template(self, messages: List[Dict[str, str]], tokenize: bool = False,
                             add_generation_prompt: bool = True, **kwargs: Any):
         """Render the GGUF chat template through `llama_cpp.llama_chat_format.Jinja2ChatFormatter`
-        â€” the same sandboxed Jinja environment `Llama()` itself builds from this GGUF's metadata
+        — the same sandboxed Jinja environment `Llama()` itself builds from this GGUF's metadata
         (trim_blocks / lstrip_blocks, the `tojson` filter, `raise_exception`, `tools` / `documents`
         bound to `None` rather than left undefined), plus its pass-through for the `{% generation %}`
         tag (used by e.g. SmolLM3's template) that a bare sandboxed environment cannot parse. The
@@ -4668,7 +4992,7 @@ The Chinese version is [limitations.zh-CN.md](limitations.zh-CN.md).
   `cot_max_tokens`. The cap bounds how many decisions escalate, not how long one takes.
 - **On vLLM, Tacit reads the labels from the top 20 log-probabilities**, and a label outside them
   counts as 0.
-- **Tacit-9B and Tacit-2B (Qwen3.5) need transformers â‰¥ 5.** On Hopper GPUs, `vllm serve` compiles a
+- **Tacit-9B and Tacit-2B (Qwen3.5) need transformers ≥ 5.** On Hopper GPUs, `vllm serve` compiles a
   kernel for them with `nvcc`, so the CUDA toolkit has to be installed; `engine="vllm"` falls back to
   a Triton kernel by itself.
 - **L0's batch prior costs accuracy when one label dominates a batch.** Use `prior="content_free"` or
@@ -4735,7 +5059,7 @@ Accuracy of every single fixed rotation, against the full-K average on the same 
 
 The full cycle is worth +1.4 to +2.2 points over an average single rotation and +3.9 to +9.3 against
 the worst one, and it is at or below the **best** single rotation on every cell. So the K forwards buy
-insurance against a bad arrangement, plus the invariance `docs/levels.md` promises â€” not headroom. The
+insurance against a bad arrangement, plus the invariance `docs/levels.md` promises — not headroom. The
 position bias they cancel is large and stable: 3.90 to 6.81 log units of spread, and
 `corr(calibration b, held-out b)` of 0.998 to 1.000.
 
@@ -4745,9 +5069,9 @@ Read rotations in `spread_order` and stop when the running marginal is decided. 
 whether that is safe.
 
 **The statistic.** A gap between the top two *probabilities* saturates at 1, so once the marginal is
-peaked it carries no information â€” exactly the regime where the rule must decide. An earlier sweep
+peaked it carries no information — exactly the regime where the rule must decide. An earlier sweep
 saw this without naming it: margins of 0.05, 0.1 and 0.2 gave identical results. The **log-odds
-margin** â€” the same gap in log space â€” is unbounded. Calibrated per (model, question) at a 1% target,
+margin** — the same gap in log space — is unbounded. Calibrated per (model, question) at a 1% target,
 the difference is not a matter of degree (`margin_default.json`):
 
 | stopping rule | worst-cell mean shifts | cells certified of 4 |
@@ -4761,9 +5085,9 @@ On two cells no probability-gap threshold certifies 1% at any value. Unanimity c
 and certifies nothing extra.
 
 **The threshold.** The target is agreement with our own full-K answer, not accuracy, so it is measured
-on **unlabelled** states â€” that is what makes the guarantee free. A threshold fit to the calibration
+on **unlabelled** states — that is what makes the guarantee free. A threshold fit to the calibration
 split's observed disagreement does not hold out: at a 1% target, 300 states allow three disagreements
-and fitting to exactly three overfits (held-out 0.013â€“0.025). `Decider.calibrate_adaptive` requires a
+and fitting to exactly three overfits (held-out 0.013–0.025). `Decider.calibrate_adaptive` requires a
 Clopper-Pearson 95% upper bound to clear the target instead:
 
 | cell | K | threshold | mean shifts | vs K | held-out disagreement | accuracy (full cycle) |
@@ -4776,12 +5100,12 @@ Clopper-Pearson 95% upper bound to clear the target instead:
 The bound also reports honestly when a calibration set is too small: with zero observed disagreements,
 24 states still only bound the rate at 12%, because the floor is `1 - delta**(1/n)`. The method then
 returns no threshold and every shift is read. Before calibration the threshold is
-`DEFAULT_LOG_MARGIN = 8.5`, the smallest value certifying 1% on all four cells at once (1.9xâ€“3.9x).
+`DEFAULT_LOG_MARGIN = 8.5`, the smallest value certifying 1% on all four cells at once (1.9x–3.9x).
 
 ## Why stopping early is safe: rotate a canonical listing
 
 Reading a subset of shifts does not cancel the position bias, so applying the subset to *the caller's*
-listing would make the answer depend on the order the options were typed in â€” the property
+listing would make the answer depend on the order the options were typed in — the property
 `docs/levels.md` promises L0 removes. `Decider(canonical_order=True)` rotates a listing
 ordered by the option text instead, so the prompts are a function of the option **set**: any two
 listings of the same options return identical probabilities, at any shift budget. That is stronger
@@ -4807,12 +5131,12 @@ at 1% on 600 unlabelled states (10800 requests, 49 s, once), one H100 NVL, runs 
 
 On vLLM, waves of 1 and 2 issue the same requests and differ by 1.7x in wall clock: identical work,
 half the rounds. Locally there are no round trips, so 1 and 2 tie. Wider loses on both, which is why
-the default is 2. Agreement came in at 0.987 against a 1% target â€” outside it, which is what a 95%
+the default is 2. Agreement came in at 0.987 against a 1% target — outside it, which is what a 95%
 confidence bound permits, and stated rather than rounded.
 
 **On the variance of the ratio.** A second transformers run of the same command reproduced every stable
-quantity exactly â€” the same certificate (threshold 6.0, bound 0.0079), the same 7.24 and 7.43 requests
-per decision, the same 0.987 agreement and 0.703 accuracy â€” and a different *ratio*, 2.71x instead of
+quantity exactly — the same certificate (threshold 6.0, bound 0.0079), the same 7.24 and 7.43 requests
+per decision, the same 0.987 agreement and 0.703 accuracy — and a different *ratio*, 2.71x instead of
 2.34x, because the full-cycle reference came in at 5.98 decisions/s instead of 7.04 while the adaptive
 rows held at 16.1-16.2. The ratio inherits the reference's run-to-run variance, so read it as
 **2.3x-2.7x on transformers** and the absolute figures as the measurement. The vLLM row is one run.
@@ -4834,8 +5158,8 @@ Both are opt-in because the published L0 tables were measured with every rotatio
 
 The saving is bounded by `(P + K*B) / (P + R*B)` for a prefix of P tokens and an option block of B, so
 a long agentic context eats it: at R=4 on massive_route the measured speedup falls from 3.7x at a
-10-token state to 1.9x at 1500 (`sc_q25_massive.json`). `DEFAULT_LOG_MARGIN` was certified at K=18â€“20 on
-two 7â€“8B models; outside that, calibrate. And the budget does not go below a few prefills per decision:
+10-token state to 1.9x at 1500 (`sc_q25_massive.json`). `DEFAULT_LOG_MARGIN` was certified at K=18–20 on
+two 7–8B models; outside that, calibrate. And the budget does not go below a few prefills per decision:
 where one forward is the requirement, the self-distilled Tacit models answer in one.
 
 
@@ -5780,12 +6104,12 @@ or quantized file also measures llama.cpp's reduced-precision compute. On Qwen2.
 15 choice/noul/score prompts, transformers fp32 on CPU (`bench/llamacpp_parity_f32.json`,
 `bench/llamacpp_parity_f16.json`):
 
-    GGUF                                    argmax   max |Î” logprob|   mean |Î” logprob|
+    GGUF                                    argmax   max |Δ logprob|   mean |Δ logprob|
     F32, converted from the same snapshot    15/15    0.0159            0.0089
     official Qwen/Qwen2.5-0.5B-Instruct-GGUF fp16  14/15    1.1692            0.7053
 
 The F16 gap is llama.cpp computing with F16 weights, not this backend: on the same F16 file the
-backend matches llama-cpp-python's own `Llama.eval(logits_all=True)` last row to max |Î”| 0.0002
+backend matches llama-cpp-python's own `Llama.eval(logits_all=True)` last row to max |Δ| 0.0002
 (15/15), and switching the KV cache to F32 changes the result by only 0.04.
 
 Windows: the default PyPI llama-cpp-python wheel is CPU-only and works; a prebuilt CUDA wheel
@@ -5920,7 +6244,7 @@ def stat(ax, t, x, label, before, after, *, pct=False):
             fontweight="bold", transform=ax.transAxes, zorder=3)
     ax.text(x, 0.205, fmt(before), color=t["faint"], fontsize=21, va="center",
             fontweight="bold", transform=ax.transAxes, zorder=3)
-    ax.text(x + 0.079, 0.205, "â†’", color=t["faint"], fontsize=17, va="center",
+    ax.text(x + 0.079, 0.205, "→", color=t["faint"], fontsize=17, va="center",
             transform=ax.transAxes, zorder=3)
     ax.text(x + 0.112, 0.205, fmt(after), color=t["good"], fontsize=25, va="center",
             fontweight="bold", transform=ax.transAxes, zorder=3)
@@ -5953,7 +6277,7 @@ def render(lv: dict, out: Path) -> None:
     ax.text(0.5, 0.633, "Turn any LLM into a Jev-style decision model",
             color=t["ink"], fontsize=19, ha="center", va="center",
             transform=ax.transAxes, zorder=3)
-    ax.text(0.5, 0.553, "Typed decisions  Â·  real probabilities  Â·  training-free or self-distilled",
+    ax.text(0.5, 0.553, "Typed decisions  ·  real probabilities  ·  training-free or self-distilled",
             color=t["accent"], fontsize=13.5, ha="center", va="center",
             transform=ax.transAxes, zorder=3)
 
@@ -5970,7 +6294,7 @@ def render(lv: dict, out: Path) -> None:
         ax.plot([x, x], [0.145, 0.425], color=t["dim"], alpha=t["rule"], linewidth=1,
                 transform=ax.transAxes, zorder=3)
 
-    ax.text(0.965, 0.055, f"{HEADLINE[0]} Â· {HEADLINE[1]} Â· 300 items Â· raw readout â†’ L0, no labels",
+    ax.text(0.965, 0.055, f"{HEADLINE[0]} · {HEADLINE[1]} · 300 items · raw readout → L0, no labels",
             color=t["faint"], fontsize=9, ha="right", va="center",
             transform=ax.transAxes, zorder=3)
 
@@ -6027,7 +6351,7 @@ def panel(ax, dist, order, title, highlight, muted=False):
     colors = ["#c0392b" if (n == highlight and not muted) else ("#bbbbbb" if muted else "#4a6fa5") for n in names]
     ax.barh(range(len(names))[::-1], vals, color=colors)
     ax.set_yticks(range(len(names))[::-1])
-    ax.set_yticklabels([n if len(n) <= 30 else n[:28] + "â€¦" for n in names], fontsize=9)
+    ax.set_yticklabels([n if len(n) <= 30 else n[:28] + "…" for n in names], fontsize=9)
     ax.set_xlim(0, 1)
     ax.set_xticks([0, 0.5, 1])
     ax.set_title(title, fontsize=12, loc="left")
@@ -7309,7 +7633,84 @@ def test_score_labels_fall_back_to_letters_when_digits_are_multi_token():
 ================================================
 FILE: tests/test_readme_numbers.py
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x9d in position 2800: character maps to <undefined>
+"""The result tables in both READMEs are transcribed from committed JSON; this keeps them in step."""
+import json
+import re
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+READMES = ["README.md", "README.zh-CN.md"]
+TACIT = ROOT / "bench/results_tacit/2026-10-06"
+L0 = ROOT / "bench/results_v01/2026-09-22/Qwen__Qwen3-8B.json"
+DI = ROOT / "bench/results_decision_index/2026-10-12/anyjev-l0-gemma-4-31b.json"
+TACITUS = ROOT / "bench/results_decision_index/2026-10-21/anyjev-tacitus-31b.json"
+
+
+def cells(line):
+    return [c.strip().replace("**", "") for c in line.strip().strip("|").split("|")]
+
+
+def expected(res):
+    n = res["n"]
+    one = "%.3f" % (res["one_forward"]["correct"] / n)
+    if not res["settings"]["adaptive"]:
+        return one, "—"
+    a = res["adaptive"]
+    return one, "%.3f <sub>%.1f%%</sub>" % (a["correct"] / n, 100 * a["escalated"] / n)
+
+
+@pytest.mark.parametrize("readme", READMES)
+def test_tacit_table_matches_its_json(readme):
+    rows = [cells(x) for x in (ROOT / readme).read_text(encoding="utf-8").splitlines() if x.startswith("| [Tacit-")]
+    assert len(rows) == 5
+    for row in rows:
+        name = re.match(r"\[(Tacit-[\w.]+)\]", row[0]).group(1)
+        for col, task in ((2, "jevbench"), (4, "bev")):
+            res = json.loads((TACIT / ("%s.%s.json" % (name, task))).read_text(encoding="utf-8"))
+            assert res["model"] == "morriszjm/" + name
+            assert (row[col], row[col + 1]) == expected(res), (readme, name, task)
+
+
+@pytest.mark.parametrize("readme", READMES)
+def test_raw_vs_l0_table_matches_its_json(readme):
+    task = next(t for t in json.loads(L0.read_text(encoding="utf-8"))["tasks"] if t["task"] == "banking20")["levels"]
+    text = (ROOT / readme).read_text(encoding="utf-8").replace("**", "")
+    for metric in ("flip", "acc", "ece"):
+        want = "| %.3f | %.3f |" % (task["raw"][metric], task["L0"][metric])
+        assert want in text, (readme, metric, want)
+    cov = "| %.1f%% | %.1f%% |" % (100 * task["raw"]["cov@5%"], 100 * task["L0"]["cov@5%"])
+    assert cov in text, (readme, cov)
+
+
+@pytest.mark.parametrize("readme", READMES)
+def test_decision_index_numbers_match_their_json(readme):
+    b = json.loads(DI.read_text(encoding="utf-8"))["board"]
+    text = (ROOT / readme).read_text(encoding="utf-8")
+    lat = " / ".join("{:,}".format(round(b["latency_ms"][k])) for k in ("median", "mean", "p95"))
+    row = "| **%.2f** | %.2f | %.2f | %.2f | %s ms |" % (
+        b["full_score"], b["public"], b["same_skills_private"], b["new_domains_private"], lat)
+    assert row in text, (readme, row)
+    assert "Decision%%20Index%%200.3-%.2f" % b["full_score"] in text, readme       # the badge
+    assert text.count("**%.2f**" % b["full_score"]) == 2, readme                    # the callout and the table
+    rank = {"README.md": "5th of %d", "README.zh-CN.md": "%d 个条目中排第 5"}[readme] % b["entries"]
+    assert b["rank_by_full_score"] == 5 and text.count(rank) == 2, (readme, rank)
+
+
+@pytest.mark.parametrize("readme", READMES)
+def test_tacitus_numbers_match_their_json(readme):
+    b = json.loads(TACITUS.read_text(encoding="utf-8"))["board"]
+    text = (ROOT / readme).read_text(encoding="utf-8")
+    lat = " / ".join("{:,}".format(round(b["latency_ms"][k])) for k in ("median", "mean", "p95"))
+    row = "| **%.2f** | %.2f | %.2f | %.2f | %s ms |" % (
+        b["full_score"], b["same_skills_private"], b["new_domains_private"], b["public"], lat)
+    assert row in text, (readme, row)
+    assert "Decision%%20Index%%200.4.1-Tacitus%%20%.2f" % b["full_score"] in text, readme   # the badge
+    assert text.count("**%.2f**" % b["full_score"]) == 2, readme                          # the callout and the table
+    rank = {"README.md": "tied %drd", "README.zh-CN.md": "并列第 %d"}[readme] % b["rank_shown_with_ties"]
+    assert b["rank_shown_with_ties"] == 3 and text.count(rank) == 3, (readme, rank)      # callout, section, roadmap
+
 
 
 ================================================
@@ -8213,7 +8614,7 @@ def test_a_label_missing_from_top_logprobs_raises_instead_of_reading_minus_30(mo
             return {7: " A", 8: " B"}[ids[0]]
 
         def convert_ids_to_tokens(self, tid):
-            return {7: "Ä A", 8: "Ä B"}[tid]
+            return {7: "ĠA", 8: "ĠB"}[tid]
 
     be = V.VLLMBackend.__new__(V.VLLMBackend)              # no tokenizer download
     be.base_url, be.name, be.api_key, be.timeout, be.tokenizer = "http://x", "m", "EMPTY", 1.0, Tok()

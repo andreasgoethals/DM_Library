@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "e1d4cc938204b22fc5a3c3aca7044072fe3f712d",
   "revision_date": "2026-09-22T12:24:27Z",
   "slug": "typesafe-ai/system-one-adapter-python",
-  "retrieved_utc": "2026-10-20T10:34:57+00:00",
+  "retrieved_utc": "2026-10-23T08:24:52+00:00",
   "identity_source": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
   "included_files": 40,
   "excluded_files": 41,
@@ -226,7 +226,7 @@ cost/speed/intelligence.
 
 ## Install
 
-The provider SDKs are optional extras â€” install the one(s) you use:
+The provider SDKs are optional extras — install the one(s) you use:
 
 ```bash
 pip install 'system-one-adapter[openai]'      # OpenAI-compatible providers
@@ -302,8 +302,8 @@ reason and preserves the full provider response in `error.debug["llm_attempts"]`
 
 ### Response
 
-The response is a `typesafe_sdk.SystemOneResponse` subclass â€” same `answers` and typed
-views â€” with two additions:
+The response is a `typesafe_sdk.SystemOneResponse` subclass — same `answers` and typed
+views — with two additions:
 
 - `response.usage` adds `input_tokens_total` / `output_tokens_total` (across retries),
   `n_retries`, `n_retries_malformed_structure`, and `latency`.

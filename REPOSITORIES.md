@@ -22,15 +22,15 @@ code snapshots and need not equal the dates of the filed papers.
 | [SearchJev.txt](repositories/SearchJev.txt) | [EvoScientist/SearchJev](https://github.com/EvoScientist/SearchJev) | Search decision training, restricted scoring and calibration | 054ea81d4307 | 22 | Apache-2.0 |
 | [SIIDecision.txt](repositories/SIIDecision.txt) | [amazingljy1206/SII-Decision](https://github.com/amazingljy1206/SII-Decision) | General decision training and JEVal evaluation | 1723d83cbda6 | 29 | Apache-2.0 |
 | [JevBenchmarking.txt](repositories/JevBenchmarking.txt) | [AppliedMachineLearning-Lab/jev-benchmarking](https://github.com/AppliedMachineLearning-Lab/jev-benchmarking) | Benchmark tasks, response caching and probability metrics | 87562114d235 | 54 | MIT; response-specific notices retained |
-| [StrandsDecider.txt](repositories/StrandsDecider.txt) | [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider) | Pointer-head architecture, training recipes and calibration | ae170c4b1b94 | 206 | Apache-2.0; third-party notices retained |
-| [InternDecision.txt](repositories/InternDecision.txt) | [InternLM/Intern-Decision](https://github.com/InternLM/Intern-Decision) | Masked decision training, inference and calibration pilot | 3572c8a68b5d | 69 | Apache-2.0; benchmark notices retained |
+| [StrandsDecider.txt](repositories/StrandsDecider.txt) | [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider) | Pointer-head architecture, training recipes and calibration | d942e5515db7 | 206 | Apache-2.0; third-party notices retained |
+| [InternDecision.txt](repositories/InternDecision.txt) | [InternLM/Intern-Decision](https://github.com/InternLM/Intern-Decision) | Masked decision training, inference and calibration pilot | 565350244af8 | 69 | Apache-2.0; benchmark notices retained |
 | [TypeSafeSystemOneAdapter.txt](repositories/TypeSafeSystemOneAdapter.txt) | [typesafe-ai/system-one-adapter-python](https://github.com/typesafe-ai/system-one-adapter-python) | LLM baseline adapter for the TypeSafe decision interface | e1d4cc938204 | 40 | MIT |
 | [Clef.txt](repositories/Clef.txt) | [Cloudflare/clef](https://huggingface.co/Cloudflare/clef) | Joint-schema decision head and inference | a30162b99d68 | 10 | Apache-2.0 |
 | [LiquidD1_3B.txt](repositories/LiquidD1_3B.txt) | [LiquidAI/d1-3B](https://huggingface.co/LiquidAI/d1-3B) | Text/image decision inference | 051bcc464b01 | 12 | LFM Open License v1.0 |
 | [LiquidD1_Omni600M.txt](repositories/LiquidD1_Omni600M.txt) | [LiquidAI/d1-omni-600M](https://huggingface.co/LiquidAI/d1-omni-600M) | Encoder-based text/image/audio decisions | 02b55d7076f1 | 9 | LFM Open License v1.0 |
 | [PerplexityDecider.txt](repositories/PerplexityDecider.txt) | [perplexity-ai/pplx-decider-v1.1-27b](https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b) | Decision readout, training and data construction | 14c9d9013796 | 33 | Apache-2.0; NOTICE retained |
-| [AnyJev.txt](repositories/AnyJev.txt) | [nokia-applied-research/AnyJev](https://github.com/nokia-applied-research/AnyJev) | Training-free typed readout, order marginalization and selective prediction | b03158e9ba18 | 66 | Apache-2.0; third-party notices retained |
-| [StartLuxDecision.txt](repositories/StartLuxDecision.txt) | [StartLuxLabs/StartLux-Decision](https://github.com/StartLuxLabs/StartLux-Decision) | Instant/deliberative inference, readout controls and adaptation | 83fe6c7d61a6 | 136 | Apache-2.0 |
+| [AnyJev.txt](repositories/AnyJev.txt) | [nokia-applied-research/AnyJev](https://github.com/nokia-applied-research/AnyJev) | Training-free typed readout, order marginalization and selective prediction | 35311c589557 | 66 | Apache-2.0; third-party notices retained |
+| [StartLuxDecision.txt](repositories/StartLuxDecision.txt) | [StartLuxLabs/StartLux-Decision](https://github.com/StartLuxLabs/StartLux-Decision) | Instant/deliberative inference, readout controls and adaptation | a99977d9332d | 136 | Apache-2.0 |
 
 ## `JevOut.txt`
 
@@ -302,8 +302,9 @@ have been released.
 
 ## Coverage boundaries
 
-The eight-paper expansion adds only AnyJev and StartLux-Decision to the snapshot
-set. Intern-Decision was already registered. Narrow study-specific evaluation
+The earlier eight-paper expansion added AnyJev and StartLux-Decision to the snapshot
+set. Intern-Decision was already registered. The 23 October additions include
+System1Arena, Jeff, Tev1, H2OLightning, Kev and VLLMDecision2. Narrow study-specific evaluation
 supplements can be linked from paper summaries without adding another maintained
 dump; model websites and duplicative adapters do not qualify merely by existing.
 
@@ -329,6 +330,13 @@ repository search. Client demonstrations and third-party alternatives do not
 expose the released model's internals. TypeSafe's adapter similarly does not expose
 Jev internals. These are documented availability boundaries, not missing refresh
 registrations; the unsuccessful search is not proof that no future release exists.
+
+The owner-requested OpenAI, Inception, Upstage and Fastino sources document hosted
+decision endpoints. No official implementation or weight release for those exact
+decision models was verified on 23 October. General client SDKs are not substitutes
+for model internals. The Tev1 source snapshot's MIT notice likewise does not settle
+its unfinished weight license. See [DECISION_MODELS.md](DECISION_MODELS.md) for
+the model-level access distinctions, including Jeff's non-commercial weights.
 
 ## Refresh and regeneration
 

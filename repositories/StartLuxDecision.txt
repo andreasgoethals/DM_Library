@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/StartLuxLabs/StartLux-Decision",
-  "revision": "83fe6c7d61a687a6e17f118b4f7d8f429f5d3a01",
-  "revision_date": "2026-10-17T12:42:28+08:00",
+  "revision": "a99977d9332decc9fb27a2488b4a83b533b6cd5f",
+  "revision_date": "2026-10-23T14:42:24+08:00",
   "slug": "StartLuxLabs/StartLux-Decision",
-  "retrieved_utc": "2026-10-20T10:35:16+00:00",
+  "retrieved_utc": "2026-10-23T08:25:17+00:00",
   "identity_source": "https://arxiv.org/html/2610.17309v1",
   "included_files": 136,
   "excluded_files": 320,
@@ -57,8 +57,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 17262,
-      "sha256": "6b51c424966b36b3129cf192ccaaf80552de1f38329f1e1c3f18d60b9d954abc"
+      "bytes": 19097,
+      "sha256": "0d27c7bff24a680ee366e793c781bd0ff0ee1dc7f809157086b4e3779bbcace1"
     },
     {
       "path": "SECURITY.md",
@@ -763,14 +763,14 @@ harness, and the harnesses for computer use and chess are in [v1/demos](v1/demos
 
 | StartLux-Decision v1.1 | Decision Index 0.3 | DecisionPivot | Other formats |
 |---|---|---|---|
-| [27B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink) | **73.37** | **86.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-MLX-4bit) |
-| [27B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant) | 72.83 | 75.4 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-MLX-4bit) |
-| [9B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink) | **70.45** | **59.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-MLX-4bit) |
-| [9B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant) | 69.96 | 47.5 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-MLX-4bit) |
-| [4B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink) | **68.21** | **59.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-MLX-4bit) |
-| [4B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant) | 67.88 | 41.5 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-MLX-4bit) |
-| [2B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant) | 59.14 | 21.1 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-MLX-4bit) |
-| [0.8B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant) | 53.75 | 8.1 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-GGUF) Â· [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-MLX-8bit) Â· [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-MLX-4bit) |
+| [27B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink) | **73.37** | **86.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-AutoThink-MLX-4bit) |
+| [27B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant) | 72.83 | 75.4 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-27B-Instant-MLX-4bit) |
+| [9B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink) | **70.45** | **59.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-AutoThink-MLX-4bit) |
+| [9B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant) | 69.96 | 47.5 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-9B-Instant-MLX-4bit) |
+| [4B AutoThink](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink) | **68.21** | **59.9** | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-AutoThink-MLX-4bit) |
+| [4B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant) | 67.88 | 41.5 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-4B-Instant-MLX-4bit) |
+| [2B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant) | 59.14 | 21.1 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-2B-Instant-MLX-4bit) |
+| [0.8B Instant](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant) | 53.75 | 8.1 | [GGUF](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-GGUF) · [MLX 8-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-MLX-8bit) · [MLX 4-bit](https://huggingface.co/startlux-models/StartLux-Decision-v1.1-0.8B-Instant-MLX-4bit) |
 
 Decision Index 0.3 refers to the public subset, evaluated with the public kit. DecisionPivot reports pair accuracy on
 7,800 programmatically generated examples arranged in contrast pairs that differ in one decisive detail. A pair counts
@@ -778,7 +778,7 @@ only when both answers are correct. The AutoThink results use a gate of 0.9.
 
 Across sizes, the Instant models exceed the strongest evaluated decision model of comparable size by 7.4 to 16.9 points
 on Decision Index 0.3, and AutoThink adds 11.5 to 18.4 points of DecisionPivot pair accuracy over Instant. AutoThink
-reasoning is trained with RLCDÂ², reinforcement learning for calibrated deliberative decisions. The technical report
+reasoning is trained with RLCD², reinforcement learning for calibrated deliberative decisions. The technical report
 contains the full evaluation. The engine also serves the
 [v1 models](https://huggingface.co/collections/startlux-models/startlux-decision-v1-6abba92b301b573fa154d493)
 (0.8B to 27B and 35B-A3B), which answer in one pass.
@@ -791,6 +791,35 @@ unsure it writes a thought and reads the answer a second time, and the thought t
 
 To try a model without a GPU, use [bamboonode.dev](https://bamboonode.dev/). It hosts the 27B AutoThink model with the
 same request format (`POST /v1/decisions`), free and without usage limits, and needs only a Bamboo API key.
+
+On NVIDIA GPUs, [StartLux-Prism](https://github.com/StartLuxLabs/StartLux-Prism) is our inference engine written for
+these models. It serves v1 and v1.1 AutoThink (4B, 9B and 27B) straight from the released GGUF files, behind the same
+`/v1/systemone` API; v1.1 Instant models are not supported yet. Install it on Linux with Python 3.12 and a CUDA 13
+driver:
+
+```bash
+git clone https://github.com/StartLuxLabs/StartLux-Prism.git
+cd StartLux-Prism
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt     # PyTorch 2.14.1 for CUDA 13, Triton, nvcc 13.0
+source scripts/cuda_env.sh          # nvcc from pip as CUDA_HOME (in every new shell)
+```
+
+Download a GGUF file with its release's tokenizer and config, and start the server:
+
+```bash
+M=~/models/StartLux-Decision-v1.1-27B-AutoThink-GGUF
+hf download startlux-models/StartLux-Decision-v1.1-27B-AutoThink-GGUF \
+  StartLux-Decision-v1.1-27B-AutoThink-Q8_0.gguf --local-dir $M
+hf download startlux-models/StartLux-Decision-v1.1-27B-AutoThink --exclude "*.safetensors" --local-dir $M
+python -m startlux_prism.server --gguf $M/StartLux-Decision-v1.1-27B-AutoThink-Q8_0.gguf --model-dir $M --port 8090
+```
+
+The server is ready when it prints `Ready`; the first start compiles its CUDA kernels and measures the int8 activation
+ranges once. It answers the request below as it is. `allow_none` is on by default for v1.1 models (`--allow-none off`
+matches this package), and the server has no API keys or TLS, so keep it behind your own access control.
+[StartLux-Prism's README](https://github.com/StartLuxLabs/StartLux-Prism#readme) covers CUDA 12 drivers, several GPUs
+and every flag.
 
 To run the models yourself, install the package into the same Python environment as vLLM. It carries the vLLM plugin
 that Instant models need.
@@ -872,6 +901,7 @@ format, the confidence definitions, the details fields and the errors.
 | Engine | Instant | AutoThink | Images | Typical use |
 |---|---|---|---|---|
 | vLLM (default) | yes, with the plugin in this package | yes | vLLM 0.31 | serving, and the published numbers |
+| [StartLux-Prism](https://github.com/StartLuxLabs/StartLux-Prism) | not yet | yes, 4B, 9B and 27B | with the `mmproj` file | the GGUF files on NVIDIA GPUs, lowest latency |
 | llama.cpp | yes, GGUF builds marked non-causal | yes | with the `mmproj` file | machines without vLLM |
 | MLX | yes, mlx-vlm builds | yes | yes | Apple Silicon |
 | transformers | yes | yes | yes | reference checks |
@@ -1371,7 +1401,7 @@ Images (optional, as in v1): `images` is a list of base64 strings or data URIs. 
 each image goes, one mark per image, in order (a JSON state may hold the marks in its strings). Without marks the
 images come first (`Image 1:`, `Image 2:` ... on their own lines when there are several), then a blank line and the
 state. Each image is resized to at most 1,048,576 pixels and at least 65,536, keeping its aspect ratio, with both
-sides multiples of 32 pixels, and becomes one token per 32 Ã— 32 pixels (a 1024 Ã— 1024 photo is 1,024 tokens). Every
+sides multiples of 32 pixels, and becomes one token per 32 × 32 pixels (a 1024 × 1024 photo is 1,024 tokens). Every
 question of the request reads every image, and `usage.input_tokens` counts the image tokens. At most 8 images per
 request by default (`serve --max-images`, `--max-pixels`; `--no-images` serves text only). Images need a folder with
 a vision tower and an engine that reads them: vLLM 0.31 or later, transformers, llama.cpp when llama-server has an
@@ -1416,9 +1446,9 @@ separates the two kinds of question much worse, because hard questions with a ri
 option also gives a thought a way out: without it, a question that has no fitting option often makes the thought go
 round in circles until the budget, since the model must still pick a listed option.
 
-`confidence` follows TypeSafe: for a choice (p_max âˆ’ 1/n) / (1 âˆ’ 1/n), clamped to [0, 1]; for a score 1 minus the
+`confidence` follows TypeSafe: for a choice (p_max − 1/n) / (1 − 1/n), clamped to [0, 1]; for a score 1 minus the
 probability-weighted distance in levels from the most likely level, divided by the same distance for an even spread
-measured from the middle level, floored at 0. Yes/no answers have no confidence; |2p âˆ’ 1| is the equivalent.
+measured from the middle level, floored at 0. Yes/no answers have no confidence; |2p − 1| is the equivalent.
 
 ### Controls
 
@@ -1426,8 +1456,8 @@ measured from the middle level, floored at 0. Yes/no answers have no confidence;
 |---|---|---|
 | `think_mode` | `auto` / `never` / `always` (also `hybrid` / `plain` / `think`) | `auto`: think when the first read-out's top probability is below `gate` |
 | `gate` | number in [0, 1] | the threshold of `auto` |
-| `think_budget` | integer â‰¥ 1 | most thought tokens; larger values are capped by the server's maximum (`serve --max-think-budget`, default: the default budget) |
-| `mix` | number in [0, 1] | final = (1 âˆ’ mix) Â· first read-out + mix Â· read-out after the thought; 0 ignores the thought, 1 uses only the read-out after it |
+| `think_budget` | integer ≥ 1 | most thought tokens; larger values are capped by the server's maximum (`serve --max-think-budget`, default: the default budget) |
+| `mix` | number in [0, 1] | final = (1 − mix) · first read-out + mix · read-out after the thought; 0 ignores the thought, 1 uses only the read-out after it |
 | `thought_generation` | `auto` / `stream` / `chunked` | how a thought is generated. `stream`: one streamed request; the loop detector looks at the thought each time another 1,024 tokens have arrived and ends the request when it loops. `chunked`: requests of 1,024 tokens, each re-sending the prompt and the thought so far, with the loop detector between them. `auto`: `stream` when the engine streams thoughts (vLLM 0.31 or later), else `chunked`. `stream` on another engine gets a 422 |
 | `allow_none` | bool, default false (true with `serve --allow-none`) | choice questions get the extra last option "None of the above" (see above); a question's own `allow_none` overrides it; ignored by `noul` and `score` questions; a non-boolean gets a 422 |
 | `none_check` | bool, default true in `serve` | choice questions get the extra option internally and report `none_probability`; `choice` stays a listed option unless `allow_none` is set; a non-boolean gets a 422 |
@@ -1625,19 +1655,19 @@ startlux-decide eval --compare run_a.jsonl run_b.jsonl    # paired comparison
 startlux-decide eval ... --controls '{"think_mode": "never"}'   # merged into every request
 ```
 
-Every request is sent with `return_details`. Per question, the predicted label is the choice, yes when P(yes) â‰¥ 0.5, or
+Every request is sent with `return_details`. Per question, the predicted label is the choice, yes when P(yes) ≥ 0.5, or
 the most probable level; its probability is the confidence.
 
 | metric | definition |
 |---|---|
 | accuracy | share of scored questions whose predicted label is the gold label |
-| ECE | top-label calibration error: 10 equal-width confidence bins, \|accuracy âˆ’ mean confidence\| per bin weighted by its share |
-| Brier | sum over the options of (p âˆ’ 1[option is gold])Â², averaged (a yes/no question counts both options) |
+| ECE | top-label calibration error: 10 equal-width confidence bins, \|accuracy − mean confidence\| per bin weighted by its share |
+| Brier | sum over the options of (p − 1[option is gold])², averaged (a yes/no question counts both options) |
 | thought share | share of questions that thought (from the answers' details) |
 | thought tokens | mean thought tokens over all questions, and over the questions that thought |
 
 `--compare A B` pairs questions by request id and key (same gold label) and reports the agreement of the predicted
-labels, both accuracies, the difference B âˆ’ A with a 95% bootstrap interval (2,000 resamples of requests, since the
+labels, both accuracies, the difference B − A with a 95% bootstrap interval (2,000 resamples of requests, since the
 questions of a request share their evidence), the both / only-A / only-B correct counts, the agreement of the gate's
 decisions, and the largest change of any option's probability per question (mean and maximum). Use it to compare
 engines, builds (BF16 against FP8, GGUF or MLX) and settings.
@@ -1731,7 +1761,7 @@ curl -s localhost:8090/v1/systemone -H 'Content-Type: application/json' -d '{
   image, in order. Without marks the images come first (as `Image 1:`, `Image 2:` ... when there are several),
   followed by the state.
 - Each image is resized to at most 1,048,576 pixels, keeping its aspect ratio (`--max-pixels`), and becomes one token
-  per 32 Ã— 32 pixels: a 1024 Ã— 1024 photo is 1,024 tokens. Every question of the request reads the same images. At
+  per 32 × 32 pixels: a 1024 × 1024 photo is 1,024 tokens. Every question of the request reads the same images. At
   most 8 images per request (`--max-images`); `--no-images` serves text only.
 - Images work on vLLM 0.31 or later, on the transformers engine, on llama.cpp (llama-server started with the model's
   `mmproj-*-F16.gguf` file; without it a request with images gets a 422) and on MLX (mlx-vlm folders), for v1 and
@@ -2091,7 +2121,7 @@ As a ranking it is strong: given one question without a right answer and one wit
 | 0.3 | 61.5% | 1.6% |
 | 0.5 | 53.5% | 1.0% |
 
-We suggest treating `none_probability` â‰¥ 0.2 as "no listed option fits" for four reasons.
+We suggest treating `none_probability` ≥ 0.2 as "no listed option fits" for four reasons.
 
 1. **False alarms stay near 2%.** At 0.2 about one well-posed question in 45 is flagged. Going down to 0.1 catches
    7 points more but doubles the false alarms to 4.5%. Going up to 0.5 halves them to 1.0% but misses 13 points more.
@@ -2261,7 +2291,7 @@ startlux-decide eval --compare bf16.jsonl fp8.jsonl
 interval over requests, the agreement of the gate's decisions (thought or not), and the largest change of any option's
 probability per question.
 
-| model | build | engine | agreement with BF16 | accuracy BF16 â†’ build (95% CI of the difference) | thought decisions agree | max \|Î”p\| (mean) |
+| model | build | engine | agreement with BF16 | accuracy BF16 → build (95% CI of the difference) | thought decisions agree | max \|Δp\| (mean) |
 |---|---|---|---|---|---|---|
 | 4B Instant | FP8 | vLLM | TODO | TODO | n/a | TODO |
 | 4B AutoThink | FP8 | vLLM | TODO | TODO | TODO | TODO |
@@ -2568,56 +2598,56 @@ the plan cannot reach them.
 Measured with the plugin before it moved into this package (same logic; only names changed), bf16, one H200 per run.
 Models: a prompt-bidirectional thinking test model (B), a one-pass Instant 4B candidate (I), and for the noise floor a
 causal 4B (C). The transformers reference is the training code's bidirectional forward. Token ids were rendered once,
-so both sides read identical ids. Î”p is the largest change of an option's probability per item.
+so both sides read identical ids. Δp is the largest change of an option's probability per item.
 
-**Noise floor.** The same comparison for the causal model C, stock vLLM against transformers: one-pass mean |Î”p| 0.0061,
+**Noise floor.** The same comparison for the causal model C, stock vLLM against transformers: one-pass mean |Δp| 0.0061,
 max 0.040, top-1 agreement 99.0%; read-outs after a thought: mean 0.0055, top-1 99.0%; greedy 128 tokens: 50% identical.
 
 | test | vLLM with the plugin vs transformers reference | stock vLLM vs transformers reference |
 |---|---|---|
-| (a) one-pass read-out, model B, 300 items | mean \|Î”p\| 0.0065, max 0.048, top-1 99.3% | 0.097, max 0.74, top-1 88.3% |
+| (a) one-pass read-out, model B, 300 items | mean \|Δp\| 0.0065, max 0.048, top-1 99.3% | 0.097, max 0.74, top-1 88.3% |
 | (a) one-pass read-out, model I, 300 items | mean 0.0053, max 0.031, top-1 99.7% | 0.097, max 0.75, top-1 88.3% |
 | (c) read-out after a stored thought, 200 thoughts | mean 0.0060, max 0.052, top-1 99.5% | 0.067, max 0.57, top-1 95.0% |
-| (b) greedy thought, 128 tokens, 50 prompts | 62% identical; first difference after 94 tokens on average; first-token top-1 98%, mean \|Î”logprob\| 0.014 | 2% identical; 22 tokens |
+| (b) greedy thought, 128 tokens, 50 prompts | 62% identical; first difference after 94 tokens on average; first-token top-1 98%, mean \|Δlogprob\| 0.014 | 2% identical; 22 tokens |
 
 For (b): the transformers reference against itself, with prompts decoded one at a time instead of batched, gives 74%
-identical and a first-token mean |Î”logprob| of 0.014, so the vLLM-vs-reference difference is batching noise.
+identical and a first-token mean |Δlogprob| of 0.014, so the vLLM-vs-reference difference is batching noise.
 
 | more checks | result |
 |---|---|
 | (d) plugin off, bit-identical | Stock vs plugin loaded without the variable (model B): identical. Stock vs plugin active on a causal folder (model C): identical. Each over 570 cases (12,315 floats and every token), twice, with a schedule that does not depend on timing (in-process engine, no async scheduling; with async scheduling stock vLLM is not reproducible against itself) |
 | detected p vs explicit p | bit-identical offline; the same over HTTP up to batching noise |
-| fp32 check (570 cases, 4 requests per layer call, 1,000 checks) | fix-up error at most 2.03 Ã— the stock causal kernel's own error on the same rows (max 0.148 vs 0.170 at outputs up to about 37: bf16 rounding). The bidirectional part changes the prompt rows by at least 4.4 |
+| fp32 check (570 cases, 4 requests per layer call, 1,000 checks) | fix-up error at most 2.03 × the stock causal kernel's own error on the same rows (max 0.148 vs 0.170 at outputs up to about 37: bf16 rounding). The bidirectional part changes the prompt rows by at least 4.4 |
 | mask probe (prompt log-probabilities) | changing the last user-turn token moves the log-probabilities of earlier positions by 0.67 to 1.86 with the plugin, by 0 without. Changing a thought token moves nothing before it (exactly 0) and at least 2.4 after it |
-| preemption (small KV cache, 6 requests prefilled again) | all 248 checked fix-ups, the re-prefills included, pass the fp32 check (ratio â‰¤ 1.21) |
-| `vllm serve` with the plugin | one-pass mean \|Î”p\| 0.0066, top-1 99.3%; read-out after a thought 0.0059, 99.5%; serve vs offline identical up to batching noise |
-| held-out run, 3,021 items (model B, sampled thoughts, budget 4,096) | one-pass read-out: mean \|Î”p\| 0.0069, top-1 99.0%; accuracy 72.49% (reference) vs 72.46% (vLLM). After the thought: 74.81% vs 74.94%, difference +0.13 points, 95% CI âˆ’0.56 to +0.86. Brier 0.359 vs 0.357. Thoughts closed 17.7% vs 18.1%, 3,538 vs 3,539 tokens. GPU time 4.3 Ã— lower on vLLM |
-| throughput, one H200 (thought generation, budget 4,096, temperature 0.6 / top-p 0.95 / top-k 20, read-outs before and after) | 12,728 thoughts per hour including read-outs (15,744 generation only), 9,920 tokens/s; the transformers reference runner about 3,500 thoughts per hour: 3.6 Ã— (4.5 Ã— generation only) |
-| overhead (1,024 Ã— 512 forced tokens, same engine settings) | 54.6 s with the plugin, 53.4 s stock (+2.2%) |
+| preemption (small KV cache, 6 requests prefilled again) | all 248 checked fix-ups, the re-prefills included, pass the fp32 check (ratio ≤ 1.21) |
+| `vllm serve` with the plugin | one-pass mean \|Δp\| 0.0066, top-1 99.3%; read-out after a thought 0.0059, 99.5%; serve vs offline identical up to batching noise |
+| held-out run, 3,021 items (model B, sampled thoughts, budget 4,096) | one-pass read-out: mean \|Δp\| 0.0069, top-1 99.0%; accuracy 72.49% (reference) vs 72.46% (vLLM). After the thought: 74.81% vs 74.94%, difference +0.13 points, 95% CI −0.56 to +0.86. Brier 0.359 vs 0.357. Thoughts closed 17.7% vs 18.1%, 3,538 vs 3,539 tokens. GPU time 4.3 × lower on vLLM |
+| throughput, one H200 (thought generation, budget 4,096, temperature 0.6 / top-p 0.95 / top-k 20, read-outs before and after) | 12,728 thoughts per hour including read-outs (15,744 generation only), 9,920 tokens/s; the transformers reference runner about 3,500 thoughts per hour: 3.6 × (4.5 × generation only) |
+| overhead (1,024 × 512 forced tokens, same engine settings) | 54.6 s with the plugin, 53.4 s stock (+2.2%) |
 
 ### vLLM 0.31.0
 
 Measured on 11 October 2026 with this package, bf16, one H200 per engine, FlashAttention 3 on both versions. Instant
 release folders (4B unless noted). Offline tests run `vllm.LLM` in one process without async scheduling, on 300
 one-pass prompts from the latency requests (questions with 2 to 26 options), 40 prompts read after a short written
-thought, 20 one-pass prompts with an explicit p, and greedy continuations of 32 tokens. Î”p is the largest change of an
+thought, 20 one-pass prompts with an explicit p, and greedy continuations of 32 tokens. Δp is the largest change of an
 option's probability per question.
 
 | test | result |
 |---|---|
-| 0.19.1, the plugin before the port against this one, same GPU one after the other | bit-identical: all 360 read-outs, all 40 continuations, the same plan counters. Two runs of either plugin are also bit-identical. (The very first runs, two engines compiling their kernels at the same time on empty caches, differed at batching-noise level: 146 of 300 one-pass read-outs bit-identical, mean \|Î”p\| 0.0014, same top option on all; with filled caches every repeat was bit-identical) |
-| fp32 check on 0.31, 4 requests per layer call | runner V2: 216 checks, fix-up error at most 1.52 Ã— the stock kernel's own error on the same rows. Runner V1: 232 checks, at most 1.52 Ã—. The bidirectional part changes the prompt rows by at least 4.6 |
-| preemption on 0.31 (36 KV blocks of 528 tokens, 16 sequences, continuations forced to 512 tokens), fp32 check on | 6 requests prefilled again with their generated tokens on each runner; all 976 checks pass (at most 1.75 Ã— on V2, 1.49 Ã— on V1) |
-| explicit p on 0.31 | p = L gives the detected one-pass read-out bit for bit (10 of 10); p = 0 reads causally (mean \|Î”p\| 0.035) |
+| 0.19.1, the plugin before the port against this one, same GPU one after the other | bit-identical: all 360 read-outs, all 40 continuations, the same plan counters. Two runs of either plugin are also bit-identical. (The very first runs, two engines compiling their kernels at the same time on empty caches, differed at batching-noise level: 146 of 300 one-pass read-outs bit-identical, mean \|Δp\| 0.0014, same top option on all; with filled caches every repeat was bit-identical) |
+| fp32 check on 0.31, 4 requests per layer call | runner V2: 216 checks, fix-up error at most 1.52 × the stock kernel's own error on the same rows. Runner V1: 232 checks, at most 1.52 ×. The bidirectional part changes the prompt rows by at least 4.6 |
+| preemption on 0.31 (36 KV blocks of 528 tokens, 16 sequences, continuations forced to 512 tokens), fp32 check on | 6 requests prefilled again with their generated tokens on each runner; all 976 checks pass (at most 1.75 × on V2, 1.49 × on V1) |
+| explicit p on 0.31 | p = L gives the detected one-pass read-out bit for bit (10 of 10); p = 0 reads causally (mean \|Δp\| 0.035) |
 | causal folder (AutoThink 4B) on 0.31, plugin switched on and off | bit-identical (240 read-outs, 20 continuations) |
 | runner V2 against runner V1 on 0.31 | same top option on 340 of 340 read-outs, 329 bit-identical; continuations identical |
-| 0.19.1 against 0.31 (runner V2), offline | same top option on 340 of 340; one-pass mean \|Î”p\| 0.0015, max 0.025, none above 0.05; 38 of 40 continuations identical |
+| 0.19.1 against 0.31 (runner V2), offline | same top option on 340 of 340; one-pass mean \|Δp\| 0.0015, max 0.025, none above 0.05; 38 of 40 continuations identical |
 | unknown runner | 0.19.1 with `VLLM_USE_V2_MODEL_RUNNER=1`: the engine refuses the Instant folder at start |
 
 Through the server: `startlux-decide serve` in front of `vllm serve` with the release flags, the 300 latency requests
 (823 questions) one at a time, `think_mode` never. Reference: vLLM 0.19.1 with the plugin before the port.
 
-| engine | Instant 4B: same option, mean \|Î”p\|, share above 0.05 | Instant 27B |
+| engine | Instant 4B: same option, mean \|Δp\|, share above 0.05 | Instant 27B |
 |---|---|---|
 | 0.31.0 + this plugin, runner V2 | 99.88% (one question), 0.0017, 0.12% | 100%, 0.0019, 0.12% |
 | 0.31.0 + this plugin, runner V1 | 99.88%, 0.0017, 0.12% | 100%, 0.0019, 0.12% |
@@ -8197,7 +8227,7 @@ class _Detokenizer:
     def add(self, token: int) -> str:
         self.pending.append(token)
         s = self.tokenizer.decode(self.pending, skip_special_tokens=True)
-        if s.endswith("ï¿½") and len(self.pending) < 8:
+        if s.endswith("�") and len(self.pending) < 8:
             return ""
         self.pending = []
         return s
@@ -10472,8 +10502,8 @@ NAMES = ("billing", "shipping", "technical", "refund", "escalate", "ignore", "wa
 
 
 def random_text(r: random.Random, n: int) -> str:
-    pieces = ["order", "#4411", "charged twice", "naÃ¯ve", "æ—¥æœ¬èªž", "ðŸ˜€", "line\nbreak", "  spaced  ",
-              "{\"a\": 1}", "A) trap", "<b>bold</b>", "42", "3.14", "tab\there", "ÃœnÃ¯cÃ¶dÃ©", "end."]
+    pieces = ["order", "#4411", "charged twice", "naïve", "日本語", "😀", "line\nbreak", "  spaced  ",
+              "{\"a\": 1}", "A) trap", "<b>bold</b>", "42", "3.14", "tab\there", "Ünïcödé", "end."]
     return " ".join(r.choice(pieces) for _ in range(n))
 
 
@@ -12207,7 +12237,7 @@ class TextHelpersTest(unittest.TestCase):
     def test_detokenizer_waits_for_complete_characters(self):
         class Tok:
             def decode(self, ids, skip_special_tokens=True):
-                return "ï¿½" if ids == [1] else "".join(chr(96 + i) for i in ids)
+                return "�" if ids == [1] else "".join(chr(96 + i) for i in ids)
         d = M._Detokenizer(Tok())
         self.assertEqual(d.add(1), "")
         self.assertEqual(d.add(2), "ab")
@@ -12878,7 +12908,7 @@ class ExactTextTest(unittest.TestCase):
                          '{"_index": 3, "value": 3}, {"_index": 4, "value": 4}, {"_index": 5, "value": 5}, '
                          '{"_index": 6, "value": 6}, {"_index": 7, "value": 7}]}')
         self.assertEqual(state_text([1, 2]), "[1, 2]")
-        self.assertEqual(state_text("naÃ¯ve æ—¥æœ¬"), "naÃ¯ve æ—¥æœ¬")
+        self.assertEqual(state_text("naïve 日本"), "naïve 日本")
 
     def test_score_levels_lowest_first(self):
         self.assertEqual(score_keys({"10": "a", "2": "b", "0": "c"}), ["0", "2", "10"])
@@ -13907,7 +13937,7 @@ class KeysTest(unittest.TestCase):
             self.assertEqual(len(parse_keys(f.read())), 2)
         for bad, fragment in ((b"short-key\n", "line 1: a key must have at least 16"),
                               (b"# c\nkey with spaces in it\n", "line 2: a key must be one word"),
-                              ("kÃ©y-with-accent-0123".encode(), "line 1"), (b"\xff\xfe", "not UTF-8")):
+                              ("kéy-with-accent-0123".encode(), "line 1"), (b"\xff\xfe", "not UTF-8")):
             with self.assertRaises(ValueError) as cm:
                 parse_keys(bad)
             self.assertIn(fragment, str(cm.exception))
@@ -15219,12 +15249,12 @@ FILE: v1/README.md
 > [main README](../README.md).
 
 <p align="center">
-  <a href="https://huggingface.co/collections/startlux-models/startlux-decision-v1-6abba92b301b573fa154d493">Models on Hugging Face</a> Â·
-  <a href="https://modelscope.cn/organization/StartLuxAI">Models on ModelScope</a> Â·
-  <a href="docs/results.md">Results</a> Â·
-  <a href="docs/inference.md">Inference</a> Â·
-  <a href="docs/evaluation.md">Evaluation</a> Â·
-  <a href="docs/finetuning.md">Fine-tuning</a> Â·
+  <a href="https://huggingface.co/collections/startlux-models/startlux-decision-v1-6abba92b301b573fa154d493">Models on Hugging Face</a> ·
+  <a href="https://modelscope.cn/organization/StartLuxAI">Models on ModelScope</a> ·
+  <a href="docs/results.md">Results</a> ·
+  <a href="docs/inference.md">Inference</a> ·
+  <a href="docs/evaluation.md">Evaluation</a> ·
+  <a href="docs/finetuning.md">Fine-tuning</a> ·
   <a href="results/">Raw results</a>
 </p>
 
@@ -15300,7 +15330,7 @@ game's built-in policy.
 StartLux-Decision-v1-27B reaches 63.88 on Decision Index 0.2.1, StartLux-Decision-v1-35B-A3B 61.55 and StartLux-Decision-v1-9B 58.63,
 scored with the board's own kit on the full suite. The highest entry on the public board (2026-09-28) is Jev 1.13 at 57.91; our runs are not on the board.
 StartLux-Decision-v1-27B scores higher than Jev on 31 of the 38 benchmarks in the index. Our training data includes the public
-train splits of 14 of them, marked â€  below; their test items were filtered out of it.
+train splits of 14 of them, marked † below; their test items were filtered out of it.
 
 Every cell below is on the index's own scale: the benchmark's metric, corrected for chance, so 0% is random guessing
 and 100% is perfect. The index is a weighted mean of these cells, which is why the first row matches the chart.
@@ -15311,52 +15341,52 @@ and 100% is perfect. The index is a weighted mean of these cells, which is why t
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Decision Index 0.2.1** | **63.88** | 61.55 | 58.63 | 52.75 | 57.91 | 57.44 | 57.33 | 56.40 |
 | **Knowledge & Reasoning** | 44.3 | 42.4 | 38.0 | 32.1 | **51.4** | 43.4 | 44.3 | 40.9 |
-| GSM8K â€  | 95.3 | **95.6** | 94.3 | 87.8 | 75.6 | 75.7 | 78.8 | 61.1 |
+| GSM8K † | 95.3 | **95.6** | 94.3 | 87.8 | 75.6 | 75.7 | 78.8 | 61.1 |
 | ChessBench | 10.7 | 8.8 | 5.3 | 4.0 | 9.8 | 11.5 | **15.4** | 9.8 |
 | MuSR | **48.8** | 36.8 | 34.9 | 30.0 | 46.1 | 44.2 | 43.1 | 39.3 |
 | SATA-Bench | 9.3 | 27.5 | 25.3 | 14.0 | 25.4 | **34.0** | 28.4 | 28.9 |
-| GPQA Diamond â˜… | 34.0 | 34.7 | 33.3 | 22.4 | **71.4** | 29.2 | 32.0 | 32.6 |
+| GPQA Diamond ★ | 34.0 | 34.7 | 33.3 | 22.4 | **71.4** | 29.2 | 32.0 | 32.6 |
 | CRUXEval | 61.6 | 54.4 | 36.5 | 27.6 | 57.1 | 59.4 | **67.2** | 60.2 |
 | CLadder | 47.3 | 39.1 | 36.1 | 31.8 | 45.3 | 45.5 | **49.2** | 49.0 |
-| HLE â˜… | 0.0 | 0.0 | 0.0 | 0.0 | **4.7** | 0.0 | 0.0 | 0.0 |
-| MMLU-Pro â˜… | 66.0 | 63.0 | 56.5 | 51.6 | **80.5** | 63.1 | 65.8 | 60.1 |
-| BBH â˜… | 71.3 | 65.4 | 58.2 | 52.0 | **89.7** | 72.7 | 65.5 | 68.3 |
+| HLE ★ | 0.0 | 0.0 | 0.0 | 0.0 | **4.7** | 0.0 | 0.0 | 0.0 |
+| MMLU-Pro ★ | 66.0 | 63.0 | 56.5 | 51.6 | **80.5** | 63.1 | 65.8 | 60.1 |
+| BBH ★ | 71.3 | 65.4 | 58.2 | 52.0 | **89.7** | 72.7 | 65.5 | 68.3 |
 | **Language Understanding** | **74.5** | 73.6 | 71.3 | 63.9 | 62.0 | 63.1 | 60.4 | 63.5 |
-| ContractNLI â€  | 80.3 | 78.9 | **80.6** | 76.8 | 59.1 | 66.7 | 61.8 | 68.4 |
-| ANLI â˜… â€  | **67.0** | 66.8 | 64.6 | 54.9 | 62.2 | 60.3 | 59.8 | 56.0 |
-| WinoGrande â˜… | **87.1** | 86.0 | 83.0 | 70.3 | 83.9 | 71.9 | 67.3 | 70.3 |
-| HellaSwag â˜… | 96.8 | **97.0** | 95.7 | 92.4 | 92.7 | 89.9 | 89.4 | 92.0 |
-| ACOS â€  | 50.4 | **50.5** | 46.2 | 32.2 | 27.3 | 24.4 | 16.2 | 17.8 |
+| ContractNLI † | 80.3 | 78.9 | **80.6** | 76.8 | 59.1 | 66.7 | 61.8 | 68.4 |
+| ANLI ★ † | **67.0** | 66.8 | 64.6 | 54.9 | 62.2 | 60.3 | 59.8 | 56.0 |
+| WinoGrande ★ | **87.1** | 86.0 | 83.0 | 70.3 | 83.9 | 71.9 | 67.3 | 70.3 |
+| HellaSwag ★ | 96.8 | **97.0** | 95.7 | 92.4 | 92.7 | 89.9 | 89.4 | 92.0 |
+| ACOS † | 50.4 | **50.5** | 46.2 | 32.2 | 27.3 | 24.4 | 16.2 | 17.8 |
 | FinEntity | 89.3 | 83.3 | 82.6 | 86.6 | 80.8 | 83.0 | 86.6 | **89.6** |
-| iSarcasmEval â€  | 52.4 | **58.7** | 51.9 | 37.3 | 36.3 | 49.0 | 37.0 | 49.0 |
-| VAST â€  | **73.4** | 70.3 | 68.7 | 65.0 | 46.9 | 64.9 | 59.8 | 56.2 |
-| NLI4CT â€  | **72.3** | 70.0 | 66.1 | 60.0 | 69.0 | 62.0 | 66.6 | 70.5 |
-| RAGTruth â€  | **70.1** | 68.7 | 67.5 | 58.5 | 51.3 | 51.9 | 52.2 | 59.2 |
+| iSarcasmEval † | 52.4 | **58.7** | 51.9 | 37.3 | 36.3 | 49.0 | 37.0 | 49.0 |
+| VAST † | **73.4** | 70.3 | 68.7 | 65.0 | 46.9 | 64.9 | 59.8 | 56.2 |
+| NLI4CT † | **72.3** | 70.0 | 66.1 | 60.0 | 69.0 | 62.0 | 66.6 | 70.5 |
+| RAGTruth † | **70.1** | 68.7 | 67.5 | 58.5 | 51.3 | 51.9 | 52.2 | 59.2 |
 | **Retrieval & Classification** | **66.8** | 65.8 | 64.1 | 56.7 | 55.4 | 63.5 | 63.1 | 54.9 |
-| BANKING77 â˜… â€  | 90.9 | 91.0 | **91.3** | 85.7 | 79.5 | 83.5 | 78.8 | 78.8 |
-| CLINC150 â˜… â€  | 92.9 | **93.7** | 93.1 | 91.5 | 89.2 | 87.3 | 91.1 | 87.7 |
-| BRIGHT â˜… | **43.5** | 41.7 | 41.3 | 38.2 | 40.6 | 39.3 | 36.2 | 41.9 |
-| Amazon ESCI â€  | **47.9** | 46.3 | 47.4 | 43.2 | 43.8 | 43.9 | 41.2 | 43.7 |
+| BANKING77 ★ † | 90.9 | 91.0 | **91.3** | 85.7 | 79.5 | 83.5 | 78.8 | 78.8 |
+| CLINC150 ★ † | 92.9 | **93.7** | 93.1 | 91.5 | 89.2 | 87.3 | 91.1 | 87.7 |
+| BRIGHT ★ | **43.5** | 41.7 | 41.3 | 38.2 | 40.6 | 39.3 | 36.2 | 41.9 |
+| Amazon ESCI † | **47.9** | 46.3 | 47.4 | 43.2 | 43.8 | 43.9 | 41.2 | 43.7 |
 | PhishNChips | 40.9 | 38.2 | 28.5 | 19.8 | 25.1 | 61.8 | **75.0** | 19.9 |
-| HoVer â€  | **79.2** | 78.1 | 76.5 | 52.8 | 45.7 | 61.3 | 52.8 | 48.4 |
+| HoVer † | **79.2** | 78.1 | 76.5 | 52.8 | 45.7 | 61.3 | 52.8 | 48.4 |
 | **Tools & Automation** | **82.2** | 76.2 | 73.2 | 72.3 | 75.1 | 71.2 | 75.6 | 79.3 |
-| BFCL â˜… | 96.7 | 96.7 | 97.0 | 94.7 | 94.3 | 93.0 | **97.3** | 96.8 |
+| BFCL ★ | 96.7 | 96.7 | 97.0 | 94.7 | 94.3 | 93.0 | **97.3** | 96.8 |
 | ToolRet | **64.3** | 64.0 | 61.5 | 62.5 | 59.9 | 58.9 | 58.0 | 62.4 |
-| API-Bank â˜… | 83.8 | 79.5 | 77.9 | 86.0 | **88.0** | 83.0 | 84.8 | 83.8 |
+| API-Bank ★ | 83.8 | 79.5 | 77.9 | 86.0 | **88.0** | 83.0 | 84.8 | 83.8 |
 | Home appliances | **77.3** | 51.1 | 38.6 | 30.7 | 52.3 | 46.6 | 62.5 | 73.9 |
 | When2Call | **85.7** | 84.7 | 85.2 | 80.3 | 74.6 | 68.0 | 69.2 | 75.6 |
 | **Arts & Human Taste** | **47.9** | 44.7 | 41.8 | 33.7 | 37.7 | 41.9 | 38.3 | 39.4 |
 | BPoMP | **90.6** | 85.7 | 82.1 | 66.3 | 81.8 | 79.9 | 81.2 | 87.8 |
-| Humicroedit â€  | 25.8 | 24.7 | 24.3 | 19.6 | 23.7 | 24.4 | **27.6** | 24.8 |
+| Humicroedit † | 25.8 | 24.7 | 24.3 | 19.6 | 23.7 | 24.4 | **27.6** | 24.8 |
 | POP909 | 50.6 | 32.0 | 25.5 | 16.0 | 15.9 | **65.8** | 27.3 | 37.3 |
 | cfcolor | **43.6** | 42.5 | 42.4 | 30.5 | 28.8 | 25.1 | 25.2 | 28.8 |
-| ForecastBench â˜… | **34.3** | 30.6 | 26.6 | 24.6 | 30.6 | 18.9 | 19.2 | 22.1 |
+| ForecastBench ★ | **34.3** | 30.6 | 26.6 | 24.6 | 30.6 | 18.9 | 19.2 | 22.1 |
 | Habermas | 18.4 | **26.2** | 22.5 | 17.7 | 21.5 | 16.2 | 24.4 | 15.5 |
-| New Yorker â€  | **74.2** | **74.2** | 72.1 | 63.3 | 62.6 | 67.6 | 67.3 | 62.8 |
+| New Yorker † | **74.2** | **74.2** | 72.1 | 63.3 | 62.6 | 67.6 | 67.3 | 62.8 |
 
 </div>
 
-â˜… benchmarks weigh 1.2 in the index. The rows with bold names are the index's own area scores; a bold value marks the
+★ benchmarks weigh 1.2 in the index. The rows with bold names are the index's own area scores; a bold value marks the
 best score in its row. The other systems' values come from the public board. The metric of each benchmark and the raw scores of all six models are in [docs/results.md](docs/results.md)
 and [results/decision_index_benchmarks.csv](results/decision_index_benchmarks.csv).
 
@@ -15375,14 +15405,14 @@ in the Intern-Decision bundle next to ours; a blank cell means the number is not
 | StartLux-Decision-v1-27B | 208 | 91.82 | **59.54 / 63.88** | 102.3 ms |
 | StartLux-Decision-v1-9B | 201 | 91.08 | 54.37 / 58.63 | 35.7 ms |
 | StartLux-Decision-v1-4B | 204 | 91.17 | 48.38 / 52.75 | 26.0 ms |
-| Intern-Decision-4B | 201 | 90.02 | 35.90 / 37.81 | 44.2 ms Â¹ |
+| Intern-Decision-4B | 201 | 90.02 | 35.90 / 37.81 | 44.2 ms ¹ |
 | JevK5 | 200 | 85.16 | 36.44 / 38.81 | |
-| Jev 1.13 | 199 | 88.74 | 51.67 / 57.91 | 64.0 ms Â² |
+| Jev 1.13 | 199 | 88.74 | 51.67 / 57.91 | 64.0 ms ² |
 | StartLux-Decision-v1-2B | 196 | 88.46 | 40.72 / 44.19 | 15.5 ms |
 | SemIf | 187 | 84.23 | 25.70 / 25.94 | |
-| Intern-Decision-2B | 180 | 84.68 | 19.49 / 19.38 | 33.3 ms Â¹ |
+| Intern-Decision-2B | 180 | 84.68 | 19.49 / 19.38 | 33.3 ms ¹ |
 | StartLux-Decision-v1-0.8B | 179 | 85.03 | 35.57 / 38.86 | **12.2 ms** |
-| Intern-Decision-0.8B | 163 | 79.38 | 11.32 / 11.94 | 34.0 ms Â¹ |
+| Intern-Decision-0.8B | 163 | 79.38 | 11.32 / 11.94 | 34.0 ms ¹ |
 | Laya | 130 | 57.77 | 5.51 / 6.04 | |
 
 </div>
@@ -15390,7 +15420,7 @@ in the Intern-Decision bundle next to ours; a blank cell means the number is not
 JevBench public counts the correct answers on the 231 public items in the Intern-Decision bundle, Intern avg is the
 average accuracy over its seven suites, and DI is the Decision Index under both editions (the public board's values for
 the other systems). Our latencies are for one H200, with the three questions answered in one forward pass, as
-Intern-Decision does. Â¹ Intern-Decision's own measurement on an RTX 4090. Â² The server time the TypeSafe API gateway
+Intern-Decision does. ¹ Intern-Decision's own measurement on an RTX 4090. ² The server time the TypeSafe API gateway
 reports for the same request, mean of 100, so the network is left out as in ours; Intern-Decision reports 109.7 ms end
 to end.
 
@@ -15507,7 +15537,7 @@ python -m startlux_decision.gguf_server --model-dir . --llama http://127.0.0.1:8
 Jev's numbers are the ones its harness authors report, except Dino Run and the chess match, which we ran for Jev
 through its API in the same harness as ours. The chess match is 256 games: 128 level openings (within 0.6 pawns by
 Stockfish), each played once with each colour, at the harness's default rich level. Games end by the rules or are
-adjudicated at Â±300 centipawns after 160 plies; since neither side searches, most draws are fivefold repetitions.
+adjudicated at ±300 centipawns after 160 plies; since neither side searches, most draws are fivefold repetitions.
 StartLux-Decision-v1-27B scores 58.4%, +59 Elo (95% interval +37 to +82), and wins 64 of the 85 decisive games. With the
 harness's tactical hints, which give both sides the one-move consequences of every move, the two are even (48.6% and
 46.1% over 256 games each); all four conditions are in [docs/results.md](docs/results.md). The misheard-names variant is the same set
@@ -18417,7 +18447,7 @@ function search() {
         ["price-desc", "Price: high to low"], ["rating", "Customer rating"]]
         .map(([v, l]) => `<option value="${v}" ${v === sort ? "selected" : ""}>${l}</option>`).join("")}</select></label></div>
       ${rows.length ? rows.map(x => `<div class="item"><div class="img"></div>
-        <div><a class="ttl" href="product.html?id=${x.id}">${x.t}</a><div class="muted">â˜… ${x.r} (${x.n})</div></div>
+        <div><a class="ttl" href="product.html?id=${x.id}">${x.t}</a><div class="muted">★ ${x.r} (${x.n})</div></div>
         <div class="right"><div class="price">${money(x.p)}</div>${delivery(x)}</div></div>`).join("")
         : `<div class="panel">No results. Try another search.</div>`}
     </section></div></main>`;
@@ -18426,9 +18456,9 @@ function search() {
 function product() {
   const x = byId[params.get("id")] || byId.p5;
   const sib = CATALOG.filter(y => y.fam && y.fam === x.fam).sort((a, b) => a.pack - b.pack);
-  return header(true) + `<main><div class="crumbs"><a href="index.html">Home</a> â€º <a href="search.html?q=AA%20batteries">Batteries</a></div>
+  return header(true) + `<main><div class="crumbs"><a href="index.html">Home</a> › <a href="search.html?q=AA%20batteries">Batteries</a></div>
     <div class="pp"><div class="img"></div><div>
-      <h1 style="font-size:22px;margin:0 0 6px">${x.t}</h1><div class="muted">â˜… ${x.r} (${x.n} ratings)</div>
+      <h1 style="font-size:22px;margin:0 0 6px">${x.t}</h1><div class="muted">★ ${x.r} (${x.n} ratings)</div>
       <div class="price" style="font-size:22px;margin-top:10px">${money(x.p)}</div>${delivery(x)}
       ${sib.length > 1 ? `<div class="packs">${sib.map(y => `<button class="pack ${y.id === x.id ? "on" : ""}" aria-pressed="${y.id === x.id}" onclick="location.href='product.html?id=${y.id}'">${y.pack}-pack</button>`).join("")}</div>` : `<div style="height:12px"></div>`}
       <div class="row"><button class="btn" data-add="${x.id}" data-go="cart.html">Add to cart</button>
@@ -18461,7 +18491,7 @@ function checkout() {
       ${radio("speed", "express", "Express, $9.99, arrives tomorrow", false)}</div>
     <div class="panel"><h2>Payment</h2>${radio("pay", "visa", "Visa ending in 4242", true)}</div></section>
     <aside class="panel" style="align-self:start"><h2>Order summary</h2>
-      ${items.map(it => `<div class="muted">${byId[it.id].t} Ã— ${it.qty}</div>`).join("")}
+      ${items.map(it => `<div class="muted">${byId[it.id].t} × ${it.qty}</div>`).join("")}
       <button class="btn" id="place" style="width:100%;margin-top:14px">Place order</button>
       <div style="margin-top:10px"><a href="cart.html">Back to cart</a></div></aside></div></main>`;
 }
@@ -18469,7 +18499,7 @@ function checkout() {
 function done() {
   const o = store.get("order", null);
   return header(false) + `<main><div class="ok"><h2 style="margin:0 0 6px">Thank you, your order is placed.</h2>
-    ${o ? o.items.map(it => `<div>${byId[it.id].t} Ã— ${it.qty}, ${money(byId[it.id].p * it.qty)}</div>`).join("") +
+    ${o ? o.items.map(it => `<div>${byId[it.id].t} × ${it.qty}, ${money(byId[it.id].p * it.qty)}</div>`).join("") +
       `<div class="muted" style="margin-top:6px">Shipping to ${o.addressLabel}. ${o.speedLabel}.</div>` : ""}</div></main>`;
 }
 
@@ -18640,14 +18670,14 @@ function team() {
   const invites = store.get("invites", []).filter(x => x.team === id);
   const rows = (id === "design" ? DESIGN : DESIGN.slice(0, 3)).map(([n, e, r]) => [n, e, r, ""])
     .concat(invites.map(x => [x.name, x.email, x.role, "Invited"]));
-  return shell("Teams", `<div class="crumbs"><a href="teams.html">Teams</a> â€º ${t.name}</div>
+  return shell("Teams", `<div class="crumbs"><a href="teams.html">Teams</a> › ${t.name}</div>
     <div class="head"><h1>${t.name}</h1><button class="btn" id="invite">Invite people</button></div>
     <div class="tabs"><a class="on" href="#">Members</a><a href="projects.html">Projects</a><a href="settings.html">Team settings</a></div>
     <div class="card"><table><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr>
       ${rows.map(([n, e, r, s]) => `<tr><td>${n}</td><td class="muted">${e}</td><td>${r}${s ? ` <span class="tag">${s}</span>` : ""}</td>
-        <td style="text-align:right"><button class="icon" aria-label="More actions for ${n}">â‹¯</button></td></tr>`).join("")}</table></div>
+        <td style="text-align:right"><button class="icon" aria-label="More actions for ${n}">⋯</button></td></tr>`).join("")}</table></div>
     <div class="modal" id="modal"><div class="dlg"><div class="head"><h2>Invite people to ${t.name}</h2>
-        <button class="icon" id="close" aria-label="Close">Ã—</button></div>
+        <button class="icon" id="close" aria-label="Close">×</button></div>
       <label class="field">Email or name<div class="pick"><div id="chips"></div>
         <input id="who" placeholder="Type an email or name" autocomplete="off" aria-label="Email or name" aria-expanded="false"></div></label>
       <div class="sugg" id="sugg"><div class="muted" style="padding:6px 10px">People in Harborline</div>
@@ -19013,10 +19043,10 @@ still gets a non-zero probability.
 Temperatures are per question type and live in `decision_config.json`. Changing them never changes which option wins.
 
 `confidence` follows TypeSafe's definitions, so code that thresholds it behaves the same against either service. For a
-choice it is (p_max âˆ’ 1/n) / (1 âˆ’ 1/n): 0 for an even split over the n options, 1 when one option has all the
+choice it is (p_max − 1/n) / (1 − 1/n): 0 for an even split over the n options, 1 when one option has all the
 probability. For a score it is 1 minus the probability-weighted distance, in levels, from the most likely level,
 divided by the same distance for an even spread measured from the middle level, and floored at 0: probability on a
-neighbouring level lowers it less than probability at the far end. Yes/no answers have no `confidence`; |2p âˆ’ 1| is the
+neighbouring level lowers it less than probability at the far end. Yes/no answers have no `confidence`; |2p − 1| is the
 equivalent. Until 2026-10-03 the package returned the top probability as `confidence`; it is still in `probabilities`.
 Every response carries an `x-typesafe-request-id` header, `GET /v1/models` lists the model with its release date, and
 an error comes back as `{"error": message, "detail": [{"loc", "msg", "type"}]}`, with status 400 for a malformed body
@@ -19074,7 +19104,7 @@ curl -s localhost:8090/v1/systemone -H 'Content-Type: application/json' -d '{
 - `<image>` in a string state marks where each image goes, one mark per image, in order. Without marks the images come
   first (as `Image 1:`, `Image 2:` ... when there are several), followed by the state.
 - Each image is resized to at most 1,048,576 pixels, keeping its aspect ratio (`max_pixels`, `--max-pixels`), and
-  becomes one token per 32 Ã— 32 pixels: a 1024 Ã— 1024 photo is 1,024 tokens.
+  becomes one token per 32 × 32 pixels: a 1024 × 1024 photo is 1,024 tokens.
 - The vision tower runs once per request, and every question of the request reads the same image tokens. Image
   requests run on the eager path, without the CUDA graphs.
 - The vision tower adds 0.2 to 0.9 GB of GPU memory. `StartLuxDecision(..., images=False)` or `--no-images` leaves it
@@ -19205,7 +19235,7 @@ The MLX backend does three things:
   request continues from its cache (attention keys and values, linear-attention conv and recurrent states). The
   questions of a request are rows of one forward pass. When they share a long piece of evidence, the evidence runs once,
   and a later request about the same evidence runs only its questions.
-- **`--int8` uses int8 matmuls on M5 and later.** The large projections run as int8 Ã— int8 matmuls on the GPU's neural
+- **`--int8` uses int8 matmuls on M5 and later.** The large projections run as int8 × int8 matmuls on the GPU's neural
   accelerators. Activations are quantized per token and weights per channel. SmoothQuant scales, computed at start-up
   from a few built-in requests, are applied first. On the public JevBench items the decisions match bf16 (the 8-bit
   model for 27B) on 97.4 to 99.6% of the items.
@@ -19374,7 +19404,7 @@ Other systems, from the public board (multimodalart/jev-decision-index, values a
 |:---:|:---:|:---:|
 | Jev 1.13 | 51.67 | 57.91 |
 | Surogate Rune 26B-A4B v3 | | 57.44 |
-| Decider chat Â· Gemma-4-31B | 51.93 | 57.33 |
+| Decider chat · Gemma-4-31B | 51.93 | 57.33 |
 | AutoJev-27B | 50.94 | 56.40 |
 | simple-jev | 50.21 | 55.74 |
 | JevK5 v0.2 | 36.44 | 38.81 |
@@ -19395,8 +19425,8 @@ highest on the 0.2.1 board.
 
 ![Decision Index 0.2.1](../media/di_chart.png)
 
-Per benchmark, native metric times coverage in percent (0.2.1 kit; the best value in each row is bold, â˜… marks the
-benchmarks weighted 1.2). StartLux-Decision-v1-27B is above Jev on 31 of the 38 benchmarks in the index. â€  marks the 14 benchmarks
+Per benchmark, native metric times coverage in percent (0.2.1 kit; the best value in each row is bold, ★ marks the
+benchmarks weighted 1.2). StartLux-Decision-v1-27B is above Jev on 31 of the 38 benchmarks in the index. † marks the 14 benchmarks
 whose public train split is part of our training data; their test items were filtered out of it. The same numbers are in
 [results/decision_index_benchmarks.csv](../results/decision_index_benchmarks.csv).
 
@@ -19404,46 +19434,46 @@ whose public train split is part of our training data; their test items were fil
 
 | Area | Benchmark | Metric | 0.8B | 2B | 4B | 9B | 27B | 35B-A3B | Jev 1.13 |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Knowledge & Reasoning | GSM8K â€  | accuracy | 92.0 | 87.4 | 90.4 | 95.7 | 96.4 | **96.6** | 79.9 |
+| Knowledge & Reasoning | GSM8K † | accuracy | 92.0 | 87.4 | 90.4 | 95.7 | 96.4 | **96.6** | 79.9 |
 | Knowledge & Reasoning | ChessBench | accuracy | 10.7 | 11.2 | 11.9 | 13.0 | **18.0** | 16.3 | 17.2 |
 | Knowledge & Reasoning | MuSR | accuracy | 54.8 | 56.0 | 56.0 | 59.0 | **67.8** | 60.2 | 66.1 |
 | Knowledge & Reasoning | SATA-Bench | case exact accuracy | 16.5 | 25.4 | 15.2 | 26.3 | 10.5 | **28.5** | 26.4 |
-| Knowledge & Reasoning | GPQA Diamond â˜… | accuracy | 32.1 | 42.4 | 41.8 | 50.0 | 50.5 | 51.0 | **78.6** |
+| Knowledge & Reasoning | GPQA Diamond ★ | accuracy | 32.1 | 42.4 | 41.8 | 50.0 | 50.5 | 51.0 | **78.6** |
 | Knowledge & Reasoning | CRUXEval | accuracy | 31.9 | 37.4 | 54.4 | 60.0 | **75.8** | 71.2 | 73.0 |
 | Knowledge & Reasoning | CLadder | accuracy | 56.3 | 58.6 | 65.9 | 68.1 | **73.7** | 69.6 | 72.6 |
-| Knowledge & Reasoning | HLE â˜… | accuracy | 12.8 | 14.2 | 12.8 | 10.2 | 12.4 | 10.2 | **20.4** |
-| Knowledge & Reasoning | MMLU-Pro â˜… | accuracy | 31.5 | 41.0 | 56.9 | 61.3 | 69.8 | 67.1 | **82.7** |
-| Knowledge & Reasoning | BBH â˜… | accuracy | 50.3 | 57.4 | 66.9 | 71.2 | 80.2 | 76.1 | **92.9** |
-| Language Understanding | ContractNLI â€  | macro-F1 | 83.2 | 83.4 | 83.9 | **86.6** | 86.4 | 85.4 | 71.7 |
-| Language Understanding | ANLI â˜… â€  | macro-F1 | 55.7 | 61.5 | 69.9 | 76.4 | **77.9** | 77.8 | 74.8 |
-| Language Understanding | WinoGrande â˜… | accuracy | 67.8 | 74.3 | 85.2 | 91.5 | **93.5** | 93.0 | 92.0 |
-| Language Understanding | HellaSwag â˜… | accuracy | 82.4 | 89.0 | 94.3 | 96.8 | 97.6 | **97.7** | 94.5 |
-| Language Understanding | ACOS â€  | per-review F1 | 45.1 | 35.5 | 34.3 | 47.8 | **52.0** | **52.0** | 29.5 |
+| Knowledge & Reasoning | HLE ★ | accuracy | 12.8 | 14.2 | 12.8 | 10.2 | 12.4 | 10.2 | **20.4** |
+| Knowledge & Reasoning | MMLU-Pro ★ | accuracy | 31.5 | 41.0 | 56.9 | 61.3 | 69.8 | 67.1 | **82.7** |
+| Knowledge & Reasoning | BBH ★ | accuracy | 50.3 | 57.4 | 66.9 | 71.2 | 80.2 | 76.1 | **92.9** |
+| Language Understanding | ContractNLI † | macro-F1 | 83.2 | 83.4 | 83.9 | **86.6** | 86.4 | 85.4 | 71.7 |
+| Language Understanding | ANLI ★ † | macro-F1 | 55.7 | 61.5 | 69.9 | 76.4 | **77.9** | 77.8 | 74.8 |
+| Language Understanding | WinoGrande ★ | accuracy | 67.8 | 74.3 | 85.2 | 91.5 | **93.5** | 93.0 | 92.0 |
+| Language Understanding | HellaSwag ★ | accuracy | 82.4 | 89.0 | 94.3 | 96.8 | 97.6 | **97.7** | 94.5 |
+| Language Understanding | ACOS † | per-review F1 | 45.1 | 35.5 | 34.3 | 47.8 | **52.0** | **52.0** | 29.5 |
 | Language Understanding | FinEntity | macro-F1 | 77.8 | 76.2 | 90.9 | 88.2 | **92.7** | 88.6 | 87.0 |
-| Language Understanding | iSarcasmEval â€  | Sarcasm F1 Â· track A, English | 18.4 | 30.9 | 51.3 | 62.6 | 63.0 | **67.9** | 50.5 |
-| Language Understanding | VAST â€  | macro-F1 | 74.6 | 76.9 | 76.7 | 79.1 | **82.3** | 80.2 | 64.6 |
-| Language Understanding | NLI4CT â€  | macro-F1 | 66.3 | 70.3 | 79.4 | 82.6 | **85.8** | 84.6 | 84.1 |
-| Language Understanding | RAGTruth â€  | F1 on hallucinated class | 76.8 | 79.1 | 80.0 | 84.3 | **85.6** | 84.9 | 76.5 |
-| Retrieval & Classification | BANKING77 â˜… â€  | macro-F1 | 89.9 | 86.1 | 85.9 | **91.4** | 91.0 | 91.1 | 79.7 |
-| Retrieval & Classification | CLINC150 â˜… â€  | macro-F1 | 90.3 | 86.8 | 91.5 | 93.2 | 93.0 | **93.7** | 89.3 |
-| Retrieval & Classification | BRIGHT â˜… | nDCG@10 | 38.7 | 40.4 | 45.4 | 48.1 | **50.0** | 48.4 | 47.5 |
-| Retrieval & Classification | Amazon ESCI â€  | macro-F1 | 51.1 | 52.0 | 54.7 | 58.1 | **58.5** | 57.2 | 55.2 |
+| Language Understanding | iSarcasmEval † | Sarcasm F1 · track A, English | 18.4 | 30.9 | 51.3 | 62.6 | 63.0 | **67.9** | 50.5 |
+| Language Understanding | VAST † | macro-F1 | 74.6 | 76.9 | 76.7 | 79.1 | **82.3** | 80.2 | 64.6 |
+| Language Understanding | NLI4CT † | macro-F1 | 66.3 | 70.3 | 79.4 | 82.6 | **85.8** | 84.6 | 84.1 |
+| Language Understanding | RAGTruth † | F1 on hallucinated class | 76.8 | 79.1 | 80.0 | 84.3 | **85.6** | 84.9 | 76.5 |
+| Retrieval & Classification | BANKING77 ★ † | macro-F1 | 89.9 | 86.1 | 85.9 | **91.4** | 91.0 | 91.1 | 79.7 |
+| Retrieval & Classification | CLINC150 ★ † | macro-F1 | 90.3 | 86.8 | 91.5 | 93.2 | 93.0 | **93.7** | 89.3 |
+| Retrieval & Classification | BRIGHT ★ | nDCG@10 | 38.7 | 40.4 | 45.4 | 48.1 | **50.0** | 48.4 | 47.5 |
+| Retrieval & Classification | Amazon ESCI † | macro-F1 | 51.1 | 52.0 | 54.7 | 58.1 | **58.5** | 57.2 | 55.2 |
 | Retrieval & Classification | PhishNChips | accuracy | 50.1 | 56.5 | 59.9 | 64.2 | **70.5** | 69.1 | 62.5 |
-| Retrieval & Classification | HoVer â€  | accuracy | 77.2 | 75.0 | 76.4 | 88.2 | **89.6** | 89.0 | 72.9 |
+| Retrieval & Classification | HoVer † | accuracy | 77.2 | 75.0 | 76.4 | 88.2 | **89.6** | 89.0 | 72.9 |
 | Retrieval & Classification | SGD (0.2 only) | macro-F1 | 69.8 | 70.8 | 67.9 | 71.9 | **74.0** | 73.2 |  |
-| Tools & Automation | BFCL â˜… | case exact accuracy | 93.5 | 95.5 | 96.1 | **97.8** | 97.6 | 97.5 | 95.8 |
+| Tools & Automation | BFCL ★ | case exact accuracy | 93.5 | 95.5 | 96.1 | **97.8** | 97.6 | 97.5 | 95.8 |
 | Tools & Automation | ToolRet | nDCG@10 | 63.2 | 64.2 | 67.5 | 66.6 | **69.1** | 68.8 | 65.3 |
-| Tools & Automation | API-Bank â˜… | accuracy | 17.9 | 50.4 | 86.2 | 78.3 | 84.1 | 79.9 | **88.2** |
+| Tools & Automation | API-Bank ★ | accuracy | 17.9 | 50.4 | 86.2 | 78.3 | 84.1 | 79.9 | **88.2** |
 | Tools & Automation | Home appliances | case exact accuracy | 0.0 | 17.1 | 30.7 | 38.6 | **77.3** | 51.1 | 52.3 |
 | Tools & Automation | When2Call | accuracy | 79.5 | 80.3 | 85.2 | 88.9 | **89.2** | 88.5 | 81.0 |
 | Tools & Automation | RouterBench (0.2 only) | selected quality (quality objective) | 75.9 | 78.9 | **80.0** | 79.9 | 79.7 | **80.0** | 79.9 |
 | Arts & Human Taste | BPoMP | accuracy | 59.8 | 67.6 | 83.1 | 91.0 | **95.3** | 92.8 | 90.9 |
-| Arts & Human Taste | Humicroedit â€  | accuracy | 56.7 | 61.6 | 59.8 | 62.2 | **62.9** | 62.4 | 61.9 |
+| Arts & Human Taste | Humicroedit † | accuracy | 56.7 | 61.6 | 59.8 | 62.2 | **62.9** | 62.4 | 61.9 |
 | Arts & Human Taste | POP909 | accuracy | 6.4 | 3.1 | 16.6 | 26.1 | **51.0** | 32.5 | 16.6 |
 | Arts & Human Taste | cfcolor | accuracy | 64.2 | 62.0 | 65.2 | 71.2 | **71.8** | 71.3 | 64.4 |
-| Arts & Human Taste | ForecastBench â˜… | (0.25 - Brier) / 0.25, higher is better | 0.8 | 13.8 | 24.6 | 26.6 | **34.3** | 30.6 | 30.6 |
+| Arts & Human Taste | ForecastBench ★ | (0.25 - Brier) / 0.25, higher is better | 0.8 | 13.8 | 24.6 | 26.6 | **34.3** | 30.6 | 30.6 |
 | Arts & Human Taste | Habermas | accuracy | 44.0 | 45.1 | 43.3 | 46.6 | 43.8 | **49.2** | 45.9 |
-| Arts & Human Taste | New Yorker â€  | accuracy | 58.3 | 66.5 | 70.6 | 77.6 | **79.4** | **79.4** | 70.1 |
+| Arts & Human Taste | New Yorker † | accuracy | 58.3 | 66.5 | 70.6 | 77.6 | **79.4** | **79.4** | 70.1 |
 
 </div>
 
@@ -19516,7 +19546,7 @@ Stockfish UCI_Elo 1320), four games against each of seven opponents with alterna
 </div>
 
 Against Stockfish at skill 0 (depth 1, rated 1166 on this ladder) StartLux-Decision-v1-27B won three games and drew one; against
-Stockfish limited to 1320 Elo it scored three of four. Games that reach the 160-ply cap are adjudicated at Â±300
+Stockfish limited to 1320 Elo it scored three of four. Games that reach the 160-ply cap are adjudicated at ±300
 centipawns, as the ladder does for every player.
 
 The same ladder at the rich level, with both players run by us under the same conditions: the seven bots, eight games
@@ -19539,7 +19569,7 @@ harness). Each side gets exactly the request the harness sends at the chosen lev
 all legal moves, and its most likely move is played: no search, and code never overrides a move. Each start is played
 twice, once with each colour. Book openings: 128 lines that Stockfish rates within 0.6 pawns of level, 50 named main
 lines and 78 more from a random walk over Stockfish's good moves. Chess960: 128 starting positions drawn at random, the
-standard one excluded. Games end by the rules (fivefold repetition included) or are adjudicated at Â±300 centipawns
+standard one excluded. Games end by the rules (fivefold repetition included) or are adjudicated at ±300 centipawns
 after 160 plies. The Elo intervals are 95% bootstrap intervals that resample starts together with both of their games.
 
 <div align="center">
@@ -19548,8 +19578,8 @@ after 160 plies. The Elo intervals are 95% bootstrap intervals that resample sta
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | rich | book openings | 256 | **58.4%** | 64, 171, 21 | **+59** (+37 to +82) | 64 / 20 | 161 / 173 |
 | rich | Chess960 | 256 | 53.7% | 44, 187, 25 | +26 (+4 to +48) | 44 / 25 | 164 / 178 |
-| tactical | book openings | 256 | 48.6% | 113, 23, 120 | âˆ’10 (âˆ’51 to +33) | 42 / 40 | 130 / 124 |
-| tactical | Chess960 | 256 | 46.1% | 109, 18, 129 | âˆ’27 (âˆ’67 to +14) | 51 / 54 | 120 / 124 |
+| tactical | book openings | 256 | 48.6% | 113, 23, 120 | −10 (−51 to +33) | 42 / 40 | 130 / 124 |
+| tactical | Chess960 | 256 | 46.1% | 109, 18, 129 | −27 (−67 to +14) | 51 / 54 | 120 / 124 |
 
 </div>
 
@@ -21209,7 +21239,7 @@ benchmark items.  The embedding, the output head and projections too small for t
 The quantize and matmul kernels are adapted from JetBrains/mlx-vlm (branch feature/int8-prefill, mlx_vlm/int8_prefill.py),
 released under the MIT License:
 
-    Copyright Â© 2025 Prince Canuma
+    Copyright © 2025 Prince Canuma
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation the

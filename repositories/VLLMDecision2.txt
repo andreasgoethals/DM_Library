@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "71d6ae1db4a786d98775d65c68c41be0e39bfe7c",
   "revision_date": "2026-10-10T21:21:25.000Z",
   "slug": "vllm-sr/Decision-2.0-Vega-27B",
-  "retrieved_utc": "2026-10-23T08:09:18+00:00",
+  "retrieved_utc": "2026-10-23T08:23:48+00:00",
   "identity_source": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B",
   "included_files": 26,
   "excluded_files": 9,
@@ -170,7 +170,7 @@ tags:
 | --- | --- |
 | **Parameters** | 29.37B |
 | **Context length** | 32,768 tokens |
-| **Decision types** | Choice Â· Yes / No Â· Score |
+| **Decision types** | Choice · Yes / No · Score |
 | **License** | Apache-2.0 |
 
 ## Highlights
@@ -227,12 +227,12 @@ print(json.dumps(result["answers"], indent=2))
 
 ## Evaluation
 
-| Model | JevArena â†‘ | Human-labelled transfer â†‘ | Jev Decision Index â†‘ |
+| Model | JevArena ↑ | Human-labelled transfer ↑ | Jev Decision Index ↑ |
 | --- | ---: | ---: | ---: |
 | **Decision-2.0-Vega-27B** | **74.0** | **58.7** | **56.5** |
-| AutoJev-27B | 72.1 | 58.7 | â€” |
-| Eikos-27B | 69.3 | 58.7 | â€” |
-| Jebadiah-27B | 65.5 | 57.8 | â€” |
+| AutoJev-27B | 72.1 | 58.7 | — |
+| Eikos-27B | 69.3 | 58.7 | — |
+| Jebadiah-27B | 65.5 | 57.8 | — |
 
 ### JevArena
 
@@ -240,7 +240,7 @@ print(json.dumps(result["answers"], indent=2))
 
 ![JevArena by decision type: Decision-2.0-Vega-27B and same-size models](assets/jevarena-types.png)
 
-<sub>Every model answers the same frozen prompts, scored the same way; missing or invalid answers count as errors. Human-labelled transfer is the median macro-F1 over 15 human-labelled tasks (Ã—100).</sub>
+<sub>Every model answers the same frozen prompts, scored the same way; missing or invalid answers count as errors. Human-labelled transfer is the median macro-F1 over 15 human-labelled tasks (×100).</sub>
 
 ### Jev Decision Index
 
@@ -501,7 +501,7 @@ FILE: config.json
 ================================================
 FILE: configuration_decision2.py
 ================================================
-"""Decision 2.0 configuration for ðŸ¤— Transformers (``trust_remote_code=True``).
+"""Decision 2.0 configuration for 🤗 Transformers (``trust_remote_code=True``).
 
 The repository's root ``config.json`` is the package pointer the native runtime reads first (model name,
 model files by role, input limit) plus ``model_type``, ``auto_map`` and ``custom_pipelines``. This class
@@ -3524,7 +3524,7 @@ FILE: MODEL_MANIFEST.json
   },
   "repo_id": "vllm-sr/Decision-2.0-Vega-27B",
   "runtime": {
-    "equivalence": "decision2/qwen.py loads the unmerged PEFT adapter on the pinned Qwen3.8-27B base (every base file checked against its SHA-256) with the vendored training/model sources whose SHA-256 equal the scored adapter sources (checked at build time), and applies the per-item batching, BF16-backbone / FP32-head execution, raw probabilities (temperature 1; no calibration file) and answer normalization of training.model.infer as run by v2.27b.typed_collect_kernel. From this revision the runtime holds the backbone's BF16-exact Linear weights in BF16, the values BF16 autocast multiplies with, instead of FP32 copies cast before every matmul; the FP32 LoRA factors stay FP32 and unmerged; it was checked with 0 answer changes on every scored prompt and on mlx-diag (2,275). From this revision the package also ships ðŸ¤— Transformers remote code (configuration_decision2.py, modeling_decision2.py, pipeline_decision2.py; config.json gains model_type, auto_map and custom_pipelines): AutoModel with trust_remote_code loads the package through this runtime, which now also refuses Transformers' remote-code prompt while loading the tokenizer; it was checked with 0 answer changes against the native runtime on every scored prompt and on mlx-diag (2,275). From this revision the runtime runs a request whose padded question batch would put more than 2**30 elements in a gated-delta q / k / v tensor (the FLA kernels' 32-bit offsets) as several GPU-sized batches, longest questions first; requests within that budget, every scored prompt among them, keep the single-batch path, and it was checked with 0 answer changes on every scored prompt and on mlx-diag (2,275). From this revision the runtime replays the backbone of each exact padded input shape as a HIP graph, casts a Linear input shared by several layers to BF16 once and, on MI300-class (gfx942) GPUs, fuses the element-wise ops of each decoder layer into Triton kernels that round exactly as the ops they replace; the unmerged LoRA layers multiply their BF16 factors with one input cast; it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime. From this revision the runtime also ships an opt-in shared-context switch (share_context, off by default) that runs the shared input of a multi-question request once instead of once per question, so its answers can differ slightly from the exact path; with the switch off it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime. From this revision the fused attention kernel also compiles for very long multi-question inputs on ROCm (a query projection above 2 GiB, which returned an error before), and a decoder layer whose fused kernels fail to compile or launch runs its eager forward, which gives the same values; it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime, both with the fused kernels and with every fused kernel failing. From this revision the runtime never destroys a captured HIP graph: once its graph cache is full (512 graphs or 4 GiB of graph outputs), new input shapes run the eager forward, which gives the same values (on ROCm, evicting large graphs under long, varied traffic could crash the GPU process); it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime, both with the default cache and with a cache of 8 graphs. Checked on one GPU of the release node (same image and base bytes as the scoring run) against the scored T = 1 predictions of every formal prompt (typed-final 1,600, css15 6,547, public231 231) and of the mlx-diag diagnostic (2,275) by release.sh --parity, with the image's FLA and causal-conv1d kernels required and a fresh copy of the formal run's persisted Triton autotune cache (the cache the mlx-diag run also copied), and AutoModel against the native runtime on every scored prompt.",
+    "equivalence": "decision2/qwen.py loads the unmerged PEFT adapter on the pinned Qwen3.8-27B base (every base file checked against its SHA-256) with the vendored training/model sources whose SHA-256 equal the scored adapter sources (checked at build time), and applies the per-item batching, BF16-backbone / FP32-head execution, raw probabilities (temperature 1; no calibration file) and answer normalization of training.model.infer as run by v2.27b.typed_collect_kernel. From this revision the runtime holds the backbone's BF16-exact Linear weights in BF16, the values BF16 autocast multiplies with, instead of FP32 copies cast before every matmul; the FP32 LoRA factors stay FP32 and unmerged; it was checked with 0 answer changes on every scored prompt and on mlx-diag (2,275). From this revision the package also ships 🤗 Transformers remote code (configuration_decision2.py, modeling_decision2.py, pipeline_decision2.py; config.json gains model_type, auto_map and custom_pipelines): AutoModel with trust_remote_code loads the package through this runtime, which now also refuses Transformers' remote-code prompt while loading the tokenizer; it was checked with 0 answer changes against the native runtime on every scored prompt and on mlx-diag (2,275). From this revision the runtime runs a request whose padded question batch would put more than 2**30 elements in a gated-delta q / k / v tensor (the FLA kernels' 32-bit offsets) as several GPU-sized batches, longest questions first; requests within that budget, every scored prompt among them, keep the single-batch path, and it was checked with 0 answer changes on every scored prompt and on mlx-diag (2,275). From this revision the runtime replays the backbone of each exact padded input shape as a HIP graph, casts a Linear input shared by several layers to BF16 once and, on MI300-class (gfx942) GPUs, fuses the element-wise ops of each decoder layer into Triton kernels that round exactly as the ops they replace; the unmerged LoRA layers multiply their BF16 factors with one input cast; it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime. From this revision the runtime also ships an opt-in shared-context switch (share_context, off by default) that runs the shared input of a multi-question request once instead of once per question, so its answers can differ slightly from the exact path; with the switch off it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime. From this revision the fused attention kernel also compiles for very long multi-question inputs on ROCm (a query projection above 2 GiB, which returned an error before), and a decoder layer whose fused kernels fail to compile or launch runs its eager forward, which gives the same values; it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime, both with the fused kernels and with every fused kernel failing. From this revision the runtime never destroys a captured HIP graph: once its graph cache is full (512 graphs or 4 GiB of graph outputs), new input shapes run the eager forward, which gives the same values (on ROCm, evicting large graphs under long, varied traffic could crash the GPU process); it was checked with 0 answer changes and 0.0 drift on every scored prompt and on mlx-diag (10,653 prompts) against the previous runtime, both with the default cache and with a cache of 8 graphs. Checked on one GPU of the release node (same image and base bytes as the scoring run) against the scored T = 1 predictions of every formal prompt (typed-final 1,600, css15 6,547, public231 231) and of the mlx-diag diagnostic (2,275) by release.sh --parity, with the image's FLA and causal-conv1d kernels required and a fresh copy of the formal run's persisted Triton autotune cache (the cache the mlx-diag run also copied), and AutoModel against the native runtime on every scored prompt.",
     "requirements": {
       "causal-conv1d": "1.7.0 (GPU convolution kernels)",
       "flash-linear-attention": "0.5.2 (GPU gated-delta kernels)",
@@ -3670,7 +3670,7 @@ FILE: MODEL_MANIFEST.json
 ================================================
 FILE: modeling_decision2.py
 ================================================
-"""Decision 2.0 model for ðŸ¤— Transformers (``trust_remote_code=True``).
+"""Decision 2.0 model for 🤗 Transformers (``trust_remote_code=True``).
 
 ``AutoModel.from_pretrained(repo, trust_remote_code=True)`` loads the repository through its own System One
 runtime, the ``decision2/`` package that ``decision2.Decision2.from_pretrained`` runs natively: every file is
@@ -4477,7 +4477,7 @@ def verify_bundle(path: str | Path) -> dict[str, Any]:
 def _without_remote_code_prompt(load: Any) -> Any:
     """Run ``load`` with Transformers' interactive remote-code prompt answered "no" at once.
 
-    The root ``config.json`` also names the package's ðŸ¤— Transformers remote code (``auto_map``). The
+    The root ``config.json`` also names the package's 🤗 Transformers remote code (``auto_map``). The
     vendored loader reads the tokenizer with ``AutoTokenizer``, which consults that file without
     ``trust_remote_code`` and would ask on the terminal; refused at once, the tokenizer comes from
     ``tokenizer_config.json`` exactly as for a package without remote code.

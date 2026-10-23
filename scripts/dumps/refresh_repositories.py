@@ -263,7 +263,8 @@ def _write_snapshot(url: str, output: Path, *, timeout: int, patterns: dict,
         # subtracts exact include patterns from its default ignore set; "*" alone
         # does not override exclusions such as bin/ and package-lock.json.
         # Override those defaults without changing global dependency state.
-        _, _, content = ingest(source=str(checkout), output=None, include_gitignored=True,
+        from utf8_ingest import ingest_utf8
+        _, _, content = ingest_utf8(ingest, source=str(checkout), output=None, include_gitignored=True,
                                include_patterns={"*"} | DEFAULT_IGNORE_PATTERNS,
                                max_file_size=_MAX_FILE_BYTES)
         missing = [f["path"] for f in manifest if f["bytes"] and f"FILE: {f['path']}\n" not in content.replace("\r\n", "\n")]

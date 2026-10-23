@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "1dde7782382c9f49d627153759b8d1deab426ce0",
   "revision_date": "2026-09-23T17:20:15-07:00",
   "slug": "togethercomputer/tev1",
-  "retrieved_utc": "2026-10-23T08:08:54+00:00",
+  "retrieved_utc": "2026-10-23T08:23:25+00:00",
   "identity_source": "https://huggingface.co/togethercomputer/Tev1-4B-experimental",
   "included_files": 43,
   "excluded_files": 16,
@@ -240,7 +240,7 @@ FILE: README.md
 # tev1-4B-experimental
 
 We fine-tuned **Qwen3.5-4B on Together AI** to make decisions: give it context,
-a question, and 2â€“24 options, and it returns one answer letter. We're calling
+a question, and 2–24 options, and it returns one answer letter. We're calling
 it **tev1-4B-experimental**.
 
 This repo contains the data recipe, training example, and saved results so you
@@ -4199,7 +4199,7 @@ should match the original manifest.
 
 ## Adapt the recipe
 
-For a new task, use `state`, `question`, and `options` with consecutive labels Aâ€“X,
+For a new task, use `state`, `question`, and `options` with consecutive labels A–X,
 unique semantic keys, and descriptions. Supply `answer` and `answer_key` for
 supervision. Use the same system instruction and JSON rendering as
 `build_dataset.messages`; use the pinned tokenizer with `enable_thinking=False`
@@ -4353,7 +4353,7 @@ Decision tests: same v1 test and policy_transfer inputs as verified v2.1 regex b
 
 Median latency: 487 ms main decisions; 476 ms policy transfer; 864 ms papers. These are client-observed timings, not a controlled hardware speed comparison.
 
-These are reused development benchmarks. Paper scores measure agreement with two model judges, not human ground truth. No independent audit of the new modelâ€™s actual training upload was performed. Dedicated endpoint request billing is unavailable; no cost inferred from zero token prices. Raw responses, usage and reports are in the adjacent evaluation folders.
+These are reused development benchmarks. Paper scores measure agreement with two model judges, not human ground truth. No independent audit of the new model’s actual training upload was performed. Dedicated endpoint request billing is unavailable; no cost inferred from zero token prices. Raw responses, usage and reports are in the adjacent evaluation folders.
 
 
 
@@ -5175,11 +5175,11 @@ def payload(record, model):
             raise ValueError(f"Missing {field}")
     options = record["options"]
     if not isinstance(options, list) or not 2 <= len(options) <= 24:
-        raise ValueError("Supply 2â€“24 options")
+        raise ValueError("Supply 2–24 options")
     if any(not isinstance(o, dict) for o in options):
         raise ValueError("Each option must be an object")
     if [o.get("label") for o in options] != list("ABCDEFGHIJKLMNOPQRSTUVWX"[:len(options)]):
-        raise ValueError("Use consecutive unique labels Aâ€“X")
+        raise ValueError("Use consecutive unique labels A–X")
     for o in options:
         if any(not isinstance(o.get(k), str) or not o[k].strip()
                for k in ("key", "description")):
@@ -5444,7 +5444,7 @@ def main():
     parser.add_argument('--limit', type=int, help='Optional positive smoke-test limit')
     args = parser.parse_args()
     if not 1 <= args.concurrency <= 16:
-        parser.error('Use concurrency 1â€“16; this runner is not a load test')
+        parser.error('Use concurrency 1–16; this runner is not a load test')
     if args.limit is not None and args.limit < 1:
         parser.error('Limit must be positive')
     key_name = 'TOGETHER_API_KEY'

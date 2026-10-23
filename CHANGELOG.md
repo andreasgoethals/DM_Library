@@ -2,6 +2,7 @@
 
 ## 2026-10-23
 
+- Refreshed all registered source snapshots. Fixed the Windows locale-dependent formatter so complete valid UTF-8 text is retained, including characters beyond the initial sample and across its byte boundary; added regression coverage and regenerated affected snapshots. The existing StartLux paper-version alert remains explicit.
 - Registered and retrieved Tev1, H2OLightning, Kev and VLLMDecision2 source-only snapshots, with immutable revisions, retained licenses and model-weight/data exclusions.
 
 - Added the eight owner-requested OpenAI, Together, H2O.ai, Inception, Upstage, Fastino, Kev and vLLM primary sources to the live Decision Models Zotero collection and the web registry, with complete source summaries and synthesis integration. Preserved all pre-existing Zotero records.

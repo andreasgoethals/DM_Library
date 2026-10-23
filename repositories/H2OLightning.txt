@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "e7b32490c9d2a994bd75a4d1ea7e45716080175e",
   "revision_date": "2026-10-23T07:05:03.000Z",
   "slug": "h2oai/h2o-lightning-4b",
-  "retrieved_utc": "2026-10-23T08:08:57+00:00",
+  "retrieved_utc": "2026-10-23T08:23:28+00:00",
   "identity_source": "https://huggingface.co/h2oai/h2o-lightning-4b",
   "included_files": 28,
   "excluded_files": 34,
@@ -211,7 +211,7 @@ screenshots, scanned documents, charts). It returns a probability for every opti
 - **Variant on a different base (not a quantization):** [h2oai/h2o-lightning-4b-nemotron-nano](https://huggingface.co/h2oai/h2o-lightning-4b-nemotron-nano),
   built on NVIDIA Nemotron 3 Nano 4B; text only; NVIDIA Nemotron Open Model License
 
-## #1 on JevBench, October 7â€“23, 2026
+## #1 on JevBench, October 7–23, 2026
 
 H2O-Lightning-4B v1.1 is #1 on the JevBench open-weights board, with a composite of **73.82** at release v1.6.40.
 From release v1.6.37 the board prices our row at the $0.03/M rate it states for its Qwen3.5-4B reference;
@@ -245,7 +245,7 @@ corrects the latency and puts it on one H100 basis, and shows both JevBench v1.6
 
 ![Vertical comparison of JevBench composite and capability scores, with median decision latency](assets/jevbench_scores_latency_2026-10-10.png)
 
-[Vector SVG](assets/jevbench_scores_latency_2026-10-10.svg) Â· [PDF](assets/jevbench_scores_latency_2026-10-10.pdf)
+[Vector SVG](assets/jevbench_scores_latency_2026-10-10.svg) · [PDF](assets/jevbench_scores_latency_2026-10-10.pdf)
 
 *Footnote: we corrected the latency from Microsoft's page. For self-hosted models it used the leaderboard's adjusted
 figure (measured time x 2 + 0.15 s, which the board itself labels "assumption, not measured"), so this model appeared
@@ -254,7 +254,7 @@ at 210 ms instead of its measured 29 ms. The chart uses the board's measured med
 and deck-31B (127 ms) were timed on an H100 and are unchanged; Surogate Rune was timed on an RTX PRO 6000, which has
 about half an H100's memory bandwidth and compute, so its 116 ms is halved to 58 ms (the most favourable conversion for
 it); this model was timed by the board on an RTX 5090 at 29 ms, and our own serial H100 runs give 28-32 ms, so 29 ms is
-kept. Microsoft-Decision-1 now uses JevBenchâ€™s measured API median **460 ms** (replacing Microsoftâ€™s announcementâ€™s 85 ms), with composite **69.1 / API #6**. OpenAI Decisions uses **298 ms** (about 0.30 s), with composite **62.5 / API #8**. Both and Jev include network time and are not rescaled. The accuracy numbers are
+kept. Microsoft-Decision-1 now uses JevBench’s measured API median **460 ms** (replacing Microsoft’s announcement’s 85 ms), with composite **69.1 / API #6**. OpenAI Decisions uses **298 ms** (about 0.30 s), with composite **62.5 / API #8**. Both and Jev include network time and are not rescaled. The accuracy numbers are
 Microsoft's own, on benchmarks they chose, so they are likely to favour their model; the JevBench composite is scored on
 held-out items that no submitter, us included, has seen. Composite and ranks: [open-weights](https://benchmarkheaven.com/jev-models)
 and [API](https://benchmarkheaven.com/jev-models/api) boards, read 2026-10-10.*
@@ -306,11 +306,11 @@ mean 33 ms, p80 34 ms, p95 40 ms (client side, all 231 items per pass, the two p
 
 | JevBench's 231 public items | correct | by tier: easy / standard / hard |
 |---|---|---|
-| **v1.3.1** (`main`), two-way reading (the default; `bash serve.sh`, one engine) | **203 / 231 (87.9 %)** | 48/48 Â· 70/72 Â· 85/111 |
-| v1.3.1 (`main`), one-way reading (`TWO_WAY=0`; stock generate-mode vLLM) | **198 / 231 (85.7 %)** | 48/48 Â· 70/72 Â· 80/111 |
-| v1.3 (`--revision v1.3.0.5`), two-way | 202 / 231 (87.4 %) | 48/48 Â· 70/72 Â· 84/111 |
-| v1.3 (`--revision v1.3.0.5`), one-way | 198 / 231 (85.7 %) | 48/48 Â· 70/72 Â· 80/111 |
-| v1.2.3 (`--revision v1.2.3`), one-way | 205 / 231 (88.7 %) | 48/48 Â· 71/72 Â· 86/111 |
+| **v1.3.1** (`main`), two-way reading (the default; `bash serve.sh`, one engine) | **203 / 231 (87.9 %)** | 48/48 · 70/72 · 85/111 |
+| v1.3.1 (`main`), one-way reading (`TWO_WAY=0`; stock generate-mode vLLM) | **198 / 231 (85.7 %)** | 48/48 · 70/72 · 80/111 |
+| v1.3 (`--revision v1.3.0.5`), two-way | 202 / 231 (87.4 %) | 48/48 · 70/72 · 84/111 |
+| v1.3 (`--revision v1.3.0.5`), one-way | 198 / 231 (85.7 %) | 48/48 · 70/72 · 80/111 |
+| v1.2.3 (`--revision v1.2.3`), one-way | 205 / 231 (88.7 %) | 48/48 · 71/72 · 86/111 |
 
 On JevBench's public items v1.3.1 one-way equals v1.3 one-way (paired: gains 1 and loses 1, exact McNemar p = 1.0;
 the same top answer on 228 of 231 items) and is 7 items behind v1.2.3 (gains 4 and loses 11, p = 0.12: not
@@ -359,7 +359,7 @@ Measured on one **NVIDIA RTX PRO 4500 Blackwell (32 GB)** with `serve.sh` as shi
 
 | JevBench | public items | result |
 |---|---|---|
-| JevBench (text) | the 231 public items, JevBench's own CLI | **205 / 231 (88.7 %)**: easy 48/48 Â· standard 71/72 Â· hard 86/111 |
+| JevBench (text) | the 231 public items, JevBench's own CLI | **205 / 231 (88.7 %)**: easy 48/48 · standard 71/72 · hard 86/111 |
 | ImageJevBench | the 8 published examples (the only public items released with images) | **8 / 8** |
 | image validation sets | 1,877 questions over 16 public licence-clean sets (table below) | **87.4 %** |
 
@@ -368,14 +368,14 @@ Details follow.
 ### Text: JevBench's public set
 
 From **JevBench's own CLI**, with `--adapter typesafe`, on the 231 public items (`datasets/public/easy.jsonl`,
-`original.jsonl` and `hard.jsonl`; dataset hash `dc3995d8â€¦`) at JevBench commit `bb05a33`, with the commands below.
+`original.jsonl` and `hard.jsonl`; dataset hash `dc3995d8…`) at JevBench commit `bb05a33`, with the commands below.
 
 The measured H100 was an **80 GB SXM5**, with a **700 W configured power limit** (board692-2G520-0200-000). These are not H100 PCIe measurements; the timing values below are unchanged.
 
 | | RTX PRO 4500 Blackwell 32 GB | 1x H100 80 GB SXM5 |
 |---|---|---|
 | correct | 205 / 231 (88.7 %) | 205 / 231 (88.7 %) |
-| by tier: easy / standard / hard | 48/48 Â· 71/72 Â· 86/111 | 48/48 Â· 71/72 Â· 86/111 |
+| by tier: easy / standard / hard | 48/48 · 71/72 · 86/111 | 48/48 · 71/72 · 86/111 |
 | answered and valid | 231 / 231 | 231 / 231 |
 | yes/no answers with P(yes) strictly between 0.2 and 0.8 | 0 of 74 | 0 of 74 |
 | mean input tokens per decision | 654 | 654 |
@@ -408,11 +408,11 @@ The LoRA run uses the same pinned runtime, calibration, 40,960-token context,
 CUDA graphs, prefix caching, 231 distinct serial requests, and ten separate
 warmups excluded from both timing statistics. Native loading and activation of
 all 496 adapter tensors across 248 decoder projections were checked; separate
-baseâ†’adapterâ†’base controls verified an adapter effect and restored base routing.
+base→adapter→base controls verified an adapter effect and restored base routing.
 The H100 LoRA run scored 204/231, compared with 205/231 on RTX, using the same pinned adapter and calibration.
 
 For the merged-model rows, the wider p95 is across different prompt lengths, not parallel traffic: the
-standard prompts contain 110â€“163 input tokens, while the hardest include up to
+standard prompts contain 110–163 input tokens, while the hardest include up to
 3,952. That longest request took 316.5 ms on RTX and 85.9 ms on H100. These are single-request timings, not throughput or concurrent-load
 measurements; latency depends on the GPU and input length.
 JevBench's own measurement of v1.1: median 29 ms (board data, latency.p50_s_raw).
@@ -436,8 +436,8 @@ data URI in `state`.
 
 | set (licence) | what is asked | n | correct | ECE |
 |---|---|---:|---:|---:|
-| Open Images V7 validation (CC BY 4.0 annotations) | is there a â€¹classâ€º in the photo (human-verified labels) | 150 | 88.0 % | 0.034 |
-| Open Images V7 validation | how many â€¹classâ€º in the photo (human boxes, 2-8) | 150 | 63.3 % | 0.121 |
+| Open Images V7 validation (CC BY 4.0 annotations) | is there a ‹class› in the photo (human-verified labels) | 150 | 88.0 % | 0.034 |
+| Open Images V7 validation | how many ‹class› in the photo (human boxes, 2-8) | 150 | 63.3 % | 0.121 |
 | VizWiz validation (CC BY 4.0) | can the question be answered from this photo | 120 | 84.2 % | 0.057 |
 | VizWiz validation | the answer (6+ of 10 annotators) | 120 | 100.0 % | 0.015 |
 | TextVQA validation (CC BY 4.0) | text in the photo (6+ of 10 annotators) | 120 | 99.2 % | 0.024 |
@@ -1141,9 +1141,9 @@ for m in Qwen/Qwen3.5-4B h2oai/h2o-lightning-4b; do curl -s http://127.0.0.1:800
 
 > **Must-rename note for converted or re-exported adapters.** vLLM loads Qwen3.5-4B as
 > `Qwen3_5ForConditionalGeneration`, so the adapter's tensor names must be
-> `base_model.model.model.language_model.layers.N.â€¦`. The file on `main` uses those names since v1.3.0.4 (the
+> `base_model.model.model.language_model.layers.N.…`. The file on `main` uses those names since v1.3.0.4 (the
 > `test_shim.py` packaging test checks every key of `adapter/adapter_model.safetensors`). An adapter saved from a
-> text-only load of the model (`base_model.model.model.layers.N.â€¦`, which is what v1.3 to v1.3.0.3 shipped) is
+> text-only load of the model (`base_model.model.model.layers.N.…`, which is what v1.3 to v1.3.0.3 shipped) is
 > accepted by vLLM without any warning and changes nothing: the output equals the base model. Rename the keys (insert
 > `language_model.` after `model.model.`; the safetensors header is the only thing that changes) and run the check
 > above.
@@ -1215,10 +1215,10 @@ served by vLLM:
 | Runtime | Size (GB) | Same answer as vLLM | Accuracy change (95% CI) | Calibration error (ECE) | Brier score |
 |---|---:|---:|---:|---:|---:|
 | vLLM, BF16 (reference) | | | | 0.033 | 0.242 |
-| MLX, BF16 | 9.10 | 99.5 % | +0.1 pts (âˆ’0.3 to +0.5) | 0.033 | 0.242 |
-| MLX, 8-bit | 5.16 | 99.0 % | âˆ’0.1 pts (âˆ’0.8 to +0.5) | 0.034 | 0.242 |
-| MLX, 4-bit mixed | 3.37 | 92.3 % | âˆ’0.4 pts (âˆ’2.1 to +1.4) | 0.029 | 0.252 |
-| MLX, 4-bit | 3.06 | 91.3 % | âˆ’0.4 pts (âˆ’2.3 to +1.4) | 0.041 | 0.254 |
+| MLX, BF16 | 9.10 | 99.5 % | +0.1 pts (−0.3 to +0.5) | 0.033 | 0.242 |
+| MLX, 8-bit | 5.16 | 99.0 % | −0.1 pts (−0.8 to +0.5) | 0.034 | 0.242 |
+| MLX, 4-bit mixed | 3.37 | 92.3 % | −0.4 pts (−2.1 to +1.4) | 0.029 | 0.252 |
+| MLX, 4-bit | 3.06 | 91.3 % | −0.4 pts (−2.3 to +1.4) | 0.041 | 0.254 |
 
 BF16 and 8-bit agree with vLLM on 99 % or more of answers, with the same calibration. The 4-bit builds show no
 accuracy change we can detect on this sample, but they change about 1 answer in 12 and their probabilities are a
@@ -1799,7 +1799,7 @@ def run(
     `read_noul(image_uri, question_text) -> (p_yes, prompt_tokens)`;
     `read_edge(image_uri, question_text, n) -> (probabilities over the n options, prompt_tokens)` (modes edges/hybrid):
     flat over `bins` options, or, with `two_level=K`, a coarse + fine readout over K bands each (the shim's option
-    count, e.g. 26) â€” the caller's shim renders the options in the order given, never permuted (ordinal labels).
+    count, e.g. 26) — the caller's shim renders the options in the order given, never permuted (ordinal labels).
     `submit(fn, *args) -> future`: with it, the independent calls of a box (the grounding generation, the four edge
     readouts, the presence readout) run CONCURRENTLY on the same engine, sharing the image's prefix cache (an edges box
     should cost about one or two yes/no latencies, not six); only the tightness readouts
@@ -5942,13 +5942,13 @@ TOL_PROBE = 0.10  # the adapter-active probe: the adapter's top logprob must mov
 # Registered claims: an exact quote from the card and how it is checked (tier). A quote that is no longer in the
 # card fails the static tier, so the card cannot change a number without the test noticing.
 CLAIMS = [
-    {"quote": "| **v1.3.1** (`main`), two-way reading (the default; `bash serve.sh`, one engine) | **203 / 231 (87.9 %)** | 48/48 Â· 70/72 Â· 85/111 |",
+    {"quote": "| **v1.3.1** (`main`), two-way reading (the default; `bash serve.sh`, one engine) | **203 / 231 (87.9 %)** | 48/48 · 70/72 · 85/111 |",
      "tier": "slow", "check": "bench231", "mode": "two-way", "correct": 203, "tolerance": 2},   # one engine, RTX A6000
-    {"quote": "| v1.3.1 (`main`), one-way reading (`TWO_WAY=0`; stock generate-mode vLLM) | **198 / 231 (85.7 %)** | 48/48 Â· 70/72 Â· 80/111 |",
+    {"quote": "| v1.3.1 (`main`), one-way reading (`TWO_WAY=0`; stock generate-mode vLLM) | **198 / 231 (85.7 %)** | 48/48 · 70/72 · 80/111 |",
      "tier": "slow", "check": "bench231", "mode": "one-way", "correct": 198, "tolerance": 2},
-    {"quote": "| v1.3 (`--revision v1.3.0.5`), two-way | 202 / 231 (87.4 %) | 48/48 Â· 70/72 Â· 84/111 |", "tier": "static", "check": "quote",
+    {"quote": "| v1.3 (`--revision v1.3.0.5`), two-way | 202 / 231 (87.4 %) | 48/48 · 70/72 · 84/111 |", "tier": "static", "check": "quote",
      "note": "v1.3's run, kept as a comparison row"},
-    {"quote": "| v1.2.3 (`--revision v1.2.3`), one-way | 205 / 231 (88.7 %) | 48/48 Â· 71/72 Â· 86/111 |", "tier": "static", "check": "quote"},
+    {"quote": "| v1.2.3 (`--revision v1.2.3`), one-way | 205 / 231 (88.7 %) | 48/48 · 71/72 · 86/111 |", "tier": "static", "check": "quote"},
     {"quote": "v1.3.1 text **57.93 two-way / 56.72 one-way** (140,178 scored rows)", "tier": "slow", "check": "di_text",
      "values": {"two-way": 57.93, "one-way": 56.72}, "tolerance": 0.3},   # two-way: one engine, RTX A6000
     {"quote": "vision **68.06 two-way / 67.89 one-way** (public", "tier": "slow", "check": "di_vision",   # the card wraps the line after "(public"
@@ -6256,7 +6256,7 @@ class StaticTest(unittest.TestCase):
         self.assertIn(f"prices our row at an implied $0.04/M and shows it #2 ({ours['composite_score']:.2f})", flat)
         jev = next(s for s in data["systems"] if s["key"] == "jev-1.13.0")
         self.assertIn(f"outscores Jev itself, {ours['composite_score']:.1f} to {jev['composite_score']:.1f}", flat)
-        m = re.search(r"## #1 on JevBench, October 7(?:â€“(\d+)| â€“ (\w+) (\d+)), (\d{4})\n", readme())
+        m = re.search(r"## #1 on JevBench, October 7(?:–(\d+)| – (\w+) (\d+)), (\d{4})\n", readme())
         self.assertIsNotNone(m, "the span heading")
         end = dt.date(int(m.group(4)), 10, int(m.group(1))) if m.group(1) else \
             dt.datetime.strptime(f"{m.group(2)} {m.group(3)} {m.group(4)}", "%B %d %Y").date()

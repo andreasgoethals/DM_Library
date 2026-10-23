@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/InternLM/Intern-Decision",
-  "revision": "3572c8a68b5df5dafe02d0e093989ba8ec0183bc",
-  "revision_date": "2026-09-29T16:43:48+08:00",
+  "revision": "565350244af860e1c276768cd80bdd9b8be93913",
+  "revision_date": "2026-10-22T16:43:30+08:00",
   "slug": "InternLM/Intern-Decision",
-  "retrieved_utc": "2026-10-20T10:34:53+00:00",
+  "retrieved_utc": "2026-10-23T08:24:48+00:00",
   "identity_source": "https://huggingface.co/internlm/Intern-Decision-4B",
   "included_files": 69,
   "excluded_files": 20,
@@ -17,13 +17,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 19674,
-      "sha256": "17015c3ca0bee81ee54fbbb1547d5a0abd6d8dcddbfe61d64a857ede4fb40dba"
+      "bytes": 20628,
+      "sha256": "ba05a6a009a6900c2dc880b22d139ed14a28282382d4d35d711640c967aec9f9"
     },
     {
       "path": "README_zh-CN.md",
-      "bytes": 18893,
-      "sha256": "16774222e04a03a2fa829d5a1086d1e85f7e3f6754961649e5f3a98165d0ff73"
+      "bytes": 19837,
+      "sha256": "a760e0b48d8e37eafa964dddb1cee0cbe22a9ec2adb2eeb44cb03b3a3588eeb0"
     },
     {
       "path": "benchmarks/accuracy-v1/LICENSE-APACHE-2.0.txt",
@@ -361,7 +361,437 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 ================================================
 FILE: README.md
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8d in position 1579: character maps to <undefined>
+<h1 align="center">Intern-Decision</h1>
+
+<p align="center">
+  <a href="https://huggingface.co/spaces/internlm/intern-decision"><strong>🎮 Demo</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://arxiv.org/abs/2610.22131"><strong>📄 Technical Report</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://huggingface.co/collections/internlm/intern-decision"><strong>🤗 Model Weights</strong></a>
+</p>
+
+<p align="center">
+  <a href="README_zh-CN.md">简体中文</a> ·
+  <a href="docs/DATA.md">Data interface</a> ·
+  <a href="docs/EVALUATION.md">Reproduce evaluations</a>
+</p>
+
+Intern-Decision turns a state, optional images, and multiple typed questions into
+decisions with probabilities. It fine-tunes the language backbone of Qwen3.5
+while freezing the vision tower and projector. Supported question types are
+`choice`, `score`, and `noul` (yes/no).
+
+This release contains training, two inference backends, benchmark scoring,
+temperature calibration, and a browser demo. It also includes the **96-case
+[distribution calibration benchmark](docs/CALIBRATION_BENCHMARK.md)**,
+its exact references, deterministic generator, and offline scorer, plus the
+seven accuracy test suites and checkpoint-specific temperature presets. Training
+data, private calibration/validation records, images, preparation pipelines, and
+model weights are not included. The runtime schema, tokenization, and collation
+support your own records. Demo examples are synthetic interface illustrations.
+
+<h2 align="center">🎬 Demonstrations</h2>
+
+<p align="center">Click any preview to watch the full video.</p>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <p align="center"><strong>🍄 Mario</strong></p>
+      <a href="assets/demos/Mario.mp4">
+        <img src="assets/demos/Mario.gif" width="420" alt="🍄 Mario" />
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <p align="center"><strong>🖱️ Mouse Moving</strong></p>
+      <a href="assets/demos/Mouse-Moving.mp4">
+        <img src="assets/demos/Mouse-Moving.gif" width="420" alt="🖱️ Mouse Moving" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <p align="center"><strong>🛡️ Doom · Defend</strong></p>
+      <a href="assets/demos/Doom-Defend.mp4">
+        <img src="assets/demos/Doom-Defend.gif" width="420" alt="🛡️ Doom · Defend" />
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <p align="center"><strong>💚 Doom · Health Gathering</strong></p>
+      <a href="assets/demos/Doom-Health-Gathering.mp4">
+        <img src="assets/demos/Doom-Health-Gathering.gif" width="420" alt="💚 Doom · Health Gathering" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <p align="center"><strong>🌐 Browser Use</strong></p>
+      <a href="assets/demos/Browser-Use.mp4">
+        <img src="assets/demos/Browser-Use.gif" width="420" alt="🌐 Browser Use" />
+      </a>
+    </td>
+  </tr>
+</table>
+
+## Community Projects
+
+Applications and demos built by the Intern-Decision community:
+
+- [Intern-Decision-4B Demo](https://huggingface.co/spaces/hugging-apps/internlm-intern-decision-4b) — A Gradio demo by Hugging Apps.
+- [Abstract Master](https://abstract-master.vercel.app/) — A community application built with Intern-Decision.
+
+Have a project to share? Submit a pull request to add it here.
+
+## Method
+
+The objective is `autoregressive masked language modeling`. The assistant input contains a complete
+JSON skeleton with one `<decision>` token per field. Ground-truth answer symbols
+appear only in labels, never in the input. Training uses ordinary causal
+next-token alignment: the logit immediately **before** a marker predicts that
+field's answer. All fields share one causal forward pass.
+
+Training cross-entropy uses the full vocabulary. Inference restricts logits to
+the legal single-token answer symbols, applies softmax, and maps them back to
+the original labels. Question and option ordering must be preserved.
+
+## Results
+
+Intern-Decision-4B reaches **90.02% average accuracy** across seven suites (Jev: 88.74%),
+**44.16 ms mean local request latency** on an RTX 4090, and **0.550 Brier / 0.089 ECE**
+on the 96-case calibration pilot (Jev: 0.595 / 0.130). The protocols and scope differ:
+see [accuracy](#benchmark-accuracy), [latency](#rtx-4090-inference-latency), and [calibration](#known-distribution-calibration-benchmark).
+
+### Benchmark accuracy
+
+Accuracy columns are percentages; Average is the unweighted mean of the seven
+displayed suites. The seven suites contain 10,751 rows and 12,351 decisions;
+per-suite denominators are listed in [Evaluation](#evaluation-seven-suites).
+Brier and ECE are **Jevbench-Hard** metrics on 111 items. This table uses
+**max(P)** confidence and 10 equal-width bins for ECE, displayed as a fraction;
+Brier is the raw multiclass sum. Intern-Decision probabilities use the fitted
+temperatures below, with unchanged argmax predictions. Baselines use their
+reported/default probabilities; no additional temperature was fitted here.
+
+| Model | Easy | Original | Hard | Typed Decision | ToolACE | AG News | WildJailBreak | Average | Brier ↓ | ECE ↓ | T |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| [Jev](https://docs.typesafe.ai/api) | 100.00 | 98.61 | 72.07 | 73.35 | 91.29 | 89.57 | 96.29 | 88.74 | 0.358420 | 0.094685 | — |
+| [Laya](https://github.com/NandhaKishorM/laya) | 95.83 | 72.22 | 28.83 | 35.95 | 63.87 | 92.84 | 14.84 | 57.77 | 0.804244 | 0.246455 | — |
+| [SemIf](https://github.com/TheoLeeCJ/SemIf-OpenJev) | 100.00 | 98.61 | 61.26 | 62.80 | 85.16 | 89.22 | 92.53 | 84.23 | 0.498012 | 0.112213 | 1.0 |
+| [Kev](https://github.com/jaredpalmer/kev) | 100.00 | 93.06 | 45.05 | 65.60 | 87.42 | 89.82 | 75.97 | 79.56 | 0.738253 | 0.262200 | 2.962195 |
+| [JevK5](https://github.com/allebee/jevk5) | 100.00 | 97.22 | 73.87 | 64.50 | 80.97 | 89.13 | 90.45 | 85.16 | 0.366162 | 0.046672 | 1.532 |
+| Intern-Decision-0.8B | 97.92 | 80.56 | 52.25 | 77.35 | 94.52 | 88.61 | 64.48 | 79.38 | 0.529519 | 0.065710 | 2.747761 |
+| Intern-Decision-2B | 100.00 | 84.72 | 63.96 | 79.35 | 96.45 | 89.96 | 78.33 | 84.68 | 0.437256 | 0.100208 | 2.100509 |
+| Intern-Decision-4B | 100.00 | 98.61 | 73.87 | 80.55 | 96.45 | 90.82 | 89.86 | 90.02 | 0.346762 | 0.065267 | 1.992418 |
+
+See [the reproduction guide](docs/EVALUATION.md).
+
+## RTX 4090 inference latency
+
+Local measurements use one NVIDIA RTX 4090, BF16, SDPA, native Hugging Face
+inference, Transformers 5.14.1 and flash-linear-attention 0.4.2. Each request
+contains 289 input tokens and three fields (choice, yes/no and score), answered
+in one forward pass with the checkpoint-specific temperature applied.
+
+| **Model** | **Mean** | **Median / P50** | **P95** |
+| -------------------- | --------- | ---------------- | --------- |
+| Jev | 109.70 ms | 106.30 ms | 146.70 ms |
+| Intern-Decision-0.8B | 33.98 ms | 33.44 ms | 37.50 ms |
+| Intern-Decision-2B | 33.28 ms | 33.15 ms | 33.55 ms |
+| Intern-Decision-4B | 44.16 ms | 44.03 ms | 44.60 ms |
+
+## Known-distribution calibration benchmark
+
+The bundled [96-case benchmark](benchmarks/known-distribution-pilot-v1/README.md)
+is a small calibration pilot with six categories, 24 families and 48 paired
+settings. Questions ask for random
+outcomes; exact reference distributions are stored separately from model inputs.
+It is evaluation-only: do not fit temperatures or train on its references.
+
+### Evaluation results
+
+All three settings have **96/96 valid predictions**, with 16 cases per category.
+Intern-Decision-4B is evaluated with its final checkpoint and fixed XTuner backend. Temperature **T=1.992418**
+was fitted on a separate calibration split; this benchmark was not used for
+fitting or selection. Calibration preserved every predicted argmax label.
+Jev results use `jev-1.13.0`.
+
+Each cell is **expected multiclass Brier / expected ECE**; lower is better.
+Brier includes irreducible outcome randomness. ECE uses 10 equal-width bins
+and valid returned confidence, falling back to max(P), unlike the max(P)-only
+hard-benchmark table above. These are scores
+against exact reference distributions, not sampled-label accuracy.
+
+| Category | Intern-Decision-4B, uncalibrated | Intern-Decision-4B, calibrated | Jev |
+|---|---:|---:|---:|
+| Direct randomness and support | 0.483 / 0.181 | 0.421 / 0.129 | 0.490 / 0.216 |
+| Composed events and mixtures | 0.677 / 0.254 | 0.577 / 0.150 | 0.682 / 0.274 |
+| History, conditioning, and hidden state | 0.711 / 0.219 | 0.613 / 0.108 | 0.657 / 0.113 |
+| Daily evidence and observation bias | 0.701 / 0.328 | 0.575 / 0.210 | 0.603 / 0.114 |
+| Selective disclosure and probability puzzles | 0.540 / 0.119 | 0.510 / 0.049 | 0.483 / 0.138 |
+| Sequential and combinatorial processes | 0.656 / 0.180 | 0.605 / 0.058 | 0.657 / 0.116 |
+| **Overall (pooled)** | 0.628 / 0.213 | 0.550 / 0.089 | 0.595 / 0.130 |
+
+Calibration reduces overall Brier from **0.628 to 0.550** and expected ECE
+from **0.213 to 0.089**, below Jev's **0.595 / 0.130** on this pilot.
+Overall Brier averages the 96 cases; overall ECE is recomputed across all
+cases and is **not** the arithmetic mean of category ECE. The paired option
+variants make this a small diagnostic study, not 96 independent trials.
+
+### Run the evaluation
+
+Score your saved model/API predictions using Python 3.10+ (standard library only):
+
+```bash
+python -m src.eval.score_known_distribution \
+  --dataset benchmarks/known-distribution-pilot-v1 \
+  --predictions /path/to/predictions.jsonl \
+  --output outputs/calibration-benchmark
+```
+
+The fresh output directory contains `summary.md` (category and overall Brier/ECE),
+`metrics.json` (all metrics and bins), and `scored.jsonl` (per-case scores).
+Overall ECE pools all cases; it is not the mean of category ECE.
+See [the scoring guide](docs/CALIBRATION_BENCHMARK.md) for response formats,
+inference examples, formulas, validation and limitations.
+
+## Installation
+
+Use Linux, Python 3.12, and CUDA for the trained backends. Run commands from
+this repository root. Keep HF and XTuner in separate virtual environments:
+their tested Transformers versions differ. Checkpoints are local HF directories
+including weights, processor, tokenizer, chat template, and `<decision>` token.
+
+### Native Hugging Face inference
+
+```bash
+python3.12 -m venv .venv-hf
+source .venv-hf/bin/activate
+python -m pip install -r requirements-inference.txt -r requirements-eval.txt
+```
+
+This backend loads `Qwen3_5ForConditionalGeneration` directly and requires no
+XTuner import or compatibility patch. Do not put `runtime/xtuner` on its
+`PYTHONPATH`. A compatible PyTorch CUDA wheel must be available for your system.
+
+### XTuner training and inference
+
+Model execution uses XTuner with the supplied runtime adaptations. The
+upstream source revision is pinned; no third-party source or datasets are
+vendored into this publication folder.
+
+```bash
+python3.12 -m venv .venv-xtuner
+source .venv-xtuner/bin/activate
+python -m pip install torch==2.6.0 torchvision==0.21.0 \
+  --index-url https://download.pytorch.org/whl/cu126
+python -m pip install -r requirements-xtuner.txt -r requirements-eval.txt
+mkdir -p third_party
+git clone https://github.com/InternLM/xtuner.git third_party/xtuner
+git -C third_party/xtuner checkout fb51baebdf91b03bd39255c4427edac9aca82865
+python -m pip install --no-deps -e third_party/xtuner
+# Install a flash-attn 2.8.3 wheel/build matching your Torch/CUDA toolchain.
+python -m pip install flash-attn==2.8.3 --no-build-isolation
+export XTUNER_PATH="$PWD/third_party/xtuner"
+```
+
+The explicit dependency override preserves Transformers 4.57.0 for this
+XTuner path. `runtime/xtuner/sitecustomize.py` supplies the tested Torch 2.6
+compatibility hooks; launchers enable it only for XTuner. CUDA development
+tools may be needed by optional extensions. The HF environment remains
+independent. Different kernels and BF16 rounding can produce probability
+differences between backends; do not claim bitwise backend equivalence.
+
+## Inference
+
+Create a request JSON using [docs/DATA.md](docs/DATA.md), then:
+
+```bash
+export MODEL_CHECKPOINT=/path/to/checkpoint
+python -m src.inference --backend hf --input /path/to/request.json
+```
+
+For XTuner, activate its environment and explicitly enable its runtime:
+
+```bash
+export PYTHONPATH="$PWD/runtime/xtuner:$PWD:$XTUNER_PATH"
+export XTUNER_HF_IMPL=1 XTUNER_USE_FA3=0
+python -m src.inference --backend xtuner --input /path/to/request.json
+```
+
+The XTuner backend uses CUDA/BF16. HF additionally supports `device`, `dtype`
+and `attn_implementation` in `configs/inference/default.json`. Set `MODEL_PATH`
+only if the matching processor is stored separately. `MEDIA_ROOT` resolves
+local image paths for CLI use. `CALIBRATION_PATH` enables a checkpoint-specific
+calibration artifact; otherwise temperature is 1.0. Do not reuse a temperature
+from another checkpoint or treat a sampling temperature as calibration.
+
+## Training on your own data
+
+Supply an already prepared JSONL file matching the documented contract.
+The loader does not perform dataset construction, relabeling, split generation,
+or format conversion. Review your records and splits before training.
+
+```bash
+export MODEL_PATH=/path/to/base-qwen35-instruction-checkpoint
+export DATA_PATH=/path/to/your/train.jsonl
+export MEDIA_ROOT=/path/to/your/media  # omit for text-only data
+export WORK_DIR="$PWD/outputs/train-001"  # must not exist
+export NPROC_PER_NODE=4
+bash scripts/train.sh
+```
+
+`configs/training/qwen35.py` reads architecture dimensions from the base
+checkpoint and supports the 0.8B, 2B, 4B and 9B dense Qwen3.5 variants.
+The launcher records the user-selected configuration and hashes, performs
+training on user-supplied records, and saves only the final HF checkpoint. It does not automatically
+resume a prior run. Runtime tokenization rejects invalid/overlength rows.
+`training-config.json` is separate from the HF checkpoint's `config.json`.
+
+Verify the saved weights and initial per-rank load audits:
+
+```bash
+python -m scripts.verify_checkpoint --base "$MODEL_PATH" \
+  --checkpoint /path/to/final/hf-checkpoint \
+  --audit-dir "$WORK_DIR/weight-audit" --ranks 4 \
+  --output "$WORK_DIR/checkpoint-verification.json"
+```
+
+## Evaluation: seven suites
+
+Install the pinned Jevbench scoring package via `requirements-eval.txt`.
+The exact evaluation records are bundled under `benchmarks/accuracy-v1/`.
+Follow [docs/EVALUATION.md](docs/EVALUATION.md) to verify them and reproduce both
+tables. No dataset conversion scripts are needed.
+
+| Suite | Rows | Decisions |
+|---|---:|---:|
+| Jevbench Easy / Original / Hard | 48 / 72 / 111 | 48 / 72 / 111 |
+| AG News | 7,600 | 7,600 |
+| ToolACE | 310 | 310 |
+| Typed Decision | 400 | 2,000 |
+| WildJailBreak | 2,210 | 2,210 |
+
+```bash
+python -m src.eval.verify_bundle
+python -m src.eval.jev --backend hf --checkpoint "$MODEL_CHECKPOINT" \
+  --suite --output outputs/eval-t1
+```
+
+Use `--backend xtuner` in the XTuner environment for the reported scoring
+backend. `--public-only` runs the three public Jevbench suites without requiring
+the other datasets. The default paths use the bundled records; `--test-root`,
+`EVAL_DATA_ROOT` and `JEVBENCH_DATA_ROOT` can override them for separate experiments.
+
+Outputs include raw candidate probabilities, correct/total counts, accuracy,
+ECE, Brier, hard TVD, input hashes, and checkpoint hashes. Hard TVD is evaluated
+only on the 10 public items with `gold_probs`. Gold labels and distributions
+never enter the model prompt. For multiple processes, use `--worker R --workers N`
+on distinct GPUs, then the same command with `--merge --workers N` after all
+workers succeed. Merge validates prediction identity, coverage, hashes,
+temperature, and backend.
+
+## Selecting temperature
+
+For the released models, first use the hash-verified presets described in
+[docs/EVALUATION.md](docs/EVALUATION.md). The following is for your own models.
+
+Fit one positive scalar per checkpoint by **NLL on calibration data only**.
+Supply your own disjoint records with `validation_role` set to `calibration`
+or `selection`; private calibration and validation split details are not disclosed.
+Keep calibration and validation disjoint from training and benchmark tests.
+
+```bash
+python -m src.eval.collect --backend hf --checkpoint "$MODEL_CHECKPOINT" \
+  --data /path/to/your/validation.jsonl --output outputs/validation-predictions.jsonl
+python -m src.eval.fit --checkpoint "$MODEL_CHECKPOINT" \
+  --predictions outputs/validation-predictions.jsonl --output outputs/calibration
+python -m src.eval.replay --checkpoint "$MODEL_CHECKPOINT" \
+  --baseline outputs/eval-t1 --calibration outputs/calibration/calibration.json \
+  --output outputs/eval-calibrated
+export CALIBRATION_PATH="$PWD/outputs/calibration/calibration.json"
+```
+
+Again, use XTuner collection for an XTuner evaluation. Optional flags
+`--expected-fit-rows` and `--expected-validation-rows` validate counts you
+specify for your own data. The optimizer bisects the convex NLL derivative in inverse
+temperature over T ∈ [0.01, 100] and saves the search curve and separate
+validation scores. The artifact is fixed before benchmark replay.
+
+Replay applies `softmax(log(p) / T)` to saved candidate probabilities and
+checks **zero changed decisions**. It writes before/after metrics and
+`verification.json`. It does not optimize benchmark ECE or select checkpoints.
+NLL-optimal temperature need not minimize ECE on another dataset. Calibration
+artifacts are bound to checkpoint metadata hashes; regenerate one after
+changing weights. If relocating a checkpoint, update its artifact's
+`checkpoint` path only after checking all stored file hashes.
+
+## Browser demo and HTTP API
+
+```bash
+export MODEL_CHECKPOINT=/path/to/checkpoint
+export INFERENCE_BACKEND=hf  # or xtuner in its separate environment
+bash scripts/demo.sh
+```
+
+Open <http://127.0.0.1:7860>. The demo supports typed questions, multiple
+image uploads, probabilities, and calibrated confidence. API endpoints:
+`POST /v1/decisions` (alias `/v1/jev`), `GET /health`, and interactive `/docs`.
+HTTP accepts uploaded image bytes, not server file paths or remote URLs.
+Uploads are temporary and removed after inference. CLI local paths are for
+trusted callers. Default serving is loopback, with no request-content logging.
+Add authentication and request-size limits before exposing it publicly.
+
+An optional external thinking handoff is disabled by default. To enable it,
+configure your own model in the inference config and provide `LLM_BASE_URL`
+and `LLM_API_KEY` through the environment. Only explicitly enabled requests
+can send evidence to that provider; handoff outputs are not calibrated local
+probabilities and are not used in the reported evaluations.
+
+## Checks and layout
+
+```bash
+python -m unittest tests.check_inference tests.check_image_uploads tests.test_release
+python -m tests.check_temperature
+```
+
+These CPU checks use synthetic fixtures and mocked models; they do not launch
+training, claim checkpoint quality, or replace GPU validation of a new runtime.
+In the XTuner environment, with `MODEL_PATH` pointing to a local base processor
+and the XTuner `PYTHONPATH` above, run `python -m tests.check_training_runtime`
+for CPU checks of causal label alignment, packing, image tokens and convolution
+output/gradient parity. It creates synthetic media temporarily and loads no model weights.
+
+```text
+configs/         Portable inference and training configuration
+src/inputs/      Runtime schema, tokenization and collation only
+src/model/       Qwen architecture and frozen-vision training adaptations
+src/inference/   Native HF and XTuner engines, temperature scaling
+src/eval/        Scoring, calibration collection/fitting and replay
+src/service/     HTTP endpoint and browser demo
+runtime/xtuner/  Explicit XTuner compatibility environment
+scripts/         Training launcher and checkpoint verification
+tests/           Synthetic CPU regression checks
+docs/DATA.md     Expected user-supplied input format
+```
+
+Third-party dependencies retain their own licenses: Qwen model terms apply to
+weights; XTuner is Apache-2.0; Jevbench is MIT. Neither weights nor third-party
+repositories are redistributed in this folder.
+
+## Citation
+
+If you find Intern-Decision useful, please cite our technical report:
+
+```bibtex
+@article{zhu2026intern,
+  title={Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling},
+  author={Zhu, Tong and Xu, Zhe and He, Zefeng and Chai, Yunkai and Hu, Xuyang and Zheng, Dehong and Luo, Yun and Li, Yafu and Zhang, Qi and Cheng, Yu},
+  journal={arXiv preprint arXiv:2610.22131},
+  year={2026}
+}
+```
+
 
 
 ================================================
@@ -590,7 +1020,413 @@ indent-style = "space"
 ================================================
 FILE: README_zh-CN.md
 ================================================
-[Binary file]
+<h1 align="center">Intern-Decision</h1>
+
+<p align="center">
+  <a href="https://huggingface.co/spaces/internlm/intern-decision"><strong>🎮 在线演示</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://arxiv.org/abs/2610.22131"><strong>📄 技术报告</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://huggingface.co/collections/internlm/intern-decision"><strong>🤗 模型权重</strong></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> ·
+  <a href="docs/DATA.md">数据格式</a> ·
+  <a href="docs/EVALUATION.md">评测复现指南</a>
+</p>
+
+Intern-Decision 将状态、可选图片和多个结构化问题转换为决策与概率。
+模型基于 Qwen3.5 微调语言主干，同时冻结视觉编码器和投影层。
+支持 `choice`（选择）、`score`（评分）和 `noul`（是非）三类问题。
+
+本目录提供训练、双后端推理、基准评分、温度校准和浏览器演示代码，并包含
+**[96 条概率分布校准基准](docs/CALIBRATION_BENCHMARK.md)**、精确参考分布、
+确定性生成器和离线评分脚本，以及七项准确率测试集和绑定 checkpoint 的温度预设。
+训练数据、内部校准/验证记录、图片、数据准备流程和模型权重不包含在本目录中。
+运行时 schema、tokenization 和 collator 支持用户自行提供的记录。
+演示中的例子是独立编写的合成接口示例。
+
+<h2 align="center">🎬 演示视频</h2>
+
+<p align="center">点击预览，观看完整视频。</p>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <p align="center"><strong>🍄 马里奥</strong></p>
+      <a href="assets/demos/Mario.mp4">
+        <img src="assets/demos/Mario.gif" width="420" alt="🍄 马里奥" />
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <p align="center"><strong>🖱️ 鼠标移动</strong></p>
+      <a href="assets/demos/Mouse-Moving.mp4">
+        <img src="assets/demos/Mouse-Moving.gif" width="420" alt="🖱️ 鼠标移动" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <p align="center"><strong>🛡️ Doom · 防守</strong></p>
+      <a href="assets/demos/Doom-Defend.mp4">
+        <img src="assets/demos/Doom-Defend.gif" width="420" alt="🛡️ Doom · 防守" />
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <p align="center"><strong>💚 Doom · 收集生命值</strong></p>
+      <a href="assets/demos/Doom-Health-Gathering.mp4">
+        <img src="assets/demos/Doom-Health-Gathering.gif" width="420" alt="💚 Doom · 收集生命值" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <p align="center"><strong>🌐 浏览器操作</strong></p>
+      <a href="assets/demos/Browser-Use.mp4">
+        <img src="assets/demos/Browser-Use.gif" width="420" alt="🌐 浏览器操作" />
+      </a>
+    </td>
+  </tr>
+</table>
+
+## 社区项目
+
+社区基于 Intern-Decision 构建的应用与演示：
+
+- [Intern-Decision-4B Demo](https://huggingface.co/spaces/hugging-apps/internlm-intern-decision-4b)：由 Hugging Apps 提供的 Gradio 演示。
+- [Abstract Master](https://abstract-master.vercel.app/)：基于 Intern-Decision 的社区应用。
+
+欢迎通过 Pull Request 分享更多相关项目。
+
+## 方法
+
+训练目标为**自回归掩码语言建模（autoregressive masked language modeling）**。
+assistant 输入包含完整的 JSON 骨架，每个字段对应一个 `<decision>` 标记。
+真实答案符号只出现在 labels 中，不进入输入。训练采用普通因果 next-token 对齐：
+标记**前一位置**的 logit 预测该字段的答案。所有字段共享一次因果前向计算。
+
+训练交叉熵覆盖完整词表；推理将 logits 限制在合法的单 token 答案符号上，
+执行 softmax 后映射回原始标签。问题和选项的顺序必须保留。
+
+## 结果
+
+Intern-Decision-4B 在七项基准上的**平均准确率为 90.02%**（Jev：88.74%），
+在 RTX 4090 上的**本地请求平均延迟为 44.16 ms**，在 96 条校准 pilot 上达到
+**0.550 Brier / 0.089 ECE**（Jev：0.595 / 0.130）。这些结果的评测协议和范围不同，
+分别见[基准准确率](#基准准确率)、[推理延迟](#rtx-4090-推理延迟)和[校准基准](#已知分布校准基准)。
+
+### 基准准确率
+
+准确率列以百分数表示；Average 为表中七项准确率的算术平均。
+七项共 10,751 行、12,351 个决策，各项分母见[七项基准评测](#七项基准评测)。
+Brier 和 ECE 是 **111 条 Jevbench-Hard 的指标**。该表使用 **max(P)** 作为置信度，
+ECE 采用 10 个等宽区间，以小数显示；Brier 使用原始多类别求和定义。
+Intern-Decision 的概率应用下表中的拟合温度，argmax 预测保持不变。
+基线使用其已报告或默认的概率，本次未为它们额外拟合温度。
+
+| 模型 | Easy | Original | Hard | Typed Decision | ToolACE | AG News | WildJailBreak | Average | Brier ↓ | ECE ↓ | T |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| [Jev](https://docs.typesafe.ai/api) | 100.00 | 98.61 | 72.07 | 73.35 | 91.29 | 89.57 | 96.29 | 88.74 | 0.358420 | 0.094685 | — |
+| [Laya](https://github.com/NandhaKishorM/laya) | 95.83 | 72.22 | 28.83 | 35.95 | 63.87 | 92.84 | 14.84 | 57.77 | 0.804244 | 0.246455 | — |
+| [SemIf](https://github.com/TheoLeeCJ/SemIf-OpenJev) | 100.00 | 98.61 | 61.26 | 62.80 | 85.16 | 89.22 | 92.53 | 84.23 | 0.498012 | 0.112213 | 1.0 |
+| [Kev](https://github.com/jaredpalmer/kev) | 100.00 | 93.06 | 45.05 | 65.60 | 87.42 | 89.82 | 75.97 | 79.56 | 0.738253 | 0.262200 | 2.962195 |
+| [JevK5](https://github.com/allebee/jevk5) | 100.00 | 97.22 | 73.87 | 64.50 | 80.97 | 89.13 | 90.45 | 85.16 | 0.366162 | 0.046672 | 1.532 |
+| Intern-Decision-0.8B | 97.92 | 80.56 | 52.25 | 77.35 | 94.52 | 88.61 | 64.48 | 79.38 | 0.529519 | 0.065710 | 2.747761 |
+| Intern-Decision-2B | 100.00 | 84.72 | 63.96 | 79.35 | 96.45 | 89.96 | 78.33 | 84.68 | 0.437256 | 0.100208 | 2.100509 |
+| Intern-Decision-4B | 100.00 | 98.61 | 73.87 | 80.55 | 96.45 | 90.82 | 89.86 | 90.02 | 0.346762 | 0.065267 | 1.992418 |
+
+复现步骤见[评测指南](docs/EVALUATION.md)。
+
+## RTX 4090 推理延迟
+
+本地测量使用单张 NVIDIA RTX 4090、BF16、SDPA、Hugging Face 原生推理、
+Transformers 5.14.1 和 flash-linear-attention 0.4.2。每个请求包含 289 个输入 token
+和三个字段（选择、是非、评分），在一次前向计算中完成，并应用对应 checkpoint 的温度。
+
+| **模型** | **平均值** | **中位数 / P50** | **P95** |
+| -------------------- | --------- | ---------------- | --------- |
+| Jev | 109.70 ms | 106.30 ms | 146.70 ms |
+| Intern-Decision-0.8B | 33.98 ms | 33.44 ms | 37.50 ms |
+| Intern-Decision-2B | 33.28 ms | 33.15 ms | 33.55 ms |
+| Intern-Decision-4B | 44.16 ms | 44.03 ms | 44.60 ms |
+
+## 已知分布校准基准
+
+随仓库提供的 [96 条基准](benchmarks/known-distribution-pilot-v1/README.md)
+是一个小规模校准 pilot，包含六个类别、24 个问题族和 48 组成对设置。
+问题询问随机结果；精确参考分布与模型输入分开保存。
+该基准仅用于评测，不得使用其参考答案训练模型或拟合温度。
+
+### 评测结果
+
+三种设置均获得 **96/96 条有效预测**，每个类别包含 16 条。
+Intern-Decision-4B 使用最终 checkpoint 和固定的 XTuner 后端评测。
+温度 **T=1.992418** 在独立校准划分上拟合，本基准未参与拟合或选择。
+温度校准保留了每条预测的 argmax 标签。Jev 使用 `jev-1.13.0`。
+
+每个单元格为**期望多类别 Brier / 期望 ECE**，越低越好。
+Brier 包含结果本身不可消除的随机性。ECE 使用 10 个等宽区间，优先采用返回的有效
+置信度，否则使用 max(P)；这与上方 Hard 表仅使用 max(P) 的口径不同。
+这些指标根据精确参考分布计算，不是针对采样标签计算的准确率。
+
+| 类别 | Intern-Decision-4B, 未校准 | Intern-Decision-4B, 已校准 | Jev |
+|---|---:|---:|---:|
+| 直接随机性与可能性支持集 | 0.483 / 0.181 | 0.421 / 0.129 | 0.490 / 0.216 |
+| 复合事件与混合分布 | 0.677 / 0.254 | 0.577 / 0.150 | 0.682 / 0.274 |
+| 历史信息、条件概率与隐藏状态 | 0.711 / 0.219 | 0.613 / 0.108 | 0.657 / 0.113 |
+| 日常证据与观测偏差 | 0.701 / 0.328 | 0.575 / 0.210 | 0.603 / 0.114 |
+| 选择性披露与概率谜题 | 0.540 / 0.119 | 0.510 / 0.049 | 0.483 / 0.138 |
+| 序列与组合过程 | 0.656 / 0.180 | 0.605 / 0.058 | 0.657 / 0.116 |
+| **总体（合并计算）** | 0.628 / 0.213 | 0.550 / 0.089 | 0.595 / 0.130 |
+
+校准使总体 Brier 从 **0.628 降至 0.550**，期望 ECE 从 **0.213 降至 0.089**，
+低于 Jev 在本 pilot 上的 **0.595 / 0.130**。
+总体 Brier 对 96 条样本取平均；总体 ECE 合并所有样本重新计算，
+**不是**各类别 ECE 的算术平均。选项顺序变体成对出现，
+因此这是一个小规模诊断研究，不能视为 96 次独立试验。
+
+### 运行评测
+
+使用 Python 3.10+ 对保存的模型/API 预测评分，仅需标准库：
+
+```bash
+python -m src.eval.score_known_distribution \
+  --dataset benchmarks/known-distribution-pilot-v1 \
+  --predictions /path/to/predictions.jsonl \
+  --output outputs/calibration-benchmark
+```
+
+新建输出目录包含 `summary.md`（分类及总体 Brier/ECE）、`metrics.json`
+（完整指标和分桶）以及 `scored.jsonl`（逐条评分）。
+总体 ECE 合并全部样本计算，不是类别 ECE 的均值。
+响应格式、推理示例、公式、验证方法和局限见[评分指南](docs/CALIBRATION_BENCHMARK.md)。
+
+## 安装
+
+模型后端使用 Linux、Python 3.12 和 CUDA。请从仓库根目录执行命令。
+HF 和 XTuner 使用不同的已验证 Transformers 版本，应分别创建虚拟环境。
+checkpoint 为本地 HF 目录，须包含权重、processor、tokenizer、chat template
+和 `<decision>` token。
+
+### Hugging Face 原生推理
+
+```bash
+python3.12 -m venv .venv-hf
+source .venv-hf/bin/activate
+python -m pip install -r requirements-inference.txt -r requirements-eval.txt
+```
+
+该后端直接加载 `Qwen3_5ForConditionalGeneration`，无需导入 XTuner 或加载兼容补丁。
+不要将 `runtime/xtuner` 加入其 `PYTHONPATH`。
+系统需要可用且兼容的 PyTorch CUDA wheel。
+
+### XTuner 训练与推理
+
+模型通过 XTuner 和随附的运行时适配执行。上游源码版本已固定；
+本发布目录不内置 XTuner 的第三方源码或数据集。
+
+```bash
+python3.12 -m venv .venv-xtuner
+source .venv-xtuner/bin/activate
+python -m pip install torch==2.6.0 torchvision==0.21.0 \
+  --index-url https://download.pytorch.org/whl/cu126
+python -m pip install -r requirements-xtuner.txt -r requirements-eval.txt
+mkdir -p third_party
+git clone https://github.com/InternLM/xtuner.git third_party/xtuner
+git -C third_party/xtuner checkout fb51baebdf91b03bd39255c4427edac9aca82865
+python -m pip install --no-deps -e third_party/xtuner
+# 安装与 Torch/CUDA 工具链匹配的 flash-attn 2.8.3 wheel，或从源码编译。
+python -m pip install flash-attn==2.8.3 --no-build-isolation
+export XTUNER_PATH="$PWD/third_party/xtuner"
+```
+
+显式依赖覆盖为 XTuner 路径保留 Transformers 4.57.0。
+`runtime/xtuner/sitecustomize.py` 提供已验证的 Torch 2.6 兼容适配，
+启动脚本仅在 XTuner 环境中启用。可选扩展可能需要 CUDA 开发工具。
+HF 环境保持独立。不同算子和 BF16 舍入可能造成后端间的概率差异，
+不能假定两个后端逐位一致。
+
+## 推理
+
+按照 [docs/DATA.md](docs/DATA.md) 准备请求 JSON，然后运行：
+
+```bash
+export MODEL_CHECKPOINT=/path/to/checkpoint
+python -m src.inference --backend hf --input /path/to/request.json
+```
+
+使用 XTuner 时，激活对应环境并显式启用其运行时：
+
+```bash
+export PYTHONPATH="$PWD/runtime/xtuner:$PWD:$XTUNER_PATH"
+export XTUNER_HF_IMPL=1 XTUNER_USE_FA3=0
+python -m src.inference --backend xtuner --input /path/to/request.json
+```
+
+XTuner 后端使用 CUDA/BF16。HF 还支持通过 `configs/inference/default.json`
+配置 `device`、`dtype` 和 `attn_implementation`。
+仅在匹配的 processor 单独存储时设置 `MODEL_PATH`。
+`MEDIA_ROOT` 用于解析 CLI 本地图片路径。`CALIBRATION_PATH` 启用对应 checkpoint
+的校准文件；不设置则使用温度 1.0。不要复用其他 checkpoint 的温度，
+也不要将采样温度当作置信度校准。
+
+## 使用自己的数据训练
+
+请提供符合数据接口约定、已准备好的 JSONL 文件。
+加载器不负责数据集构建、重新标注、划分生成或格式转换。
+训练前请检查记录和划分。
+
+```bash
+export MODEL_PATH=/path/to/base-qwen35-instruction-checkpoint
+export DATA_PATH=/path/to/your/train.jsonl
+export MEDIA_ROOT=/path/to/your/media  # 纯文本数据可省略
+export WORK_DIR="$PWD/outputs/train-001"  # 必须为新目录
+export NPROC_PER_NODE=4
+bash scripts/train.sh
+```
+
+`configs/training/qwen35.py` 从基础 checkpoint 读取架构维度，
+支持 Qwen3.5 的 0.8B、2B、4B 和 9B dense 版本。
+启动脚本记录用户选择的配置和哈希，在用户提供的记录上训练，并仅保存最终 HF checkpoint。
+脚本不会自动恢复此前运行；运行时 tokenization 会拒绝无效或超长记录。
+`training-config.json` 与 HF checkpoint 的 `config.json` 分开保存。
+
+验证保存的权重和每个 rank 的初始加载审计：
+
+```bash
+python -m scripts.verify_checkpoint --base "$MODEL_PATH" \
+  --checkpoint /path/to/final/hf-checkpoint \
+  --audit-dir "$WORK_DIR/weight-audit" --ranks 4 \
+  --output "$WORK_DIR/checkpoint-verification.json"
+```
+
+## 七项基准评测
+
+通过 `requirements-eval.txt` 安装固定版本的 Jevbench 评分包。
+实际评测记录位于 `benchmarks/accuracy-v1/`。
+按 [docs/EVALUATION.md](docs/EVALUATION.md) 校验文件并复现两张结果表，
+无需运行数据转换脚本。
+
+| 基准 | 行数 | 决策数 |
+|---|---:|---:|
+| Jevbench Easy / Original / Hard | 48 / 72 / 111 | 48 / 72 / 111 |
+| AG News | 7,600 | 7,600 |
+| ToolACE | 310 | 310 |
+| Typed Decision | 400 | 2,000 |
+| WildJailBreak | 2,210 | 2,210 |
+
+```bash
+python -m src.eval.verify_bundle
+python -m src.eval.jev --backend hf --checkpoint "$MODEL_CHECKPOINT" \
+  --suite --output outputs/eval-t1
+```
+
+复现已报告的评分后端时，请在 XTuner 环境中使用 `--backend xtuner`。
+`--public-only` 仅运行三项公开 Jevbench 基准，无需其他数据集。
+默认路径指向随附记录；可通过 `--test-root`、`EVAL_DATA_ROOT` 和
+`JEVBENCH_DATA_ROOT` 覆盖路径，用于独立实验。
+
+输出包括原始候选概率、正确数/总数、准确率、ECE、Brier、Hard TVD、
+输入哈希和 checkpoint 哈希。Hard TVD 仅在含 `gold_probs` 的 10 条公开记录上计算。
+真实标签和参考分布不会进入模型提示词。多进程运行时，在不同 GPU 上分别指定
+`--worker R --workers N`；全部 worker 成功后，再用同一命令加上
+`--merge --workers N` 合并。合并过程检查预测身份、覆盖率、哈希、温度和后端。
+
+## 温度选择
+
+已发布模型请优先使用 [docs/EVALUATION.md](docs/EVALUATION.md) 中
+经过哈希验证的温度预设。以下流程用于自己的模型。
+
+每个 checkpoint 拟合一个正标量温度，目标为**仅在校准数据上最小化 NLL**。
+请自行提供互不重叠的记录，将 `validation_role` 设置为 `calibration` 或 `selection`；
+内部校准和验证划分的具体信息不披露。
+校准集、验证集应与训练集和基准测试集保持不重叠。
+
+```bash
+python -m src.eval.collect --backend hf --checkpoint "$MODEL_CHECKPOINT" \
+  --data /path/to/your/validation.jsonl --output outputs/validation-predictions.jsonl
+python -m src.eval.fit --checkpoint "$MODEL_CHECKPOINT" \
+  --predictions outputs/validation-predictions.jsonl --output outputs/calibration
+python -m src.eval.replay --checkpoint "$MODEL_CHECKPOINT" \
+  --baseline outputs/eval-t1 --calibration outputs/calibration/calibration.json \
+  --output outputs/eval-calibrated
+export CALIBRATION_PATH="$PWD/outputs/calibration/calibration.json"
+```
+
+XTuner 评测应同样使用 XTuner 收集预测。
+可选参数 `--expected-fit-rows` 和 `--expected-validation-rows` 用于检查
+用户自行指定的数据行数。优化器在 T ∈ [0.01, 100] 内，对逆温度下凸 NLL
+的导数进行二分搜索，并保存搜索曲线和独立验证分数。
+校准文件在 benchmark 重放前固定。
+
+Replay 对保存的候选概率应用 `softmax(log(p) / T)`，检查**零决策变化**，
+并输出校准前后指标和 `verification.json`。
+它不会优化 benchmark ECE 或选择 checkpoint。NLL 最优温度未必能最小化
+另一数据集上的 ECE。校准文件绑定 checkpoint 元数据哈希；修改权重后需重新生成。
+移动 checkpoint 时，须先检查所有已记录的文件哈希，再更新校准文件中的 `checkpoint` 路径。
+
+## 浏览器演示与 HTTP API
+
+```bash
+export MODEL_CHECKPOINT=/path/to/checkpoint
+export INFERENCE_BACKEND=hf  # 或在独立环境中使用 xtuner
+bash scripts/demo.sh
+```
+
+打开 <http://127.0.0.1:7860>。演示支持结构化问题、多图片上传、概率和校准置信度。
+API 端点包括 `POST /v1/decisions`（别名 `/v1/jev`）、`GET /health` 和交互文档 `/docs`。
+HTTP 接收上传的图片字节，不接受服务器文件路径或远程 URL。
+上传内容为临时文件，推理后删除；CLI 本地路径仅供可信调用方使用。
+服务默认只监听本机，不记录请求内容。公开部署前应添加身份认证和请求大小限制。
+
+可选的外部思考转交默认关闭。启用时，在推理配置中指定自己的模型，
+并通过环境变量提供 `LLM_BASE_URL` 和 `LLM_API_KEY`。
+只有显式启用的请求才会向该服务发送证据；转交输出不是本地校准概率，
+也未用于已报告的评测。
+
+## 检查与目录
+
+```bash
+python -m unittest tests.check_inference tests.check_image_uploads tests.test_release
+python -m tests.check_temperature
+```
+
+这些 CPU 检查使用合成样例和 mock 模型，不启动训练，也不能证明 checkpoint 的质量
+或替代新运行时的 GPU 验证。在 XTuner 环境中，将 `MODEL_PATH` 指向本地基础模型
+processor，并设置上述 XTuner `PYTHONPATH`，然后运行
+`python -m tests.check_training_runtime`，可在 CPU 上检查因果标签对齐、packing、
+图像 token 以及卷积输出/梯度的一致性。测试仅临时创建合成媒体，不加载模型权重。
+
+```text
+configs/         可移植的推理与训练配置
+src/inputs/      运行时 schema、tokenization 和 collation
+src/model/       Qwen 架构与冻结视觉模块的训练适配
+src/inference/   HF 原生及 XTuner 引擎、温度缩放
+src/eval/        评分、校准预测收集、拟合与重放
+src/service/     HTTP 接口和浏览器演示
+runtime/xtuner/  显式启用的 XTuner 兼容环境
+scripts/         训练启动器与 checkpoint 验证
+tests/           使用合成样例的 CPU 回归检查
+docs/DATA.md     用户输入数据的格式约定
+```
+
+第三方依赖遵循各自许可证：权重适用 Qwen 模型条款，XTuner 为 Apache-2.0，
+Jevbench 为 MIT。本目录不再分发模型权重或第三方代码仓库。
+
+## 引用
+
+如果本项目对你的研究或应用有帮助，欢迎引用我们的技术报告：
+
+```bibtex
+@article{zhu2026intern,
+  title={Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling},
+  author={Zhu, Tong and Xu, Zhe and He, Zefeng and Chai, Yunkai and Hu, Xuyang and Zheng, Dehong and Luo, Yun and Li, Yafu and Zhang, Qi and Cheng, Yu},
+  journal={arXiv preprint arXiv:2610.22131},
+  year={2026}
+}
+```
+
 
 
 ================================================
@@ -4937,7 +5773,7 @@ SUITES = (
 
 def accuracy_table(reports):
     lines = [
-        "| Model | " + " | ".join(label for _, label in SUITES) + " | Average | Brier â†“ | ECE â†“ |",
+        "| Model | " + " | ".join(label for _, label in SUITES) + " | Average | Brier ↓ | ECE ↓ |",
         "|---|" + "---:|" * 10,
     ]
     for label, report in reports:
@@ -5440,12 +6276,12 @@ def validate_request(request, allow_images=False):
         raise ValueError("Pass image bytes through the HTTP upload interface.")
     if images:
         if not isinstance(images, list) or not 1 <= len(images) <= 8:
-            raise ValueError("Upload 1â€“8 images.")
+            raise ValueError("Upload 1–8 images.")
         if not all(isinstance(image, str) and image.startswith("/") for image in images):
             raise ValueError("Uploaded images must be server-managed files.")
     questions = request.get("questions")
     if not isinstance(questions, dict) or not 1 <= len(questions) <= 16:
-        raise ValueError("Supply 1â€“16 questions.")
+        raise ValueError("Supply 1–16 questions.")
     clean = {}
     for name, question in questions.items():
         if not isinstance(name, str) or not name:
@@ -5466,7 +6302,7 @@ def validate_request(request, allow_images=False):
                 except (ValueError, TypeError) as exc:
                     raise ValueError("Score option keys must be finite numbers.") from exc
         if kind != "noul" and not 1 <= len(criteria) <= len(ANSWER_SYMBOLS):
-            raise ValueError(f"Supply 1â€“{len(ANSWER_SYMBOLS)} options.")
+            raise ValueError(f"Supply 1–{len(ANSWER_SYMBOLS)} options.")
         clean[name] = {
             key: copy.deepcopy(question[key]) for key in ("type", "instructions", "criteria") if key in question
         }
@@ -7390,7 +8226,50 @@ init();
 ================================================
 FILE: src/service/static/index.html
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8f in position 6219: character maps to <undefined>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>InternDecision · 决策实验室</title>
+  <style>
+    :root{font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;color:#172d39;background:#f4f6f4;line-height:1.6;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}button,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:wait}
+    .wrap{max-width:1280px;margin:auto;padding:32px 36px 48px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:750;font-size:20px;letter-spacing:-.5px}.brand span{color:#25846c}.badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;border:1px solid #d7dfdc;background:white;padding:6px 12px;border-radius:30px}.dot{width:7px;height:7px;border-radius:50%;background:#aaafb0}.dot.ready{background:#218265}
+    .hero{margin:45px 0 28px}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:700;color:#4b8171;text-transform:uppercase}h1{font-size:36px;line-height:1.3;letter-spacing:-1px;margin:10px 0}p{color:#667780;margin:10px 0}.model{font-size:12px;font-family:monospace;color:#667780;margin-top:16px}
+    .grid{display:grid;grid-template-columns:1.05fr 1fr;gap:22px;align-items:start}.panel{background:white;border:1px solid #dfe5e2;border-radius:16px;padding:24px;box-shadow:0 3px 12px #203d3010}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}h2{font-size:16px;margin:0}.step{color:#7e9790;font:12px monospace;margin-right:8px}label{display:block;font-size:13px;font-weight:650;margin-bottom:8px}.field{margin:18px 0}.upload-field{margin:16px 0 20px}.dropzone{border:1px dashed #9dbeb0;border-radius:12px;background:#f5faf7;padding:24px 15px;text-align:center;color:#55796c;transition:.15s}.dropzone.dragover,.dropzone:hover{border-color:#238066;background:#edf7f1}.dropzone strong{display:block;font-size:13px}.dropzone span{display:block;font-size:11px;color:#81968d;margin-top:3px}.dropzone button{border:0;background:transparent;color:#176c57;font-size:12px;font-weight:650}.image-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.image-thumb{position:relative;width:92px;height:92px}.image-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid #d7e4dc}.image-thumb button{position:absolute;right:-5px;top:-6px;width:18px;height:18px;border:0;border-radius:50%;background:#a64646;color:#fff;font-size:12px;line-height:18px;padding:0}select,textarea{width:100%;border:1px solid #d7dfdc;border-radius:9px;background:#fafcfb;padding:11px 12px;color:#243c47}select:focus,textarea:focus{outline:2px solid #69a996;outline-offset:2px}textarea{resize:vertical;font-size:13px;line-height:1.7}#questions{font-family:"Cascadia Code",Consolas,monospace;font-size:12px}.help{font-size:11px;color:#85938f;margin:6px 0}.action{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px}.primary{border:0;border-radius:9px;background:#176c57;color:white;padding:11px 22px;font-weight:650}.key{font-size:11px;color:#8b9895}.error{color:#ad3333;font-size:13px;white-space:pre-wrap}.status{font-size:12px;color:#70847b}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}.metric{background:#f2f7f4;border-radius:10px;padding:12px}.metric small{display:block;color:#698075;font-size:10px}.metric strong{font-size:21px;line-height:1.7;font-weight:650}.metric .unit{font-size:10px;color:#698075;margin-left:3px}.empty{padding:55px 22px;text-align:center;color:#789086;border:1px dashed #d3dfd8;border-radius:12px}.empty .symbol{font-size:30px;display:block;color:#49937d;margin-bottom:10px}.empty p{font-size:12px}.answer{border:1px solid #e0e8e3;border-radius:12px;padding:17px;margin-top:14px}.answer-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.field-name{font:12px monospace;color:#72837b}.selected{font-size:19px;font-weight:650;margin:5px 0 15px}.type{font-size:10px;background:#eff4f1;border-radius:5px;padding:3px 7px;color:#668271}.prob-label{display:flex;justify-content:space-between;font-size:12px;margin:9px 0 4px}.track{height:6px;background:#edf2ef;border-radius:4px;overflow:hidden}.bar{height:100%;background:#a3bfb2;border-radius:4px}.bar.best{background:#238066}.usage{font-size:11px;color:#819189;margin-top:15px}.stream-metric{font:11px monospace;color:#4b8171;margin-top:10px}.stream-output{width:100%;resize:none;min-height:30px;margin-top:5px;border:1px solid #dfe8e3;background:#f7faf8;color:#425b51;border-radius:7px;padding:6px 8px;font:11px/1.4 monospace;white-space:nowrap;overflow:hidden}.details{font-size:12px;margin-top:20px;color:#708278}summary{cursor:pointer}pre{white-space:pre-wrap;word-break:break-word;background:#f7f9f8;padding:12px;border-radius:8px;font:11px/1.7 monospace;max-height:360px;overflow:auto}
+    .history{margin-top:24px}.history-head{display:flex;justify-content:space-between;align-items:center}.ghost{font-size:11px;border:1px solid #d8e1db;background:white;color:#456558;border-radius:6px;padding:6px 10px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:14px;text-align:left}th{font-weight:500;color:#82918a;font-size:10px}td,th{padding:10px 8px;border-bottom:1px solid #edf1ee}footer{font-size:11px;color:#8a9691;display:flex;justify-content:space-between;gap:20px;margin-top:25px}
+    @media(max-width:800px){.wrap{padding:20px 16px}.hero{margin-top:28px}h1{font-size:28px}.grid{grid-template-columns:1fr}.panel{padding:18px}.metric strong{font-size:18px}.top{gap:8px}.badge{font-size:10px}footer{display:block}.key{display:none}}
+  </style>
+  <script src="/demo.js" defer></script>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><div class="brand">Intern<span>Decision</span><span style="color:#9ea9a3;font-weight:400"> / Demo</span></div><div class="badge"><i id="health-dot" class="dot"></i><span id="health">正在连接模型</span></div></header>
+  <section class="hero"><div class="eyebrow">Decision playground</div><h1>让每一个决策，都清晰可见。</h1><p>上传图片或输入场景，定义问题。先看初始决策，再让思考模型处理不确定的问题。</p></section>
+  <div class="grid">
+    <section class="panel"><div class="panel-head"><h2><span class="step">01</span>设定决策场景</h2><span id="input-mode" class="status">文本 / 图文</span></div>
+      <div class="upload-field"><label for="image-files">图片证据</label><div id="dropzone" class="dropzone" tabindex="0"><strong>拖拽图片到这里</strong><span>或 <button id="choose-images" type="button">选择文件</button> · 最多 8 张，单张 12 MB</span><span id="image-hint">JPEG / PNG / WebP / 静态 GIF · 最多 8 张 · 总计 32 MB</span><input id="image-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden></div><div id="image-preview" class="image-preview" aria-live="polite"></div></div>
+      <label for="examples">从示例开始</label><select id="examples" disabled><option>正在加载示例…</option></select>
+      <div class="field"><label for="state">场景 / State</label><textarea id="state" rows="4" placeholder="描述需要做出决策的场景（上传图片后可留空）"></textarea></div>
+      <div class="field"><label for="questions">问题与选项 / Questions JSON</label><textarea id="questions" rows="13" spellcheck="false" aria-describedby="schema-help"></textarea><p class="help" id="schema-help">支持 choice（选择）、score（评分）、noul（是非）；可同时设置多个字段。</p></div>
+      <div class="field thinking-controls"><label><input id="thinking" type="checkbox"> 启用深度思考</label><label for="threshold">置信度阈值 <input id="threshold" type="number" min="0" max="1" step="0.05" value="0.7" style="width:85px;padding:5px;border:1px solid #d7dfdc;border-radius:6px"></label><p class="help" id="thinking-help">低于阈值的问题将并行交给思考模型，流式返回最终选择。</p></div>
+      <div id="error" class="error" role="alert"></div><div class="action"><span class="key">Ctrl / ⌘ + Enter 运行</span><button id="cancel" class="ghost" hidden>取消</button><button id="run" class="primary" disabled>运行决策 →</button></div>
+    </section>
+    <section class="panel" aria-busy="false" id="result-panel"><div class="panel-head"><h2><span class="step">02</span>查看决策结果</h2><span id="status" class="status" role="status" aria-live="polite">等待输入</span></div>
+      <div class="metrics"><div class="metric"><small>模型推理</small><strong id="forward">—</strong><span class="unit">ms</span></div><div class="metric"><small>服务处理</small><strong id="server">—</strong><span class="unit">ms</span></div><div class="metric"><small>端到端</small><strong id="roundtrip">—</strong><span class="unit">ms</span></div></div>
+      <div id="answers"><div class="empty"><span class="symbol">◈</span>从一块月饼，开始一次决策。<p>选择示例或自定义问题，点击「运行决策」。</p></div></div><div id="usage" class="usage"></div>
+      <details class="details"><summary>查看完整 JSON 结果</summary><pre id="raw">尚无响应</pre></details><p class="help" style="margin-top:16px">概率在该字段的候选选项内归一化。首次请求可能包含模型预热开销。</p>
+    </section>
+  </div>
+  <section class="panel history"><div class="history-head"><h2><span class="step">03</span>本次会话记录</h2><button id="download" class="ghost" disabled>导出 JSON</button></div><div class="table-wrap"><table><thead><tr><th>时间</th><th>场景</th><th>字段</th><th>模型推理</th><th>服务处理</th><th>端到端</th></tr></thead><tbody id="history"><tr><td colspan="6" style="color:#8b9891">运行后会在这里记录耗时。</td></tr></tbody></table></div></section>
+  <footer><span>InternDecision · 决策实验室</span><span>快速初始决策 · 不确定问题按需深度思考</span></footer>
+</main>
+</body>
+</html>
+
 
 
 ================================================

@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "c8ab231728abb54bd61cf3c8812cb48811aae36b",
   "revision_date": "2026-10-08T16:26:46-07:00",
   "slug": "xzx34/JevOut",
-  "retrieved_utc": "2026-10-20T10:34:27+00:00",
+  "retrieved_utc": "2026-10-23T08:24:15+00:00",
   "identity_source": "https://arxiv.org/html/2609.30243v1",
   "included_files": 47,
   "excluded_files": 4,
@@ -263,7 +263,7 @@ FILE: README.md
 
 ## News
 
-- **[10/08/2026]** ðŸŽ‰ JevOut has been accepted to **[Agenthon @ NeurIPS 2026](https://www.agenthon.net/#call-for-papers)** as a **poster**! See you in Atlanta!
+- **[10/08/2026]** 🎉 JevOut has been accepted to **[Agenthon @ NeurIPS 2026](https://www.agenthon.net/#call-for-papers)** as a **poster**! See you in Atlanta!
 - **[10/08/2026]** Code [v0.2.0](https://github.com/xzx34/JevOut/releases/tag/v0.2.0) is available, with an offline demo, independent-generation baseline, repeatability tools, and updated experiment documentation.
 - **[09/24/2026]** Initial code release.
 
@@ -322,10 +322,10 @@ examples/               sample decision items and a Python target adapter
 tests/                  offline tests
 ```
 
-**Usage:** [Quickstart](docs/quickstart.md) Â· [Input format](docs/input_format.md) Â·
-[Output format](docs/output_format.md) Â· [Target adapters](docs/target_adapters.md)
+**Usage:** [Quickstart](docs/quickstart.md) · [Input format](docs/input_format.md) ·
+[Output format](docs/output_format.md) · [Target adapters](docs/target_adapters.md)
 
-**Experiments:** [Settings](docs/paper_protocol.md) Â· [Results](docs/results.md) Â·
+**Experiments:** [Settings](docs/paper_protocol.md) · [Results](docs/results.md) ·
 [Aggregate JSON](docs/results_summary.json)
 
 ## Citation

@@ -5,7 +5,7 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
   "revision": "87562114d23597f610754f057e5e0da8659dbcfb",
   "revision_date": "2026-10-07T13:43:42+02:00",
   "slug": "AppliedMachineLearning-Lab/jev-benchmarking",
-  "retrieved_utc": "2026-10-20T10:34:36+00:00",
+  "retrieved_utc": "2026-10-23T08:24:27+00:00",
   "identity_source": "https://arxiv.org/html/2609.37647v1",
   "included_files": 54,
   "excluded_files": 166,
@@ -289,7 +289,7 @@ FILE: README.md
 # Evaluating and Benchmarking the System One Model Jev
 
 Code for the paper **[Evaluating and Benchmarking the System One Model Jev](https://arxiv.org/abs/2609.37647)**
-(Tobias DeuÃŸer, Lorenz Sparrenberg, Rafet Sifa; arXiv:2609.37647, 2026).
+(Tobias Deußer, Lorenz Sparrenberg, Rafet Sifa; arXiv:2609.37647, 2026).
 
 - **Paper:** <https://arxiv.org/abs/2609.37647>
 - **Raw responses (dataset):** <https://doi.org/10.5281/zenodo.23039006>
@@ -422,9 +422,9 @@ Apache License 2.0.
 ## Citation
 
 ```bibtex
-@misc{deuÃŸer2026evaluatingbenchmarkingmodeljev,
+@misc{deußer2026evaluatingbenchmarkingmodeljev,
       title={Evaluating and Benchmarking the System One Model Jev}, 
-      author={Tobias DeuÃŸer and Lorenz Sparrenberg and Rafet Sifa},
+      author={Tobias Deußer and Lorenz Sparrenberg and Rafet Sifa},
       year={2026},
       eprint={2609.37647},
       archivePrefix={arXiv},
@@ -466,7 +466,7 @@ FILE: LICENSE
 ================================================
 MIT License
 
-Copyright (c) 2026 Tobias DeuÃŸer, Lorenz Sparrenberg, Rafet Sifa
+Copyright (c) 2026 Tobias Deußer, Lorenz Sparrenberg, Rafet Sifa
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -506,7 +506,7 @@ requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
-    { name = "Tobias DeuÃŸer" },
+    { name = "Tobias Deußer" },
     { name = "Lorenz Sparrenberg" },
     { name = "Rafet Sifa" },
 ]
@@ -539,7 +539,129 @@ testpaths = ["tests"]
 ================================================
 FILE: docs/datasets.md
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x8f in position 1764: character maps to <undefined>
+# Dataset audit & benchmark list
+
+Status: **final** (audit 2026-09-24, run completed 2026-09-27). Source list: `benchmarks.txt`. All
+sizes/splits verified against the Hugging Face Hub + dataset-viewer APIs on 2026-09-24. All 20 original
+datasets (with the fixes below) and all 18 proposed additions were run: 37 tasks in total, since SWAG
+was replaced by HellaSwag. Results: `results/eval/`; paper: `paper/` (not in git).
+
+## What Jev constrains (from docs.typesafe.ai, jev-1.13)
+
+- Input: text / JSON `state` + typed questions. Output: **Choice** (≤255 options, probs + confidence),
+  **Score** (2–10 ordered levels, probs + confidence), **Noul** (P(yes)). No generation.
+- Context: 32k tokens for state + longest question, 64k total per request.
+- Documented weak spots ("jaggedness"): math/counting/numeric precision, date arithmetic, multi-hop
+  indirection, long irrelevant context, adversarial content, generation. English best; other
+  languages (esp. CJK) weaker.
+- Price: **$0.042 / 1M input tokens, output free**. Rate limit 250k tok/s, **1,200 req/min**
+  (limits "adjusting dynamically").
+
+Consequence: cost is negligible (whole suite estimated ≈ $10–30, actual $9.15); the binding constraint is
+requests/minute.
+One request per example (state = example), all label questions fanned out inside that request.
+
+## Audit of the original 20
+
+| # | Dataset | Eval split (n) | Primitive | Verdict | Notes / fixes |
+|---|---|---|---|---|---|
+| 1 | facebook/belebele | test, 122 langs × 900 = 109,800 | Choice (4) | ✅ keep | Passage→state. Biggest item (~1.5 h at rate limit, still ~$3). Could subset langs, but not needed for cost. `correct_answer_num` is 1-indexed. |
+| 2 | tasksource/bigbench | validation, 167 tasks, 201k rows | Choice | ⚠️ subset | Many tasks are generative or arithmetic (e.g. `arithmetic` 15k rows) = Jev's documented weak spots / not expressible. Keep only tasks with `multiple_choice_targets`, drop math/counting/code tasks, cap ~500/task. **Final:** 93 tasks, 13,228 rows (keyword-based exclusion + 3 date/number tasks; list in `jev_benchmarking/tasks/bigbench_mc_tasks.json`). |
+| 3 | google/boolq | validation (3,270) | Noul | ✅ keep | Test has no public labels; validation is standard. |
+| 4 | stanfordnlp/imdb | test (25,000) | Choice/Noul | ✅ keep | Long reviews, cheap anyway. Near ceiling for most models. |
+| 5 | facebook/anli | test r1–r3 (3,200) | Choice (3) | ✅ keep | Adversarial NLI; expect low absolute numbers (useful honest datapoint). CC-BY-NC. |
+| 6 | ceval/ceval-exam | test, 52 subjects (12,342) | Choice (4) | ⚠️ keep, report by category | HF copy has test answers populated (verify against official protocol, which historically hid them). Chinese + many computation-heavy STEM items → hits two documented weak spots. Report STEM vs. humanities separately. CC-BY-NC-SA. |
+| 7 | allenai/swag | ~~test~~ validation (20,006) | Choice (4) | 🔁 replace | **Test labels are all `-1`.** SWAG is saturated and superseded by HellaSwag (adversarially filtered, reported in nearly every LLM paper). → use Rowan/hellaswag validation. |
+| 8 | fancyzhx/ag_news | test (7,600) | Choice (4) | ✅ keep | |
+| 9 | tasksource/mmlu | test, 57 subjects (14,042) | Choice (4) | ✅ keep, report by category | Math/physics subjects hit numeric weakness; report per-category. |
+| 10 | cornell-movie-review-data/rotten_tomatoes | test (1,066) | Choice/Noul | ✅ keep | |
+| 11 | stanfordnlp/sst2 | ~~test~~ validation (872) | Choice/Noul | ⚠️ fix split | **Test labels are all `-1`.** Use validation (standard practice). |
+| 12 | dair-ai/emotion | test (2,000), config `split` | Choice (6) | ✅ keep | URL in list had `/viewer/split/test` suffix. Labels are hashtag-derived (noisy). |
+| 13 | mteb/banking77 | test (3,076) | Choice (77) | ✅ keep | Good fit for intent-routing story. |
+| 14 | Davlan/sib200 | test, 205 langs × 204 = 41,820 | Choice (7) | ✅ keep | Topic classification, very multilingual. **Final:** config entry `nqo_Nkoo.zip` is a broken duplicate of `nqo_Nkoo` and is skipped; all 205 varieties are evaluated. |
+| 15 | allenai/art (αNLI) | validation (1,532) | Choice (2) | ✅ keep | Test labels not released; validation is standard. |
+| 16 | toxigen/toxigen-data | `annotated` test (940) | Noul + Score | ✅ keep | `toxicity_human` is a 1–5 float → binarize for Noul (fix threshold up front) **and** evaluate as Score (Spearman). **Final:** toxic = `toxicity_ai + toxicity_human > 5.5` (lm-evaluation-harness convention). |
+| 17 | ucirvine/sms_spam | train only (5,574) | Noul | ✅ keep (easy) | Only one split; use all as eval (zero-shot, so fine). 13% spam. Near ceiling. |
+| 18 | papluca/language-identification | test (10,000) | Choice (20) | ✅ kept | Valid, but trivial for fastText (~99.5%) and not really a "judgment". Kept as a cheap sanity check (Jev: 99.6%). |
+| 19 | d4br4/agb-de | test (755) | Noul | ✅ keep | German T&C clause voidness; **37/755 positive** → report F1(pos)/AUPRC, not accuracy. |
+| 20 | mteb/AfriXNLI | test | Choice (3) | 🔁 replace | mteb copy is **binarized** (neutral dropped, 400/lang). Use masakhane/afrixnli (3-class, 18 langs × 600 = 10,800, Apache-2.0) to match IrokoBench published numbers. |
+
+**Gap:** 19/20 are single-label Choice tasks. Nothing exercises **Score**, multi-question **fan-out**,
+or Jev's marketed use cases (guardrails, routing with out-of-scope, RAG grounding, LLM-as-judge).
+
+## Proposed additions (18)
+
+Chosen to (a) cover Score and fan-out, (b) match Jev's advertised use cases, (c) have published
+baselines we can cite for free, (d) stay small. All parquet/CSV/JSON (no loading scripts), none gated
+unless noted.
+
+| Dataset | Eval split (n) | Primitive | Why |
+|---|---|---|---|
+| Rowan/hellaswag | validation (10,042) | Choice (4) | Replaces SWAG; ubiquitous LLM baseline. |
+| allenai/winogrande (`winogrande_xl`) | validation (1,267) | Choice (2) | Commonsense coreference; test labels hidden. |
+| allenai/ai2_arc (Easy + Challenge) | test (2,376 + 1,172) | Choice (4) | Standard science QA, huge baseline literature. |
+| tau/commonsense_qa | validation (1,221) | Choice (5) | Test labels hidden. |
+| sentence-transformers/stsb | test (1,379) | **Score** (0–5) | Canonical ordinal similarity; Spearman. |
+| SetFit/sst5 | test (2,210) | **Score** (5) | Fine-grained sentiment as an ordinal scale. |
+| mteb/summeval | test (100 docs × 16 summaries = 1,600) | **Score** ×4 (fan-out) | LLM-as-judge benchmark (coherence/consistency/fluency/relevance); G-Eval etc. baselines. |
+| nvidia/HelpSteer2 | validation (1,038) | **Score** ×5 (fan-out) | Response-quality judging (helpfulness, correctness, …, 0–4). |
+| google-research-datasets/go_emotions (`simplified`) | test (5,427) | **Noul ×28 (fan-out)** | Multi-label; showcases many questions per request. |
+| clinc/clinc_oos (`plus`) | test (5,500, incl. 1,000 OOS) | Choice (150 + oos) | Intent routing **with out-of-scope** → tests confidence-gated routing. |
+| mmathys/openai-moderation-api-evaluation | all (1,680) | Noul ×8 (fan-out) | Guardrails; multi-category moderation, widely reported. |
+| lmsys/toxic-chat (`toxicchat0124`) | test (5,083) | Noul | Real user prompts; Llama Guard & co. report on it. CC-BY-NC. |
+| deepset/prompt-injections | test (116) | Noul | Prompt-injection detection (en/de). Tiny → wide CIs; cheap. |
+| lytang/LLM-AggreFact | test (~29k across 11 sources) | Noul | Grounding / hallucination check (matches citation-check & RAG cookbooks). **Public leaderboard = free LLM baselines.** Gated (auto-accept, needs HF token). |
+| google-research-datasets/paws (`labeled_final`) | test (8,000) | Noul | Adversarial paraphrase detection. |
+| qiaojin/PubMedQA (`pqa_labeled`) | all (1,000) | Choice (yes/no/maybe) | Biomedical, abstract as state. |
+| atrost/financial_phrasebank | test (970) | Choice (3) | Finance sentiment (parquet mirror; original repo is script-based). |
+| coastalcph/lex_glue (`unfair_tos`) | test (1,607) | Noul ×8 (fan-out) | Unfair ToS clauses, pairs with AGB-DE (en vs. de). |
+
+Optional, **not run**: nyu-mll/multi_nli (validation_matched 9,815), truthfulqa/truthful_qa MC1
+(817), coastalcph/lex_glue `ledgar` (100-way, 10k), mteb/amazon_massive_intent (multilingual intent),
+facebook/xnli, nguha/legalbench (subset).
+
+Considered and rejected: ybisk/piqa, allenai/social_i_qa, allenai/scifact, takala/financial_phrasebank
+(loading scripts only, no longer supported by `datasets` ≥ 4); walledai/XSTest, allenai/wildguardmix
+(gated, overlapping with the moderation sets above); HaluEval (known artifacts; AggreFact covers it
+better); lukaemon/bbh (chain-of-thought / System-Two tasks; could serve as a "limits" appendix).
+
+## Budget: estimate vs. actual
+
+Estimate (before the run): ~365k requests at ~1–2k input tokens each → **$15–30**, ~5 h at 1,200 req/min.
+
+Actual:
+
+| Run | Requests | Input tokens | Cost |
+|---|---|---|---|
+| Dev pilot (20 per task) | 620 | 0.3M | $0.01 |
+| Full eval run (all 37 tasks, full eval splits) | 346,009 | 217.9M | $9.15 |
+| Threshold tuning (1,000 dev examples × 4 tasks) | 3,830 | 2.4M | $0.10 |
+| Memorization probes (MMLU/C-Eval calculation-heavy subjects) | 7,570 | 3.1M | $0.13 |
+| **Total** | 358,029 | 223.7M | **$9.40** |
+
+The eval run took 5 h 15 min at 1,100 req/min (client-side cap); 630 input tokens per request on average,
+0.36 s mean latency. One request (a BIG-bench item) exceeded the context limit (HTTP 400
+`max_tokens_exceeded`); all others were answered.
+
+## Additional analyses (beyond the suite)
+
+- **Per-question thresholds** for GoEmotions, UNFAIR-ToS, AGB-DE and ToxicChat: tuned for F1 on 1,000
+  dev examples, applied unchanged to the eval split (`jev_benchmarking/thresholds.py`,
+  `results/eval/thresholds.json`).
+- **Memorization probes** on the calculation-heavy MMLU subjects: options rotated, question withheld,
+  plus a C-Eval question-withheld control (`jev_benchmarking/tasks/probes.py`,
+  `results/eval/probes.json`).
+
+## Methodology notes for the paper (all implemented)
+
+- Freeze one question template per dataset **before** looking at test results; iterate only on
+  train/dev splits. Log the exact request JSON and the returned `model` version (`jev-1.13.0`),
+  pinned rather than `jev-latest`.
+- Report accuracy / macro-F1 (Spearman for Score), plus **calibration** (ECE, Brier) and
+  **selective accuracy vs. coverage** using `confidence`, since calibration is Jev's main claim.
+- Report latency and $ per 1k examples, which is where Jev should stand out.
+- Bootstrap 95% CIs; small sets (prompt-injections, AGB-DE, WinoGrande) need them.
+
 
 
 ================================================
@@ -1599,7 +1721,248 @@ FILE: jev_benchmarking/report/__init__.py
 ================================================
 FILE: jev_benchmarking/report/figures.py
 ================================================
-Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 5737: character maps to <undefined>
+"""Figures (plotnine + Paul Tol palettes via tol-colors). Each function returns a ggplot."""
+
+import numpy as np
+import pandas as pd
+import tol_colors as tc
+from plotnine import (
+    aes,
+    annotate,
+    coord_equal,
+    element_blank,
+    element_text,
+    facet_wrap,
+    geom_abline,
+    geom_boxplot,
+    geom_jitter,
+    geom_line,
+    geom_point,
+    geom_text,
+    ggplot,
+    guide_legend,
+    labs,
+    scale_color_manual,
+    scale_fill_manual,
+    scale_size_area,
+    scale_x_continuous,
+    scale_y_continuous,
+    theme,
+    theme_bw,
+)
+
+from jev_benchmarking.report.meta import META, QUANTITATIVE_SUBJECTS
+
+BRIGHT = list(tc.bright)  # blue, red, green, yellow, cyan, purple, grey
+MUTED = list(tc.muted)
+N_BINS = 15
+
+
+def _theme(base_size: float = 9):
+    return theme_bw(base_size=base_size) + theme(
+        panel_grid_minor=element_blank(),
+        strip_background=element_blank(),
+        strip_text=element_text(weight="bold"),
+        legend_title=element_text(size=base_size),
+    )
+
+
+def _bins(conf: np.ndarray, hit: np.ndarray) -> pd.DataFrame:
+    b = np.minimum((conf * N_BINS).astype(int), N_BINS - 1)
+    df = pd.DataFrame({"bin": b, "conf": conf, "hit": hit})
+    return df.groupby("bin").agg(conf=("conf", "mean"), acc=("hit", "mean"), n=("hit", "size")).reset_index()
+
+
+def reliability(records: dict[str, pd.DataFrame]) -> ggplot:
+    """Pooled reliability diagrams. Choice: top-label probability vs. accuracy. Noul: P(yes) vs. observed
+    frequency of yes, split into single-question tasks and multi-label fan-out (one Noul per label), since
+    the latter (dominated by GoEmotions' 28 rare labels) behaves very differently."""
+    from jev_benchmarking.tasks import TASKS
+
+    groups = {"Choice": [], "Noul, single question": [], "Noul, multi-label fan-out": []}
+    for t, d in records.items():
+        groups["Choice"].append(d[d["kind"] == "choice"])
+        target = "Noul, multi-label fan-out" if TASKS[t].multilabel else "Noul, single question"
+        groups[target].append(d[d["kind"] == "binary"])
+    parts = []
+    for label, frames in groups.items():
+        df = pd.concat(frames)
+        hit = df["correct"] if label == "Choice" else df["gold_num"]
+        b = _bins(df["prob"].to_numpy(), hit.to_numpy())
+        b["panel"] = f"{label}\n({df['task'].nunique()} tasks, n={len(df):,})"
+        parts.append(b)
+    df = pd.concat(parts)
+    df["panel"] = pd.Categorical(df["panel"], categories=[p["panel"].iloc[0] for p in parts])
+    return (
+        ggplot(df, aes("conf", "acc"))
+        + geom_abline(slope=1, intercept=0, linetype="dashed", color=BRIGHT[6])
+        + geom_line(color=BRIGHT[0])
+        + geom_point(aes(size="n"), color=BRIGHT[0], fill="white", stroke=0.8)
+        + facet_wrap("~panel")
+        + scale_size_area(max_size=5, guide=None)
+        + scale_x_continuous(limits=(0, 1), breaks=[0, 0.5, 1])
+        + scale_y_continuous(limits=(0, 1), breaks=[0, 0.25, 0.5, 0.75, 1])
+        + coord_equal()
+        + labs(x="Predicted probability", y="Observed accuracy / frequency")
+        + _theme()
+    )
+
+
+SELECTIVE_TASKS = ("mmlu", "anli", "afrixnli", "banking77", "clinc150", "emotion", "bigbench", "belebele")
+
+
+def selective(records: dict[str, pd.DataFrame], tasks=SELECTIVE_TASKS) -> ggplot:
+    """Accuracy on the most confident fraction of examples, as a function of coverage."""
+    rows = []
+    for t in tasks:
+        d = records[t]
+        d = d[d["head"] == "answer"]
+        order = np.argsort(-d["confidence"].to_numpy(), kind="stable")
+        correct = d["correct"].to_numpy()[order]
+        n = len(correct)
+        cov = np.arange(1, n + 1) / n
+        acc = np.cumsum(correct) / np.arange(1, n + 1)
+        keep = np.unique(np.linspace(max(0, int(0.05 * n) - 1), n - 1, 60).astype(int))  # skip the noisy top 5%
+        rows.append(pd.DataFrame({"task": META[t].name, "coverage": cov[keep], "accuracy": acc[keep]}))
+    df = pd.concat(rows)
+    order = df.groupby("task")["accuracy"].last().sort_values(ascending=False).index.tolist()
+    df["task"] = pd.Categorical(df["task"], categories=order)
+    return (
+        ggplot(df, aes("coverage", "accuracy", color="task"))
+        + geom_line(size=0.9)
+        + scale_color_manual(values=MUTED[: len(tasks)])
+        + scale_x_continuous(limits=(0.05, 1), breaks=[0.25, 0.5, 0.75, 1], labels=lambda v: [f"{x:.0%}" for x in v])
+        + scale_y_continuous(labels=lambda v: [f"{x:.0%}" for x in v])
+        + labs(x="Coverage (most confident fraction answered)", y="Accuracy", color="")
+        + _theme()
+        + theme(legend_position="right", legend_title=element_blank())
+    )
+
+
+def _script(code: str) -> str:
+    script = code.split("_")[-1]
+    return "Latin" if script == "Latn" else "Other script"
+
+
+def multilingual(records: dict[str, pd.DataFrame]) -> ggplot:
+    """Per-language accuracy on Belebele (reading comprehension) vs. SIB-200 (topic), both FLORES-based."""
+    acc = {}
+    for t in ("belebele", "sib200"):
+        d = records[t]
+        acc[t] = d[d["head"] == "answer"].groupby("subset")["correct"].mean()
+    df = pd.DataFrame(acc).dropna().reset_index(names="lang")
+    df["script"] = df["lang"].map(_script)
+    rho = df[["belebele", "sib200"]].corr(method="spearman").iloc[0, 1]
+    labelled = df[df["lang"].isin(["eng_Latn", "yor_Latn", "fuv_Latn", "luo_Latn", "kac_Latn", "bam_Latn"])]
+    return (
+        ggplot(df, aes("sib200", "belebele", color="script"))
+        + geom_abline(slope=1, intercept=0, linetype="dashed", color=BRIGHT[6])
+        + geom_point(alpha=0.8, size=1.6)
+        + geom_text(aes(label="lang"), data=labelled, size=6, nudge_x=0.012, ha="left", show_legend=False, color="black")
+        + annotate("text", x=0.32, y=0.97, label=f"Spearman ρ = {rho:.2f}, {len(df)} languages", size=7, ha="left")
+        + scale_color_manual(values=[BRIGHT[0], BRIGHT[1]], guide=guide_legend(override_aes={"size": 2.5}))
+        + scale_x_continuous(limits=(0.3, 1), labels=lambda v: [f"{x:.0%}" for x in v])
+        + scale_y_continuous(limits=(0.3, 1), labels=lambda v: [f"{x:.0%}" for x in v])
+        + coord_equal()
+        + labs(x="SIB-200 accuracy (topic classification)", y="Belebele accuracy (reading comprehension)", color="")
+        + _theme()
+        + theme(legend_position="bottom", legend_title=element_blank())
+    )
+
+
+def subjects(records: dict[str, pd.DataFrame]) -> ggplot:
+    """Per-subject accuracy on MMLU and C-Eval, split into calculation-heavy vs. other subjects."""
+    rows = []
+    for t in ("mmlu", "ceval"):
+        d = records[t]
+        per = d[d["head"] == "answer"].groupby("subset")["correct"].mean().rename_axis("subject").reset_index()
+        per["benchmark"] = META[t].name
+        per["type"] = np.where(per["subject"].isin(QUANTITATIVE_SUBJECTS[t]), "Calculation-heavy", "Other")
+        rows.append(per)
+    df = pd.concat(rows)
+    df["type"] = pd.Categorical(df["type"], categories=["Other", "Calculation-heavy"])
+    return (
+        ggplot(df, aes("type", "correct", fill="type"))
+        + geom_boxplot(width=0.5, outlier_shape="", alpha=0.35, show_legend=False)
+        + geom_jitter(aes(color="type"), width=0.12, height=0, size=1.4, alpha=0.9, show_legend=False)
+        + facet_wrap("~benchmark")
+        + scale_fill_manual(values=[BRIGHT[0], BRIGHT[1]])
+        + scale_color_manual(values=[BRIGHT[0], BRIGHT[1]])
+        + scale_y_continuous(labels=lambda v: [f"{x:.0%}" for x in v])
+        + labs(x="", y="Per-subject accuracy")
+        + _theme()
+    )
+
+
+def _reliability_panels(records: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    from jev_benchmarking.tasks import TASKS
+
+    groups = {"Choice": [], "Noul, single question": [], "Noul, multi-label fan-out": []}
+    for t, d in records.items():
+        groups["Choice"].append(d[d["kind"] == "choice"])
+        groups["Noul, multi-label fan-out" if TASKS[t].multilabel else "Noul, single question"].append(d[d["kind"] == "binary"])
+    parts = []
+    for label, frames in groups.items():
+        df = pd.concat(frames)
+        hit = df["correct"] if label == "Choice" else df["gold_num"]
+        b = _bins(df["prob"].to_numpy(), hit.to_numpy())
+        b["panel"] = label
+        parts.append(b)
+    return pd.concat(parts)
+
+
+def reliability_models(records_by_model: dict[str, dict[str, pd.DataFrame]]) -> ggplot:
+    """Pooled reliability diagrams per model (same panels as `reliability`), one colour per model."""
+    df = pd.concat([_reliability_panels(recs).assign(model=m) for m, recs in records_by_model.items()])
+    df["panel"] = pd.Categorical(df["panel"], categories=["Choice", "Noul, single question", "Noul, multi-label fan-out"])
+    df["model"] = pd.Categorical(df["model"], categories=list(records_by_model))
+    return (
+        ggplot(df, aes("conf", "acc", color="model"))
+        + geom_abline(slope=1, intercept=0, linetype="dashed", color=BRIGHT[6])
+        + geom_line()
+        + geom_point(aes(size="n"), fill="white", stroke=0.7)
+        + facet_wrap("~panel")
+        + scale_color_manual(values=BRIGHT[: len(records_by_model)])
+        + scale_size_area(max_size=4, guide=None)
+        + scale_x_continuous(limits=(0, 1), breaks=[0, 0.5, 1])
+        + scale_y_continuous(limits=(0, 1), breaks=[0, 0.25, 0.5, 0.75, 1])
+        + coord_equal()
+        + labs(x="Predicted probability", y="Observed accuracy / frequency", color="")
+        + _theme()
+        + theme(legend_position="bottom", legend_title=element_blank())
+    )
+
+
+COMPARE_SELECTIVE_TASKS = ("banking77", "anli", "mmlu", "belebele")
+
+
+def selective_models(records_by_model: dict[str, dict[str, pd.DataFrame]], tasks=COMPARE_SELECTIVE_TASKS) -> ggplot:
+    """Accuracy vs. coverage (ranked by each model's own confidence), one panel per dataset."""
+    rows = []
+    for m, recs in records_by_model.items():
+        for t in tasks:
+            d = recs[t]
+            d = d[d["head"] == "answer"]
+            correct = d["correct"].to_numpy()[np.argsort(-d["confidence"].to_numpy(), kind="stable")]
+            n = len(correct)
+            keep = np.unique(np.linspace(max(0, int(0.05 * n) - 1), n - 1, 60).astype(int))
+            acc = np.cumsum(correct) / np.arange(1, n + 1)
+            rows.append(pd.DataFrame({"model": m, "task": META[t].name, "coverage": (keep + 1) / n, "accuracy": acc[keep]}))
+    df = pd.concat(rows)
+    df["model"] = pd.Categorical(df["model"], categories=list(records_by_model))
+    df["task"] = pd.Categorical(df["task"], categories=[META[t].name for t in tasks])
+    return (
+        ggplot(df, aes("coverage", "accuracy", color="model"))
+        + geom_line(size=0.9)
+        + facet_wrap("~task", nrow=1)
+        + scale_color_manual(values=BRIGHT[: len(records_by_model)])
+        + scale_x_continuous(breaks=[0.25, 0.5, 0.75, 1], labels=lambda v: [f"{x:.0%}" for x in v])
+        + scale_y_continuous(labels=lambda v: [f"{x:.0%}" for x in v])
+        + labs(x="Coverage (most confident fraction answered)", y="Accuracy", color="")
+        + _theme()
+        + theme(legend_position="bottom", legend_title=element_blank())
+    )
+
 
 
 ================================================
@@ -2661,7 +3024,7 @@ class BigBench(Task):
     configs = BIGBENCH_TASKS
     splits = {"eval": "validation", "dev": "train"}
     max_per_config = 500
-    description = f"BIG-bench multiple-choice tasks ({len(BIGBENCH_TASKS)} tasks, â‰¤500 rows each)."
+    description = f"BIG-bench multiple-choice tasks ({len(BIGBENCH_TASKS)} tasks, ≤500 rows each)."
 
     def build(self, row, config):
         targets = row["multiple_choice_targets"]
@@ -2766,7 +3129,7 @@ class AlphaNLI(Task):
     hf_path = "allenai/art"
     configs = ("anli",)
     splits = {"eval": "validation", "dev": "train"}  # test labels were never released
-    description = "Abductive NLI (Î±NLI): pick the more plausible explanation, 2 options."
+    description = "Abductive NLI (αNLI): pick the more plausible explanation, 2 options."
 
     def build(self, row, config):
         if row["label"] not in (1, 2):
@@ -3111,7 +3474,7 @@ class AGBDE(Task):
     def build(self, row, config):
         q = noul(
             "Is `clause`, taken from the general terms and conditions (AGB) of a German online shop, void "
-            "(unwirksam) in a contract with a consumer under German law, in particular Â§Â§ 305-310 BGB?"
+            "(unwirksam) in a contract with a consumer under German law, in particular §§ 305-310 BGB?"
         )
         return ex({"title": row["title"], "clause": row["text"]}, {"answer": q}, {"answer": row["label"] == 1})
 
@@ -3291,7 +3654,7 @@ FILE: responses/LICENSE_RESPONSES.md
 ================================================
 # License terms for the Jev benchmarking responses
 
-Copyright (c) 2026 Tobias DeuÃŸer, Lorenz Sparrenberg, Rafet Sifa
+Copyright (c) 2026 Tobias Deußer, Lorenz Sparrenberg, Rafet Sifa
 
 This dataset contains model responses from three models. They are licensed separately:
 
@@ -3308,7 +3671,7 @@ Applies to: the model responses generated with TypeSafe's Jev model (jev-1.13.0)
 
 - "Data": the Jev responses described above, including every returned choice, score, probability and confidence value, and any portion, copy or modified version of them.
 - "TypeSafe": TypeSafe, the provider of the Jev model and the service through which the Data were generated.
-- "Licensors": Tobias DeuÃŸer, Lorenz Sparrenberg and Rafet Sifa.
+- "Licensors": Tobias Deußer, Lorenz Sparrenberg and Rafet Sifa.
 - "You": any person or entity exercising rights under this License.
 
 ## 2. Grant
@@ -3533,7 +3896,7 @@ FILE: responses/LICENSE_RESPONSES.txt
 LICENSE TERMS FOR THE JEV BENCHMARKING RESPONSES
 ================================================
 
-Copyright (c) 2026 Tobias DeuÃŸer, Lorenz Sparrenberg, Rafet Sifa
+Copyright (c) 2026 Tobias Deußer, Lorenz Sparrenberg, Rafet Sifa
 
 This dataset contains model responses from three models. They are licensed separately:
 
@@ -3564,7 +3927,7 @@ included; the Data references their items by identifier only).
   confidence value, and any portion, copy or modified version of them.
 - "TypeSafe": TypeSafe, the provider of the Jev model and the service through which the Data were
   generated.
-- "Licensors": Tobias DeuÃŸer, Lorenz Sparrenberg and Rafet Sifa.
+- "Licensors": Tobias Deußer, Lorenz Sparrenberg and Rafet Sifa.
 - "You": any person or entity exercising rights under this License.
 
 2. Grant
@@ -3859,7 +4222,7 @@ from jev_benchmarking.tasks import get_tasks
 
 
 def _fmt(x: float) -> str:
-    return "â€“" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x:.3f}"
+    return "–" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x:.3f}"
 
 
 def main() -> None:
@@ -3899,7 +4262,7 @@ def main() -> None:
         rows.append(
             f"| {task.name} | {res['n_answered']}/{res['n_examples']} | {prim['metric']}"
             f"{'' if prim['head'] in ('answer', '*') else ' (' + prim['head'] + ')'} | {_fmt(prim.get('value'))} | "
-            f"{'â€“' if not ci else f'{_fmt(ci[0])}â€“{_fmt(ci[1])}'} | {_fmt(ece)} |"
+            f"{'–' if not ci else f'{_fmt(ci[0])}–{_fmt(ci[1])}'} | {_fmt(ece)} |"
         )
         print(rows[-1])
 
