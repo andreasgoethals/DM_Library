@@ -6,7 +6,7 @@ tasks, probability semantics and the surrounding controller. A valid option is n
 necessarily correct, and a correct local choice need not produce a successful
 sequence of actions.
 
-The thirteen papers are arXiv preprints; the seven other sources are provider releases
+The sixteen papers are arXiv preprints; the seven other sources are provider releases
 or model cards. [SUMMARIES.md](SUMMARIES.md) records evidence locations, limitations
 and Zotero citation keys. [REPOSITORIES.md](REPOSITORIES.md) maps official code
 snapshots. This project-neutral synthesis distinguishes reported results from
@@ -31,29 +31,37 @@ are not claims about training-data inheritance or priority.
 | 2026-10 | Sharma et al. (2026), [TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models](SUMMARIES.md#typedbench-a-benchmark-for-calibration-framing-sensitivity-and-cost-in-system-one-decision-models) | Policy-generated tasks evaluate wording robustness, calibration noise floors and decisions under asymmetric costs. | Typed interfaces, programmatic ground truth and selective prediction |
 | 2026-10 | Duan et al. (2026), [General Decision Models: Benchmarking and Insights Beyond Jev](SUMMARIES.md#general-decision-models) | Analytic uncertainty, system failures and reasoning distillation; filed 12 October | Typed decisions and agent evaluation |
 | 2026-10 | Zhuang et al. (2026), [StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions](SUMMARIES.md#startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions) | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | Direct option scoring, reasoning supervision and proper scoring rules |
+| 2026-10 | Geuter et al. 2026 — [Releasing the Inner Jev: A Simple Recipe for Open Decision Models](SUMMARIES.md#releasing-the-inner-jev-a-simple-recipe-for-open-decision-models) | Answer-letter readout and short LoRA training yield competitive open decisions on OpenDecisions and JevBench. | Frozen instruction-tuned LMs, temperature calibration and supervised LoRA |
 | 2026-10 | Li and Wagle (2026), [LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them](SUMMARIES.md#llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them) | Prefix-free candidate scoring tests when frozen LLMs suffice and when anchored fine-tuning or bounded reasoning helps. | Joint candidate likelihood, constrained readout and KL-regularized adaptation |
 | 2026-10 | Imperatrice et al. (2026), [Are AI Decision Models Biased? A Case Study of Jev](SUMMARIES.md#are-ai-decision-models-biased-a-case-study-of-jev) | Behavioral tasks distinguish selected answers from probability shifts under irrelevant context, framing and option order. | Cognitive-bias paradigms and controlled input variation |
+| 2026-10 | Zhang et al. 2026 — [Typed Decision Models on Tabular Data](SUMMARIES.md#typed-decision-models-on-tabular-data) | Four decision models and three LLMs separate option-format robustness from table-serialization robustness. | Semantic-preserving rewrites of tabular decisions and selective re-querying |
 | 2026-10 | Zhu et al. (2026), [Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling](SUMMARIES.md#intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling) | Multimodal masked decision training scores multiple fields in one causal pass, with separate calibration and handoff evaluations. | Native LM-head scoring, multimodal inputs and post-hoc calibration |
+| 2026-10 | Chen et al. 2026 — [System1-Arena: Which Decisions Can Be Left to System 1?](SUMMARIES.md#system1-arena-which-decisions-can-be-left-to-system-1) | Shared probability-scoring requests separate strong static decisions from weak closed-loop control across 30 models. | Typed decisions, broad benchmarks and latency-aware closed-loop evaluation |
 
 ## Web-source timeline
 
-These selected records have no PDFs. Dates follow verified public announcements
-or model-card release history, not retrieval dates. Intern-Decision's 26 September
-release is corroborated by its upload and a same-day public demo announcement.
-Perplexity uses its 6 October public announcement, not its 5 October
-private checkpoint commit. The [web registry](papers/web_sources.json) retains
-the separate dates and evidence.
-Each summary links its original source. Release claims are not independent replications.
+These fifteen selected records have no PDFs. Verified announcement dates and
+year-only undated cards are distinguished in the [web registry](papers/web_sources.json).
+A checkpoint upload is not automatically a public release. Source dates and
+current model specifications are separate; see [DECISION_MODELS.md](DECISION_MODELS.md).
 
 | Date | Source | Role |
 |---|---|---|
+| 2026 | H2O.ai 2026 — [H2O-Lightning-4B](SUMMARIES.md#web-skwpxqtg) | Open-weight probability readout with a concrete serving contract |
+| 2026 | Inception 2026 — [Mercury Decide: Create a decision](SUMMARIES.md#web-ps2pzgda) | Hosted decision contract and modality/request-size boundaries |
 | 2026-09-15 | Almeida 2026 — [Introducing System One Models & Jev](SUMMARIES.md#web-qezz55x7) | Provider interface and motivation |
+| 2026-09-22 | Upstage 2026 — [Solar Decide](SUMMARIES.md#web-qzkmbk7l) | Hosted long-context typed scoring and Korean-language deployment |
+| 2026-09-23 | Together AI 2026 — [Tev1-4B-experimental](SUMMARIES.md#web-rgvmcn25) | Native answer-token readout and reproducible adaptation recipe |
 | 2026-09-26 | InternLM 2026 — [Intern-Decision-4B](SUMMARIES.md#web-x58irxca) | Multi-field readout and calibration; 26 September upload and public demo |
+| 2026-09-30 | Sahibzada Allahyar, Mary Newhauser 2026 — [Introducing GLiDE: The First Thinking Decision Model](SUMMARIES.md#web-msejsvgw) | Variable inference effort behind a typed decision interface |
+| 2026-09-30 | Jared Palmer 2026 — [Kev-27B](SUMMARIES.md#web-q9s5d6r2) | Open-source candidate readout, adaptation and context validation |
 | 2026-10-01 | Chen et al. 2026 — [Introducing Clef: our open-source decision models, and new RL fine-tuning platform](SUMMARIES.md#web-mwjhy75j) | Open architecture and adaptation |
 | 2026-10-01 | Brooker et al. 2026 — [Introducing Strands Decider 2B: a small, open source, decision model](SUMMARIES.md#web-gi68ips2) | Local model and public development materials |
+| 2026-10-03 | vLLM Semantic Router Team 2026 — [Decision-2.0-Vega-27B](SUMMARIES.md#web-bh58bep7) | Serving-integrated open decision models across several model sizes |
 | 2026-10-06 | Perplexity AI 2026 — [pplx-decider-v1.1-27b](SUMMARIES.md#web-de9kqqlx) | Checkpoint-specific inference contract; public announcement |
 | 2026-10-07 | Liquid AI 2026 — [Open d1: Edge decision models for text, vision, and audio](SUMMARIES.md#web-4u52t7rc) | Edge and modality expansion |
 | 2026-10-09 | Srivastava 2026 — [Introducing Microsoft-Decision-1, our model for fast decision-making](SUMMARIES.md#web-lelm4ubr) | Hosted release and provider evaluation |
+| 2026-10-22 | OpenAI 2026 — [Build more responsive apps with the Decisions API](SUMMARIES.md#web-q9x2h26h) | Hosted typed decisions, shared-input caching and explicit endpoint billing |
 
 ## Decisions and available information
 
@@ -120,6 +128,8 @@ Intern-Decision's pilot evaluates exact distributions separately from task
 accuracy. Improvements from supervision, temperature scaling, changed attention,
 longer reasoning or a different backbone should not be pooled into a single
 claim about the typed interface.
+
+Geuter et al. 2026 (*Releasing the Inner Jev: A Simple Recipe for Open Decision Models*) strengthen the readout/adaptation comparison. Their Jeff family starts from answer-letter LM-head rows; head-only adaptation adds little, while short LoRA training improves OpenDecisions and JevBench results. This agrees with AnyJev and LLM-as-Jev that pretrained representations already carry substantial decision capability, while showing a benefit from changing the backbone. Their validated temperatures, synthetic/model-labelled data and finite seed comparisons should not be interpreted as proof of universal calibration or architectural necessity.
 
 ## Calibration has several meanings
 
@@ -262,6 +272,37 @@ Report per-task results alongside pooled averages; separate replay from live run
 measure P95, retries and final success alongside median time. Filed PDFs and code
 revisions are retained because these conditions change across releases.
 
+### Static decisions, closed loops and table representations
+
+Chen et al. 2026 (*System1-Arena: Which Decisions Can Be Left to System 1?*) make a distinction already visible in Duan et al. 2026 (*General Decision Models: Benchmarking and Insights Beyond Jev*): strong local probability estimates do not guarantee successful sequential control. The shared 30-model interface favors large System-1 models on many static accuracy/latency trade-offs, but large open LLMs lead closed-loop success. A changing environment can reward low latency without making a fast model a good planner. The 138 supplied environments and the 127 in the headline closed-loop table describe different counts.
+
+Zhang et al. 2026 (*Typed Decision Models on Tabular Data*) locate another boundary. Option formulation and table representation are different invariances: three decision models are relatively stable to option rewrites, while all seven evaluated systems remain sensitive to table formatting or ordering. This complements TypedBench and JevOut without equating their different interventions. Stable aggregate accuracy can hide many changed individual decisions. Confidence is useful for selecting rows to re-query, but stable wrong predictions remain possible; therefore confidence-based stability, calibration and task correctness require separate evidence.
+
+### Released model contracts and deployment cost
+
+The added release records widen deployment choices without making the
+interfaces equivalent. Together AI 2026 (*Tev1-4B-experimental*) exposes a
+generated answer letter through an ordinary LM head; OpenAI 2026 (*Build more
+responsive apps with the Decisions API*), Upstage 2026 (*Solar Decide*) and
+Inception 2026 (*Mercury Decide: Create a decision*) specify hosted typed
+endpoints. Their common routing use does not establish identical probability
+semantics, multi-question execution or billing.
+
+H2O.ai 2026 (*H2O-Lightning-4B*), Palmer 2026 (*Kev-27B*) and vLLM Semantic
+Router Team 2026 (*Decision-2.0-Vega-27B*) expose readout and serving artifacts.
+Attention masks, truncation, temperature and yes/no adjustments belong to
+the evaluated model contract. Model-size labels, configured position limits,
+validated state lengths and deployed request limits measure different things.
+
+Allahyar and Newhauser 2026 (*Introducing GLiDE: The First Thinking Decision
+Model*) make additional reasoning conditional on uncertainty. Its current
+documentation supersedes the announcement's older context limit. A fair cost
+comparison counts internal passes, repeated state, schema overhead, cache
+operations and any fallback. Public weights, permissive source code and an
+unrestricted weight license are separate properties: Tev1's pending weight
+license, Liquid's commercial-use limitation and Jeff's non-commercial weights
+cannot be inferred from their base-model or serving-code licenses.
+
 ## Open questions
 
 Uncertainty and routing transfer across changed tasks, contexts and adversarial
@@ -280,7 +321,7 @@ readout savings remain useful after reasoning, rejection and fallback costs.
 These require matched compute and supervision, independent policy selection, and
 application-specific outcomes rather than a single leaderboard position.
 
-The seven release sources add implementation and deployment diversity; they do
+The fifteen release sources add implementation and deployment diversity; they do
 not settle these empirical questions. No included source establishes general
 causal policy value, optimal action selection under an external utility, or regret
 guarantees. Those topics require additional owner-selected literature and evidence.

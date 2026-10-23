@@ -1,0 +1,1628 @@
+Typed Decision Models on Tabular Data
+Baowen Zhang1, Hangting Ye2*, Hongyuan Zha3
+1University of Wisconsin–Madison
+2School of Artificial Intelligence, Jilin University
+3School of Data Science, Chinese University of Hong Kong, Shenzhen
+bzhang599@wisc.edu,yeht22@mails.jlu.edu.cn,zhahy@cuhk.edu.cn
+Abstract
+Typed decision models are language models
+that answer a question with a fixed set of possi-
+ble answers by returning a probability for each
+answer instead of generating text. We study
+them on tabular data and compare four deci-
+sion models with three large language models
+(LLMs) on row classification, fact verification
+and anomaly detection. Every request is sent in
+its original form and under 21 types of rewrite
+that keep its content, such as renaming the op-
+tions or writing the table in another format. The
+decision models perform as well as the LLMs
+at a lower cost. Three of them are also far more
+robust to how the question is formulated. No
+model we test is robust to how the table is orga-
+nized. For every model, at least a third of the
+row decisions change under some rewrite of the
+table or the question. The decisions to which
+a decision model gives low probability are the
+ones most likely to change. Decision models
+are a practical choice for tabular decisions, but
+their robustness remains an open problem.
+1 Introduction
+Tabular data, in which each row describes a sample
+and each column one of its heterogeneous features,
+is one of the most common forms of data in fields
+such as healthcare, finance and network security
+(Borisov et al., 2022; Fang et al., 2024). On such
+data, gradient-boosted trees (Chen and Guestrin,
+2016; Ke et al., 2017; Prokhorenkova et al., 2018)
+still outperform most deep networks designed for
+tables (Grinsztajn et al., 2022; Borisov et al., 2022),
+and tabular foundation models do best on small
+tables (Hollmann et al., 2025; Prior Labs, 2026).
+Large language models (LLMs) have opened
+a new route for tabular data (Fang et al., 2024).
+LLM-based methods first serialize a row or a ta-
+ble into text, for example as feature–value pairs
+or as a Markdown table (Hegselmann et al., 2023;
+* Corresponding author.
+Sui et al., 2024). The serialized row is then clas-
+sified by prompting an LLM with a description
+of the task and a few in-context examples, or by
+fine-tuning it (Dinh et al., 2022; Hegselmann et al.,
+2023). The LLM can also turn the labelled rows
+into features and rules for a conventional model
+(Han et al., 2024; Ye et al., 2025). This works well
+even when only a few labelled rows are available
+(Hegselmann et al., 2023). However, LLMs are not
+built for decisions. The LLM-generated output has
+to be mapped to one of the options, and every deci-
+sion needs a full decoding process, which can be
+expensive when a large number of decisions need
+to be made. Their answers can also change with
+the order of the columns, the format of the rows or
+the wording of the question (Sui et al., 2024; Liu
+et al., 2024; Sclar et al., 2024).
+Recently, a new class of language models has
+been built for such decisions:typed decision mod-
+els(decision models for short). TypeSafe released
+the first of them, Jev (TypeSafe, 2026). Jev takes a
+sample or a table together with one or more ques-
+tions, each with a fixed set of possible answers such
+as the classes of a task. Instead of generating text,
+it returns a probability for every answer of every
+question in a single request. TypeSafe trains it with
+Reinforcement Learning for Calibrated Decisions
+(RLCD) so that these probabilities match outcomes,
+and reports that its confidence is calibrated and
+that similar inputs receive similar answers (Type-
+Safe, 2026). Open-weight decision models such as
+Clef and Kev-27B followed, trained from an open-
+weight LLM with proper scoring rules (Cloudflare,
+2026; Palmer, 2026). OpenAI now also offers GPT-
+6 Luna Decisions, a decision model built on its
+LLM GPT-6 Luna, through its Decisions API (Ope-
+nAI, 2026a). Decision models thus avoid genera-
+tion and decoding, since every decision comes with
+a probability in a single request. Whether they are
+also robust to how the table and the question are
+written is open, since a decision model also reads
+arXiv:2610.19536v1  [cs.CL]  14 Oct 2026
+
+Decision models
+Research question Jev, Clef, Kev-27B GPT-6 Luna Decisions LLMs
+RQ1Are decision models practical?
+(§3)
+✓As accurate as LLMs
+and best on two of three
+tasks, at far lower cost
+✓As accurate as GPT-6
+Luna and cheaper on rows
+and samples
+✓Best on row
+classification, but a
+decoding pass per decision
+RQ2Are they robust to the
+formulation of the question? (§4)
+✓Option names and order
+barely matter
+✗Reversing the options
+changes up to 23%
+✗Option names and order
+change up to 30%
+RQ3Are they robust to how the
+table is organized? (§5)
+✗Format and row and
+column order change many
+decisions
+✗Likewise✗Likewise
+RQ4Does their confidence indicate
+which decisions are sensitive to
+rewrites? (§6)
+✓Low confidence marks
+the decisions a rewrite
+changes
+Partly.As well as an
+LLM’s best readout
+Partly.Only with ten
+draws or token probabilities
+Table 1: Our four research questions and their answers for the decision models and the LLMs.
+the table as text.
+Of the 112 arXiv papers on decision models pub-
+lished in the three weeks after the release of Jev,
+none studies them as a method for tabular data (Ta-
+ble 11). For LLMs on tables, decisions are known
+to depend on the serialization (Sui et al., 2024;
+Hegselmann et al., 2023), on the order of rows and
+columns (Liu et al., 2024; Zhou et al., 2024) and on
+the in-context examples (Hegselmann et al., 2023).
+These questions have not been asked of decision
+models.
+To study them in depth, we change how each
+request is written without changing the information
+the decision needs, for example by renaming the
+options or writing the table in another format. We
+call such a change arewrite. We send every request
+in its original form and in each rewritten form to
+decision models and LLMs.
+Our research questions are as follows:
+RQ1 Are decision models practical for tabular de-
+cisions?
+RQ2 Are they robust to the formulation of the
+question, such as the names and order of
+the options?
+RQ3 Are they robust to how the table is organized,
+such as its format and the order of its rows
+and columns?
+RQ4 Does their confidence indicate which deci-
+sions are sensitive to rewrites?
+We evaluate seven models—four decision models
+(Jev, Clef, Kev-27B and GPT-6 Luna Decisions)
+and three LLMs (GPT-6 Luna, Qwen3.8-27B and
+Llama-3.3-70B)—across three tabular tasks cover-
+ing row classification, fact verification and anomaly
+detection, under 21 types of rewrite. Clef and Kev-
+27B are trained from Qwen3.8-27B, which lets us
+compare the two ways of deciding on the same
+backbone (Section 2).
+Our main findings are as follows:
+Decision models perform as well as LLMs on
+these tasks and are cheaper to run (Table 1). They
+are also far less affected by how the question is
+formulated. In contrast, GPT-6 Luna Decisions is
+as sensitive to the order of the options as the LLMs.
+Writing the table differently, however, changes
+many decisions of every model, even though accu-
+racy stays almost the same. The decisions that a
+decision model gives low probability are the ones
+that change most often.
+2 Experimental setup
+2.1 Decision interfaces
+We refer to a model’s output for one item as adeci-
+sion: the class of a sample, the verdict on a claim
+about a table, or whether a sample is anomalous.
+Arequestis one call to a model and may contain
+several items. A decision model receives a request
+as astate, such as a group of samples or a table,
+with one question per item whose possible answers
+are fixed in advance. It returns a probability for
+every option of every question in a single request
+(TypeSafe, 2026). An LLM receives a prompt built
+from the same request and generates text, which we
+map to one of the options. Its confidence has to be
+read from that text, from its token probabilities or
+from repeated draws (Li and Wagle, 2026; Deußer
+et al., 2026).
+2.2 Tasks and models
+Tasks.We use three tasks (Table 2). Row clas-
+sification assigns a class to a sample from the ten
+datasets of TabLLM and FeatLLM. Fact verifica-
+tion decides whether a table from TabFact supports
+
+Task Input Decision Data
+Row classi-
+fication
+One sample and a
+description of its
+features
+Its class 10 datasets,
+3,481 rows
+Fact
+verification
+A table and a
+claim about it
+Supported
+or refuted
+TabFact,
+2,000 claims
+Anomaly
+detection
+One sample, a
+description of the
+data and statistics
+of normal samples
+Normal or
+anomalous
+ReTabAD, 20
+sources,
+5,059
+samples
+Table 2: The three tasks: row classification on the ten
+datasets of TabLLM and FeatLLM (Hegselmann et al.,
+2023; Han et al., 2024), fact verification on TabFact
+(Chen et al., 2020) and anomaly detection on ReTabAD
+(Yoon et al., 2026). Metrics: Macro-F1, accuracy and
+AUROC, averaged over datasets or sources.
+Question, options with their descriptions
+original{no, yes} with descriptions
+options reversed{yes, no}
+renamed A, B{A, B}, descriptions kept
+synonyms{false, true}
+yes/no question"Is the target class yes?"
+paraphrased"Determine the class . . . "
+Row, columns Recency, Frequency, Monetary, Time
+array (original)[21.0, 3.0, 750.0, 70.0]
+columns shuffled[70.0, 21.0, 3.0, 750.0]
+columns reversed[70.0, 750.0, 3.0, 21.0]
+list- Recency: 21.0 . . .
+sentencesThe Recency is 21.0. . . .
+JSON object{"Recency":21.0, . . . }
+Markdown table| Recency | Frequency | . . . |
+Figure 1: One row-classification request (blood dona-
+tion) under the rewrites of Figure 3, shortened to the part
+that each rewrite changes. Shuffling or reversing the
+columns permutes their names, descriptions and values
+together.
+a claim. Anomaly detection decides whether a sam-
+ple from one of 20 ReTabAD sources is anomalous.
+Models.The four decision models are Jev 1.13
+(TypeSafe, 2026), the open-weight Clef (Cloud-
+flare, 2026) and Kev-27B (Palmer, 2026), and GPT-
+6 Luna Decisions (OpenAI, 2026a). Jev is available
+only through TypeSafe’s API. Clef and Kev-27B
+are both trained from Qwen3.8-27B (Qwen Team,
+2026). GPT-6 Luna Decisions is built on the LLM
+GPT-6 Luna and served through OpenAI’s Deci-
+sions API. It accepts requests in the same format
+as Jev. OpenAI does not document how the API
+computes its probabilities, and we use its public-
+beta snapshot of 6 October 2026. The LLMs are
+GPT-6 Luna (OpenAI, 2026b) and the open-weight
+Qwen3.8-27B and Llama-3.3-70B (Llama Team,
+AI @ Meta, 2024). We run GPT-6 Luna at temper-
+ature 1 and decode the open-weight LLMs greedily.
+Appendix A lists all versions.
+In row classification, a decision-model request
+contains the 16 rows of a group as separate typed
+questions over a shared state, whereas an LLM
+prompt contains one row, as in TabLLM. In fact
+verification and anomaly detection, every model
+receives the same claim or the same batch of 15
+samples. All decision models receive identical re-
+quests, and the LLM prompts are built from them.
+2.3 Evaluation
+We evaluate row classification by Macro-F1, fact
+verification by accuracy and anomaly detection by
+AUROC, each averaged over datasets or sources
+(Table 2). We also report the latency and price of
+each decision, and for RQ1 we vary the number of
+in-context examples from none to as many as fit.
+Besides its original form, we send every request
+under rewrites, which change how it is written
+but keep all the information the decision needs
+(Figure 1). Rewrites of the question serve RQ2,
+rewrites of the table serve RQ3, and each task uses
+those of the 21 types of rewrite that apply to it
+(Table 12). We checked that each rewrite keeps
+every cell and header by recovering the original
+request from it. The one exception is the order of
+rows on TabFact, which can change the truth of
+claims about positions such as “first”. We leave
+these claims out of RQ3 and RQ4.
+A decisionflipswhen it differs from the decision
+under the original request, and an invalid output
+counts as a flip. Even an identical request can re-
+ceive a different decision. We therefore report each
+model’sre-send rate, the share of its decisions that
+flip when the identical request is sent again, and
+compare the flips under rewrites with it. Section 6
+defines confidence, and Appendix C gives every
+result with intervals.
+3 RQ1: Are decision models practical for
+tabular decisions?
+Performance.Decision models perform as well
+as LLMs and better on two of three tasks. Jev
+verifies TabFact claims best and Kev-27B detects
+anomalies best, while GPT-6 Luna leads on row
+classification (Table 3). Clef and Kev-27B are also
+more accurate than Qwen3.8-27B, which shares
+their backbone, on every task. GPT-6 Luna De-
+
+0 4 16 64 max
+labelled rows in context
+40
+50
+60
+70
+80Macro-F1
+(a) Row classification
+0 2 4 8 max
+labelled tables in context
+76
+80
+84
+88
+92Accuracy
+(b) TabFact
+none stats +16 +max
+normal samples in context
+60
+70
+80AUROC
+(c) Anomaly detection
+Jev
+Clef
+Kev-27B
+GPT-6 Luna Decisions
+GPT-6 Luna
+Qwen3.8-27B
+Llama-3.3-70B
+TabPFN-3.5
+best trained
+best trained, all rows
+Figure 2: In-context examples (RQ1). Grey lines show the best of eight classifiers or five anomaly detectors trained
+on the same rows, and dotted lines the best trained on all training rows.maxstands for as many rows as fit in the
+context. In (c),statsis the original request of ReTabAD, which summarizes the normal training samples by statistics.
+noneleaves these statistics out, and+16and+maxadd raw normal samples.
+performance generated tokens
+Model Cl. TF AD Cl. TF AD
+Jev 52.1 89.7 74.6none: one pass b
+Clef 58.4 85.0 74.7none: one pass
+Kev-27B 55.2 88.8 81.2none: one pass
+GPT-6 Luna Decisions 61.2 78.7 80.5none c
+GPT-6 Luna 62.5 79.0 77.3 5.6 11.8 87.5
+Qwen3.8-27B 52.2 82.5 71.0 2.6 9.1 111.7
+Llama-3.3-70B 44.0 80.5 61.0 2.5 8.0 44.4
+traineda 80.0 n/a 78.8none
+Table 3: RQ1: performance under the original request
+and the tokens each model generates per decision (an
+anomaly batch carries 15 decisions). Cl. = row classi-
+fication (Macro-F1), TF = TabFact (accuracy), AD =
+anomaly detection (AUROC). aBest of eight classifiers
+trained on the whole training split, LightGBM (Cl.), and
+of five anomaly detectors, k-nearest neighbours (AD,
+19 of 20 sources). We train no model for TabFact. bAs
+stated by its provider. Jev’s architecture is not public.
+cNo output tokens are billed.
+cisions comes within 1.3 points of GPT-6 Luna
+on row classification and TabFact and is 3.2 points
+above it on anomaly detection. In-context examples
+help the decision models as they help the LLMs.
+With as many rows as fit in the context, Clef and
+Kev-27B beat every LLM on row classification and
+every LLM and detector fitted to the same samples
+on anomaly detection (Figure 2). From about 64
+rows on, TabPFN-3.5 (Prior Labs, 2026) and meth-
+ods trained on the same rows match or beat every
+in-context model on row classification.
+Latency and price.The LLMs generate 2.5 to
+112 tokens per decision, and the other models none
+(Table 3). Of the closed models, Jev and GPT-6
+Luna Decisions take 0.08–0.11 seconds per row
+or sample, against 0.73–1.62 for GPT-6 Luna (Ta-
+ble 4). Per decision, GPT-6 Luna costs 1.6 to 8
+times as much as Jev. Served through the Deci-
+sions API, the same model costs 3.4 times less on
+row classification and 1.8 times less on anomaly
+detection. On TabFact, where every request holds
+a single claim, the two interfaces cost the same per
+decision. We time only the closed models, since
+the open-weight models run on our own servers.
+♂lightbulbTakeaway.Decision models are practical for tabular
+decisions. They perform as well as LLMs or better, and
+are generally faster and cheaper per decision. Where 64 or
+more labelled rows exist, a tabular foundation model or a
+trained model is better.
+4 RQ2: Are decision models robust to the
+formulation of the question?
+Decision models are robust to the names and or-
+der of the options.Renaming or reordering the
+options changes 2–8% of the classifications of Jev,
+Clef and Kev-27B, at most 5.5 percentage points
+above their re-send rates (Figure 3, upper block).
+Their Macro-F1 changes by at most 1.3 points. The
+same rewrites change 14–30% of the open-weight
+LLMs’ classifications and cost them up to 11.5
+points. Posing the question as yes/no costs these
+three models at most 2 points but Qwen3.8-27B
+14, and Llama-3.3-70B answers it with “Yes.” so
+often that half of its outputs are unusable. Only
+
+0 10 20 30
+decisions changed (%)
+identical request re-sent
+option order reversed
+options renamed A, B, ...
+options renamed by synonyms
+yes/no question
+instructions paraphrased
+columns shuffled
+columns reversed
+row as a list
+row as sentences
+row as a JSON object
+row as a Markdown table
+56.9
+Question formulation
+Table organization
+−10 −5 0 5 10
+Macro-F1 change
+-14.1
+-26.6
+Jev Clef Kev-27B GPT-6 Luna Decisions GPT-6 Luna Qwen3.8-27B Llama-3.3-70B
+Figure 3: Row classification, per rewrite: decisions that differ from the model’s original decision (left) and the
+change of Macro-F1 (right). The upper block shows RQ2 and the lower block RQ3. Filled markers are decision
+models and hollow markers LLMs. Clef’s point for option order is hollow because Clef sorts the options.
+seconds US$ / million
+Model Cl. TF AD Cl. TF AD
+Jev 0.08 1.33 0.09 10 38 16
+GPT-6 Luna Decisions 0.10 1.60 0.11 24 61 37
+GPT-6 Luna 1.62 1.59 0.73 81 62 68
+Table 4: Latency and price per decision of the closed
+models: mean wall-clock seconds, and US$ per million
+decisions as billed, on the original requests. A Jev or
+GPT-6 Luna Decisions request answers 16 rows or a
+batch of 15 samples, and a GPT-6 Luna request one row,
+one claim or one batch.
+paraphrasing the instructions affects both kinds of
+model alike. On TabFact these rewrites change
+under 5% of their verdicts and under 7% of the
+open-weight LLMs’. Clef and Kev-27B change far
+fewer decisions under these rewrites than Qwen3.8-
+27B, which shares their backbone. For option order,
+part of this comes from Clef’s release code, which
+sorts the options.
+GPT-6 Luna Decisions is not robust to the order
+of the options.GPT-6 Luna Decisions repeats its
+decision whenever the identical request is re-sent.
+Yet reversing the options changes 23% of its classi-
+fications, 12% of its TabFact verdicts and 22% of
+its anomaly decisions, and renaming them changes
+8–17%. Few of these flips come from ties of its
+rounded probabilities. Even among its classifica-
+tions with a probability of at least 0.8, 14% flip,
+Model Row classif. TabFact Anomaly det.
+Jev 33.8 19.3 21.1
+Clef 31.7 23.0 25.8
+Kev-27B 32.2 18.3 17.7
+GPT-6 Luna Decisions 39.6 38.3 29.9
+GPT-6 Luna 42.8 60.8 63.4
+Qwen3.8-27B 31.8 27.4 23.3
+Llama-3.3-70B 35.5 33.7 53.4
+Table 5: Items (%) whose decision changes under at
+least one information-preserving rewrite of the table (6,
+10 and 8 types of rewrite, Table 12). GPT-6 Luna is run
+at temperature 1, so its shares include its re-send rate.
+and 92–100% of all flips move to the option now
+listed first. Robustness to the question thus does
+not come with the decision interface itself.
+♂lightbulbTakeaway.Decisions of Jev, Clef and Kev-27B remain
+largely unchanged when the options are renamed or re-
+ordered. However, LLMs and GPT-6 Luna Decisions can
+change up to 30% of their decisions.
+5 RQ3: Are decision models robust to
+how the table is organized?
+No language model is fully robust to how the
+table is organized.Writing each row as a list, as
+sentences, as a JSON object or as a Markdown table
+instead of an array of values changes 12–21% of the
+row classifications of every model. This is about
+ten times the re-send rate of the open-weight mod-
+els. Shuffling or reversing the columns changes
+
+Model Confidence Cl. TF AD
+Trained from the same backbone
+Clef probability 1.4 4.1 0.7
+Kev-27B probability 3.1 2.5 0.1
+Qwen3.8-27B ten draws 2.6 9.7 4.8
+stated 23.4 29.2 9.2
+The same model through two interfaces
+GPT-6 Luna Decisions probability 1.8 15.5 4.2
+GPT-6 Luna ten draws 20.2 48.7 47.6
+stated 22.5 61.6 50.0
+Other models
+Jev probability 0.9 4.6 0.6
+Llama-3.3-70B ten draws 26.8 27.5 45.9
+stated 26.8 27.7 39.6
+Table 6: Of each model’s 25% most confident items, the
+share (%) changed by at least one rewrite of the table.
+Cl. = row classification, TF = TabFact, AD = anomaly
+detection.
+15–23% (Figure 3, lower block). On TabFact, other
+table formats and row or column orders change 3–
+13% of the decision models’ verdicts and 4–12%
+of the open-weight LLMs’. Here decision models
+and LLMs do not differ. Clef and Kev-27B change
+about as many decisions as Qwen3.8-27B, which
+shares their backbone.
+Nor is any model fully robust to how the in-
+context examples are presented.We present the
+same 16 in-context examples with their classes in-
+terleaved instead of grouped, or as text lines instead
+of arrays. This changes 7–12% of the decision
+models’ classifications, 7–8% of Qwen3.8-27B’s
+and 15% of Llama-3.3-70B’s, far above their re-
+send rates. Macro-F1 changes by at most 3 points.
+GPT-6 Luna’s 14% is close to its re-send rate. The
+presentation of the in-context examples is thus part
+of the organization of the table as well.
+Individual decisions change while overall accu-
+racy stays the same.For every model, some
+rewrite of the table changes the decision on about
+a third of the row classifications and on a fifth or
+more of the TabFact claims and anomaly-detection
+samples (Table 5). Re-sending the request changes
+only 2–9% of the open-weight models’ rows. Yet
+Macro-F1 changes by less than a point for some
+models and by up to 7 for others, because the flips
+fall on borderline items that are right about as often
+as wrong (Section 6). This is the arbitrariness that
+the multiplicity literature studies across retrained
+models and prompts (Marx et al., 2020; Ganesh,
+2025), here caused by the table.
+♂lightbulbTakeaway.Neither decision models nor LLMs are fully
+robust to how the table is organized. About a third of every
+model’s row-classification decisions change under at least
+one rewrite of the table. But accuracy largely hides these
+changes.
+6 RQ4: Does their confidence indicate
+which decisions are sensitive to
+rewrites?
+Every model we test makes some decisions that a
+rewrite of the table changes (Section 5). We call
+such a decisionfragile, meaning that at least one
+rewrite of the table flips it, and any other decision
+stable. We ask whether a model’s confidence in-
+dicates which of its decisions are fragile. Since a
+table can hold many rows, such a signal is most
+useful if it comes with each decision rather than
+from repeated requests.
+Confidence.Let d be a model’s original decision
+on an item. A decision model returns a probability
+p(o) for every option o, and its confidence is the
+probability of the chosen option,
+c= max
+o
+p(o).(1)
+This is not the confidence field that some of these
+APIs return, which is the gap between the two high-
+est probabilities. The closed LLM returns no proba-
+bilities, so for all three LLMs we draw ten answers
+a1, . . . , a10 at temperature 1 and use the share that
+agrees withd,
+c= 1
+10
+{k:a k =d}
+,(2)
+where an invalid draw counts as different. We also
+compare two other LLM readouts, the stated con-
+fidence divided by 100 and the probability of the
+first token of the generated answer (Table 10).
+Measure.Theflip AUROCmeasures how well
+low confidence ranks the decisions that a rewrite
+flips. It is the AUROC of −c for a flip over all
+pairs of an item and a rewrite. For comparison, the
+error AUROCmeasures how well −c ranks wrong
+decisions. For both, 0.5 is chance.
+A decision model’s confidence is a strong indi-
+cator of fragile decisions.Of the 25% of items
+with its highest confidence, 0.1–5% change under
+some rewrite of the table, against about a third of
+all items (Table 6). The exception is GPT-6 Luna
+Decisions on TabFact, with 15.5%. Pooled over the
+rewrites both kinds of model receive, the flip AU-
+ROC is 0.82–0.87 for the decision models on row
+
+0 25 50 75 100
+least confident rows re-queried (%)
+0
+25
+50
+75
+100share of the full gain (%)
+Jev (+3.5)
+Clef (+2.0)
+GPT-6 Luna Decisions (+4.3)
+GPT-6 Luna (+4.3)
+Qwen3.8-27B (+6.4)
+Llama-3.3-70B (+2.8)
+random rows (mean)
+Figure 4: Re-querying the least confident rows (row
+classification). For the x% of rows with the lowest
+confidence, the answer in the original format is replaced
+by the combination of the answers in the original and
+the four other formats. The y-axis gives the share of the
+Macro-F1 gain obtained when every row is re-queried,
+and the legend gives that gain in points.
+classification, 0.81–0.90 on TabFact and 0.84–0.93
+on anomaly detection, with GPT-6 Luna Decisions
+lowest on every task. It is similar for each rewrite
+on its own (Figure 6). Their mean confidence on a
+dataset also ranks the ten classification datasets by
+flip rate (Spearman −0.62 to −0.90, Figure 7), as
+does an LLM’s ten-draw agreement.
+An LLM’s confidence is a weaker indicator of
+fragile decisions.Read as the share of ten draws
+that repeat the original decision, it ranks the flips
+less well than the probability of Jev, Clef and Kev-
+27B on every task, and the best LLM ranks them
+about as well as GPT-6 Luna Decisions (Table 9).
+The LLMs’ most confident decisions are also less
+stable (Table 6). The confidence an LLM states
+is the least informative of all. With the best of its
+three readouts, the best LLM comes within 0.02
+of the weakest of Jev, Clef and Kev-27B on row
+classification and TabFact and stays 0.05 behind on
+anomaly detection (Table 10), but these readouts
+need ten decoding passes or token probabilities.
+Re-querying the least confident rows.Since
+low confidence marks the decisions that a rewrite
+is likely to change, it can also tell which rows are
+worth asking again. On row classification, we send
+a share of the rows again in the four other formats
+of Table 12 and combine the five answers, by the
+highest mean probability for a decision model and
+by majority vote for an LLM. Re-querying every
+row raises Macro-F1 by 2.0 to 6.4 points for six of
+the models but takes four more requests per row.
+Re-querying only the 25% least confident rows
+takes one more request per row on average and re-
+covers 79–89% of the gain for the decision models
+and 64–86% for the LLMs, against 23–44% for ran-
+dom rows (Figure 4). Most of this gain comes from
+leaving the original array of values, the weakest for-
+mat for six of the seven models, and the best other
+format alone comes within 0.2 points of the com-
+bination or exceeds it. The rows whose decisions
+change with the format are thus mostly the least
+confident ones, and re-querying them undoes most
+of the effect of a weak format. Kev-27B, whose
+weakest format is not the array, loses 0.7 points
+(not shown).
+Confidence follows stability more than correct-
+ness.Confident decisions are more often right.
+Among the 25% of decisions with the highest con-
+fidence, the decision models are right 67–99% of
+the time, against 43–73% among the 25% with the
+lowest. Yet their confidence separates stable from
+fragile decisions far better than right from wrong
+ones (Table 19). On row classification and anomaly
+detection, stable but wrong decisions carry almost
+as much confidence as stable and right ones (0.67–
+0.86 against 0.76–0.90) and far more than frag-
+ile ones (0.54–0.66). On TabFact the order is the
+same, with smaller gaps. Such stable errors make
+up 17–23% of the decisions in row classification
+and anomaly detection and 4–5% on TabFact, and
+no signal of instability can reveal them (cf. Ganesh
+et al., 2026). Llama-3.3-70B’s confidence is high
+in all four groups (0.85–1.00).
+Why confidence predicts flips.A decision flips
+when a rewrite moves itsmargin, the gap between
+the log-probabilities of the chosen option and the
+best other option, below zero (cf. Cohen et al.,
+2019; Bhojanapalli et al., 2021). For the decision
+models, the flip rates predicted from the margin
+alone, assuming a small shift that is nearly indepen-
+dent of the item, match the observed ones decile
+by decile (Figure 5). Such a shift flips only border-
+line decisions, which would explain why the flips
+cancel in accuracy and why the confidence predicts
+them.
+♂lightbulbTakeaway.A decision model’s probability indicates
+which of its decisions a rewrite is likely to change. The
+confidence of an LLM is a weaker indicator. Re-querying
+only the least confident rows recovers most of the gain of
+re-querying every row.
+7 Related work
+LLMs on tables.LLMs can classify rows se-
+rialized as text from a few labelled examples, by
+prompting or fine-tuning (Dinh et al., 2022; Hegsel-
+mann et al., 2023). They can also build features and
+
+rules for a conventional model (Han et al., 2024;
+Ye et al., 2025). LLMs also detect anomalous sam-
+ples (Tsai et al., 2025; Yoon et al., 2026; Ye et al.,
+2026) and verify claims about tables on TabFact
+(Chen et al., 2020), and Fang et al. (2024) survey
+the field. Each of these methods addresses one kind
+of task and reports accuracy. We compare LLMs
+with decision models on three kinds and look at
+single decisions.
+Robustness of LLMs.LLM answers change
+with the order, names and format of the options and
+with the wording of the prompt (Zhao et al., 2021;
+Zheng et al., 2024; Sclar et al., 2024; Mizrahi et al.,
+2024). On tables, the serialization changes results
+(Sui et al., 2024; Fang et al., 2024), and reorder-
+ing or transposing a table lowers accuracy on table
+question answering (Liu et al., 2024; Zhao et al.,
+2023; Zhou et al., 2024). For single predictions,
+Hamman et al. (2025) find that the probability of
+tabular LLMs does not reveal their inconsistency
+across fine-tuning seeds, and Ganesh et al. (2026)
+find that an LLM’s uncertainty identifies prompt-
+sensitive items but not wrong ones. We measure
+which individual decisions rewrites of the table
+change, for LLMs and for models that return a
+probability by design.
+Decision models.Early studies measure Jev’s
+accuracy and calibration on text (Deußer et al.,
+2026), its consistency under benign and injected
+edits (Hu et al., 2026) and the readout stability of
+open-weight decision models (Li and Chen, 2026).
+Others apply decision models to single tabular ap-
+plications (Severo et al., 2026; Jung, 2026), and an
+audit lists the missing tests (Tang and Zheng, 2026).
+We compare decision models, including one built
+on an LLM, with LLMs across tabular tasks.
+8 Discussion
+When to use decision models?Decision mod-
+els suit tabular decisions whose answers form a
+fixed set, such as classifying rows, verifying claims
+or flagging anomalies. In tasks with few labelled
+rows, they perform as well as LLMs, cost less per
+decision, respond faster and return a useful con-
+fidence with each decision (Section 3). They are
+most useful when many rows need a decision, when
+the wording of the question may vary and when un-
+certain decisions need to be identified (Sections 4
+and 6). They are less suited when many labelled
+rows are available. From around 64 labelled rows
+on, tabular foundation models and trained models
+perform better (Section 3), and decision models
+have shorter context windows than LLMs, which
+limits how many labelled rows they can read. By
+design they return only one of a fixed set of choices,
+so they do not cover tasks that need free text, such
+as an explanation or a computed value.
+When to use LLMs?LLMs suit the task better
+when the answer has to be written in tokens rather
+than chosen from a fixed set, for example when
+a decision must be explained or an open question
+about a table answered. A strong LLM is also a
+reasonable starting point when almost no labelled
+rows exist (Section 3). When an LLM is used for
+decisions with a fixed set of answers, a single ques-
+tion prompt may not be relied on, since presenting
+the options in several orders and aggregating the
+answers can reduce its dependence (Zheng et al.,
+2024).
+Future directions.No model we test is robust
+to how the table is organized, and this is the main
+limitation of decision models on tables. A natural
+next step is to train decision models on rewrites
+of the table. In previous work, LLMs have been
+trained to predict on unseen tables in few shots
+more accurately than XGBoost and TabPFN (Gard-
+ner et al., 2024). With RLCD, decision models
+can also follow this path and be trained to improve
+their decision accuracy and robustness on tabular
+tasks. LLMs and decision models can also work
+together: a decision model can make most of the
+decisions, and an LLM can explain or review the
+few it is least confident about. Systems that com-
+bine the two kinds of model in this way are another
+direction for future work.
+9 Conclusion
+We studied typed decision models as a method for
+decisions on tabular data. On row classification,
+fact verification and anomaly detection, they per-
+form as well as LLMs at a fraction of the cost.
+Except for GPT-6 Luna Decisions, renaming or re-
+ordering the options barely changes their decisions.
+How the table is organized, however, affects deci-
+sion models and LLMs alike, and about a third of
+the row decisions change under some rewrite of
+the table. The decisions to which a decision model
+gives low probability are the ones most likely to
+change. Whether decision models can be made
+robust to how the table is organized remains open.
+
+Limitations
+First, each of the seven models is tested in one ver-
+sion. Jev and GPT-6 Luna Decisions are closed ser-
+vices whose internal processing is not visible to us
+and may change across versions, and the Decisions
+API is still in public beta. The two open-weight
+decision models reproduce the findings we rely on,
+but other decision models, and later versions of the
+ones we test, may behave differently.
+Second, we cover three kinds of tabular deci-
+sions and use subsets of each benchmark, since
+every request is sent under every rewrite to seven
+models. The 21 types of rewrite cover the format
+of the table, the order of its rows and columns and
+the formulation of the question. They do not cover
+other changes that keep the content, such as renam-
+ing columns or converting units, so our results say
+little about robustness to those changes.
+References
+Srinadh Bhojanapalli, Kimberly Wilber, Andreas Veit,
+Ankit Singh Rawat, Seungyeon Kim, Aditya Menon,
+and Sanjiv Kumar. 2021. On the reproducibility of
+neural network predictions. arXiv:2102.03349.
+Vadim Borisov, Tobias Leemann, Kathrin Seßler, Jo-
+hannes Haug, Martin Pawelczyk, and Gjergji Kas-
+neci. 2022. Deep neural networks and tabular data:
+A survey.IEEE Transactions on Neural Networks
+and Learning Systems.
+Tianqi Chen and Carlos Guestrin. 2016. XGBoost: A
+scalable tree boosting system. InProceedings of the
+22nd ACM SIGKDD International Conference on
+Knowledge Discovery and Data Mining.
+Wenhu Chen, Hongmin Wang, Jianshu Chen, Yunkai
+Zhang, Hong Wang, Shiyang Li, Xiyou Zhou, and
+William Yang Wang. 2020. TabFact: A large-scale
+dataset for table-based fact verification. InInterna-
+tional Conference on Learning Representations.
+Cloudflare. 2026. Introducing Clef: our open-source
+decision models, and new RL fine-tuning platform.
+Blog post by M. Chen, https://blog.cloudflare.
+com/clef-decision-models/. Weights:
+https://huggingface.co/Cloudflare/clef,
+Apache-2.0.
+Jeremy Cohen, Elan Rosenfeld, and Zico Kolter. 2019.
+Certified adversarial robustness via randomized
+smoothing. InProceedings of the 36th International
+Conference on Machine Learning.
+Tobias Deußer, Lorenz Sparrenberg, and Rafet Sifa.
+2026. Evaluating and benchmarking the system one
+model Jev.Preprint, arXiv:2609.37647.
+Tuan Dinh, Yuchen Zeng, Ruisu Zhang, Ziqian Lin,
+Michael Gira, Shashank Rajput, Jy-yong Sohn, Dim-
+itris Papailiopoulos, and Kangwook Lee. 2022. LIFT:
+Language-interfaced fine-tuning for non-language
+machine learning tasks. InAdvances in Neural Infor-
+mation Processing Systems.
+Xi Fang, Weijie Xu, Fiona Anting Tan, Jiani Zhang,
+Ziqing Hu, Yanjun Qi, Scott Nickleach, Diego Socol-
+insky, Srinivasan Sengamedu, and Christos Faloutsos.
+2024. Large language models (LLMs) on tabular
+data: Prediction, generation, and understanding – a
+survey.Transactions on Machine Learning Research.
+Prakhar Ganesh. 2025. From model multiplicity to
+prompt multiplicity: Emerging arbitrariness concerns
+in the age of generative AI. InProceedings of the
+AAAI/ACM Conference on AI, Ethics, and Society.
+Prakhar Ganesh, Reza Shokri, and Golnoosh Farnadi.
+2026. Rethinking hallucinations: Correctness, con-
+sistency, and prompt multiplicity. InProceedings of
+the 19th Conference of the European Chapter of the
+Association for Computational Linguistics (EACL).
+Josh Gardner, Juan C. Perdomo, and Ludwig Schmidt.
+2024. Large scale transfer learning for tabular data
+via language modeling. InAdvances in Neural Infor-
+mation Processing Systems.
+Léo Grinsztajn, Edouard Oyallon, and Gaël Varoquaux.
+2022. Why do tree-based models still outperform
+deep learning on typical tabular data? InAdvances
+in Neural Information Processing Systems: Datasets
+and Benchmarks Track.
+Faisal Hamman, Pasan Dissanayake, Saumitra Mishra,
+Freddy Lecue, and Sanghamitra Dutta. 2025. Quanti-
+fying prediction consistency under fine-tuning multi-
+plicity in tabular LLMs. InProceedings of the 42nd
+International Conference on Machine Learning.
+Sungwon Han, Jinsung Yoon, Sercan Ö. Arik, and
+Tomas Pfister. 2024. Large language models can
+automatically engineer features for few-shot tabular
+learning. InProceedings of the 41st International
+Conference on Machine Learning, volume 235 of
+PMLR, pages 17454–17479.
+Stefan Hegselmann, Alejandro Buendia, Hunter Lang,
+Monica Agrawal, Xiaoyi Jiang, and David Sontag.
+2023. TabLLM: Few-shot classification of tabular
+data with large language models. InProceedings
+of The 26th International Conference on Artificial
+Intelligence and Statistics, volume 206 ofPMLR,
+pages 5549–5581.
+Noah Hollmann, Samuel Müller, Lennart Purucker,
+Arjun Krishnakumar, Max Körfer, Shi Bin Hoo,
+Robin Tibor Schirrmeister, and Frank Hutter. 2025.
+Accurate predictions on small data with a tabular
+foundation model.Nature, 637:319–326.
+Jianyi Hu, Hangtao Zhang, Yi Liu, Yeqi Zeng, Li Zeng,
+Xianlong Wang, Rui Wang, and Leo Yu Zhang. 2026.
+JevAdvBench: A benchmark and black-box attacks
+
+for reinforcement learning for calibrated decisions
+models.Preprint, arXiv:2609.31142.
+Wooyoung Jung. 2026. Where can a decision model
+diagnose HV AC faults? reasoning demand, physical
+representation, and robustness under shift.Preprint,
+arXiv:2610.09937.
+Guolin Ke et al. 2017. LightGBM: A highly efficient
+gradient boosting decision tree. InAdvances in Neu-
+ral Information Processing Systems.
+Ran Li and Lei Chen. 2026. Readout stability in
+prefill-only decision models: Zero-label prediction
+and inference-time compute allocation.Preprint,
+arXiv:2610.07716.
+Yinheng Li and Justin Wagle. 2026. LLM-as-
+Jev: LLMs are already Jev-style decision mod-
+els – when and how to fine-tune them.Preprint,
+arXiv:2610.02076.
+Tianyang Liu, Fei Wang, and Muhao Chen. 2024. Re-
+thinking tabular data understanding with large lan-
+guage models. InProceedings of the 2024 Confer-
+ence of the North American Chapter of the Associ-
+ation for Computational Linguistics: Human Lan-
+guage Technologies (Volume 1: Long Papers), pages
+450–482.
+Llama Team, AI @ Meta. 2024. The Llama 3 herd of
+models.Preprint, arXiv:2407.21783.
+Charles Marx, Flavio Calmon, and Berk Ustun. 2020.
+Predictive multiplicity in classification. InProceed-
+ings of the 37th International Conference on Machine
+Learning.
+Moran Mizrahi, Guy Kaplan, Dan Malkin, Rotem Dror,
+Dafna Shahaf, and Gabriel Stanovsky. 2024. State
+of what art? a call for multi-prompt LLM evaluation.
+Transactions of the Association for Computational
+Linguistics, 12:933–949.
+OpenAI. 2026a. Decisions API. https:
+//developers.openai.com/api/docs/guides/
+decisions. Public beta since 6 October 2026;
+model openai/gpt-6-luna-decisions, snapshot
+gpt-6-luna-decisions-20261006.
+OpenAI. 2026b. GPT-6 Luna. https://
+openrouter.ai/openai/gpt-6-luna. Snapshot
+gpt-6-luna-20260922.
+Jared Palmer. 2026. Kev. https://github.com/
+jaredpalmer/kev.
+Prior Labs. 2026. TabPFN-3.5. https:
+//huggingface.co/Prior-Labs/tabpfn_3_5.
+Model card and weights, checkpoint tabpfn-
+v3.5-20260909; TabPFN-3.5 Non-Commercial
+License.
+Liudmila Prokhorenkova et al. 2018. CatBoost: Unbi-
+ased boosting with categorical features. InAdvances
+in Neural Information Processing Systems.
+Qwen Team. 2026. Qwen3.8-27B. https://
+huggingface.co/Qwen/Qwen3.8-27B.
+Melanie Sclar, Yejin Choi, Yulia Tsvetkov, and Alane
+Suhr. 2024. Quantifying language models’ sensitiv-
+ity to spurious features in prompt design or: How i
+learned to start worrying about prompt formatting.
+InInternational Conference on Learning Representa-
+tions.
+Paulo Severo, Silvio E. Quincozes, and Amanda Dias.
+2026. Jev-IDS: A system one model for network
+intrusion detection in label-scarce and zero-day sce-
+narios.Preprint, arXiv:2610.01079.
+Yuan Sui, Mengyu Zhou, Mingjie Zhou, Shi Han, and
+Dongmei Zhang. 2024. Table meets LLM: Can large
+language models understand structured table data?
+a benchmark and empirical study. InProceedings
+of the 17th ACM International Conference on Web
+Search and Data Mining.
+Lijuan Tang and Yuemeng Zheng. 2026. Typed deci-
+sion models: An early evidence audit and evaluation
+checklist.Preprint, arXiv:2609.32160.
+Che-Ping Tsai, Ganyu Teng, Phillip Wallis, and Wei
+Ding. 2025. AnoLLM: Large language models for
+tabular anomaly detection. InInternational Confer-
+ence on Learning Representations.
+TypeSafe. 2026. Jev. https://docs.typesafe.ai.
+Modeltypesafe/jev-1.13, revision 20260917.
+Hangting Ye, Jinmeng Li, He Zhao, Dandan Guo, and
+Yi Chang. 2025. LLM meeting decision trees on
+tabular data.Preprint, arXiv:2505.17918.
+Hangting Ye, Jinhan Liu, Yong Yao, Jinmeng
+Li, Peng Wang, Yang Cao, He Zhao, Dandan
+Guo, Yi Chang, and Hongyuan Zha. 2026. A
+comprehensive survey of tabular anomaly detec-
+tion. Preprints.org, 202607.1125. https://www.
+preprints.org/manuscript/202607.1125.
+Sanghyu Yoon, Dongmin Kim, Suhee Yoon, Ye Seul
+Sim, Seungdong Yoa, Hye-Seung Cho, Soonyoung
+Lee, Hankook Lee, and Woohyung Lim. 2026.
+ReTabAD: A benchmark for restoring semantic
+context in tabular anomaly detection. InInter-
+national Conference on Learning Representations.
+ArXiv:2510.02060.
+Yilun Zhao et al. 2023. RobuT: A systematic study
+of table QA robustness against human-annotated ad-
+versarial perturbations. InProceedings of the 61st
+Annual Meeting of the Association for Computational
+Linguistics.
+Zihao Zhao, Eric Wallace, Shi Feng, Dan Klein, and
+Sameer Singh. 2021. Calibrate before use: Improv-
+ing few-shot performance of language models. In
+Proceedings of the 38th International Conference on
+Machine Learning.
+
+Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou,
+and Minlie Huang. 2024. Large language models are
+not robust multiple choice selectors. InInternational
+Conference on Learning Representations.
+Wei Zhou, Mohsen Mesgar, Heike Adel, and Annemarie
+Friedrich. 2024. FREB-TQA: A fine-grained robust-
+ness evaluation benchmark for table question answer-
+ing. InProceedings of the 2024 Conference of the
+North American Chapter of the Association for Com-
+putational Linguistics.
+
+A Models
+Table 7 lists the models we evaluate, the exact versions and how we run them.
+Model Access Version How we run it
+Decision models, whose confidence is the probability they return
+Jev Closedtypesafe/jev-1.13
+revision20260917
+TypeSafe’s API through
+OpenRouter
+Clef Open-weight, trained
+from Qwen3.8-27B
+Cloudflare/clef
+commit2f3de3dd
+Our implementation of its
+release code
+Kev-27B Open-weight, trained
+from Qwen3.8-27B
+jaredpalmer/kev-27b
+revision28be62e9
+Official server, bf16,
+4×A800
+GPT-6 Luna Decisions Closed, built on
+GPT-6 Luna
+openai/gpt-6-luna-decisions
+snapshot
+gpt-6-luna-decisions-20261006
+OpenAI’s Decisions API
+(public beta) through
+OpenRouter
+LLMs, whose confidence is the share of ten draws that repeat the original decision
+GPT-6 Luna Closedopenai/gpt-6-luna
+snapshotgpt-6-luna-20260922
+OpenAI’s API through
+OpenRouter, temperature 1,
+reasoning off
+Qwen3.8-27B Open-weightQwen/Qwen3.8-27B
+commit1d4bf0f2
+vLLM, greedy decoding
+Llama-3.3-70B Open-weightmeta-llama/Llama-3.3-70B-Instruct
+weights checked by sha256 against the
+official release
+vLLM, greedy decoding
+Table 7: The models we evaluate. Section 6 defines the confidence. For every LLM, the ten draws are taken at
+temperature 1.
+B Compute
+Table 8 lists the hardware and the dates of all runs.
+The open-weight models run on servers with four
+or six NVIDIA A800 80GB PCIe GPUs and on a
+server with four NVIDIA RTX 6000D GPUs (84
+GB each). The trained methods and TabPFN-3.5
+run on CPUs.
+Model Hardware Dates
+Jev API 1–5 Oct
+Clef A800, RTX 6000D 1–9 Oct
+Kev-27B A800 6–9 Oct
+GPT-6 Luna Decisions API 12 Oct
+GPT-6 Luna API 1–10 Oct
+Qwen3.8-27B A800, RTX 6000D 1–9 Oct
+Llama-3.3-70B A800 7–9 Oct
+Trained methods CPU 5–9 Oct
+TabPFN-3.5 CPU 9 Oct
+Table 8: Hardware and dates of the runs (2026, UTC).
+The closed models are called through their providers’
+APIs.
+C Further results
+0 10 20 30 40
+predicted flip rate (%)
+0
+10
+20
+30
+40observed flip rate (%)
+Jev
+Clef
+Kev-27B
+row classification
+anomaly detection
+TabFact
+Figure 5: Decision models: observed flip rate against
+the rate predicted when a rewrite adds item-independent
+noise to the margin, per margin decile and task.
+
+predicts a flip predicts an error
+Model Row classif. Anomaly TabFact Row classif. Anomaly TabFact
+Jev 0.87[0.86, 0.88]0.89[0.89, 0.90]0.89[0.88, 0.91]0.59 0.65 0.82
+Clef 0.85[0.85, 0.86]0.89[0.88, 0.89]0.87[0.86, 0.89]0.67 0.61 0.84
+Kev-27B 0.85[0.84, 0.86]0.92[0.92, 0.93]0.90[0.88, 0.91]0.70 0.70 0.84
+GPT-6 Luna
+Decisions 0.82[0.81, 0.83]0.83[0.83, 0.84]0.81[0.80, 0.83]0.74 0.70 0.78
+GPT-6 Luna 0.83[0.82, 0.84]0.71[0.70, 0.72]0.73[0.72, 0.75]0.68 0.62 0.69
+Qwen3.8-27B 0.77[0.76, 0.78]0.84[0.83, 0.85]0.83[0.82, 0.85]0.70 0.62 0.78
+Llama-3.3-70B 0.64[0.63, 0.65] † 0.67[0.66, 0.68]0.66[0.64, 0.68]0.55 0.51 0.57
+Table 9: How well a model’s confidence in its original decision predicts (left) that an information-preserving rewrite
+changes the decision and (right) that the original decision is wrong (flip AUROC and error AUROC; 0.5 is chance).
+Left: pooled over the rewrites of Figure 3 and the table formats, with 95% cluster-bootstrap intervals. Confidence:
+for the decision models, the returned probability of the chosen option; for the LLMs, the share of ten draws at
+temperature 1 that give the original decision. †Strict parse: an answer such as “Yes.” to the yes/no question counts
+as invalid, hence as changed. Ignoring case and a final full stop: Llama-3.3-70B on row classif. 0.66 [0.65, 0.67].
+Model Ten draws Stated Answer prob.
+Row classification
+GPT-6 Luna0.830.72 0.71
+Qwen3.8-27B0.770.60 0.65
+Llama-3.3-70B 0.64 0.500.73
+weakest of Jev, Clef and Kev-27B: Kev-27B, 0.85
+GPT-6 Luna Decisions: 0.82
+TabFact
+GPT-6 Luna0.730.58 –
+Qwen3.8-27B 0.83 0.520.86
+Llama-3.3-70B 0.66 0.560.83
+weakest of Jev, Clef and Kev-27B: Clef, 0.87
+GPT-6 Luna Decisions: 0.81
+Anomaly detection
+GPT-6 Luna0.710.65 –
+Qwen3.8-27B0.840.72 0.71
+Llama-3.3-70B0.670.59 0.61
+weakest of Jev, Clef and Kev-27B: Clef, 0.89
+GPT-6 Luna Decisions: 0.84
+Table 10: Every readout of an LLM’s confidence, on
+the same rewrites: flip AUROC (rewrites shared by
+both kinds of model).Ten draws: share of ten draws
+at temperature 1 that give the original decision, the
+readout of the main text.Stated: the confidence the
+model gives when asked, 0–100 (anomaly detection: the
+confidence in its answer).Answer prob.: probability
+of the first token of the generated label, or the stated
+anomaly score’s distance from 0.5; for GPT-6 Luna,
+agreement of three draws. Bold: the best readout of
+each model and task. –: not available.
+arXiv Table input (application or setting)
+2609.23136 telemetry tables (6G network intents)
+2609.24395 video feature records (video quality)
+2609.27535 survey micro-data as personas (social science)
+2609.33689 KPM records (5G network control)
+2609.36154 accelerometer features (activity recognition)
+2609.37470 joined tables or nested records (synthetic world)
+2610.00376 packet features (traffic classification)
+2610.01079 NSL-KDD flow records (intrusion detection)
+2610.02046 database tuples (semantic queries)
+2610.03073 security telemetry (security tasks)
+2610.08089 relational tuples (synthetic query plans)
+2610.08675 FinQA tables (citation checking)
+2610.09487 column names and example values (schema
+matching)
+2610.09937 sensor tables and features (HV AC faults)
+Table 11: Of the 112 arXiv papers on decision models
+posted between 15 September and 8 October 2026, the
+fourteen whose main input is a table or table rows.
+
+Task Code Rewrite Source
+Row classificationCOLS Columns shuffled: one fixed permutation per dataset; field descriptions, names and
+values permuted together
+order
+COLRColumns in reverse order order
+LISTOne line per field, “- name: value” (TabLLM list) format
+TEXTOne sentence per field, “The name is value.” (TabLLM text) format
+JSONOBJJSON object {name: value} format
+MDOne-row Markdown table (header and value row) format
+TabFactCOLS Columns shuffled: one fixed permutation per table; header and rows permuted
+together
+order
+COLRColumns in reverse order order
+ROWSData rows shuffled; header kept first b order
+ROWRData rows in reverse order b order
+TRANS Table transposed; the format sentence says that each line starts with a column name
+followed by that column’s values
+order
+MDMarkdown table format
+CSVCSV with standard quoting format
+JSONRECList of JSON records, one object per row keyed by the header format
+HTMLHTML table format
+TAPEXTAPEX linearization, “col : . . . row 1 : . . . ” format
+Anomaly detectionCOLSFields shuffled within each sample order
+COLRFields in reverse order order
+ROWSSamples of a batch shuffled; sample identifiers unchanged order
+ROWRSamples of a batch in reverse order order
+JSONOBJEach sample as a JSON object format
+LISTEach sample as “- name: value” lines format
+TEXTEach sample as sentences, “The name is value.” format
+MDThe batch as one Markdown table, sample identifier in the first column format
+DEC3Numeric fields rendered with three decimals instead of two a format
+Table 12: Rewrites of the table that keep the information needed for the decision. The original format is, for row
+classification, field descriptions followed by one array of values; for TabFact, the official format with a header
+line and # between cells; for anomaly detection, the serializer of the ReTabAD authors with 15 samples per batch.
+Source: order of rows and columns, or format of the table. aAdds a decimal of precision, so it is left out of Tables 5
+and 6. bCan change the truth of claims that refer to positions (first,last, . . . ); such claims are left out of Tables 5
+and 6.
+
+decision models LLMs
+Jev Clef Kev-27B
+GPT-6 Luna
+Decisions GPT-6 Luna Qwen3.8-27B Llama-3.3-70B
+Condition Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score
+Row classification (Macro-F1)
+original request – 52.1 – 58.4 – 55.2 – 61.2 – 62.5 – 52.2 – 44.0
+identical re-send 4.7 52.4 1.6 58.0 0.6 54.5 0.0 61.2 13.3 63.0 1.1 52.9 0.4 44.1
+options in reverse order 5.9 52.3 1.6 58.0 5.9 53.9 22.7 60.1 13.7 62.5 13.6 54.1 26.8 51.4
+option names A, B, . . . 6.4 51.7 5.5 58.2 4.9 56.5 7.6 58.6 18.2 61.4 25.5 47.9 30.4 32.6
+option names replaced by synonyms 7.6 53.3 7.1 58.2 5.6 54.9 8.7 59.7 16.0 65.1 24.0 54.7 21.7 43.6
+no option descriptions 5.4 52.0 6.1 57.6 6.0 54.2 9.3 63.0 – – – – – –
+original, binary datasets – 54.9 – 62.6 – 59.4 – 64.7 – 65.5 – 59.2 – 46.2
+yes/no question 6.6 56.8 9.0 61.9 3.2 59.5 15.0 66.7 14.3 67.3 16.8 45.2 56.9 19.6
+paraphrased instructions 10.9 54.2 7.2 58.4 6.6 52.7 12.1 58.5 15.4 62.2 6.1 53.0 7.4 40.9
+unverified hint appended 8.8 51.3 15.6 56.6 4.7 55.1 17.6 60.1 16.2 61.1 10.5 48.0 33.9 45.9
+no task description 14.6 54.2 10.7 55.6 14.1 57.4 18.6 54.2 20.1 61.4 7.2 52.5 15.5 38.4
+Fact verification on TabFact (accuracy)
+original request – 89.7 – 85.0 – 88.8 – 78.7 – 79.0 – 82.5 – 80.5
+identical re-send 1.9 89.5 0.4 85.2 0.1 88.8 0.0 78.7 13.5 75.6 0.7 82.6 0.7 81.0
+options in reverse order 2.4 89.4 0.4 85.2 4.0 89.3 12.3 74.9 14.4 78.1 5.8 83.9 4.7 79.9
+option names A, B, . . . 2.2 89.3 2.1 85.2 2.1 88.9 9.6 79.5 21.3 72.0 3.2 83.1 4.2 81.2
+option names replaced by synonyms 2.1 89.3 3.6 85.2 2.4 89.5 6.8 80.0 47.6 47.0 5.1 83.7 5.8 81.5
+no option descriptions 2.2 89.5 3.0 85.8 4.3 88.5 7.6 77.0 13.7 77.8 5.3 82.5 4.2 80.2
+yes/no question 4.1 89.2 4.0 86.2 4.0 89.2 12.0 79.2 13.6 80.7 6.9 81.8 5.8 80.5
+paraphrased instructions 2.1 89.1 2.7 86.5 2.5 88.6 8.6 78.8 10.9 80.2 5.1 81.2 4.7 79.8
+unverified hint appended 4.1 87.7 3.5 85.0 4.8 89.2 8.3 78.1 11.1 80.5 6.5 80.7 11.6 76.4
+no task description 4.2 88.4 4.5 85.4 3.2 88.1 9.5 78.5 16.8 74.4 5.5 81.0 5.9 79.9
+Anomaly detection on ReTabAD (AUROC)
+original request – 74.6 – 74.7 – 81.2 – 80.5 – 77.3 – 71.0 – 61.0
+identical re-send 2.8 74.3 1.2 74.8 0.1 81.2 0.0 80.5 13.3 76.3 2.8 71.5 1.6 60.2
+options in reverse order 3.4 74.8 1.2 74.8 2.5 81.1 21.7 80.0 – – – – – –
+option names A, B, . . . 4.2 74.9 7.8 76.3 3.3 81.4 16.5 79.7 – – – – – –
+option names replaced by synonyms 3.5 73.4 5.4 74.4 2.2 80.6 6.4 81.7 – – – – – –
+no option descriptions 9.5 71.8 8.4 73.4 7.1 78.2 13.9 76.2 – – – – – –
+original, binary datasets – 74.6 – 74.7 – 81.2 – 80.6 – – – – – –
+yes/no question 6.4 73.6 10.9 74.2 4.7 79.2 21.8 80.8 – – – – – –
+paraphrased instructions 4.2 74.8 5.1 74.2 3.9 81.1 10.4 78.4 16.1 73.1 5.9 70.5 14.7 62.6
+unverified hint appended 15.6 72.4 8.6 71.7 10.6 76.3 16.4 74.4 16.6 76.9 10.9 67.8 36.3 55.5
+no task description 5.8 72.9 5.1 74.3 5.1 81.4 10.2 77.3 16.8 74.5 6.1 71.8 7.4 61.5
+Table 13: How the question is asked, raw results.Flip: share of items whose decision differs from the model’s
+own decision under the original request (%; invalid outputs count as flips).Score: the task metric ×100 (row
+classification: Macro-F1 averaged over the 10 datasets; TabFact: accuracy; anomaly detection: AUROC averaged
+over the 20 sources).Identical re-send: the original request sent again, which gives the re-send rate. Conditions
+below the line remove or mislead information. Clef sorts the options, so reversing them cannot reach it. On row
+classification the LLMs receive no option descriptions, and on anomaly detection no options. Llama-3.3-70B
+answers the yes/no question mostly with “Yes” or “Yes.”, which the strict parse counts as invalid; with a parse that
+ignores case and a final full stop its flip rate there is 13.0%. Invalid outputs above 5% (%): Llama-3.3-70B on
+row classification, yes/no question: 54.8; GPT-6 Luna on TabFact, option names A, B, . . . : 9.8; GPT-6 Luna on
+TabFact, option names replaced by synonyms: 43.7; GPT-6 Luna on TabFact, no task description: 6.6; GPT-6 Luna
+on ReTabAD, paraphrased instructions: 7.0; Llama-3.3-70B on ReTabAD, paraphrased instructions: 9.5; GPT-6
+Luna on ReTabAD, no task description: 5.2. –: does not apply.
+
+decision models LLMs
+Jev Clef Kev-27B
+GPT-6 Luna
+Decisions GPT-6 Luna Qwen3.8-27B Llama-3.3-70B
+Condition Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score
+Row classification (Macro-F1)
+original request – 52.1 – 58.4 – 55.2 – 61.2 – 62.5 – 52.2 – 44.0
+identical re-send 4.7 52.4 1.6 58.0 0.6 54.5 0.0 61.2 13.3 63.0 1.1 52.9 0.4 44.1
+columns shuffled 15.9 51.6 15.0 57.8 15.6 54.8 18.5 57.0 20.1 60.3 20.4 52.5 17.2 46.3
+columns reversed 17.5 52.8 17.6 59.4 15.7 54.7 19.9 57.5 23.1 62.7 15.2 55.7 15.1 40.7
+questions shuffled within a request 4.8 51.9 14.9 57.5 0.4 55.3 0.0 61.2 – – – – – –
+Fact verification on TabFact (accuracy)
+original request – 89.7 – 85.0 – 88.8 – 78.7 – 79.0 – 82.5 – 80.5
+identical re-send 1.9 89.5 0.4 85.2 0.1 88.8 0.0 78.7 13.5 75.6 0.7 82.6 0.7 81.0
+columns shuffled 6.3 88.2 8.0 84.2 6.2 87.9 12.7 78.3 19.9 75.4 8.2 81.7 11.0 79.4
+columns reversed 7.3 87.8 9.0 85.2 6.5 87.4 13.4 77.8 20.4 74.8 9.2 80.8 12.1 78.2
+rows shuffled 6.6 88.6 7.0 85.6 6.7 88.3 11.6 77.8 18.5 75.0 8.1 82.4 9.1 80.0
+rows reversed 6.0 88.9 8.3 85.5 7.3 88.5 12.9 78.1 20.4 74.2 8.0 82.5 10.4 78.5
+table transposed 8.7 86.4 9.7 83.4 8.0 86.7 17.0 73.9 25.5 70.9 12.1 77.0 16.1 74.1
+Anomaly detection on ReTabAD (AUROC)
+original request – 74.6 – 74.7 – 81.2 – 80.5 – 77.3 – 71.0 – 61.0
+identical re-send 2.8 74.3 1.2 74.8 0.1 81.2 0.0 80.5 13.3 76.3 2.8 71.5 1.6 60.2
+columns shuffled 7.7 73.5 9.2 73.9 6.0 79.9 10.1 79.7 17.6 75.6 7.3 70.1 15.0 59.1
+columns reversed 7.6 74.0 10.6 73.9 7.1 79.8 11.8 80.9 18.4 77.1 8.4 70.4 18.7 58.5
+rows shuffled 7.6 74.0 10.2 73.7 7.1 81.5 10.8 80.0 20.1 73.7 8.9 71.6 24.7 58.8
+rows reversed 8.8 74.4 10.6 72.3 7.6 81.0 10.7 80.6 20.0 79.2 11.6 72.5 27.2 58.6
+Table 14: Order of rows and columns, raw results.Flip: share of items whose decision differs from the model’s
+own decision under the original request (%; invalid outputs count as flips).Score: the task metric ×100 (row
+classification: Macro-F1 averaged over the 10 datasets; TabFact: accuracy; anomaly detection: AUROC averaged
+over the 20 sources).Identical re-send: the original request sent again, which gives the re-send rate. Shuffling the
+questions of a request applies only to the decision models, which answer 16 questions per request; the LLMs receive
+one row per prompt. Reordering rows can change the truth of TabFact claims with position words. Invalid outputs
+above 5% (%): GPT-6 Luna on TabFact, columns shuffled: 6.7; GPT-6 Luna on TabFact, columns reversed: 7.2;
+GPT-6 Luna on TabFact, rows shuffled: 5.9; GPT-6 Luna on TabFact, rows reversed: 6.8; GPT-6 Luna on TabFact,
+table transposed: 8.2; GPT-6 Luna on ReTabAD, columns shuffled: 7.3; GPT-6 Luna on ReTabAD, columns
+reversed: 7.1; GPT-6 Luna on ReTabAD, rows shuffled: 8.8; GPT-6 Luna on ReTabAD, rows reversed: 8.0. –: does
+not apply.
+0.4 0.6 0.8 1.0
+AUROC: low confidence
+predicts a flip
+option order reversed
+options renamed A, B, ...
+options renamed by synonyms
+yes/no question
+instructions paraphrased
+columns shuffled
+columns reversed
+row as a list
+row as sentences
+row as a JSON object
+row as a Markdown table
+20 40 60 80
+flips that turn a right
+answer wrong (%)
+0 1 2
+SD of the margin change
+(decision models, logits)
+Jev
+Clef
+Kev-27B
+GPT-6 Luna Decisions
+GPT-6 Luna
+Qwen3.8-27B
+Llama-3.3-70B
+Figure 6: Row classification, by rewrite. Left: flip AUROC. Middle: among flips that change correctness, the share
+that turn a right answer wrong. Right: standard deviation of the change of the decision models’ margin. Clef is
+omitted for option order, since it sorts the options.
+
+decision models LLMs
+Jev Clef Kev-27B
+GPT-6 Luna
+Decisions GPT-6 Luna Qwen3.8-27B Llama-3.3-70B
+Condition Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score Flip Score
+Row classification (Macro-F1)
+original request – 52.1 – 58.4 – 55.2 – 61.2 – 62.5 – 52.2 – 44.0
+identical re-send 4.7 52.4 1.6 58.0 0.6 54.5 0.0 61.2 13.3 63.0 1.1 52.9 0.4 44.1
+list (“- name: value”) 15.0 56.0 14.0 60.3 16.1 54.6 17.2 64.7 17.7 66.5 17.9 58.4 21.3 47.9
+text (“The name is value.”) 14.1 56.2 14.3 60.5 14.4 56.2 17.9 65.0 17.5 66.2 18.4 57.4 19.0 48.5
+JSON object 14.7 56.4 13.7 59.3 17.0 56.0 17.6 64.8 17.6 66.5 17.4 59.6 17.5 47.7
+Markdown table 12.8 53.8 11.8 59.2 14.0 56.0 18.3 65.3 17.4 65.3 12.4 56.1 15.6 44.8
+no field descriptions 8.5 51.7 6.4 56.3 7.2 52.7 12.3 61.2 16.0 61.6 6.8 52.8 13.6 39.6
+values without names 40.5 46.8 34.3 51.3 41.4 44.7 28.8 47.6 32.0 49.4 22.6 39.7 25.8 36.4
+names attached to other fields’ values 33.6 45.7 21.1 53.0 29.0 49.9 24.8 44.9 38.5 46.2 12.2 44.1 16.7 41.7
+Fact verification on TabFact (accuracy)
+original request – 89.7 – 85.0 – 88.8 – 78.7 – 79.0 – 82.5 – 80.5
+identical re-send 1.9 89.5 0.4 85.2 0.1 88.8 0.0 78.7 13.5 75.6 0.7 82.6 0.7 81.0
+Markdown table 3.1 89.6 5.0 86.2 3.5 89.6 9.6 80.8 15.7 78.7 5.7 81.3 5.3 81.0
+CSV 2.7 89.7 4.3 86.0 2.9 89.2 9.2 79.8 14.8 77.1 4.3 82.2 4.3 80.5
+JSON records 4.1 90.2 5.9 86.6 4.7 89.5 10.2 80.4 19.9 75.7 7.7 81.8 7.0 81.2
+HTML 3.6 90.0 5.6 87.0 4.3 89.4 9.9 80.9 15.2 78.8 6.6 82.5 6.8 80.7
+TAPEX linearization 4.1 88.7 5.2 85.4 3.6 89.7 9.8 79.5 20.1 72.9 7.8 80.2 6.9 81.1
+Anomaly detection on ReTabAD (AUROC)
+original request – 74.6 – 74.7 – 81.2 – 80.5 – 77.3 – 71.0 – 61.0
+identical re-send 2.8 74.3 1.2 74.8 0.1 81.2 0.0 80.5 13.3 76.3 2.8 71.5 1.6 60.2
+JSON object 3.8 74.3 4.9 75.0 3.0 81.1 8.9 81.2 18.9 76.8 5.0 72.5 7.9 60.7
+list (“- name: value”) 4.3 74.3 5.4 74.6 3.5 81.0 9.0 80.3 17.7 75.6 4.6 71.8 11.2 59.6
+text (“The name is value.”) 4.2 74.4 6.0 75.0 3.9 81.3 9.6 80.2 17.7 74.8 5.4 71.8 10.6 60.0
+Markdown table 7.8 73.0 8.6 76.3 6.2 81.0 11.6 79.4 16.3 76.5 7.6 71.0 17.8 59.7
+numbers with three decimals 3.5 75.0 5.1 74.2 3.0 80.9 8.4 79.8 16.9 76.5 6.0 71.1 5.4 61.1
+values without names 12.1 69.8 13.9 72.1 10.9 79.7 13.4 75.5 22.8 73.5 12.5 65.3 19.1 54.6
+Table 15: Format of the table, raw results.Flip: share of items whose decision differs from the model’s own decision
+under the original request (%; invalid outputs count as flips).Score: the task metric ×100 (row classification:
+Macro-F1 averaged over the 10 datasets; TabFact: accuracy; anomaly detection: AUROC averaged over the 20
+sources).Identical re-send: the original request sent again, which gives the re-send rate. Conditions below the line
+remove or mislead information. Rendering numbers with three decimals adds precision. Invalid outputs above 5%
+(%): GPT-6 Luna on TabFact, CSV: 5.1; GPT-6 Luna on TabFact, JSON records: 7.3; GPT-6 Luna on TabFact,
+TAPEX linearization: 8.9; GPT-6 Luna on ReTabAD, JSON object: 9.7; GPT-6 Luna on ReTabAD, list (“- name:
+value”): 7.7; GPT-6 Luna on ReTabAD, text (“The name is value.”): 9.2; GPT-6 Luna on ReTabAD, Markdown
+table: 5.6; GPT-6 Luna on ReTabAD, numbers with three decimals: 8.2; GPT-6 Luna on ReTabAD, values without
+names: 10.9. –: does not apply.
+
+Jev Clef Kev-27B
+GPT-6 Luna
+Decisionstrained on the same examples
+Row classification (Macro-F1)Score∆Score∆Score∆Score∆LogReg LightGBM Best TabPFN
+no examples (zero-shot) 52.1 – 58.4 – 55.1 – 61.2 – – – – –
+4 examples 60.2 +8.1 60.0 +1.6 59.0 +3.8 59.6−1.6 51.8 45.3 55.2 51.5
+16 examples (the original
+ones)
+60.0 +7.9 61.7 +3.2 62.7 +7.6 60.4−0.8 58.6 51.8 58.7 59.5
+64 examplesb 65.3 +12.2 68.2 +9.0 69.3 +12.2 65.4 +3.3 69.2 69.1 69.4 70.8
+as many as fit (30–681) 66.7 +14.6 70.6 +12.1 73.0 +17.6 69.9 +8.7 72.2 76.0 76.3 77.8
+whole training split – – – – – – – – 74.7 80.0 80.0 –
+16 examples, classes
+interleaved
+62.0 +9.9 61.9 +3.5 62.8 +7.7 63.6 +2.4 – – – –
+16 examples, written as text 57.1 +5.0 62.7 +4.3 61.1 +5.9 63.7 +2.5 – – – –
+TabFact (accuracy)Score∆Score∆Score∆Score∆
+no examples (zero-shot) 89.7 – 85.0 – 88.8 – 78.7 – – – – –
+2 examples 88.4−1.3 86.2 +1.1 89.8 +1.0 77.9−0.8 – – – –
+4 examples 88.0−1.7 86.4 +1.3 89.8 +0.9 78.1−0.6 – – – –
+8 examples 88.1−1.6 86.6 +1.5 89.6 +0.8 77.5−1.3 – – – –
+as many as fit (68) 88.8−1.0 87.2 +2.1 89.8 +1.0 76.1−2.6 – – – –
+Anomaly detection (AUROC)Score∆Score∆Score∆Score∆IForest OCSVMkNN Best
+no normal-sample statistics 65.4−9.1 67.3−7.3 73.8−7.4 74.6−6.4 – – – –
+statistics only (the original
+request)
+74.6 – 74.7 – 81.2 – 80.6 – – – – –
+statistics and 16 normal
+samples
+79.0 +4.4 80.5 +5.9 84.2 +3.0 83.6 +3.0 68.1 72.2 72.3 72.3
+statistics and as many normal
+samples as fit
+80.8 +6.3 84.1 +9.5 86.5 +5.3 85.7 +5.2 75.6 76.1 78.5 78.5
+all training normals – – – – – – – – 75.7 75.7 78.8 78.8
+Table 16: In-context examples, raw results. Examples are labelled training rows placed in the request (for TabFact,
+other tables with a claim and its label; for anomaly detection, normal training records after the normal-sample
+statistics); the sets are nested.Score: task metric ×100. ∆: change of the score from no examples (anomaly
+detection: from the original request), on the same rows. The other methods are trained on exactly the same examples:
+logistic regression with cross-validated regularization, LightGBM with few-row settings, and the best of eight trained
+classifiers (logistic regression, default and tuned; random forest; k-nearest neighbours; histogram gradient boosting,
+LightGBM, CatBoost and XGBoost), the line of Figure 2; on the normal samples, isolation forest, one-class SVM,
+k-nearest neighbours and the best of five detectors.TabPFN: TabPFN-3.5, a tabular foundation model that reads the
+same examples in its context without training (not run on the whole split); TabPFN v2, run the same way, scores
+52.3, 57.3, 69.3, 76.4 with 4, 16, 64 and as many examples as fit. bWithout communities (about 100 features: 64
+examples exceed the budget); the trained methods are averaged over the same nine datasets. The trained anomaly
+methods cover 19 of the 20 sources (covertype left out).
+
+GPT-6 Luna Qwen3.8-27B Llama-3.3-70B
+Row classification (Macro-F1)Score∆Score∆Score∆
+no examples (zero-shot) 62.5 – 52.2 – 44.0 –
+4 examples 64.9 +2.4 59.2 +7.0 57.6 +13.5
+16 examples (the original
+ones)
+64.5 +2.0 59.5 +7.3 56.7 +12.6
+64 examplesb 66.2 +3.0 65.4 +10.4 57.4 +12.5
+as many as fit (30–681) 69.3 +6.8 67.1 +14.9 60.7 +16.6
+whole training split – – – – – –
+16 examples, classes
+interleaved
+65.6 +3.2 60.9 +8.7 56.6 +12.6
+16 examples, written as text 64.6 +2.1 59.6 +7.4 55.5 +11.4
+TabFact (accuracy)Score∆Score∆Score∆
+no examples (zero-shot) 79.0 – 82.5 – 80.5 –
+2 examples 79.3 +0.4 82.6 +0.1 79.9−0.5
+4 examples 79.5 +0.6 83.5 +1.1 80.7 +0.2
+8 examples 80.2 +1.2 83.8 +1.3 79.8−0.7
+as many as fit (68) 81.5 +2.5 81.0−1.5 77.5−2.9
+Anomaly detection (AUROC)Score∆Score∆Score∆
+no normal-sample statistics 70.8−6.5 58.9−2.2 55.4−5.6
+statistics only (the original
+request)
+77.3 – 63.8 – 61.0 –
+statistics and 16 normal
+samples
+80.9 +3.6 73.6 +9.8 68.6 +7.6
+statistics and as many normal
+samples as fit
+82.3 +5.0 77.3 +13.4 72.3 +11.4
+all training normals – – – – – –
+Table 17: In-context examples, raw results of the LLMs; setup,Scoreand ∆ as in Table 16, where the methods
+trained on the same examples are listed. bWithout communities (about 100 features: 64 examples exceed the
+budget).
+JevClefKev
+Luna Decisions
+LunaQwenLlama
+JevClefKev
+Luna Decisions
+LunaQwenLlama
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0AUROC within a dataset
+row classification anomaly detection
+0.6 0.8 1.0
+mean confidence in a dataset
+0
+10
+20
+30
+40decisions changed (%)
+calhousingjungle
+Jev
+Clef
+Kev-27B
+GPT-6 Luna Decisions
+GPT-6 Luna
+Qwen3.8-27B
+Llama-3.3-70B
+Figure 7: Left: flip AUROC within each dataset or source; bars are medians. Right: for each row classification
+dataset, the mean confidence of the original decisions against the share of decisions changed by the information-
+preserving rewrites.
+
+confidence band (1: lowest 25%) noise
+Task Model ItemskAll 1 2 3 4 Re-send Bound Question
+Row classif. Jev 3,481 6 33.8[32.2,35.4]78.0[75.3,80.7]41.6 14.7 0.9[0.3,1.5]4.7 25.3 20.2[18.9,21.6]
+Clef 3,481 6 31.7[30.1,33.2]77.5[74.8,79.9]37.2 10.7 1.4[0.7,2.3]1.6 9.0 17.3[16.2,18.5]
+Kev-27B 3,481 6 32.2[30.6,33.7]76.7[74.2,79.6]40.0 9.0 3.1[2.0,4.3]0.6 3.6 17.1[15.8,18.2]
+GPT-6 Luna
+Decisions 3,481 6 39.6[38.2,41.2]80.9[78.3,83.6]52.3 23.2 1.8[1.0,2.8]0.0 0.0 36.7[35.1,38.2]
+GPT-6 Lunaa 3,481 6 42.8[41.2,44.3]88.7[86.6,90.9]41.5 20.6 20.2[17.6,22.7]13.3 57.5 34.9[33.3,36.4]
+Qwen3.8-27B 3,481 6 31.8[30.4,33.3]61.0[57.8,64.1]44.6 19.0 2.6[1.7,3.7]1.1 6.2 54.2[52.4,56.0]
+Llama-3.3-70B 3,481 6 35.5[34.2,37.2]65.2[61.9,68.2]27.1 23.0 26.8[24.0,29.8]0.4 2.4 77.1[75.8,78.6] b
+TabFact Jev 1,755 10 19.3[17.5,21.1]54.2[49.4,58.8]14.8 3.6 4.6[2.8,6.4]1.9 17.5 7.4[6.1,8.7]
+Clef 1,755 10 23.0[20.9,25.3]59.9[54.3,64.6]19.8 8.2 4.1[2.4,6.2]0.4 3.4 8.0[6.7,9.3]
+Kev-27B 1,755 10 18.3[16.7,20.2]53.3[48.7,57.7]13.9 3.6 2.5[1.3,4.0]0.1 1.5 9.8[8.4,11.2]
+GPT-6 Luna
+Decisions 1,755 10 38.3[36.1,40.7]78.1[74.2,82.2]39.9 19.8 15.5[12.3,19.1]0.0 0.0 26.5[24.4,28.7]
+GPT-6 Lunaa 1,749 10 60.8[58.2,63.2]88.1[85.3,91.0]62.0 44.2 48.7[43.9,53.6]13.5 76.5 58.6[55.9,61.2]
+Qwen3.8-27B 1,729 10 27.4[25.2,29.7]64.4[60.0,68.8]23.8 11.6 9.7[7.2,12.9]0.7 6.8 13.9[12.4,15.6]
+Llama-3.3-70B 1,749 10 33.7[31.4,36.0]48.6[44.1,53.0]31.1 27.7 27.5[23.2,31.8]0.7 6.3 13.6[12.1,15.3]
+Anomaly det. Jev 5,059 8 21.1[20.0,22.3]62.0[59.6,64.5]18.1 3.6 0.6[0.2,1.1]2.8 20.2 17.0[16.0,18.1]
+Clef 5,059 8 25.8[24.5,27.0]72.8[70.2,75.4]24.3 5.2 0.7[0.3,1.2]1.2 9.1 21.5[20.3,22.6]
+Kev-27B 5,059 8 17.7[16.7,18.8]60.8[58.0,63.3]9.0 0.9 0.1[0.0,0.2]0.1 0.8 13.0[12.1,13.9]
+GPT-6 Luna
+Decisions 4,999 8 29.9[28.7,31.4]70.3[68.0,73.0]32.8 12.1 4.2[3.3,5.4]0.0 0.0 38.7[37.2,40.0]
+GPT-6 Lunaa 5,014 8 63.4[62.0,64.7]85.6[83.6,87.4]69.5 51.0 47.6[45.2,50.1]13.3 68.2 –
+Qwen3.8-27B 5,044 8 23.3[22.2,24.5]56.9[54.2,59.7]22.7 8.7 4.8[3.7,6.1]2.8 20.2 –
+Llama-3.3-70B 4,984 8 53.4[52.1,54.8]72.3[69.6,74.5]50.6 44.8 45.9[42.9,48.5]1.6 12.1 –
+Table 18: Items whose decision depends on how the table is organized (%).All: share of items whose decision
+changes under at least one of the k information-preserving table rewrites of Table 12;1–4: the same for the items
+sorted by the model’s confidence in its original decision and split into four bands of 25%, 1 the lowest (ties broken
+at random with a fixed seed).Re-send: share of decisions changed by an identical re-send of the original request
+(p).Bound: 1−(1−p) k, the share that would change at least once if every rewrite flipped independently at rate
+p; an upper bound on what noise alone explains, since re-send flips concentrate on the same low-margin items.
+Question: share of items changed by at least one rewrite of the question (options reordered or renamed, yes/no
+question, option descriptions removed, paraphrased instructions). Brackets (shown for all items, the outer bands and
+the question): 95% cluster-bootstrap intervals (Poisson(1) weights, 500 replicates; clusters are classification rows,
+anomaly-detection samples and TabFact tables). Invalid outputs count as changes. Numbers with three decimals and
+TabFact claims with position words are left out. Jev’s original TabFact decisions carry no probabilities. Confidence:
+for the decision models, the returned probability of the chosen option; for the LLMs, the share of ten draws at
+temperature 1 that give the original decision. On anomaly detection the LLMs receive no options, so only one
+question rewrite (paraphrase) applies to them. aIts decisions are themselves draws at temperature 1, so its counts
+are dominated by temperature noise. bMostly answers such as “Yes.” to the yes/no question, which the strict parse
+counts as invalid.
+
+0–25 25–50 50–75 75–100
+0
+25
+50
+75
+100
+items changed by at least
+one table rewrite (%)
+Row classification (6 rewrites)
+0–25 25–50 50–75 75–100
+items ranked by the model's confidence in its original decision (percentile band, lowest first)
+TabFact (10 rewrites)
+0–25 25–50 50–75 75–100
+Anomaly detection (8 rewrites)
+Jev
+Clef
+Kev-27B
+GPT-6 Luna Decisions
+GPT-6 Luna
+Qwen3.8-27B
+Llama-3.3-70B
+Figure 8: Items whose decision changes under at least one information-preserving rewrite of the table. Items are
+sorted by the model’s confidence in its original decision and split into four bands of 25%; 95% cluster-bootstrap
+intervals.
+0–10 40–50 90–100
+0
+20
+40
+60decisions changed by a rewrite (%)
+Row classification
+0–10 40–50 90–100
+items ranked by the model's confidence in its original decision (percentile band, lowest first)
+0
+20
+40
+Anomaly detection (ReTabAD)
+0–10 40–50 90–100
+0
+20
+40
+60
+Fact verification (TabFact)
+Jev
+Clef
+Kev-27B
+GPT-6 Luna Decisions
+GPT-6 Luna
+Qwen3.8-27B
+Llama-3.3-70B
+Figure 9: Share of decisions changed by a rewrite, for items ranked by the model’s confidence in its original decision
+and split into bands of 10% (information-preserving rewrites pooled). Confidence as in the main text: the decision
+models’ returned probability and the LLMs’ share of ten draws that give the original decision; tied values are split at
+random.
+
+Model Right (%), top / low 25% stable, right stable, wrong fragile, right fragile, wrong
+Row classification
+Jev 67 / 48 44 / 0.79 23 / 0.78 16 / 0.59 18 / 0.56
+Clef 86 / 52 52 / 0.84 16 / 0.78 16 / 0.61 16 / 0.59
+Kev-27B 85 / 43 48 / 0.76 19 / 0.67 14 / 0.55 19 / 0.54
+GPT-6 Luna
+Decisions 94 / 49 49 / 0.91 11 / 0.82 21 / 0.68 19 / 0.62
+GPT-6 Luna 82 / 46 48 / 0.98 9 / 0.95 23 / 0.77 20 / 0.65
+Qwen3.8-27B 87 / 49 51 / 0.88 17 / 0.75 15 / 0.63 17 / 0.62
+Llama-3.3-70B 63 / 54 45 / 0.99 20 / 0.99 17 / 0.91 19 / 0.88
+Fact verification on TabFact
+Jev 97 / 73 76 / 0.96 4 / 0.86 14 / 0.78 6 / 0.70
+Clef 98 / 60 72 / 0.95 5 / 0.83 14 / 0.79 9 / 0.71
+Kev-27B 99 / 69 77 / 0.93 4 / 0.79 12 / 0.73 6 / 0.63
+GPT-6 Luna
+Decisions 97 / 58 55 / 0.92 7 / 0.78 24 / 0.76 14 / 0.67
+GPT-6 Luna 89 / 61 36 / 0.97 3 / 0.95 43 / 0.86 17 / 0.65
+Qwen3.8-27B 94 / 59 65 / 0.96 7 / 0.81 18 / 0.78 9 / 0.66
+Llama-3.3-70B 82 / 73 58 / 1.00 8 / 0.99 22 / 0.97 11 / 0.92
+Anomaly detection on ReTabAD
+Jev 85 / 58 62 / 0.90 17 / 0.86 12 / 0.66 10 / 0.66
+Clef 78 / 57 56 / 0.85 19 / 0.83 14 / 0.63 12 / 0.63
+Kev-27B 88 / 52 65 / 0.88 18 / 0.81 9 / 0.61 9 / 0.61
+GPT-6 Luna
+Decisions 88 / 52 54 / 0.91 16 / 0.85 17 / 0.74 13 / 0.68
+GPT-6 Luna 84 / 65 31 / 0.95 5 / 0.93 46 / 0.84 17 / 0.71
+Qwen3.8-27B 85 / 66 63 / 0.87 14 / 0.84 13 / 0.61 11 / 0.64
+Llama-3.3-70B 59 / 56 29 / 0.95 17 / 0.94 29 / 0.86 25 / 0.85
+Table 19: Confidence against correctness and fragility (RQ4). Second column: share of right decisions among the
+25% of decisions with the highest and the lowest confidence. Other columns: share of decisions (%) and their mean
+confidence in each group; a decision is fragile when at least one rewrite of the table flips it. Confidence as in §6.

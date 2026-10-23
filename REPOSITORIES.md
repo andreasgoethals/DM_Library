@@ -4,7 +4,7 @@ These are greppable source snapshots for the selected Decision Models corpus. Th
 contain implementations, evaluation protocols, configuration and license notices;
 they are reference material, not installed or executed model packages. Upstream
 identity was checked against the paper or first-party release linked below on
-19–20 October 2026. Each snapshot embeds its full immutable revision, revision date,
+19–23 October 2026. Each snapshot embeds its full immutable revision, revision date,
 retrieval timestamp, original paths and per-file SHA256 hashes. These dates identify
 code snapshots and need not equal the dates of the filed papers.
 
@@ -12,6 +12,12 @@ code snapshots and need not equal the dates of the filed papers.
 
 | Snapshot | Official upstream | Purpose | Revision prefix | Files | License notice |
 |---|---|---|---|---:|---|
+| [VLLMDecision2.txt](repositories/VLLMDecision2.txt) | [official source](https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B) | Decision 2.0 Vega renderer, readout and model wrapper | 71d6ae1db4a7 | 26 | Apache-2.0 |
+| [Kev.txt](repositories/Kev.txt) | [official source](https://github.com/jaredpalmer/kev) | Kev pointer-head models, training and serving | 2074cc442562 | 253 | Apache-2.0; per-source data terms retained |
+| [H2OLightning.txt](repositories/H2OLightning.txt) | [official source](https://huggingface.co/h2oai/h2o-lightning-4b) | H2O decision shim, calibration and attention-mode configuration | e7b32490c9d2 | 28 | Apache-2.0 |
+| [Tev1.txt](repositories/Tev1.txt) | [official source](https://github.com/togethercomputer/tev1) | Together answer-token training recipe and inference examples | 1dde7782382c | 43 | MIT code; fine-tuned weight license pending |
+| [System1Arena.txt](repositories/System1Arena.txt) | [TianyuCodings/S1-Arena](https://github.com/TianyuCodings/S1-Arena) | Common decision requests, metrics and closed-loop environment protocols | 28e16b16cdf6 | 265 | Apache-2.0 |
+| [Jeff.txt](repositories/Jeff.txt) | [j-geuter/Jeff](https://github.com/j-geuter/Jeff) | Jeff decision-head readout, prompts and local serving | 12ba07920283 | 19 | Apache-2.0 |
 | [JevOut.txt](repositories/JevOut.txt) | [xzx34/JevOut](https://github.com/xzx34/JevOut) | Context sensitivity and targeted decision flips | c8ab231728ab | 47 | Apache-2.0 |
 | [SearchJev.txt](repositories/SearchJev.txt) | [EvoScientist/SearchJev](https://github.com/EvoScientist/SearchJev) | Search decision training, restricted scoring and calibration | 054ea81d4307 | 22 | Apache-2.0 |
 | [SIIDecision.txt](repositories/SIIDecision.txt) | [amazingljy1206/SII-Decision](https://github.com/amazingljy1206/SII-Decision) | General decision training and JEVal evaluation | 1723d83cbda6 | 29 | Apache-2.0 |
@@ -334,7 +340,7 @@ python scripts/checks/check_symbols.py
 ```
 
 The mapping in [refresh_repositories.py](scripts/dumps/refresh_repositories.py)
-is authoritative. All thirteen snapshots participate in a normal refresh and the
+is authoritative. All nineteen snapshots participate in a normal refresh and the
 consolidated maintenance command. Repeat `--only` for several targets. For exact
 historical regeneration, pass one target and `--revision` with the full revision
 embedded in its header. The source files and their hashes can be reproduced;
@@ -367,3 +373,29 @@ or behavior changed, and record substantive changes in `CHANGELOG.md`. Cite sour
 paths and symbols, never flattened dump line numbers. Snapshot presence verifies
 source availability; it does not establish that upstream code or benchmarks run
 successfully in a local model environment.
+
+## `System1Arena.txt`
+
+Common decision requests, metrics and closed-loop environment protocols. Source identity is linked from the filed paper; revision `28e16b16cdf68800a4cba148c3c6ea036f75bda3`. Read `s1arena/runner.py` and `s1arena/models/openai_decisions.py` for implementation details. These are source snapshots, not locally executed benchmarks or models.
+
+## `Jeff.txt`
+
+Jeff decision-head readout, prompts and local serving. Source identity is linked from the filed paper; revision `12ba07920283231fb9bab46359679a70e3f9eb1e`. Read `src/jeff/head.py` and `src/jeff/model.py` for implementation details. These are source snapshots, not locally executed benchmarks or models.
+
+The filed Typed Decision Models on Tabular Data PDF does not identify an author-owned implementation repository. This is an availability boundary, not evidence that no future release will appear. Jeff serves the separately released trained models; it should not be confused with the independently registered SII-Decision implementation.
+
+## `Tev1.txt`
+
+Together answer-token training recipe and inference examples. Identity is verified from the owner-selected primary record; exact source revision `1dde7782382c9f49d627153759b8d1deab426ce0`. Read `README.md`, `DATA_SOURCES.md`, `examples/decide.py` and `examples/train_together.py`. The code recipe uses an ordinary language-model output head. Source-code licensing does not finalize the separate Hub weight license.
+
+## `H2OLightning.txt`
+
+H2O decision shim, calibration and attention-mode configuration. Identity is verified from the owner-selected primary record; exact source revision `e7b32490c9d2a994bd75a4d1ea7e45716080175e`. Read `h2o_lightning_shim.py`, `pooled_readout.py`, `serve_config.json` and `serve.sh`. Saved temperatures, the yes/no adjustment, state truncation and the selected one-way/two-way engine are part of reproduction. Weights, vision assets and generated evaluation results are excluded.
+
+## `Kev.txt`
+
+Kev pointer-head models, training and serving. Identity is verified from the owner-selected primary record; exact source revision `2074cc44256200bb37540103fa4572901faa10f3`. Read `kev/model.py`, `kev/train.py`, `kev/serve.py` and `docs/model-cards/kev-27b.md`. The snapshot retains implementation and model documentation while excluding training runs, checkpoint files and bulk data. Upstream agent/skill text, when present, is reference material and never workspace instructions.
+
+## `VLLMDecision2.txt`
+
+Decision 2.0 Vega renderer, readout and model wrapper. Identity is verified from the owner-selected primary record; exact source revision `71d6ae1db4a786d98775d65c68c41be0e39bfe7c`. Read `modeling_decision2.py`, `decision_config.json`, `decision2/api.py` and `decision2/shared_ctx.py`. This is the released Vega artifact implementation rather than a snapshot of the entire semantic-router project. Model tensors are excluded.

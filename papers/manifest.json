@@ -469,6 +469,91 @@
       "metadata_verified_on": "2026-10-20",
       "metadata_source": "https://arxiv.org/abs/2610.00346",
       "source_license": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+    },
+    "papers/2026/10_Chen_et_al._System1_Arena_Which_Decisions_Can_Be_Left_to_System_1.pdf": {
+      "title": "System1-Arena: Which Decisions Can Be Left to System 1?",
+      "authors": [
+        "Tianyu Chen",
+        "Xinyang Liu",
+        "Ruyi An",
+        "Zhendong Wang",
+        "Mingyuan Zhou"
+      ],
+      "arxiv": "2610.21244",
+      "surnames": [
+        "Chen",
+        "Liu",
+        "An",
+        "Wang",
+        "Zhou"
+      ],
+      "zotero_item_key": "GKNKZWDG",
+      "citation_key": "2026.CHEN.system1arenawhichdecisionscanbeleftsystem1",
+      "publication_date": "2026-10-15",
+      "venue": "",
+      "doi": "10.48550/arXiv.2610.21244",
+      "abstract": "Large language models (LLMs) often make discrete decisions, such as flagging phishing or escalating to a human. System-1 models, such as Jev and the OpenAI Decisions API, return probabilities over options in a single forward pass, while System-2 approaches generate reasoning steps. Which decisions can System-1 models handle, and which require generative reasoning? We introduce System1-Arena, a benchmark that gives all models the same decision requests and scores their probabilities. It contains 92k questions across 105 tasks from 268 public sources, in four groups: text classification and knowledge, applied decisions, evaluation and control, and agent and action. It also includes 138 closed-loop environments, from web shopping and SWE-bench coding control to robotics, games, and driving; in real-time mode, the world evolves while a model decides. We evaluate 30 models: 7 closed LLMs, 13 open LLMs read at the answer token, and 10 System-1 models. The largest System-1 models match or exceed fast closed LLMs in non-agentic accuracy, with better-calibrated probabilities at one-quarter of the latency. A reasoning LLM is the most accurate, at about 70x the cost of a fast LLM. In closed loops, large open LLMs succeed most often (up to 32.9%); small System-1 models rarely succeed.",
+      "url": "https://arxiv.org/abs/2610.21244",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 1,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "67cb431e70d170cd59675b48bfb26b282b8c8b164ea36accaba3372be78a65db"
+    },
+    "papers/2026/10_Geuter_et_al._Releasing_the_Inner_Jev_A_Simple_Recipe_for_Open_Decision_Models.pdf": {
+      "title": "Releasing the Inner Jev: A Simple Recipe for Open Decision Models",
+      "authors": [
+        "Jonathan Geuter",
+        "Andrew Cheng",
+        "David Alvarez-Melis"
+      ],
+      "arxiv": "2610.17205",
+      "surnames": [
+        "Geuter",
+        "Cheng",
+        "Alvarez-Melis"
+      ],
+      "zotero_item_key": "RVF2HJBX",
+      "citation_key": "2026.GEUTER.releasinginnerjevsimplerecipeopendecisionmodels",
+      "publication_date": "2026-10-12",
+      "venue": "",
+      "doi": "10.48550/arXiv.2610.17205",
+      "abstract": "LLM-based decision-making systems, also called System One models, have recently gained popularity, most notably through Jev (Almeida, 2026). Given a typed input state, a question, and a set of options, they return a probability for each option in a single forward pass, without text generation. We show that existing open instruction-tuned language models can achieve comparable performance \\textit{without any additional training}, by reading out answers from letters (A, B, C, etc.) in the model's output logits at the last token position. Furthermore, we show how a simple supervised fine-tuning recipe can improve their performance further. We evaluate four open instruction-tuned language models: Gemma 4 31B, Gemma 4 12B, Qwen3.6-27B, and Qwen3.5-4B. We fine-tune each using LoRA and a decision head initialized from a slice of the language model head. Furthermore, we introduce OpenDecisions, a novel 2,352-question validation dataset designed to reflect the task composition of JevBench (JevBench main- tainers, 2026) and which computes a Capability score based on accuracy and calibration metrics. Without fine-tuning, Gemma 4 31B scores 79.6 on OpenDecisions, compared to Jev's 80.1. After undergoing our fine-tuning recipe, it scores 84.4 on OpenDecisions and 81.5 on JevBench v1.7, outperforming Jev by 4.3 and 4.4 Capability points respectively and setting a new state-of-the-art on OpenDecisions. On a suite of public decision datasets, our models achieve accuracy comparable to Jev, with lower calibration error. Our results show that open language models already possess System One capabilities, and with simple fine-tuning they outperform Jev on a wide range of decision tasks. We release our models, serving code, and OpenDecisions.",
+      "url": "https://arxiv.org/abs/2610.17205",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 1,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "29d0ec68f72620c0b27da61f5a5d2bd21f9f2d870fdddc2601e20531073e952f"
+    },
+    "papers/2026/10_Zhang_et_al._Typed_Decision_Models_on_Tabular_Data.pdf": {
+      "title": "Typed Decision Models on Tabular Data",
+      "authors": [
+        "Baowen Zhang",
+        "Hangting Ye",
+        "Hongyuan Zha"
+      ],
+      "arxiv": "2610.19536",
+      "surnames": [
+        "Zhang",
+        "Ye",
+        "Zha"
+      ],
+      "zotero_item_key": "23G3FLHW",
+      "citation_key": "2026.ZHANG.typeddecisionmodelstabulardata",
+      "publication_date": "2026-10-14",
+      "venue": "",
+      "doi": "10.48550/arXiv.2610.19536",
+      "abstract": "Typed decision models are language models that answer a question with a fixed set of possible answers by returning a probability for each answer instead of generating text. We study them on tabular data and compare four decision models with three large language models (LLMs) on row classification, fact verification and anomaly detection. Every request is sent in its original form and under 21 types of rewrite that keep its content, such as renaming the options or writing the table in another format. The decision models perform as well as the LLMs at a lower cost. Three of them are also far more robust to how the question is formulated. No model we test is robust to how the table is organized. For every model, at least a third of the row decisions change under some rewrite of the table or the question. The decisions to which a decision model gives low probability are the ones most likely to change. Decision models are a practical choice for tabular decisions, but their robustness remains an open problem.",
+      "url": "http://arxiv.org/abs/2610.19536",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 1,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "b089a5b72af98540716ce3832a6267cc29c8276f730240405214239eb0ee3ee5"
     }
   }
 }

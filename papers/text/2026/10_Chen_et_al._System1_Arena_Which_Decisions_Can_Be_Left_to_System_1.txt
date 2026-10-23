@@ -1,0 +1,4346 @@
+System1-Arena: Which Decisions Can Be Left to System 1?
+Tianyu Chen* Xinyang Liu* Ruyi An Zhendong Wang Mingyuan Zhou †
+The University of Texas at Austin
+Abstract
+Large language models (LLMs) often make dis-
+crete decisions, such as flagging phishing or
+escalating to a human.System-1 models, such
+as Jev and the OpenAI Decisions API, return
+probabilities over options in a single forward
+pass, whileSystem-2approaches generate rea-
+soning steps. Which decisions can System-1
+models handle, and which require generative
+reasoning? We introduce System1-Arena, a
+benchmark that gives all models the same deci-
+sion requests and scores their probabilities. It
+contains 92k questions across 105 tasks from
+268 public sources, in four groups: text classifi-
+cation and knowledge, applied decisions, evalu-
+ation and control, and agent and action. It also
+includes 138 closed-loop environments, from
+web shopping and SWE-bench coding control
+to robotics, games, and driving; in real-time
+mode, the world evolves while a model decides.
+We evaluate 30 models: 7 closed LLMs, 13
+open LLMs read at the answer token, and 10
+System-1 models. The largest System-1 mod-
+els match or exceed fast closed LLMs in non-
+agentic accuracy, with better-calibrated proba-
+bilities at one-quarter of the latency. A reason-
+ing LLM is the most accurate, at about70× the
+cost of a fast LLM. In closed loops, large open
+LLMs succeed most often (up to 32.9%); small
+System-1 models rarely succeed.
+/gtbCode
+Dataset/g♀beLeaderboard
+1 Introduction
+Many applications ask large language models
+(LLMs) to make discrete decisions. Examples in-
+clude detecting phishing, deciding whether to in-
+volve a human, checking task completion, and se-
+lecting the next action. Such requests often occur at
+high volume and need a label or option with a prob-
+ability estimate. Reasoning LLMs can spend un-
+necessary computation on simple decisions (Zhang
+*Equal contribution.
+†Corresponding author:
+mingyuan.zhou@mccombs.utexas.edu
+System-1 models Closed LLMs Open LLMs
+30 300 3,000
+Latency (ms, log)
+40
+50
+60
+70
+80Accuracy (%)
+D2.0-Vega-27B
+Jev
+Laya
+CLM
+Opus 5.5
+GPT-6 Luna
+Gemma-4-31B
+(a)Fast decisions
+can be accurate.
+30 300 3,000
+Latency (ms, log)
+0.0
+0.2
+0.4
+0.6
+0.81 − Brier score
+D2.0-Vega-27B
+Jev
+Laya
+CLM
+Opus 5.5
+GPT-6 Luna
+Gemma-4-31B
+(b)Probability quality
+changes model rankings.
+Figure 1:System-1 models combine fast, accurate
+decisions with well-calibrated probabilities.The
+strongest System-1 models match fast closed LLMs
+in accuracy, with better probability estimates and lower
+latency. Reasoning LLMs achieve the highest accuracy.
+See Section 4 for evaluation settings.
+et al., 2025c). Routing and cascading reduce these
+costs, but they still rely on generative models (Chen
+et al., 2023a; Hu et al., 2024). Latency also limits
+LLM use in robotics, driving, and games, where
+the world continues to change during inference.
+System 1supports fast, automatic judgments,
+whileSystem 2supports slower, deliberate reason-
+ing (Kahneman, 2011). LLM studies often use this
+distinction to describe shorter and longer reasoning
+by the same model (Yu et al., 2024; Ziabari et al.,
+2025; Zhang et al., 2025c). Here, we study models
+that directly predict probabilities for discrete deci-
+sions. Jev (TypeSafe AI, 2026) and the Decision-
+2.0 family (vLLM Semantic Router Team, 2026)
+accept a state and typed questions. Question types
+include yes/no, multiple choice, and ordered scales.
+These models return a probability distribution for
+each question in one forward pass, without gen-
+erating text. The OpenAI Decisions API (Ope-
+nAI, 2026a) provides the same decision interface
+through GPT-6 Luna, and Microsoft-Decision-1
+(Microsoft, 2026) provides it through a post-trained
+Qwen3.5-9B. These systems can respond within a
+1
+arXiv:2610.21244v1  [cs.CL]  15 Oct 2026
+
+few hundred milliseconds at low cost. In our runs,
+Jev cost about $0.05 per 1,000 requests. Probability
+estimates support decision thresholds, calibration,
+and rules for escalation to a human.
+This raises a central question: which decisions
+can System-1 models handle, and where do gener-
+ative LLMs perform better? Existing benchmarks
+provide limited evidence. JevBench (Benchmark
+Heaven, 2026) and ReflexBench (Brida AI, 2026)
+each contain only a few hundred synthetic deci-
+sions. Their narrow coverage makes model rank-
+ings sensitive to task selection. They mainly com-
+pare System-1 models and do not include agentic
+tasks. These tasks are an important use case be-
+cause each decision can affect later actions, and
+delays can change outcomes.
+We introduce System1-Arena, a benchmark with
+92,125 typed questions across 105 tasks from 268
+public sources in 16 domains. It also includes 138
+closed-loop environments from 18 families. In real-
+time mode, the environment continues to evolve
+while a model decides. We evaluate System-1 mod-
+els alongside open and closed LLMs through a
+shared decision interface. Each model family uses
+a fixed prompt, and we score the predicted probabil-
+ities. System1-Arena follows three design choices.
+• Broad coverage.Every model receives the same
+decision request for each example: a state and
+typed questions. Labels come from test execu-
+tion, solvers, experts, annotator distributions, and
+resolved events. We preserve the instructions
+from each source (Section 3.2).
+• More than accuracy.Each model returns a prob-
+ability distribution for every question. We report
+accuracy and use the Brier score to assess proba-
+bility quality. More details are in Section 3.4.
+• Agentic tasks.We evaluate individual agent de-
+cisions and success in closed-loop environments.
+In real-time mode, the environment continues to
+evolve for the duration of each model call, using
+that model’s measured latency (Section 3.3).
+We evaluate 30 models: 7 closed LLMs, 13 open
+LLMs evaluated through answer-token probabil-
+ities, and 10 System-1 models. On non-agentic
+tasks, Jev and Decision-2.0-Vega-27B reach 72.6%
+and 73.0% accuracy, respectively, compared with
+71.2% for GPT-6 Luna. They also produce better-
+calibrated probabilities at lower latency than fast
+closed LLMs (Figure 1). The performance gap
+between the best System-1 models and the best
+LLMs is smallest on filtering, grouping, ranking,
+retrieval, and dialogue tasks. System-1 models re-
+main less accurate on knowledge and forecasting
+tasks (Figure 3).
+Reasoning LLMs achieve the highest accuracy.
+Claude Opus 5.5 reaches 81.1%, at about 70×
+the cost of a fast LLM. Explicit reasoning also
+improves open LLM accuracy. With a few hun-
+dred reasoning tokens per question, Qwen3.8-27B
+reaches 75.6%, exceeding Jev’s accuracy but pro-
+ducing less-calibrated probabilities (Figure 4).
+In agentic tasks, some models perform well on
+single-step decision tasks but struggle with long-
+horizon tasks. Decision-2.0-Vega-27B, Jev, and
+Qwen3.5-9B all achieve 67.8% accuracy on single-
+step tasks. On long-horizon tasks, Gemma-4-31B
+achieves the highest success rate at 32.9%. The
+four small System-1 models reach at most 3.1%,
+showing limited ability to handle long-horizon plan-
+ning. The OpenAI Decisions API is faster and
+better calibrated than GPT-6 Luna, but achieves a
+lower success rate on long-horizon tasks.
+In sum, we make four contributions. First,
+System1-Arena provides a shared decision inter-
+face for System-1 models and LLMs, with labels
+and instructions linked to their sources. Second,
+our real-time protocol advances the environment
+during model inference to measure the value of
+fast decisions. Third, we provide a method for
+obtaining decision probabilities from open autore-
+gressive and diffusion LLMs through their answer
+tokens. Fourth, our evaluation of 30 models iden-
+tifies where System-1 models match LLMs and
+where they fall behind.
+2 Related Work
+System 1 and System 2 in language models.
+The dual-process distinction of Kahneman (2011)
+is often used to describe how much a language
+model reasons before answering. Yu et al. (2024)
+distill long reasoning outputs into models that an-
+swer directly. Ziabari et al. (2025) align models
+toward either end of this spectrum and find that
+faster responses perform better on commonsense
+tasks, while slower reasoning performs better on
+arithmetic and symbolic tasks. S1-Bench (Zhang
+et al., 2025c) shows that large reasoning models
+overthink simple questions. These studies examine
+System 1 and System 2 behavior within genera-
+tive models. System1-Arena compares generative
+LLMs with a separate class of models that return
+decision probabilities without generating text, and
+2
+
+identifies which decisions these models can handle.
+Typed decision models and zero-shot classifiers.
+Zero-shot text classification assigns labels spec-
+ified at inference time. Yin et al. (2019) frame
+this task as entailment, and Laurer et al. (2023)
+train universal classifiers across tasks formatted
+as natural language inference. System-1 mod-
+els such as Jev (TypeSafe AI, 2026), Microsoft-
+Decision-1 (Microsoft, 2026), and the OpenAI
+Decisions API extend this interface to multiple
+typed questions per input—boolean, choice, and
+ordered scores—with a probability for each op-
+tion. JevBench (Benchmark Heaven, 2026) and
+ReflexBench (Brida AI, 2026) evaluate accuracy,
+calibration, robustness, and speed on a few hundred
+newly written decisions, mainly comparing System-
+1 models. System1-Arena covers 92k questions
+with source-provided labels, compares System-1
+models and LLMs on the same decision requests,
+and evaluates them in closed-loop environments.
+Holistic benchmarks, calibration, and cost.
+MMLU (Hendrycks et al., 2020), BIG-bench (Sri-
+vastava et al., 2022), and HELM (Liang et al., 2022)
+evaluate models across diverse tasks using a com-
+mon protocol. HELM also reports calibration and
+efficiency. The Brier score (Brier, 1950) evalu-
+ates probabilistic predictions, while expected cali-
+bration error (Guo et al., 2017) measures the gap
+between confidence and accuracy. Large models
+can produce well-calibrated token probabilities on
+multiple-choice questions (Kadavath et al., 2022).
+For instruction-tuned models, verbalized probabili-
+ties can be better calibrated than token probabilities
+(Tian et al., 2023), but can still be overconfident
+(Xiong et al., 2023). We use verbalized proba-
+bilities for closed LLMs to obtain a full distribu-
+tion for each question through their text-generation
+APIs. Cost-aware methods route queries among
+LLMs of different sizes (Chen et al., 2023a; Hu
+et al., 2024). System1-Arena asks which decisions
+a System-1 model can handle, informing routing
+between System-1 models and generative LLMs.
+Interactive and latency-sensitive evaluation.
+Most benchmarks for web agents, text games, cus-
+tomer support, coding, and reinforcement learning
+pause the environment while the model decides.
+Appendix D lists the environments used in our eval-
+uation. Kang et al. (2025) show that tailoring model
+size and quantization to a latency budget improves
+performance in both a trading simulation and a
+Decision requesta state and typed questions
+{
+"state": {
+"vulnerability_description": "SQL Injection
+vulnerability in Limesurvey v2.65.1+170522 ...
+via'token'parameter in'/index.php'endpoint."
+},
+"questions": {
+"attack_vector": {
+"type": "choice",
+"instructions": "Attack Vector (AV): ...",
+"criteria": {"local": "...", "physical": "...",
+"network": "...", "adjacent": "..."}
+},
+"severity": {
+"type": "score",
+"instructions": "Which CVSS v3.1 severity ...?",
+"criteria": ["None: ...", "Low: ...", "Medium: ...",
+"High: ...", "Critical: ..."]
+},
+... // 7 more questions
+}
+}
+Answer of Jeva distribution per question; gold option marked
+{
+"attack_vector": { "network" : 1.00, "local": 0.00, ...},
+"severity": { "4" : 0.76, "3": 0.19, "2": 0.02, ...},
+... // "4" = Critical
+}
+Figure 2:A decision request from the CVSS task and
+the answer of Jev.We show two of its nine questions
+and shorten the instructions and the option descriptions.
+An LLM gets the same request as text (Appendix A).
+fighting game. We use a harness that presents each
+environment’s decisions as typed questions and add
+a real-time mode that incorporates each model’s
+measured latency into the environment dynamics.
+3 System1-Arena
+3.1 Decision requests
+We represent every static example and environment
+step as adecision request r= (s, Q) (Figure 2).
+The state s contains a small set of named text fields.
+Examples include a message, a code diff with its
+commit message, or a rendered web page. The
+questionsQ={q 1, . . . , qm}share this state.
+Each question isboolean(yes/no),choice(2–
+255 options with exactly one correct answer), or
+score(2–10 ordered levels). Score levels can rep-
+resent a grading rubric. Each question includes
+instructions, and each option includes a descrip-
+tion, so models need no dataset-specific prompt. A
+model returns a probability distribution over the
+options for each question. The reference answer
+is a hard label or, when available, a distribution
+provided by the source.
+System-1 models receive the request directly.
+LLMs receive a text version through a fixed prompt
+for each model family (Appendix A). Section 4
+explains how we obtain the option probabilities p
+from each model.
+3
+
+3.2 Non-agentic decisions
+This component contains 78,362 questions across
+13 domains and 87 tasks (Table 3). Each task cov-
+ers one type of decision and draws on one or more
+public sources. Examples include deciding whether
+a message is phishing or whether a patch fixes an
+issue. The domains cover text classification, knowl-
+edge, professional tasks, retrieval, structured data,
+code, and forecasting. They also cover dialogue,
+batch processing, LLM-as-judge, safety, routing,
+and subjective judgments. Appendix C lists the
+sources for all benchmark tasks.
+Labels and instructions.All labels come from
+the original sources; we do not create new labels.
+They include test results, solver outputs, resolved
+events, expert annotations, annotator distributions,
+and original dataset labels. When a source provides
+instructions or annotation guidelines, we preserve
+their wording or adapt them to the decision-request
+format. Otherwise, we write instructions based
+on the source’s labeling criteria. This keeps the
+instructions consistent with how the labels were
+assigned. Appendix B describes the procedure.
+3.3 Agentic tasks and environments
+Agentic tasks require a model to choose a sequence
+of actions to achieve a goal. Each action changes
+the state observed at the next step, so success de-
+pends on decisions throughout an episode. We
+include 138 environments from 18 families and 22
+benchmark suites. They cover web shopping, cus-
+tomer service, coding, robotics, games, and driving
+(Appendix D).
+To support System-1 models on long-horizon
+tasks, we use a fixed, task-specific harness. At each
+step, it converts the current state and interaction his-
+tory into text and presents the available actions as
+typed questions. It executes the highest-probability
+option for each question and obtains the next ob-
+servation. We represent free-form outputs, such
+as search terms, tool arguments, and patches, as
+candidate choices. Actions come from the original
+benchmark’s action space, and all models use the
+same harness and environment. For environments
+with a success criterion, we report the mean success
+rate, giving each environment equal weight.
+Single-step tasks.We separately evaluate indi-
+vidual agentic decisions using recorded trajectories
+and fixed states from games and embodied tasks.
+Each example provides a fixed state and interac-
+tion history. Questions ask which action to take,
+whether a proposed step is correct, or whether the
+task is complete. We score the answer against a
+reference without continuing the interaction. Refer-
+ences come from expert demonstrations, execution
+checks, solvers, recorded outcomes, or source an-
+notations. These tasks measure decision quality for
+a given state and history.
+The full single-step collection contains 13,763
+questions across 18 tasks. It includes 6,943 ques-
+tions about agent steps, 3,828 about games, and
+2,992 about embodied and robotics tasks (Table 3).
+Together with the non-agentic component, these
+tasks account for all 92,125 questions and 105 tasks.
+Our single-step model comparison uses only the
+agent-step subset (Table 2). This subset contains
+3,481 recorded steps and 6,943 questions across
+seven tasks. The static game and embodied tasks re-
+main part of the benchmark but are excluded from
+this comparison.
+Harness difficulty check.We check whether the
+harness makes the original task too easy. We flag
+environments where a uniform-random policy suc-
+ceeds in at least 20% of episodes or models gener-
+ally achieve at least 90% success. For flagged en-
+vironments, we removed assistance or reduced the
+decision budget. For example, we limited the bud-
+get to twice the shortest solution length in BabyAI,
+MiniHack mazes, and Baba Is AI. A scripted policy
+confirms that each adjusted task remains solvable.
+Real-time mode.In Atari, Doom, driving, and
+quadrotor environments, the world continues to
+evolve while the model decides. For each decision,
+the environment advances by the model’s measured
+median latency and continues to execute its previ-
+ous action. Slower models therefore act on older
+observations. This makes response time part of
+task performance (Appendix D).
+3.4 Metrics
+We evaluate the probability distribution returned
+for each question.Accuracycompares the option
+with the highest predicted probability against the
+hard reference label. TheBrier score(Brier, 1950)
+measures probability quality as P
+o(p(o)−t(o)) 2.
+Here, t is a one-hot label or an annotator distri-
+bution. The score ranges from 0 to 2, with lower
+values indicating better probability estimates.
+For each task, we average scores across its
+sources. A domain score averages the scores of
+4
+
+its tasks. The overall score averages all tasks, giv-
+ing each task equal weight. Appendix B defines
+the additional metrics: expected calibration error,
+NDCG, and pair accuracy.
+4 Experimental Setup
+Probabilities from each model family.For a
+question q with options o1, . . . , oK, every model
+provides a distribution p(ok |s, q) .System-1 mod-
+elsreturn this distribution directly. We use the
+APIs for Jev, Microsoft-Decision-1 and the Ope-
+nAI Decisions API, and the official code for the
+other System-1 models.
+Closed LLMsreturn a nonnegative value vk for
+each option in a JSON response (Appendix A.1).
+We normalize these values as p(ok |s, q) =
+vk/ P
+j vj. Missing options receive vk = 0. We
+do not use token probabilities from these models.
+Foropen LLMs, we obtain probabilities from
+answer labels. The prompt x contains the state,
+one question, and its options, each with a short
+label ℓk. Labels use A, B, . . . for choices, 0–9 for
+score levels, and yes/no for boolean questions (Ap-
+pendix A.2). The prompt ends at the start of the an-
+swer. One forward pass gives zk = logP θ(ℓk |x)
+for each label at this position. We normalize these
+values as p(ok |s, q) = expz kPK
+j=1 expz j
+. GPT-OSS re-
+quires reasoning, so we read label probabilities at
+the start of its final answer. For DiffusionGemma,
+one read-only denoising step provides the label
+probabilities at the answer slot (vLLM contribu-
+tors, 2026). The other open models use their non-
+thinking mode (Appendix B).
+Models.We evaluate 30 models in three families
+(Tables 1 and 2).
+• Closed LLMs(7 models, from most to least accu-
+rate): Claude Opus 5.5 (Anthropic, 2026), GPT-6
+Astra (OpenAI, 2026b), Grok 4.7 (xAI, 2026),
+GPT-6 Sol, GPT-5.6 Sol, GPT-6 Luna, and GPT-
+5.6 Luna (OpenAI, 2026c,d). Each model returns
+option probabilities in a JSON response.
+• Open LLMs(13 models): models from the
+Qwen3 (Yang et al., 2025a), Qwen3.5 (Qwen
+Team, 2026a), Qwen3.8 (Qwen Team, 2026b),
+Gemma 4 (Google, 2026), Llama 3 (Grattafiori
+et al., 2024), and GPT-OSS (OpenAI, 2025) fam-
+ilies, plus DiffusionGemma (DiffusionGemma
+Team et al., 2026).
+• System-1 models(10 models): Jev, Laya (Con-
+vai Innovations, 2026), CLM (Kwok et al.,
+2026), five Decision 2.0 models (vLLM Se-
+mantic Router Team, 2026), Microsoft-Decision-
+1 (Microsoft, 2026), which is post-trained
+from Qwen3.5-9B, and the OpenAI Decisions
+API (OpenAI, 2026a), which serves GPT-6 Luna.
+We disable reasoning whenever the model’s in-
+terface permits it. Five models require reasoning:
+Claude Opus 5.5, GPT-6 Astra, Grok 4.7, gpt-oss-
+20b, and gpt-oss-120b. We use the lowest available
+reasoning effort for these models.
+Non-agentic and agentic tasks.The benchmark
+organizes its domains into four groups (Table 3,
+Appendix C).Text and knowledgecovers text clas-
+sification, knowledge and reasoning, and subjective
+judgments.Applied decisionscovers professional
+domains, retrieval, structured data, code, forecast-
+ing, dialogue, and batch processing.Evaluation
+and controlcovers LLM-as-judge, safety, and rout-
+ing.Agent and actioncovers decisions made during
+an agent’s interaction with an environment.
+The first three groups form thenon-agenticcom-
+ponent, with 78,362 questions across 87 tasks.
+These tasks ask a model to judge a given input.
+The agent and action group forms theagenticcom-
+ponent. We evaluate this component in 138 environ-
+ments and on 3,481 agent steps. The recorded steps
+contain 6,943 questions across seven tasks. The
+static model comparison therefore covers 85,305
+questions across 94 tasks. The remaining 6,820
+questions come from static game and embodied
+tasks.
+Protocol.Questions with failed calls, unusable
+responses, or refused inputs receive no accuracy
+credit. In environments, the harness executes the
+fallback action when a decision is missing or in-
+valid. Latency is the median time per request. We
+report cost per 1,000 requests in each model fam-
+ily’s native unit. Costs use US dollars for Jev,
+Microsoft-Decision-1, OpenAI Decisions API, and
+closed LLMs. For local models, costs use H100-
+equivalent GPU-seconds. We do not convert be-
+tween these units.
+Output tokens are the mean number of tokens
+generated per request. Returning probabilities and
+reading label probabilities do not themselves gen-
+erate output tokens. Appendix B describes the ser-
+vices, hardware, and retry rules.
+5
+
+Table 1:All models on the non-agentic tasks: accuracy (%), overall accuracy and Brier score, latency, cost
+and output tokens.Rank is by overall accuracy; within a family, the rows follow it. Every cell is the mean over
+the tasks of a domain on all 78,362 questions. The grey columns are the overall scores. Blue rows are the three
+most accurate models, green rows the top three with 0 output tokens (darker is better); bold is the best per column.
+∗The model cannot stop reasoning and uses its lowest reasoning effort. Section 4 defines latency (median per
+request), cost (per 1,000 requests, in USD for hosted models and H100-equivalent GPU-seconds for local models)
+and output tokens (mean per request). Domains: Cls = text classification, Know = knowledge and reasoning, Social
+= subjective judgments, Pro = professional domains, Ret = retrieval, Struct = structured data, Fore = forecasting,
+Dialog = dialogue, Batch = batch processing, Judge = LLM-as-judge, Safety = safety and moderation, Route =
+routing.
+Text and knowledge Applied decisions Evaluation and control All 87 tasks Latency Cost per Output
+Rank Model Cls Know Social Pro Ret Struct Code Fore Dialog Batch Judge Safety Route Acc. Brier p50 (ms) 1,000 req. tokens
+System-1 models, native probabilities
+7 Decision-2.0-Vega-27B 75.1 80.0 68.0 70.0 76.7 83.0 68.9 43.8 73.5 77.1 68.4 85.1 66.5 73.0 0.343 228 316 GPU-s 0
+8 Jev 1.13 73.0 81.9 69.7 70.6 77.0 78.7 65.9 44.1 73.2 75.3 68.4 86.7 64.5 72.6 0.349 321 $0.052 0
+11 Microsoft-Decision-1 72.9 80.5 60.5 67.6 75.9 78.9 64.5 40.7 71.9 73.5 68.5 82.9 63.8 70.9 0.369 304 $0.038 0
+17 OpenAI Decisions API 69.8 74.5 38.3 69.1 73.2 76.0 66.0 48.3 70.6 72.2 67.3 81.0 65.0 68.6 0.424 140 $0.111 0
+18 Decision-2.0-Lux-9B 69.3 76.2 61.0 65.1 74.7 72.0 62.0 39.8 70.7 75.0 60.6 75.5 58.4 67.0 0.397 104 144 GPU-s 0
+20 Decision-2.0-Nox-4B 67.3 73.6 58.6 62.2 72.8 69.4 58.8 40.1 70.7 74.4 58.3 73.8 59.0 65.1 0.414 114 154 GPU-s 0
+26 Decision-2.0-Kai-0.6B 54.7 51.1 30.0 49.8 59.8 49.9 48.6 34.3 53.6 64.6 47.9 57.4 46.0 50.3 0.537 72 93 GPU-s 0
+27 Laya (421M) 47.2 45.9 45.4 38.7 42.2 39.6 44.7 25.4 47.7 52.3 41.7 60.9 42.4 44.5 0.660 136 12 GPU-s 0
+28 CLM-v0.1-8B 35.6 48.3 22.1 28.2 45.9 40.7 40.1 35.5 40.8 42.2 46.0 54.7 49.6 41.4 0.749 41 19 GPU-s 0
+Closed LLMs, verbalized probabilities
+1 Claude Opus 5.5∗ 79.7 91.6 79.6 79.5 78.8 95.2 82.0 61.6 76.5 77.7 77.8 86.2 72.3 81.1 0.232 2,293 $10.380 132
+2 GPT-6 Astra∗ 79.8 90.9 76.4 77.9 79.3 92.1 79.0 57.6 77.4 76.2 77.0 90.9 68.0 80.1 0.282 2,189 $15.050 55
+3 Grok 4.7∗ 76.4 88.1 73.1 73.4 77.7 88.8 76.0 52.1 74.4 72.9 75.0 89.6 70.6 77.5 0.306 6,694 $7.569 765
+4 GPT-6 Sol 78.0 84.6 74.5 74.8 77.6 87.9 74.2 53.3 75.7 74.9 74.8 90.7 69.9 77.4 0.340 1,446 $2.833 37
+5 GPT-5.6 Sol 77.1 83.2 73.2 75.0 77.9 86.3 72.9 51.2 75.3 74.9 74.0 90.9 69.8 76.7 0.349 1,680 $5.817 45
+10 GPT-6 Luna 72.4 75.3 69.0 71.3 75.2 77.3 66.4 49.2 71.9 73.1 67.1 86.5 62.2 71.2 0.461 1,276 $0.143 40
+13 GPT-5.6 Luna 71.2 72.5 63.0 70.5 74.8 76.0 64.7 46.0 72.6 73.9 67.6 85.6 62.3 70.0 0.458 1,375 $0.301 46
+Open LLMs, probabilities read at the answer token
+6 Gemma-4-31B 73.7 80.8 65.8 72.1 78.0 82.6 69.4 42.7 72.4 74.5 71.7 88.7 70.0 73.9 0.474 60 142 GPU-s 0
+9 gpt-oss-120b∗ 69.5 82.9 57.9 67.9 74.5 82.9 71.6 40.9 72.3 71.3 70.7 82.8 64.3 71.8 0.534 284 101 GPU-s 95
+12 Qwen3.8-27B 71.9 75.5 60.7 69.8 74.0 72.5 65.1 40.1 69.7 74.6 67.9 86.3 66.4 70.2 0.391 105 142 GPU-s 0
+14 Gemma-4-26B-A4B 71.8 76.2 51.2 68.3 75.6 77.9 64.4 40.9 71.4 75.3 67.2 83.7 66.5 69.9 0.528 47 25 GPU-s 0
+15 DiffusionGemma-26B-A4B 71.2 74.7 68.2 68.0 76.2 75.5 63.0 42.1 69.9 73.8 66.0 83.6 63.8 69.7 0.465 68 41 GPU-s 0
+16 gpt-oss-20b∗ 67.2 79.8 48.9 64.2 71.4 79.0 70.0 41.6 69.5 68.7 67.0 80.6 61.3 68.7 0.589 183 51 GPU-s 109
+19 Qwen3.5-9B 67.5 72.0 57.4 65.5 69.3 68.6 60.5 37.8 60.0 70.2 63.9 77.7 60.4 65.3 0.461 77 36 GPU-s 0
+21 Qwen3-32B 63.1 72.9 55.8 64.4 71.4 67.4 58.0 40.7 69.8 72.1 63.4 75.8 58.1 65.0 0.543 50 112 GPU-s 0
+22 Llama-3.3-70B 64.1 71.9 55.4 64.0 71.3 66.4 58.8 39.9 67.1 73.3 59.4 77.7 63.2 64.8 0.640 46 241 GPU-s 0
+23 Gemma-4-E4B 64.4 65.9 58.0 61.6 69.3 64.0 56.4 38.6 65.2 72.6 59.0 75.4 60.5 62.8 0.602 29 21 GPU-s 0
+24 Qwen3-8B 56.6 65.8 46.8 59.2 64.5 63.5 54.8 39.4 57.7 68.7 59.3 69.5 54.0 59.3 0.715 30 27 GPU-s 0
+25 Llama-3.1-8B 52.2 56.8 50.1 51.8 55.1 53.8 48.4 37.3 53.2 63.1 50.3 66.5 50.1 53.1 0.645 21 25 GPU-s 0
+29 Qwen3-0.6B 24.3 44.8 36.7 34.7 41.2 47.5 42.5 24.8 39.6 41.5 46.7 42.2 39.1 39.2 0.937 27 8 GPU-s 0
+Task domain Gap (pp)
+Filter, group & rank 0.5
+Retrieval & ranking 2.3
+Dialogue decisions 3.9
+Safety & moderation 4.2
+Text classification 4.7
+Model & tool routing 5.8
+Professional tasks 8.9
+LLM evaluation 9.3
+Knowledge & reasoning 9.7
+Social judgments 9.9
+Structured data 12.2
+Code understanding 13.1
+Event forecasting 13.3
+30 50 70
+Step accuracy (%)
+0
+10
+20
+30Loop success (%)
+D2.0-Vega-27B
+Jev
+Gemma-4-31B
+Qwen3.8-27B
+gpt-oss-20b
+Qwen3.5-9B
+Figure 3:Task-domain gaps and agentic perfor-
+mance.Left: gaps by task domain in percentage points.
+Right: agentic task performance. Evaluation settings
+are given in Section 4.
+5 Results
+Table 1 reports non-agentic performance: accuracy
+across 13 domains, overall accuracy, Brier score,
+latency, cost, and output tokens. Table 2 reports
+agentic performance.
+Non-agentic: closed LLMs with reasoning are
+the most accurate.Claude Opus 5.5 achieves the
+highest overall accuracy (81.1%) and the lowest
+Brier score, leading in 9 of the 13 domains. The
+five most accurate models are closed LLMs, three
+of which reason before answering. Gemma-4-31B
+is the most accurate open LLM (73.9%). Without
+reasoning, it outperforms both Luna models in all
+three non-agentic groups. Forecasting is the hardest
+domain for 25 of the 29 models with non-agentic
+results, with no model exceeding 61.6% accuracy.
+Non-agentic: the best System-1 models match
+low-reasoning-effort LLMs.The best System-1
+models match or exceed low-reasoning-effort
+LLMs in accuracy on non-agentic tasks. Decision-
+2.0-Vega-27B (73.0%) and Jev (72.6%) outperform
+GPT-6 Luna (71.2%) and GPT-5.6 Luna (70.0%).
+6
+
+Table 2:The agentic tasks (%).Rank is by step accu-
+racy; within a family, the rows follow it. “Single steps”:
+accuracy on 3,481 agent steps (mean over 7 tasks) and
+the share of their 6,943 questions without an answer.
+“Closed loops”: success rate over 127 environments and
+the share of decisions without an answer. Blue and
+green mark the top three models by step accuracy over-
+all and with 0 output tokens, respectively; green takes
+precedence for models in both groups (darker is better).
+Bold marks the best value in a column. ∗Reasons at its
+lowest effort. “No ans.” is the percentage of questions
+(steps) or decisions (loops) without an answer.
+Single steps Closed loops
+Rank Model Acc. No ans. Success No ans.
+System-1 models, native probabilities
+7 Jev 1.13 67.8 13.2 17.4 0.4
+8 Decision-2.0-Vega-27B 67.8 13.7 26.5 0.0
+10 OpenAI Decisions API 67.2 0.1 16.9 0.7
+13 Microsoft-Decision-1 65.2 13.7 12.4 0.0
+16 Decision-2.0-Sol-2B 46.4 24.7 3.1 0.0
+18 Laya (421M) 41.4 0.1 1.3 0.8
+19 CLM-v0.1-8B 40.6 0.0 1.7 0.0
+20 Decision-2.0-Kai-0.6B 34.2 40.9 2.2 7.2
+Closed LLMs, verbalized probabilities
+2 GPT-6 Luna 69.1 0.1 22.9 0.2
+9 GPT-5.6 Luna 67.4 0.7 18.9 0.1
+Open LLMs, probabilities read at the answer token
+1 Gemma-4-31B 71.3 0.3 32.9 0.0
+3 Qwen3.8-27B 68.9 0.0 26.2 0.0
+4 DiffusionGemma-26B-A4B 68.2 0.0 13.0 0.0
+5 Gemma-4-26B-A4B 68.1 0.0 21.7 0.0
+6 Qwen3.5-9B 67.8 0.0 5.7 0.0
+11 Gemma-4-E4B 65.9 0.3 5.1 0.0
+12 gpt-oss-20b ∗ 65.8 0.3 24.7 0.0
+14 Qwen3-32B 62.8 10.2 6.6 0.0
+15 Qwen3-8B 59.9 10.2 2.5 0.0
+17 Qwen3-0.6B 43.9 10.2 1.8 0.0
+Both remain within 1.4 percentage points of
+Gemma-4-31B.
+Non-agentic: System-1 models provide reliable
+probabilities.Across the 87 tasks, Decision-2.0-
+Vega-27B and Jev achieve mean Brier scores of
+0.343 and 0.349, respectively. Only four mod-
+els achieve lower scores, all closed LLMs that
+cost 20–105 times as much as GPT-6 Luna. Al-
+though Gemma-4-31B is more accurate than these
+two System-1 models, its Brier score is higher at
+0.474. GPT-6 Luna and GPT-5.6 Luna also have
+higher Brier scores, at 0.461 and 0.458, respec-
+tively. Answer-token probabilities can be overcon-
+fident: Gemma-4-31B assigns a probability of at
+least 0.999 to its option on 87% of questions.
+Non-agentic: thinking improves accuracy, but
+not necessarily calibration.Figure 4 evaluates
+four open LLMs with reasoning budgets of up to
+2,048 tokens. Without thinking, all four are less ac-
+curate than Jev (59.3–70.2% versus 72.6%). Small
+0 200 400 600 800
+Thought tokens per question
+55
+60
+65
+70
+75
+Accuracy (%)
+0 200 400 600 800
+Thought tokens per question
+0.4
+0.5
+0.6
+0.7
+Brier score (lower is better)
+Qwen3.8-27B
+Gemma-4-26B-A4B
+DiffusionGemma
+Qwen3-8B
+Jev (no tokens)
+Figure 4:Thinking can improve accuracy while wors-
+ening Brier scores.Accuracy and Brier score on non-
+agentic tasks versus the mean number of reasoning to-
+kens per question. The zero-token point disables think-
+ing, as in Table 1. Other points use reasoning token
+limits from 128 to 2,048.
+reasoning budgets can reduce accuracy below this
+baseline. At 128 tokens, DiffusionGemma drops
+from 69.7% to 56.3%, the largest decline among
+the four models, while Gemma-4-26B-A4B loses
+4.6 percentage points. Larger budgets improve ac-
+curacy for all four models, and three surpass Jev at
+2,048 tokens. However, these gains do not necessar-
+ily improve calibration. For example, a 2,048-token
+reasoning budget raises Qwen3.8-27B’s accuracy
+from 70.2% to 75.6%, but worsens its Brier score
+from 0.391 to 0.430. Its mean confidence in the
+selected option rises from 81.4% to 97.4%. This
+widening gap is consistent with increased overcon-
+fidence: predictions become more concentrated
+on a single option, including when that option is
+wrong. Confident errors incur larger Brier penalties,
+so higher accuracy can coexist with less reliable
+probability estimates.
+Non-agentic: forecasting remains challenging
+for System-1 models.Despite competitive over-
+all performance, System-1 models still lag substan-
+tially in some domains, particularly forecasting.
+One task, for example, asks which of three energy
+commodities—West Texas Intermediate crude oil,
+Brent crude oil, or Henry Hub natural gas—will
+have the largest percentage price increase over a
+90-day horizon. Across the forecasting domain, the
+best System-1 model, the OpenAI Decisions API,
+achieves 48.3% accuracy, compared with 61.6%
+for Claude Opus 5.5, a gap of 13.3 percentage
+points (Table 1). Strong performance on classi-
+fication and selection tasks therefore does not nec-
+essarily extend to forecasting. Although their low
+latency is attractive for applications such as trading,
+using System-1 models as forecasting components
+7
+
+requires careful design and validation.
+Agentic: similar step accuracy can yield dif-
+ferent closed-loop success rates.Model rank-
+ings differ in agentic tasks (Table 2). Nine mod-
+els achieve step accuracies of 67.4–71.3%, but
+their closed-loop success rates range from 5.7% to
+32.9%. Decision-2.0-Vega-27B, Jev, and Qwen3.5-
+9B all achieve 67.8% step accuracy, yet their
+closed-loop success rates are 26.5%, 17.4%, and
+5.7%, respectively. One possible explanation is that
+errors accumulate during interaction. A static step
+starts from a recorded state, whereas an incorrect
+closed-loop decision can alter all subsequent states.
+Agentic: larger models achieve higher closed-
+loop success rates.Gemma-4-31B achieves the
+highest closed-loop success rate (32.9%), followed
+by Decision-2.0-Vega-27B (26.5%) and Qwen3.8-
+27B (26.2%). The four open LLMs with fewer
+than 10B parameters succeed in fewer than 6% of
+episodes. Qwen3-32B is an exception among the
+larger models, with a success rate of only 6.6%. Jev
+achieves 17.4%, below both Luna models (22.9%
+and 18.9%) but above six of the ten open LLMs.
+Paired comparisons: System-1 models versus
+their corresponding LLMs.We compare five
+System-1 models with their corresponding LLMs,
+pairing models that differ in their decision in-
+terface or post-training. System-1 models im-
+prove non-agentic accuracy in three pairs but re-
+duce agentic step accuracy in all five. These
+comparisons include four post-trained models and
+the Decisions API, which uses the same un-
+derlying LLM as GPT-6 Luna (Figure 5, left).
+On non-agentic tasks, Decision-2.0-Vega-27B,
+Microsoft-Decision-1, and Decision-2.0-Kai-0.6B
+improve accuracy by 2.9–11.0 percentage points.
+The Decisions API and CLM-v0.1-8B instead lose
+2.6 and 17.8 percentage points, respectively. Brier
+scores improve in four of the five pairs, with reduc-
+tions of 0.037–0.400; CLM is the only exception.
+On agentic tasks, step accuracy decreases by 1.2–
+19.3 percentage points across all five pairs. Closed-
+loop success changes little in three pairs, staying
+within 0.8 percentage points of the corresponding
+LLM. It decreases from 22.9% to 16.9% for the
+Decisions API but increases from 5.7% to 12.4%
+for Microsoft-Decision-1.
+Latency.Local models return decisions fastest.
+Without reasoning, open LLMs take 21–105 ms
+Non-agentic Agentic
+System-1 model Acc. Brier Step Loop
+D2.0-Vega-27B+2.9−.048−1.2+0.3from Qwen3.8-27BMS-Decision-1+5.6−.091−2.7+6.8from Qwen3.5-9BD2.0-Kai-0.6B+11.0−.400−9.6+0.4from Qwen3-0.6B†
+CLM-v0.1-8B−17.8+.034−19.3−0.8from Qwen3-8B
+Decisions API−2.6−.037−2.0−6.1from GPT-6 Luna‡
+0.01 0.1 1 10
+Cost per 1k requests (USD) ↓
+68
+72
+76
+80Accuracy (%) ↑
+MS-Decision-1
+Jev
+Decisions API
+GPT-6 Luna
+GPT-6 Sol
+GPT-5.6 Sol
+Opus 5.5
+GPT-6 Astra
+Figure 5:Paired comparisons show mixed gains in
+non-agentic accuracy but consistently lower agentic
+step accuracy (left); higher cost does not always yield
+higher accuracy (right). †Base: Qwen3-0.6B-Base.
+‡Same LLM, different interface.
+per request, while local System-1 models take 41–
+228 ms. The two GPT-OSS models use reason-
+ing and take 183 and 284 ms. Jev takes 321 ms
+through the gateway and Microsoft-Decision-1
+takes 304 ms, while closed LLMs take 1.3–6.7 s.
+Cost and output tokens.Higher cost does not
+always yield higher accuracy among hosted models
+(Figure 5, right). Jev achieves 72.6% accuracy at
+$0.052 per 1,000 requests, compared with 71.2%
+at $0.14 for GPT-6 Luna. Microsoft-Decision-1 is
+the least expensive hosted model, achieving 70.9%
+at $0.038. Claude Opus 5.5 achieves 81.1% at
+$10.38, roughly 74 times GPT-6 Luna’s cost for a
+9.9-percentage-point accuracy gain. GPT-6 Astra
+is the most expensive ($15.05) but is less accurate
+than Opus (80.1% versus 81.1%). Output length
+also varies substantially: Grok 4.7 generates 765
+tokens per request, Claude Opus 5.5 generates 132,
+and GPT-6 Luna generates 40. Jev generates no
+text. Among local models, Gemma-4-26B-A4B
+uses 25 GPU-seconds per 1,000 requests, compared
+with 142 for Gemma-4-31B, which achieves 4.0
+percentage points higher overall accuracy.
+6 Conclusion
+System1-Arena asks one question of every deci-
+sion: can it be left to a fast model that answers
+with calibrated probabilities in a single forward
+pass, or does it still need a generative LLM? Pos-
+ing the same typed requests to 30 models makes the
+question measurable. The answers are encouraging
+for System 1 on most static decisions, where the
+largest System-1 models match fast closed LLMs
+with better-calibrated probabilities at a quarter of
+the latency, and sobering where the best accuracy is
+needed, which a reasoning LLM delivers at about
+70 times the cost. In closed loops, large models
+8
+
+succeed most often, step accuracy does not predict
+loop success, and small System-1 models lack the
+planning that a loop needs. We hope the bench-
+mark helps decide, decision by decision, where
+deliberation is worth its price.
+7 Limitations
+Labels are inherited from the sources, so their noise
+is inherited too; tier-C instructions were written by
+us; and many sources are public and several years
+old, so some inputs may have been seen in training.
+The closed LLMs, Jev, Microsoft-Decision-1 and
+the OpenAI Decisions API were called through
+online services, so their latency includes the service
+and the network, and cost reflects the prices on the
+days of the runs. The models that sample their
+answers got one draw per request, so run-to-run
+variation is not measured.
+8 Ethical Considerations
+System1-Arena reuses public datasets and environ-
+ments under their licenses (Table 4); sources whose
+terms do not allow redistribution are rebuilt locally
+by a loader and are not redistributed. Toxicity, hate-
+speech, and safety tasks contain offensive or unsafe
+text by design; we keep these inputs as their cre-
+ators released them and add no new personal data.
+A high score on the benchmark does not show that
+a model is fit for decisions with legal, medical, fi-
+nancial, or safety consequences, where errors can
+harm people and human review remains necessary.
+References
+Ibrahim Abu Farha, Silviu Vlad Oprea, Steven Wilson,
+and Walid Magdy. 2022. SemEval-2022 task 6: iS-
+arcasmEval, intended sarcasm detection in English
+and Arabic. InProceedings of the 16th International
+Workshop on Semantic Evaluation (SemEval-2022),
+pages 802–814, Seattle, United States. Association
+for Computational Linguistics.
+Pranjal Aggarwal, Aman Madaan, Ankit Anand, Sriv-
+idya Pranavi Potharaju, Swaroop Mishra, Pei Zhou,
+Aditya Gupta, Dheeraj Rajagopal, Karthik Kappa-
+ganthu, Yiming Yang, Shyam Upadhyay, Manaal
+Faruqui, and Mausam. 2024. AutoMix: automati-
+cally mixing language models. InAdvances in Neu-
+ral Information Processing Systems 37: Annual Con-
+ference on Neural Information Processing Systems
+2024, NeurIPS 2024, Vancouver, BC, Canada, De-
+cember 10 - 15, 2024.
+Md Basim Uddin Ahmed, Nima Shiri Harzevili, Jiho
+Shin, Hung Viet Pham, and Song Wang. 2026.
+SecVulEval: Context-Aware benchmarking of LLMs
+for vulnerability detection. InProceedings of the
+3rd ACM International Conference on AI-Powered
+Software, AIware ’26, page 388–396. ACM.
+Tiago A. Almeida, José María G. Hidalgo, and Akebo
+Yamakami. 2011. Contributions to the study of SMS
+spam filtering: new collection and results. InPro-
+ceedings of the 11th ACM symposium on Document
+engineering, DocEng ’11, page 259–262. ACM.
+Anthropic. 2026. Introducing Claude Opus 5.5. https:
+//www.anthropic.com/claude-opus-5-5.
+Yuki Arase, Satoru Uchida, and Tomoyuki Kajiwara.
+2022. CEFR-Based sentence difficulty annotation
+and assessment. InProceedings of the 2022 Con-
+ference on Empirical Methods in Natural Language
+Processing, pages 6206–6219, Abu Dhabi, United
+Arab Emirates. Association for Computational Lin-
+guistics.
+Gaurav Arora, Chirag Jain, Manas Chaturvedi, and Kru-
+pal Modi. 2020. HINT3: Raising the bar for intent
+detection in the wild. InProceedings of the First
+Workshop on Insights from Negative Results in NLP,
+pages 100–105, Online. Association for Computa-
+tional Linguistics.
+Lora Aroyo, Alex Taylor, Mark Díaz, Christopher
+Homan, Alicia Parrish, Gregory Serapio-García,
+Vinodkumar Prabhakaran, and Ding Wang. 2023.
+DICES dataset: Diversity in conversational AI eval-
+uation for safety. InAdvances in Neural Informa-
+tion Processing Systems 36, NeurIPS 2023, page
+53330–53342. Neural Information Processing Sys-
+tems Foundation, Inc. (NeurIPS).
+Ibragim Badertdinov, Alexander Golubev, Maksim
+Nekrashevich, Anton Shevtsov, Simon Karasik, An-
+drei Andriushchenko, Maria Trofimova, Daria Litv-
+intseva, and Boris Yangel. 2025. SWE-rebench: an
+automated pipeline for task collection and decon-
+taminated evaluation of software engineering agents.
+InAdvances in Neural Information Processing Sys-
+tems 38, NeurIPS 2025, page 26420–26466. Neu-
+ral Information Processing Systems Foundation, Inc.
+(NeurIPS).
+Payal Bajaj, Daniel Campos, Nick Craswell, Li Deng,
+Jianfeng Gao, Xiaodong Liu, Rangan Majumder, An-
+drew McNamara, Bhaskar Mitra, Tri Nguyen, Mir
+Rosenberg, Xia Song, Alina Stoica, Saurabh Tiwary,
+and Tong Wang. 2018. MS MARCO: a human
+generated MAchine reading COmprehension dataset.
+Preprint, arXiv:1611.09268.
+Forrest Sheng Bao, Miaoran Li, Renyi Qu, Ge Luo,
+Erana Wan, Yujia Tang, Weisi Fan, Manveer Singh
+Tamber, Suleman Kazi, Vivek Sourabh, Mike Qi,
+Ruixuan Tu, Chenyu Xu, Matthew Gonzales, Ofer
+Mendelevitch, and Amin Ahmad. 2025. FaithBench:
+A diverse hallucination benchmark for summariza-
+tion by Modern LLMs. InProceedings of the 2025
+Conference of the Nations of the Americas Chap-
+ter of the Association for Computational Linguistics:
+9
+
+Human Language Technologies (Volume 2: Short Pa-
+pers), pages 448–461, Albuquerque, New Mexico.
+Association for Computational Linguistics.
+Francesco Barbieri, Jose Camacho-Collados, Luis Es-
+pinosa Anke, and Leonardo Neves. 2020. TweetEval:
+Unified benchmark and comparative evaluation for
+tweet classification. InFindings of the Association
+for Computational Linguistics: EMNLP 2020, pages
+1644–1650, Online. Association for Computational
+Linguistics.
+Victor Barres, Honghua Dong, Soham Ray, Xujie Si,
+and Karthik Narasimhan. 2025. τ 2-Bench: Evaluat-
+ing Conversational Agents in a Dual-Control Envi-
+ronment.arXiv preprint arXiv:2506.07982.
+Marc G. Bellemare, Yavar Naddaf, Joel Veness, and
+Michael Bowling. 2012. The Arcade Learning Envi-
+ronment: An Evaluation Platform for General Agents.
+arXiv preprint arXiv:1207.4708.
+Benchmark Heaven. 2026. JevBench. https://
+github.com/fstandhartinger/jevbench.
+Yonatan Bisk, Rowan Zellers, Ronan Le bras, Jianfeng
+Gao, and Yejin Choi. 2020. PIQA: reasoning about
+physical commonsense in natural language.Proceed-
+ings of the AAAI Conference on Artificial Intelligence,
+34(05):7432–7439.
+Daniel Borkan, Lucas Dixon, Jeffrey Sorensen, Nithum
+Thain, and Lucy Vasserman. 2019. Nuanced metrics
+for measuring unintended bias with real data for text
+classification. InCompanion Proceedings of The
+2019 World Wide Web Conference, WWW ’19, page
+491–500. ACM.
+Faeze Brahman, Sachin Kumar, Vidhisha Balachan-
+dran, Pradeep Dasigi, Valentina Pyatkin, Abhilasha
+Ravichander, Sarah Wiegreffe, Nouha Dziri, Khyathi
+Chandu, Jack Hessel, Yulia Tsvetkov, Noah Smith,
+Yejin Choi, and Hannaneh Hajishirzi. 2024. The art
+of saying no: Contextual noncompliance in language
+models. InAdvances in Neural Information Process-
+ing Systems 37, NeurIPS 2024, page 49706–49748.
+Neural Information Processing Systems Foundation,
+Inc. (NeurIPS).
+Brida AI. 2026. ReflexBench: Open benchmark
+and evaluation harness for system one models and
+typed decision engines. https://github.com/
+brida-ai/reflexbench.
+Glenn W. Brier. 1950. Verification of forecasts ex-
+pressed in terms of probability.Monthly Weather
+Review, 78(1):1–3.
+Paweł Budzianowski, Tsung-Hsien Wen, Bo-Hsiang
+Tseng, Iñigo Casanueva, Stefan Ultes, Osman Ra-
+madan, and Milica Gaši ´c. 2018. MultiWOZ - a
+Large-Scale Multi-Domain Wizard-of-Oz dataset for
+Task-Oriented dialogue modelling. InProceedings
+of the 2018 Conference on Empirical Methods in Nat-
+ural Language Processing, pages 5016–5026, Brus-
+sels, Belgium. Association for Computational Lin-
+guistics.
+Jannis Bulian, Christian Buck, Wojciech Gajewski, Ben-
+jamin Börschinger, and Tal Schuster. 2022. Tomayto,
+tomahto. beyond token-level answer equivalence for
+question answering evaluation. InProceedings of the
+2022 Conference on Empirical Methods in Natural
+Language Processing, pages 291–305, Abu Dhabi,
+United Arab Emirates. Association for Computa-
+tional Linguistics.
+Bill Byrne, Karthik Krishnamoorthi, Chinnadhurai
+Sankar, Arvind Neelakantan, Ben Goodrich, Daniel
+Duckworth, Semih Yavuz, Amit Dubey, Kyu-Young
+Kim, and Andy Cedilnik. 2019. Taskmaster-1: To-
+ward a realistic and diverse dialog dataset. InPro-
+ceedings of the 2019 Conference on Empirical Meth-
+ods in Natural Language Processing and the 9th In-
+ternational Joint Conference on Natural Language
+Processing (EMNLP-IJCNLP), pages 4516–4525,
+Hong Kong, China. Association for Computational
+Linguistics.
+Iñigo Casanueva, Tadas Tem ˇcinas, Daniela Gerz,
+Matthew Henderson, and Ivan Vuli´c. 2020. Efficient
+intent detection with dual sentence encoders. InPro-
+ceedings of the 2nd Workshop on Natural Language
+Processing for Conversational AI, pages 38–45, On-
+line. Association for Computational Linguistics.
+Derek Chen, Howard Chen, Yi Yang, Alexander Lin,
+and Zhou Yu. 2021. Action-Based conversations
+dataset: A corpus for building more In-Depth Task-
+Oriented dialogue systems. InProceedings of the
+2021 Conference of the North American Chapter of
+the Association for Computational Linguistics: Hu-
+man Language Technologies, pages 3002–3017, On-
+line. Association for Computational Linguistics.
+Lingjiao Chen, Matei Zaharia, and James Zou. 2023a.
+FrugalGPT: How to Use Large Language Models
+While Reducing Cost and Improving Performance.
+arXiv preprint arXiv:2305.05176.
+Shijie Chen, Ziru Chen, Huan Sun, and Yu Su. 2023b.
+Error detection for text-to-SQL semantic parsing. In
+Findings of the Association for Computational Lin-
+guistics: EMNLP 2023, pages 11730–11743, Singa-
+pore. Association for Computational Linguistics.
+Shiqi Chen, Yiran Zhao, Jinghan Zhang, I-Chun Chern,
+Siyang Gao, Pengfei Liu, and Junxian He. 2023c.
+FELM: benchmarking factuality evaluation of large
+language models. InAdvances in Neural Information
+Processing Systems 36: Annual Conference on Neu-
+ral Information Processing Systems 2023, NeurIPS
+2023, New Orleans, LA, USA, December 10 - 16,
+2023.
+Yan Chen, Shujian Liu, Zheng Liu, Weiyi Sun, Linas
+Baltrunas, and Benjamin Schroeder. 2022.WANDS:
+Dataset for Product Search Relevance Assessment,
+page 128–141. Springer International Publishing.
+Nathan Cloos, Meagan Jens, Michelangelo Naim,
+Yen-Ling Kuo, Ignacio Cases, Andrei Barbu, and
+Christopher J. Cueva. 2024. Baba Is AI: Break
+10
+
+the Rules to Beat the Benchmark.arXiv preprint
+arXiv:2407.13729.
+Jasmine Collins, Shubham Goel, Kenan Deng, Achlesh-
+war Luthra, Leon Xu, Erhan Gundogdu, Xi Zhang,
+Tomas F. Yago Vicente, Thomas Dideriksen, Himan-
+shu Arora, Matthieu Guillaumin, and Jitendra Malik.
+2022. ABO: dataset and benchmarks for Real-World
+3D object understanding. In2022 IEEE/CVF Con-
+ference on Computer Vision and Pattern Recognition
+(CVPR), page 21094–21104. IEEE.
+Convai Innovations. 2026. Laya. https://laya.
+convaiinnovations.com/.
+Nick Craswell, Bhaskar Mitra, Emine Yilmaz, Daniel
+Campos, and Ellen M. V oorhees. 2020. Overview
+of the TREC 2019 deep learning track.CoRR,
+abs/2003.07820.
+Scott Crossley, Yu Tian, Perpetual Baffour, Alex
+Franklin, Youngmeen Kim, Wesley Morris, Meg Ben-
+ner, Aigner Picou, and Ulrich Boser. 2023. The en-
+glish language learner insight, proficiency and skills
+evaluation (ELLIPSE) corpus.International Journal
+of Learner Corpus Research, 9(2):248–269.
+Marc-Alexandre Côté, Ákos Kádár, Xingdi Yuan,
+Ben Kybartas, Tavian Barnes, Emery Fine, James
+Moore, Ruo Yu Tao, Matthew Hausknecht, Layla El
+Asri, Mahmoud Adada, Wendy Tay, et al. 2018.
+TextWorld: A Learning Environment for Text-based
+Games.arXiv preprint arXiv:1806.11532.
+Pradeep Dasigi, Kyle Lo, Iz Beltagy, Arman Cohan,
+Noah A. Smith, and Matt Gardner. 2021. A dataset
+of Information-Seeking questions and answers an-
+chored in research papers. InProceedings of the
+2021 Conference of the North American Chapter of
+the Association for Computational Linguistics: Hu-
+man Language Technologies, pages 4599–4610, On-
+line. Association for Computational Linguistics.
+Edoardo Debenedetti, Jie Zhang, Mislav Balunovic,
+Luca Beurer-Kellner, Marc Fischer, and Florian
+Tramèr. 2024. AgentDojo: a dynamic environment
+to evaluate prompt injection attacks and defenses for
+LLM agents. InAdvances in Neural Information Pro-
+cessing Systems 37: Annual Conference on Neural
+Information Processing Systems 2024, NeurIPS 2024,
+Vancouver, BC, Canada, December 10 - 15, 2024.
+Dorottya Demszky, Dana Movshovitz-Attias, Jeongwoo
+Ko, Alan Cowen, Gaurav Nemade, and Sujith Ravi.
+2020. GoEmotions: A dataset of Fine-Grained emo-
+tions. InProceedings of the 58th Annual Meeting of
+the Association for Computational Linguistics, pages
+4040–4054, Online. Association for Computational
+Linguistics.
+Xiang Deng, Yu Gu, Boyuan Zheng, Shijie Chen, Sam
+Stevens, Boshi Wang, Huan Sun, and Yu Su. 2023.
+Mind2Web: towards a generalist agent for the web.
+InAdvances in Neural Information Processing Sys-
+tems 36, NeurIPS 2023, page 28091–28114. Neu-
+ral Information Processing Systems Foundation, Inc.
+(NeurIPS).
+Darshan Deshpande, Varun Gangal, Hersh Mehta, Jitin
+Krishnan, Anand Kannappan, and Rebecca Qian.
+2025. TRAIL: trace reasoning and agentic issue
+localization.Preprint, arXiv:2505.08638.
+DiffusionGemma Team, Adrien Ali Taïga, James
+Assiene, Daniele Calandriello, Rahma Chaabouni,
+João Gante, Tamara von Glehn, Nate Keating, Chris
+Knutsen, Martin Kukla, Tianlin Liu, Ivan Lobov, et al.
+2026. DiffusionGemma Technical Report.arXiv
+preprint arXiv:2608.00146.
+Ning Ding, Guangwei Xu, Yulin Chen, Xiaobin Wang,
+Xu Han, Pengjun Xie, Haitao Zheng, and Zhiyuan
+Liu. 2021. Few-NERD: A few-shot named entity
+recognition dataset. InProceedings of the 59th An-
+nual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Confer-
+ence on Natural Language Processing (Volume 1:
+Long Papers), pages 3198–3213, Online. Association
+for Computational Linguistics.
+Yangruibo Ding, Yanjun Fu, Omniyyah Ibrahim,
+Chawin Sitawarin, Xinyun Chen, Basel Alomair,
+David Wagner, Baishakhi Ray, and Yizheng Chen.
+2025. Vulnerability detection with code language
+models: How far are we? In2025 IEEE/ACM 47th
+International Conference on Software Engineering
+(ICSE), page 1729–1741. IEEE.
+Tin Dizdarevic, Ravi Hammond, Tobias Gessler,
+Anisoara Calinescu, Jonathan Cook, Matteo Gallici,
+Andrei Lupu, and Jakob Nicolaus Foerster. 2025. Ad-
+Hoc Human-AI coordination challenge. InForty-
+second International Conference on Machine Learn-
+ing, ICML 2025, Vancouver, BC, Canada, July 13-19,
+2025.
+Li Du, Xiao Ding, Kai Xiong, Ting Liu, and Bing Qin.
+2022. e-CARE: a new dataset for exploring explain-
+able causal reasoning. InProceedings of the 60th
+Annual Meeting of the Association for Computational
+Linguistics (Volume 1: Long Papers), pages 432–446,
+Dublin, Ireland. Association for Computational Lin-
+guistics.
+Esin Durmus, Karina Nguyen, Thomas I. Liao,
+Nicholas Schiefer, Amanda Askell, Anton Bakhtin,
+Carol Chen, Zac Hatfield-Dodds, Danny Hernan-
+dez, Nicholas Joseph, Liane Lovitt, Sam McCan-
+dlish, Orowa Sikder, Alex Tamkin, Janel Thamkul,
+Jared Kaplan, Jack Clark, and Deep Ganguli. 2023.
+Towards measuring the representation of subjec-
+tive global opinions in language models.Preprint,
+arXiv:2306.16388.
+Myroslava Dzikovska, Rodney Nielsen, Chris Brew,
+Claudia Leacock, Danilo Giampiccolo, Luisa Ben-
+tivogli, Peter Clark, Ido Dagan, and Hoa Trang Dang.
+2013. SemEval-2013 task 7: The joint student re-
+sponse analysis and 8th recognizing textual entail-
+ment challenge. InSecond Joint Conference on Lexi-
+cal and Computational Semantics (*SEM), Volume
+2: Proceedings of the Seventh International Work-
+shop on Semantic Evaluation (SemEval 2013), pages
+11
+
+263–274, Atlanta, Georgia, USA. Association for
+Computational Linguistics.
+Nouha Dziri, Hannah Rashkin, Tal Linzen, and David
+Reitter. 2022. Evaluating attribution in dialogue sys-
+tems: The BEGIN benchmark.Transactions of the
+Association for Computational Linguistics, 10:1066–
+1083.
+Shutong Feng, Nurul Lubis, Christian Geishauser,
+Hsien-chin Lin, Michael Heck, Carel van Niekerk,
+and Milica Gaši´c. 2022. EmoWOZ: A Large-Scale
+corpus and labelling scheme for emotion recognition
+in Task-Oriented dialogue systems. InProceedings
+of the Thirteenth Language Resources and Evalua-
+tion Conference, pages 4096–4113, Marseille, France.
+European Language Resources Association.
+James Ferguson, Matt Gardner, Hannaneh Hajishirzi,
+Tushar Khot, and Pradeep Dasigi. 2020. IIRC: A
+dataset of incomplete information reading compre-
+hension questions. InProceedings of the 2020 Con-
+ference on Empirical Methods in Natural Language
+Processing (EMNLP), pages 1137–1147, Online. As-
+sociation for Computational Linguistics.
+Jack FitzGerald, Christopher Hench, Charith Peris,
+Scott Mackie, Kay Rottmann, Ana Sanchez, Aaron
+Nash, Liam Urbach, Vishesh Kakarala, Richa Singh,
+Swetha Ranganath, Laurie Crist, Misha Britan,
+Wouter Leeuwis, Gokhan Tur, and Prem Natara-
+jan. 2023. MASSIVE: A 1M-Example multilin-
+gual natural language understanding dataset with 51
+Typologically-Diverse languages. InProceedings
+of the 61st Annual Meeting of the Association for
+Computational Linguistics (Volume 1: Long Papers),
+pages 4277–4302, Toronto, Canada. Association for
+Computational Linguistics.
+Maxwell Forbes, Jena D. Hwang, Vered Shwartz,
+Maarten Sap, and Yejin Choi. 2020. Social chem-
+istry 101: Learning to reason about social and moral
+norms. InProceedings of the 2020 Conference on
+Empirical Methods in Natural Language Processing
+(EMNLP), pages 653–670, Online. Association for
+Computational Linguistics.
+Markus Freitag, George Foster, David Grangier, Viresh
+Ratnakar, Qijun Tan, and Wolfgang Macherey. 2021.
+Experts, errors, and context: A Large-Scale study of
+human evaluation for machine translation.Transac-
+tions of the Association for Computational Linguis-
+tics, 9:1460–1474.
+Evan Frick, Tianle Li, Connor Chen, Wei-Lin Chi-
+ang, Anastasios Nikolas Angelopoulos, Jiantao Jiao,
+Banghua Zhu, Joseph E. Gonzalez, and Ion Stoica.
+2025. How to evaluate reward models for RLHF. In
+The Thirteenth International Conference on Learning
+Representations, ICLR 2025, Singapore, April 24-28,
+2025. OpenReview.net.
+Mor Geva, Daniel Khashabi, Elad Segal, Tushar Khot,
+Dan Roth, and Jonathan Berant. 2021. Did aristotle
+use a laptop? a question answering benchmark with
+implicit reasoning strategies.Transactions of the
+Association for Computational Linguistics, 9:346–
+361.
+Shaona Ghosh, Prasoon Varshney, Makesh Narsimhan
+Sreedhar, Aishwarya Padmakumar, Traian Rebedea,
+Jibin Rajan Varghese, and Christopher Parisien. 2025.
+AEGIS2.0: A diverse AI safety dataset and risks
+taxonomy for alignment of LLM guardrails. InPro-
+ceedings of the 2025 Conference of the Nations of
+the Americas Chapter of the Association for Com-
+putational Linguistics: Human Language Technolo-
+gies (Volume 1: Long Papers), pages 5992–6026,
+Albuquerque, New Mexico. Association for Compu-
+tational Linguistics.
+Google. 2026. Gemma 4 E4B. https://huggingface.
+co/google/gemma-4-E4B-it.
+Aaron Grattafiori et al. 2024. The Llama 3 herd of
+models.arXiv preprint arXiv:2407.21783.
+Alex Gu, Baptiste Roziere, Hugh James Leather, Ar-
+mando Solar-Lezama, Gabriel Synnaeve, and Sida
+Wang. 2024. CRUXEval: A benchmark for code
+reasoning, understanding and execution. InProceed-
+ings of the 41st International Conference on Machine
+Learning, volume 235 ofProceedings of Machine
+Learning Research, pages 16568–16621. PMLR.
+Neel Guha, Julian Nyarko, Daniel Ho, Christopher
+Ré, Adam Chilton, Aditya K, Alex Chohlas-Wood,
+Austin Peters, Brandon Waldon, Daniel Rockmore,
+Diego Zambrano, Dmitry Talisman, Enam Hoque,
+Faiz Surani, Frank Fagan, Galit Sarfaty, Gregory
+Dickinson, Haggai Porat, Jason Hegland, and 21 oth-
+ers. 2023. LegalBench: a collaboratively built bench-
+mark for measuring legal reasoning in large language
+models. InAdvances in Neural Information Process-
+ing Systems 36, NeurIPS 2023, page 44123–44279.
+Neural Information Processing Systems Foundation,
+Inc. (NeurIPS).
+James Gung, Emily Moeng, Wesley Rose, Arshit Gupta,
+Yi Zhang, and Saab Mansour. 2023. NatCS: Eliciting
+natural customer support dialogues. InFindings of
+the Association for Computational Linguistics: ACL
+2023, pages 9652–9677, Toronto, Canada. Associa-
+tion for Computational Linguistics.
+Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Wein-
+berger. 2017. On Calibration of Modern Neural Net-
+works.arXiv preprint arXiv:1706.04599.
+Ivan Habernal and Iryna Gurevych. 2016. Which argu-
+ment is more convincing? analyzing and predicting
+convincingness of web arguments using bidirectional
+LSTM. InProceedings of the 54th Annual Meet-
+ing of the Association for Computational Linguistics
+(Volume 1: Long Papers), pages 1589–1599, Berlin,
+Germany. Association for Computational Linguistics.
+Danijar Hafner. 2021. Benchmarking the Spec-
+trum of Agent Capabilities.arXiv preprint
+arXiv:2109.06780.
+12
+
+Danny Halawi, Fred Zhang, Chen Yueh-Han, and Jacob
+Steinhardt. 2024. Approaching Human-Level fore-
+casting with language models. InAdvances in Neural
+Information Processing Systems 37, NeurIPS 2024,
+page 50426–50468. Neural Information Processing
+Systems Foundation, Inc. (NeurIPS).
+Seungju Han, Kavel Rao, Allyson Ettinger, Liwei Jiang,
+Bill Yuchen Lin, Nathan Lambert, Yejin Choi, and
+Nouha Dziri. 2024a. WildGuard: open one-stop mod-
+eration tools for safety risks, jailbreaks, and refusals
+of LLMs. InAdvances in Neural Information Pro-
+cessing Systems 37: Annual Conference on Neural
+Information Processing Systems 2024, NeurIPS 2024,
+Vancouver, BC, Canada, December 10 - 15, 2024.
+Simeng Han, Hailey Schoelkopf, Yilun Zhao, Zhent-
+ing Qi, Martin Riddell, Wenfei Zhou, James Coady,
+David Peng, Yujie Qiao, Luke Benson, Lucy Sun,
+Alexander Wardle-Solano, Hannah Szabó, Ekaterina
+Zubova, Matthew Burtell, Jonathan Fan, Yixin Liu,
+Brian Wong, Malcolm Sailor, and 16 others. 2024b.
+FOLIO: Natural language reasoning with First-Order
+logic. InProceedings of the 2024 Conference on
+Empirical Methods in Natural Language Processing,
+pages 22017–22031, Miami, Florida, USA. Associa-
+tion for Computational Linguistics.
+Xu Han, Hao Zhu, Pengfei Yu, Ziyun Wang, Yuan Yao,
+Zhiyuan Liu, and Maosong Sun. 2018. FewRel: A
+Large-Scale supervised Few-Shot relation classifica-
+tion dataset with State-of-the-Art evaluation. InPro-
+ceedings of the 2018 Conference on Empirical Meth-
+ods in Natural Language Processing, pages 4803–
+4809, Brussels, Belgium. Association for Computa-
+tional Linguistics.
+Helia Hashemi, Mohammad Aliannejadi, Hamed Za-
+mani, and W. Bruce Croft. 2020.ANTIQUE: A
+Non-factoid Question Answering Benchmark, page
+166–173. Springer International Publishing.
+Matthew Hausknecht, Prithviraj Ammanabrolu, Marc-
+Alexandre Côté, and Xingdi Yuan. 2019. Interac-
+tive Fiction Games: A Colossal Adventure.arXiv
+preprint arXiv:1909.05398.
+Iris Hendrickx, Su Nam Kim, Zornitsa Kozareva,
+Preslav Nakov, Diarmuid Ó Séaghdha, Sebastian
+Padó, Marco Pennacchiotti, Lorenza Romano, and
+Stan Szpakowicz. 2010. SemEval-2010 task 8: Multi-
+Way classification of semantic relations between
+pairs of nominals. InProceedings of the 5th Inter-
+national Workshop on Semantic Evaluation, pages
+33–38, Uppsala, Sweden. Association for Computa-
+tional Linguistics.
+Dan Hendrycks, Collin Burns, Steven Basart, Andrew
+Critch, Jerry Li, Dawn Song, and Jacob Steinhardt.
+2021a. Aligning AI with shared human values. In
+9th International Conference on Learning Represen-
+tations, ICLR 2021, Virtual Event, Austria, May 3-7,
+2021. OpenReview.net.
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou,
+Mantas Mazeika, Dawn Song, and Jacob Steinhardt.
+2020. Measuring Massive Multitask Language Un-
+derstanding.arXiv preprint arXiv:2009.03300.
+Dan Hendrycks, Collin Burns, Anya Chen, and Spencer
+Ball. 2021b. CUAD: an Expert-Annotated NLP
+dataset for legal contract review. InProceedings
+of the Neural Information Processing Systems Track
+on Datasets and Benchmarks 1, NeurIPS Datasets
+and Benchmarks 2021, December 2021, virtual.
+Xanh Ho, Anh-Khoa Duong Nguyen, Saku Sugawara,
+and Akiko Aizawa. 2020. Constructing a multi-
+hop QA dataset for comprehensive evaluation of
+reasoning steps. InProceedings of the 28th Inter-
+national Conference on Computational Linguistics,
+pages 6609–6625, Barcelona, Spain (Online). Inter-
+national Committee on Computational Linguistics.
+Monte Hoover, Vatsal Baherwani, Neel Jain, Khalid
+Saifullah, Joseph James Vincent, Chirag Jain,
+Melissa Kazemi Rad, C. Bayan Bruss, Ashwinee
+Panda, and Tom Goldstein. 2026. DynaGuard: a dy-
+namic guardian model with User-Defined policies. In
+The Fourteenth International Conference on Learn-
+ing Representations.
+Nabil Hossain, John Krumm, Michael Gamon, and
+Henry Kautz. 2020. SemEval-2020 task 7: Assess-
+ing humor in edited news headlines. InProceed-
+ings of the Fourteenth Workshop on Semantic Eval-
+uation, pages 746–758, Barcelona (online). Interna-
+tional Committee for Computational Linguistics.
+Qitian Jason Hu, Jacob Bieker, Xiuyu Li, Nan Jiang,
+Benjamin Keigwin, Gaurav Ranganath, Kurt Keutzer,
+and Shriyash Kaustubh Upadhyay. 2024. Router-
+Bench: A Benchmark for Multi-LLM Routing Sys-
+tem.arXiv preprint arXiv:2403.12031.
+Junjie Huang, Duyu Tang, Linjun Shou, Ming Gong,
+Ke Xu, Daxin Jiang, Ming Zhou, and Nan Duan.
+2021. CoSQA: 20,000+ web queries for code search
+and question answering. InProceedings of the 59th
+Annual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Confer-
+ence on Natural Language Processing (Volume 1:
+Long Papers), pages 5690–5700, Online. Association
+for Computational Linguistics.
+Yue Huang, Jiawen Shi, Yuan Li, Chenrui Fan, Siyuan
+Wu, Qihui Zhang, Yixin Liu, Pan Zhou, Yao Wan,
+Neil Zhenqiang Gong, and Lichao Sun. 2024. Meta-
+Tool benchmark for large language models: Deciding
+whether to use tools and which to use. InThe Twelfth
+International Conference on Learning Representa-
+tions, ICLR 2024, Vienna, Austria, May 7-11, 2024.
+OpenReview.net.
+Zheng Huang, Kai Chen, Jianhua He, Xiang Bai, Dimos-
+thenis Karatzas, Shijian Lu, and C. V . Jawahar. 2019.
+ICDAR2019 competition on scanned receipt OCR
+and information extraction. In2019 International
+Conference on Document Analysis and Recognition
+(ICDAR), page 1516–1520. IEEE.
+13
+
+Hamel Husain, Ho-Hsiang Wu, Tiferet Gazit, Miltiadis
+Allamanis, and Marc Brockschmidt. 2019. Code-
+SearchNet challenge: Evaluating the state of seman-
+tic code search.Preprint, arXiv:1909.09436.
+Naman Jain, King Han, Alex Gu, Wen-Ding Li, Fanjia
+Yan, Tianjun Zhang, Sida Wang, Armando Solar-
+Lezama, Koushik Sen, and Ion Stoica. 2025. Live-
+CodeBench: holistic and contamination free evalua-
+tion of large language models for code. InThe Thir-
+teenth International Conference on Learning Repre-
+sentations, ICLR 2025, Singapore, April 24-28, 2025.
+Jiaming Ji, Mickel Liu, Josef Dai, Xuehai Pan, Chi
+Zhang, Ce Bian, Boyuan Chen, Ruiyang Sun, Yizhou
+Wang, and Yaodong Yang. 2023. BeaverTails: to-
+wards improved safety alignment of LLM via a
+Human-Preference dataset. InAdvances in Neural
+Information Processing Systems 36: Annual Confer-
+ence on Neural Information Processing Systems 2023,
+NeurIPS 2023, New Orleans, LA, USA, December 10
+- 16, 2023.
+Carlos E. Jimenez, John Yang, Alexander Wettig,
+Shunyu Yao, Kexin Pei, Ofir Press, and Karthik
+Narasimhan. 2023. SWE-bench: Can Language
+Models Resolve Real-World GitHub Issues?arXiv
+preprint arXiv:2310.06770.
+Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng,
+Hanyi Fang, and Peter Szolovits. 2021. What disease
+does this patient have? a Large-Scale open domain
+question answering dataset from medical exams.Ap-
+plied Sciences, 11(14):6421.
+Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William
+Cohen, and Xinghua Lu. 2019. PubMedQA: A
+dataset for biomedical research question answering.
+InProceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the
+9th International Joint Conference on Natural Lan-
+guage Processing (EMNLP-IJCNLP), pages 2567–
+2577, Hong Kong, China. Association for Computa-
+tional Linguistics.
+Abhishek Jindal, Dmitry Kalashnikov, R. Alex Hofer,
+Oscar Chang, Divya Garikapati, Anirudha Majumdar,
+Pierre Sermanet, and Vikas Sindhwani. 2025. Can
+AI perceive physical danger and intervene?Preprint,
+arXiv:2509.21651.
+Saurav Kadavath, Tom Conerly, Amanda Askell, Tom
+Henighan, Dawn Drain, Ethan Perez, Nicholas
+Schiefer, Zac Hatfield-Dodds, Nova DasSarma, Eli
+Tran-Johnson, Scott Johnston, Sheer El-Showk, et al.
+2022. Language Models (Mostly) Know What They
+Know.arXiv preprint arXiv:2207.05221.
+Daniel Kahneman. 2011.Thinking, Fast and Slow. Far-
+rar, Straus and Giroux.
+Ryo Kamoi, Tanya Goyal, Juan Diego Rodriguez, and
+Greg Durrett. 2023. WiCE: Real-World entailment
+for claims in Wikipedia. InProceedings of the 2023
+Conference on Empirical Methods in Natural Lan-
+guage Processing, pages 7561–7583, Singapore. As-
+sociation for Computational Linguistics.
+Hao Kang, Qingru Zhang, Han Cai, Weiyuan Xu, Tushar
+Krishna, Yilun Du, and Tsachy Weissman. 2025.
+Win Fast or Lose Slow: Balancing Speed and Accu-
+racy in Latency-Sensitive Decisions of LLMs.arXiv
+preprint arXiv:2505.19481.
+Ezra Karger, Houtan Bastani, Yueh-Han Chen, Zachary
+Jacobs, Danny Halawi, Fred Zhang, and Philip Tet-
+lock. 2025. ForecastBench: a dynamic benchmark
+of AI forecasting capabilities. InThe Thirteenth In-
+ternational Conference on Learning Representations,
+ICLR 2025, Singapore, April 24-28, 2025. OpenRe-
+view.net.
+Michał Kempka, Marek Wydmuch, Grzegorz Runc,
+Jakub Toczek, and Wojciech Ja´skowski. 2016. ViZ-
+Doom: A Doom-based AI Research Platform for
+Visual Reinforcement Learning.arXiv preprint
+arXiv:1605.02097.
+Chris J. Kennedy, Geoff Bacon, Alexander Sahn, and
+Claudia von Vacano. 2020. Measuring a hate speech
+spectrum with faceted rasch item response theory
+and perspective-aware, explainable-by-design deep
+learning.Preprint, arXiv:2009.10277.
+Seungone Kim, Juyoung Suk, Ji Yong Cho, Shayne
+Longpre, Chaeeun Kim, Dongkeun Yoon, Guijin Son,
+Yejin Cho, Sheikh Shafayat, Jinheon Baek, Sue Hyun
+Park, Hyeonbin Hwang, Jinkyung Jo, Hyowon Cho,
+Haebin Shin, Seongyun Lee, Hanseok Oh, Noah Lee,
+Namgyu Ho, and 13 others. 2025. The BiGGen
+bench: A principled benchmark for fine-grained eval-
+uation of language models with language models.
+InProceedings of the 2025 Conference of the Na-
+tions of the Americas Chapter of the Association for
+Computational Linguistics: Human Language Tech-
+nologies (Volume 1: Long Papers), pages 5877–5919,
+Albuquerque, New Mexico. Association for Compu-
+tational Linguistics.
+Tom Kocmi, Eleftherios Avramidis, Rachel Bawden,
+Ondˇrej Bojar, Anton Dvorkovich, Christian Fed-
+ermann, Mark Fishel, Markus Freitag, Thamme
+Gowda, Roman Grundkiewicz, Barry Haddow,
+Philipp Koehn, Benjamin Marie, Christof Monz,
+Makoto Morishita, Kenton Murray, Masaaki Nagata,
+Toshiaki Nakazawa, Martin Popel, and 3 others. 2023.
+Findings of the 2023 conference on machine transla-
+tion (WMT23): LLMs are here but not quite there yet.
+InProceedings of the Eighth Conference on Machine
+Translation, pages 1–42, Singapore. Association for
+Computational Linguistics.
+Harsha Kokel, Michael Katz, Kavitha Srinivas, and
+Shirin Sohrabi. 2025. ACPBench: reasoning
+about action, change, and planning.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+39(25):26559–26568.
+Harsha Kokel, Michael Katz, Kavitha Srinivas, and
+Shirin Sohrabi. 2026. ACPBench hard: Unrestrained
+reasoning about action, change, and planning. InThe
+Fourteenth International Conference on Learning
+Representations, ICLR 2026, Rio de Janeiro, Brazil,
+April 23-27, 2026. proceedings.iclr.cc.
+14
+
+Yuta Koreeda and Christopher Manning. 2021. Con-
+tractNLI: A dataset for document-level natural lan-
+guage inference for contracts. InFindings of the
+Association for Computational Linguistics: EMNLP
+2021, pages 1907–1919, Punta Cana, Dominican Re-
+public. Association for Computational Linguistics.
+Kamran Kowsari, Donald E. Brown, Mojtaba Hei-
+darysafa, Kiana Jafari Meimandi, Matthew S. Gerber,
+and Laura E. Barnes. 2017. HDLTex: hierarchical
+deep learning for text classification. In2017 16th
+IEEE International Conference on Machine Learn-
+ing and Applications (ICMLA), page 364–371. IEEE.
+Jacky Kwok, Hangoo Kang, Tarun Suresh, Jon Saad-
+Falcon, Marco Pavone, Christopher Ré, and Azalia
+Mirhoseini. 2026. Contrastive language models: A
+system one model for fast and generalizable decision-
+making. https://contrastive-lm.notion.site.
+Notion blog.
+Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying
+Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E.
+Gonzalez, Hao Zhang, and Ion Stoica. 2023. Ef-
+ficient Memory Management for Large Language
+Model Serving with PagedAttention.arXiv preprint
+arXiv:2309.06180.
+Hanna Köpcke, Andreas Thor, and Erhard Rahm. 2010.
+Evaluation of entity resolution approaches on real-
+world match problems.Proceedings of the VLDB
+Endowment, 3(1-2):484–493.
+Heinrich Küttler, Nantas Nardelli, Alexander H.
+Miller, Roberta Raileanu, Marco Selvatici, Edward
+Grefenstette, and Tim Rocktäschel. 2020. The
+NetHack Learning Environment.arXiv preprint
+arXiv:2006.13760.
+Philippe Laban, Wojciech Kryscinski, Divyansh Agar-
+wal, Alexander Fabbri, Caiming Xiong, Shafiq Joty,
+and Chien-Sheng Wu. 2023. SummEdits: Measuring
+LLM ability at factual reasoning through the lens
+of summarization. InProceedings of the 2023 Con-
+ference on Empirical Methods in Natural Language
+Processing, pages 9662–9676, Singapore. Associa-
+tion for Computational Linguistics.
+Ken Lang. 1995.NewsWeeder: Learning to Filter Net-
+news, page 331–339. Elsevier.
+Stefan Larson, Anish Mahendran, Joseph J. Peper,
+Christopher Clarke, Andrew Lee, Parker Hill,
+Jonathan K. Kummerfeld, Kevin Leach, Michael A.
+Laurenzano, Lingjia Tang, and Jason Mars. 2019. An
+evaluation dataset for intent classification and Out-of-
+Scope prediction. InProceedings of the 2019 Confer-
+ence on Empirical Methods in Natural Language Pro-
+cessing and the 9th International Joint Conference
+on Natural Language Processing (EMNLP-IJCNLP),
+pages 1311–1316, Hong Kong, China. Association
+for Computational Linguistics.
+Moritz Laurer, Wouter van Atteveldt, Andreu Casas, and
+Kasper Welbers. 2023. Building Efficient Universal
+Classifiers with Natural Language Inference.arXiv
+preprint arXiv:2312.17543.
+Kenton Lee, Ming-Wei Chang, and Kristina Toutanova.
+2019. Latent retrieval for weakly supervised open
+domain question answering. InProceedings of the
+57th Annual Meeting of the Association for Computa-
+tional Linguistics, pages 6086–6096, Florence, Italy.
+Association for Computational Linguistics.
+Edouard Leurent. 2018. An environment for au-
+tonomous driving decision-making. https://
+github.com/eleurent/highway-env.
+Sharon Levy, Emily Allaway, Melanie Subbiah, Lydia
+Chilton, Desmond Patton, Kathleen McKeown, and
+William Yang Wang. 2022. SafeText: A benchmark
+for exploring physical safety in language models.
+InProceedings of the 2022 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+2407–2421, Abu Dhabi, United Arab Emirates. As-
+sociation for Computational Linguistics.
+Jiwei Li, Myle Ott, and Claire Cardie. 2013. Identifying
+manipulated offerings on review portals. InProceed-
+ings of the 2013 Conference on Empirical Methods
+in Natural Language Processing, pages 1933–1942,
+Seattle, Washington, USA. Association for Computa-
+tional Linguistics.
+Wei Li, William Bishop, Alice Li, Chris Rawles, Fo-
+lawiyo Campbell-Ajala, Divya Tyamagundlu, and
+Oriana Riva. 2024a. On the effects of data scale
+on UI control agents. InAdvances in Neural Infor-
+mation Processing Systems 37, NeurIPS 2024, page
+92130–92154. Neural Information Processing Sys-
+tems Foundation, Inc. (NeurIPS).
+Yifei Li, Xiang Yue, Zeyi Liao, and Huan Sun. 2024b.
+AttributionBench: How hard is automatic attribu-
+tion evaluation? InFindings of the Association for
+Computational Linguistics: ACL 2024, pages 14919–
+14935, Bangkok, Thailand. Association for Compu-
+tational Linguistics.
+Yu Li, Haoyu Luo, Yuejin Xie, Yuqian Fu, Zhonghao
+Yang, Shuai Shao, Qihan Ren, Wanying Qu, Yanwei
+Fu, Yujiu Yang, Jing Shao, Xia Hu, and Dongrui Liu.
+2026. ATBench: a diverse and realistic agent trajec-
+tory benchmark for safety evaluation and diagnosis.
+Preprint, arXiv:2604.02022.
+Zhiyu Li, Shuai Lu, Daya Guo, Nan Duan, Shailesh
+Jannu, Grant Jenks, Deep Majumder, Jared Green,
+Alexey Svyatkovskiy, Shengyu Fu, and Neel Sun-
+daresan. 2022. Automating code review activities
+by large-scale pre-training. InProceedings of the
+30th ACM Joint European Software Engineering Con-
+ference and Symposium on the Foundations of Soft-
+ware Engineering, ESEC/FSE ’22, page 1035–1047.
+ACM.
+Percy Liang, Rishi Bommasani, Tony Lee, Dimitris
+Tsipras, Dilara Soylu, Michihiro Yasunaga, Yian
+Zhang, Deepak Narayanan, Yuhuai Wu, Ananya Ku-
+mar, Benjamin Newman, Binhang Yuan, et al. 2022.
+Holistic Evaluation of Language Models.arXiv
+preprint arXiv:2211.09110.
+15
+
+Hunter Lightman, Vineet Kosaraju, Yuri Burda, Harri-
+son Edwards, Bowen Baker, Teddy Lee, Jan Leike,
+John Schulman, Ilya Sutskever, and Karl Cobbe.
+2024. Let’s verify step by step. InThe Twelfth In-
+ternational Conference on Learning Representations,
+ICLR 2024, Vienna, Austria, May 7-11, 2024. Open-
+Review.net.
+Bill Yuchen Lin, Ronan Le Bras, Kyle Richardson,
+Ashish Sabharwal, Radha Poovendran, Peter Clark,
+and Yejin Choi. 2025. ZebraLogic: on the scal-
+ing limits of LLMs for logical reasoning. InForty-
+second International Conference on Machine Learn-
+ing, ICML 2025, Vancouver, BC, Canada, July 13-19,
+2025, volume 267 ofProceedings of Machine Learn-
+ing Research. PMLR / OpenReview.net.
+Zi Lin, Zihan Wang, Yongqi Tong, Yangkun Wang,
+Yuxin Guo, Yujia Wang, and Jingbo Shang. 2023.
+ToxicChat: Unveiling hidden challenges of toxicity
+detection in Real-World user-AI conversation. In
+Findings of the Association for Computational Lin-
+guistics: EMNLP 2023, pages 4694–4702, Singapore.
+Association for Computational Linguistics.
+Evan Zheran Liu, Kelvin Guu, Panupong Pasupat, Tian-
+lin Shi, and Percy Liang. 2018. Reinforcement Learn-
+ing on Web Interfaces Using Workflow-Guided Ex-
+ploration.arXiv preprint arXiv:1802.08802.
+Shudong Liu, Hongwei Liu, Junnan Liu, Linchen Xiao,
+Songyang Gao, Chengqi Lyu, Yuzhe Gu, Wenwei
+Zhang, Derek F. Wong, Songyang Zhang, and Kai
+Chen. 2025a. CompassVerifier: A unified and robust
+verifier for LLMs evaluation and outcome reward.
+InProceedings of the 2025 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+33466–33494, Suzhou, China. Association for Com-
+putational Linguistics.
+Xinyu Liu, Shuyu Shen, Boyan Li, Nan Tang, and Yuyu
+Luo. 2025b. NL2SQL-BUGs: a benchmark for de-
+tecting semantic errors in NL2SQL translation. In
+Proceedings of the 31st ACM SIGKDD Conference
+on Knowledge Discovery and Data Mining V .2, KDD
+’25, page 5662–5673. ACM.
+Yantao Liu, Zijun Yao, Rui Min, Yixin Cao, Lei Hou,
+and Juanzi Li. 2025c. RM-Bench: benchmarking
+reward models of language models with subtlety and
+style. InThe Thirteenth International Conference on
+Learning Representations.
+Nicholas Lourie, Ronan Le Bras, and Yejin Choi. 2021.
+SCRUPLES: a corpus of community ethical judg-
+ments on 32,000 Real-Life anecdotes.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+35(15):13470–13479.
+Pan Lu, Liang Qiu, Kai-Wei Chang, Ying Nian Wu,
+Song-Chun Zhu, Tanmay Rajpurohit, Peter Clark,
+and Ashwin Kalyan. 2023. Dynamic prompt learn-
+ing via policy gradient for semi-structured mathe-
+matical reasoning. InThe Eleventh International
+Conference on Learning Representations, ICLR 2023,
+Kigali, Rwanda, May 1-5, 2023. OpenReview.net.
+Xing Han Lù, Amirhossein Kazemnejad, Nicholas
+Meade, Arkil Patel, Dongchan Shin, Alejandra Zam-
+brano, Karolina Stanczak, Peter Shaw, Christopher J.
+Pal, and Siva Reddy. 2025. AgentRewardBench:
+evaluating automatic evaluations of web agent tra-
+jectories.CoRR, abs/2504.08942.
+Yifan Lu, Rixin Liu, Jiayi Yuan, Xingqi Cui, Shenrun
+Zhang, Hongyi Liu, and Jiarong Xing. 2026. Router-
+Arena: an open platform for comprehensive compari-
+son of LLM routers. InThe Fourteenth International
+Conference on Learning Representations, ICLR 2026,
+Rio de Janeiro, Brazil, April 23-27, 2026. proceed-
+ings.iclr.cc.
+M-A-P, ByteDance Seed, and 2077AI. 2025. SuperG-
+PQA: scaling LLM evaluation across 285 graduate
+disciplines. InAdvances in Neural Information Pro-
+cessing Systems 38: Annual Conference on Neural
+Information Processing Systems 2025, NeurIPS 2025,
+San Diego, CA, USA, December 2-7, 2025 / Mexico
+City, Mexico, November 30 - December 5, 2025.
+Saumya Malik, Valentina Pyatkin, Sander Land, Jacob
+Morrison, Noah A. Smith, Hanna Hajishirzi, and
+Nathan Lambert. 2026. RewardBench 2: Advancing
+reward model evaluation. InThe Fourteenth Inter-
+national Conference on Learning Representations,
+ICLR 2026, Rio de Janeiro, Brazil, April 23-27, 2026.
+proceedings.iclr.cc.
+Pekka Malo, Ankur Sinha, Pekka J. Korhonen, Jyrki
+Wallenius, and Pyry Takala. 2014. Good debt or bad
+debt: Detecting semantic orientations in economic
+texts.J. Assoc. Inf. Sci. Technol., 65(4):782–796.
+Todor Markov, Chong Zhang, Sandhini Agarwal, Flo-
+rentine Eloundou Nekoul, Theodore Lee, Steven
+Adler, Angela Jiang, and Lilian Weng. 2023. A holis-
+tic approach to undesired content detection in the
+real world.Proceedings of the AAAI Conference on
+Artificial Intelligence, 37(12):15009–15018.
+Mike A. Merrill, Alexander Glenn Shaw, Nicholas Car-
+lini, Boxuan Li, Harsh Raj, Ivan Bercovich, Lin Shi,
+Jeong Yeon Shin, Thomas Walshe, Estefany Kelly
+Buchanan, Junhong Shen, Guanghao Ye, Haowei
+Lin, Jason Poulos, Maoyu Wang, Marianna Nezhu-
+rina, Di Lu, Orfeas Menis-Mastromichalakis, Zhiwei
+Xu, and 65 others. 2026. Terminal-Bench: bench-
+marking agents on hard, realistic tasks in command
+line interfaces. InThe Fourteenth International Con-
+ference on Learning Representations, ICLR 2026,
+Rio de Janeiro, Brazil, April 23-27, 2026. proceed-
+ings.iclr.cc.
+Vangelis Metsis, Ion Androutsopoulos, and Georgios
+Paliouras. 2006. Spam filtering with naive bayes -
+which naive bayes? InCEAS 2006 - The Third Con-
+ference on Email and Anti-Spam, July 27-28, 2006,
+Mountain View, California, USA.
+Microsoft. 2026. Introducing Microsoft-
+Decision-1, our model for fast decision-
+making. https://commandline.microsoft.
+16
+
+com/microsoft-decision-1-model-foundry/ .
+Accessed 2026-10-10.
+Sewon Min, Kalpesh Krishna, Xinxi Lyu, Mike Lewis,
+Wen-tau Yih, Pang Koh, Mohit Iyyer, Luke Zettle-
+moyer, and Hannaneh Hajishirzi. 2023. FActScore:
+Fine-grained atomic evaluation of factual precision
+in long form text generation. InProceedings of the
+2023 Conference on Empirical Methods in Natural
+Language Processing, pages 12076–12100, Singa-
+pore. Association for Computational Linguistics.
+Sewon Min, Julian Michael, Hannaneh Hajishirzi, and
+Luke Zettlemoyer. 2020. AmbigQA: Answering am-
+biguous open-domain questions. InProceedings of
+the 2020 Conference on Empirical Methods in Nat-
+ural Language Processing (EMNLP), pages 5783–
+5797, Online. Association for Computational Lin-
+guistics.
+Saif Mohammad, Felipe Bravo-Marquez, Mohammad
+Salameh, and Svetlana Kiritchenko. 2018. SemEval-
+2018 task 1: Affect in tweets. InProceedings of the
+12th International Workshop on Semantic Evaluation,
+pages 1–17, New Orleans, Louisiana. Association for
+Computational Linguistics.
+Saif Mohammad, Svetlana Kiritchenko, Parinaz Sob-
+hani, Xiaodan Zhu, and Colin Cherry. 2016.
+SemEval-2016 task 6: Detecting stance in tweets.
+InProceedings of the 10th International Workshop
+on Semantic Evaluation (SemEval-2016), pages 31–
+41, San Diego, California. Association for Computa-
+tional Linguistics.
+Michael Mohler, Razvan Bunescu, and Rada Mihalcea.
+2011. Learning to grade short answer questions us-
+ing semantic similarity measures and dependency
+graph alignments. InProceedings of the 49th An-
+nual Meeting of the Association for Computational
+Linguistics: Human Language Technologies, pages
+752–762, Portland, Oregon, USA. Association for
+Computational Linguistics.
+Sidharth Mudgal, Han Li, Theodoros Rekatsinas, An-
+Hai Doan, Youngchoon Park, Ganesh Krishnan, Ro-
+hit Deep, Esteban Arcaute, and Vijay Raghavendra.
+2018. Deep learning for entity matching: A design
+space exploration. InProceedings of the 2018 Inter-
+national Conference on Management of Data, SIG-
+MOD/PODS ’18, page 19–34. ACM.
+Niklas Muennighoff, Qian Liu, Armel Randy Ze-
+baze, Qinkai Zheng, Binyuan Hui, Terry Yue Zhuo,
+Swayam Singh, Xiangru Tang, Leandro von Werra,
+and Shayne Longpre. 2024. OctoPack: instruction
+tuning code large language models. InThe Twelfth In-
+ternational Conference on Learning Representations,
+ICLR 2024, Vienna, Austria, May 7-11, 2024.
+Vaskar Nath, Pranav Raja, Claire Yoon, and Sean
+Hendryx. 2025. ToolComp: a Multi-Tool rea-
+soning & process supervision benchmark.CoRR,
+abs/2501.01290.
+Yixin Nie, Adina Williams, Emily Dinan, Mohit Bansal,
+Jason Weston, and Douwe Kiela. 2020. Adversarial
+NLI: A new benchmark for natural language under-
+standing. InProceedings of the 58th Annual Meet-
+ing of the Association for Computational Linguistics,
+pages 4885–4901, Online. Association for Computa-
+tional Linguistics.
+Cheng Niu, Yuanhao Wu, Juno Zhu, Siliang Xu,
+KaShun Shum, Randy Zhong, Juntong Song, and
+Tong Zhang. 2024. RAGTruth: A hallucination cor-
+pus for developing trustworthy Retrieval-Augmented
+language models. InProceedings of the 62nd An-
+nual Meeting of the Association for Computational
+Linguistics (Volume 1: Long Papers), pages 10862–
+10878, Bangkok, Thailand. Association for Compu-
+tational Linguistics.
+Adam Oliner and Jon Stearley. 2007. What supercom-
+puters say: A study of five system logs. In37th An-
+nual IEEE/IFIP International Conference on Depend-
+able Systems and Networks (DSN’07), page 575–584.
+IEEE.
+OpenAI. 2024. Introducing SWE-bench
+Verified. https://openai.com/index/
+introducing-swe-bench-verified/.
+OpenAI. 2025. gpt-oss-120b & gpt-oss-20b model card.
+arXiv preprint arXiv:2508.10925.
+OpenAI. 2026a. Decisions API. https:
+//developers.openai.com/api/docs/guides/
+decisions. Public beta. Accessed 2026-10-07.
+OpenAI. 2026b. GPT-6 Astra: A new genera-
+tion of intelligence. https://openai.com/index/
+gpt-6-astra/.
+OpenAI. 2026c. Introducing GPT-6 Sol
+and Luna. https://openai.com/index/
+introducing-gpt-6-sol-and-luna/.
+OpenAI. 2026d. Previewing GPT-5.6 Sol: a next-
+generation model. https://openai.com/index/
+previewing-gpt-5-6-sol/.
+Davide Paglieri, Bartłomiej Cupiał, Samuel Coward,
+Ulyana Piterbarg, Maciej Wolczyk, Akbir Khan, Ed-
+uardo Pignatelli, Łukasz Kuci ´nski, Lerrel Pinto, Rob
+Fergus, Jakob Nicolaus Foerster, Jack Parker-Holder,
+and Tim Rocktäschel. 2024. BALROG: Benchmark-
+ing Agentic LLM and VLM Reasoning On Games.
+arXiv preprint arXiv:2411.13543.
+Panupong Pasupat and Percy Liang. 2015. Composi-
+tional semantic parsing on Semi-Structured tables. In
+Proceedings of the 53rd Annual Meeting of the As-
+sociation for Computational Linguistics and the 7th
+International Joint Conference on Natural Language
+Processing (Volume 1: Long Papers), pages 1470–
+1480, Beijing, China. Association for Computational
+Linguistics.
+17
+
+Shishir G. Patil, Huanzhi Mao, Fanjia Yan, Char-
+lie Cheng-Jie Ji, Vishnu Suresh, Ion Stoica, and
+Joseph E. Gonzalez. 2025. The berkeley function
+calling leaderboard (BFCL): from tool use to agen-
+tic evaluation of large language models. InForty-
+second International Conference on Machine Learn-
+ing, ICML 2025, Vancouver, BC, Canada, July 13-19,
+2025, volume 267 ofProceedings of Machine Learn-
+ing Research. PMLR / OpenReview.net.
+Ellie Pavlick and Joel Tetreault. 2016. An empiri-
+cal analysis of formality in online communication.
+Transactions of the Association for Computational
+Linguistics, 4:61–74.
+Ralph Peeters, Reng Chiz Der, and Christian Bizer.
+2024. WDC products: A Multi-Dimensional entity
+matching benchmark. InProceedings 27th Interna-
+tional Conference on Extending Database Technol-
+ogy, EDBT 2024, Paestum, Italy, March 25 - March
+28, pages 22–33. OpenProceedings.org.
+Denis Peskov, Benny Cheng, Ahmed Elgohary, Joe Bar-
+row, Cristian Danescu-Niculescu-Mizil, and Jordan
+Boyd-Graber. 2020. It takes two to lie: One to lie,
+and one to listen. InProceedings of the 58th Annual
+Meeting of the Association for Computational Lin-
+guistics, pages 3811–3854, Online. Association for
+Computational Linguistics.
+Ildikó Pilán, Pierre Lison, Lilja Øvrelid, Anthi Pa-
+padopoulou, David Sánchez, and Montserrat Batet.
+2022. The text anonymization benchmark (TAB):
+A dedicated corpus and evaluation framework for
+text anonymization.Computational Linguistics,
+48(4):1053–1101.
+Xavier Puig, Kevin Ra, Marko Boben, Jiaman Li,
+Tingwu Wang, Sanja Fidler, and Antonio Torralba.
+2018. VirtualHome: simulating household activi-
+ties via programs. In2018 IEEE/CVF Conference
+on Computer Vision and Pattern Recognition, page
+8494–8502. IEEE.
+Valentina Pyatkin, Saumya Malik, Victoria Graf,
+Hamish Ivison, Shengyi Huang, Pradeep Dasigi,
+Nathan Lambert, and Hanna Hajishirzi. 2025. Gen-
+eralizing verifiable instruction following. InAd-
+vances in Neural Information Processing Systems 38,
+NeurIPS 2025, page 54870–54896. Neural Informa-
+tion Processing Systems Foundation, Inc. (NeurIPS).
+Qwen Team. 2026a. Qwen3.5-9B. https://
+huggingface.co/Qwen/Qwen3.5-9B.
+Qwen Team. 2026b. Qwen3.8-27B model card. https:
+//huggingface.co/Qwen/Qwen3.8-27B.
+Pranav Rajpurkar, Robin Jia, and Percy Liang. 2018.
+Know what you don’t know: Unanswerable ques-
+tions for SQuAD. InProceedings of the 56th Annual
+Meeting of the Association for Computational Lin-
+guistics (Volume 2: Short Papers), pages 784–789,
+Melbourne, Australia. Association for Computational
+Linguistics.
+Abhinav Rastogi, Xiaoxue Zang, Srinivas Sunkara,
+Raghav Gupta, and Pranav Khaitan. 2020. To-
+wards scalable Multi-Domain conversational agents:
+The Schema-Guided dialogue dataset.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+34(05):8689–8696.
+Abhilasha Ravichander, Aakanksha Naik, Carolyn Rose,
+and Eduard Hovy. 2019. EQUATE: A benchmark
+evaluation framework for quantitative reasoning in
+natural language inference. InProceedings of the
+23rd Conference on Computational Natural Lan-
+guage Learning (CoNLL), pages 349–361, Hong
+Kong, China. Association for Computational Lin-
+guistics.
+Chandan K. Reddy, Lluís Màrquez, Fran Valero, Nikhil
+Rao, Hugo Zaragoza, Sambaran Bandyopadhyay,
+Arnab Biswas, Anlu Xing, and Karthik Subbian.
+2022. Shopping queries dataset: A Large-Scale ESCI
+benchmark for improving product search.CoRR,
+abs/2206.06588.
+Theodoros Rekatsinas, Xu Chu, Ihab F. Ilyas, and
+Christopher Ré. 2017. HoloClean: holistic data re-
+pairs with probabilistic inference.Proceedings of the
+VLDB Endowment, 10(11):1190–1201.
+Dominique Ritze, Oliver Lehmberg, and Christian Bizer.
+2015. Matching HTML tables to DBpedia. InPro-
+ceedings of the 5th International Conference on Web
+Intelligence, Mining and Semantics, WIMS ’15, page
+1–6. ACM.
+Kirk Roberts, Dina Demner-Fushman, Ellen M.
+V oorhees, Steven Bedrick, and William R. Hersh.
+2022. Overview of the TREC 2022 clinical trials
+track. InProceedings of the Thirty-First Text RE-
+trieval Conference, TREC 2022, online, November
+15-19, 2022, volume 500-338 ofNIST Special Publi-
+cation. National Institute of Standards and Technol-
+ogy (NIST).
+Melissa Roemmele, Cosmin Adrian Bejan, and An-
+drew S. Gordon. 2011. Choice of plausible alter-
+natives: An evaluation of commonsense causal rea-
+soning. InLogical Formalizations of Commonsense
+Reasoning, Papers from the 2011 AAAI Spring Sym-
+posium, Technical Report SS-11-06, Stanford, Cali-
+fornia, USA, March 21-23, 2011. AAAI.
+Paul Röttger, Hannah Kirk, Bertie Vidgen, Giuseppe
+Attanasio, Federico Bianchi, and Dirk Hovy. 2024.
+XSTest: A test suite for identifying exaggerated
+safety behaviours in large language models. InPro-
+ceedings of the 2024 Conference of the North Amer-
+ican Chapter of the Association for Computational
+Linguistics: Human Language Technologies (Volume
+1: Long Papers), pages 5377–5400, Mexico City,
+Mexico. Association for Computational Linguistics.
+Anian Ruoss, Grégoire Delétang, Sourabh Medapati,
+Jordi Grau-Moya, Li Wenliang, Elliot Catt, John
+Reid, Cannada Lewis, Joel Veness, and Tim Ge-
+newein. 2024. Amortized planning with Large-Scale
+18
+
+transformers: A case study on chess. InAdvances in
+Neural Information Processing Systems 37, NeurIPS
+2024, page 65765–65790. Neural Information Pro-
+cessing Systems Foundation, Inc. (NeurIPS).
+Pratik S. Sachdeva, Renata Barreto, Geoff Bacon,
+Alexander Sahn, Claudia von Vacano, and Chris
+Kennedy. 2022. The measuring hate speech cor-
+pus: Leveraging rasch measurement theory for data
+perspectivism. InProceedings of the 1st Workshop
+on Perspectivist Approaches to NLP @LREC2022,
+pages 83–94, Marseille, France. European Language
+Resources Association.
+Marzieh Saeidi, Max Bartolo, Patrick Lewis, Sameer
+Singh, Tim Rocktäschel, Mike Sheldon, Guillaume
+Bouchard, and Sebastian Riedel. 2018. Interpretation
+of natural language rules in conversational machine
+reading. InProceedings of the 2018 Conference on
+Empirical Methods in Natural Language Processing,
+pages 2087–2097, Brussels, Belgium. Association
+for Computational Linguistics.
+Amrita Saha, Rahul Aralikatte, Mitesh M. Khapra, and
+Karthik Sankaranarayanan. 2018. DuoRC: Towards
+complex language understanding with paraphrased
+reading comprehension. InProceedings of the 56th
+Annual Meeting of the Association for Computational
+Linguistics (Volume 1: Long Papers), pages 1683–
+1693, Melbourne, Australia. Association for Compu-
+tational Linguistics.
+Keisuke Sakaguchi, Ronan Le Bras, Chandra Bhagavat-
+ula, and Yejin Choi. 2020. WinoGrande: an adversar-
+ial winograd schema challenge at scale.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+34(05):8732–8740.
+Mikayel Samvelyan, Robert Kirk, Vitaly Kurin, Jack
+Parker-Holder, Minqi Jiang, Eric Hambro, Fabio
+Petroni, Heinrich Küttler, Edward Grefenstette, and
+Tim Rocktäschel. 2021. MiniHack the Planet: A
+Sandbox for Open-Ended Reinforcement Learning
+Research.arXiv preprint arXiv:2109.13202.
+Michael Schlichtkrull, Zhijiang Guo, and Andreas Vla-
+chos. 2023. A VeriTeC: a dataset for real-world claim
+verification with evidence from the web. InAd-
+vances in Neural Information Processing Systems 36,
+NeurIPS 2023, page 65128–65167. Neural Informa-
+tion Processing Systems Foundation, Inc. (NeurIPS).
+Tal Schuster, Adam Fisch, and Regina Barzilay. 2021.
+Get your vitamin C! robust fact verification with
+contrastive evidence. InProceedings of the 2021
+Conference of the North American Chapter of the
+Association for Computational Linguistics: Human
+Language Technologies, pages 624–643, Online. As-
+sociation for Computational Linguistics.
+Agam Shah, Suvan Paturi, and Sudheer Chava. 2023.
+Trillion dollar words: A new financial dataset, task &
+market analysis. InProceedings of the 61st Annual
+Meeting of the Association for Computational Lin-
+guistics (Volume 1: Long Papers), pages 6664–6679,
+Toronto, Canada. Association for Computational Lin-
+guistics.
+Tianlin Shi, Andrej Karpathy, Linxi Fan, Jonathan Her-
+nandez, and Percy Liang. 2017. World of bits: An
+open-domain platform for web-based agents. InIn-
+ternational Conference on Machine Learning, pages
+3135–3144.
+Zhengxiang Shi, Qiang Zhang, and Aldo Lipani.
+2022. StepGame: a new benchmark for robust
+Multi-Hop spatial reasoning in texts.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+36(10):11321–11329.
+Mohit Shridhar, Xingdi Yuan, Marc-Alexandre Côté,
+Yonatan Bisk, Adam Trischler, and Matthew
+Hausknecht. 2020. ALFWorld: Aligning Text and
+Embodied Environments for Interactive Learning.
+arXiv preprint arXiv:2010.03768.
+Richard Socher, Alex Perelygin, Jean Wu, Jason
+Chuang, Christopher D. Manning, Andrew Ng, and
+Christopher Potts. 2013. Recursive deep models for
+semantic compositionality over a sentiment treebank.
+InProceedings of the 2013 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+1631–1642, Seattle, Washington, USA. Association
+for Computational Linguistics.
+Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao,
+Abu Awal Md Shoeb, Abubakar Abid, Adam Fisch,
+Adam R. Brown, Adam Santoro, Aditya Gupta,
+Adrià Garriga-Alonso, Agnieszka Kluska, Aitor
+Lewkowycz, et al. 2022. Beyond the Imitation Game:
+Quantifying and extrapolating the capabilities of lan-
+guage models.arXiv preprint arXiv:2206.04615.
+Hongjin Su, Howard Yen, Mengzhou Xia, Weijia Shi,
+Niklas Muennighoff, Han yu Wang, Haisu Liu, Quan
+Shi, Zachary S. Siegel, Michael Tang, Ruoxi Sun,
+Jinsung Yoon, Sercan Ö. Arik, Danqi Chen, and
+Tao Yu. 2025. BRIGHT: a realistic and challeng-
+ing benchmark for Reasoning-Intensive retrieval. In
+The Thirteenth International Conference on Learning
+Representations, ICLR 2025, Singapore, April 24-28,
+2025. OpenReview.net.
+Joseph Suh, Erfan Jahanparast, Suhong Moon, Minwoo
+Kang, and Serina Chang. 2025. Language model
+Fine-Tuning on scaled survey data for predicting dis-
+tributions of public opinions. InProceedings of the
+63rd Annual Meeting of the Association for Compu-
+tational Linguistics (Volume 1: Long Papers), pages
+21147–21170, Vienna, Austria. Association for Com-
+putational Linguistics.
+Jiao Sun, Anjali Narayan-Chen, Shereen Oraby,
+Alessandra Cervone, Tagyoung Chung, Jing Huang,
+Yang Liu, and Nanyun Peng. 2022. ExPUNations:
+Augmenting puns with keywords and explanations.
+InProceedings of the 2022 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+4590–4605, Abu Dhabi, United Arab Emirates. As-
+sociation for Computational Linguistics.
+19
+
+Weiwei Sun, Shuo Zhang, Krisztian Balog, Zhaochun
+Ren, Pengjie Ren, Zhumin Chen, and Maarten de Ri-
+jke. 2021. Simulating user satisfaction for the evalu-
+ation of task-oriented dialogue systems. InProceed-
+ings of the 44th International ACM SIGIR Confer-
+ence on Research and Development in Information
+Retrieval, SIGIR ’21, page 2499–2506. ACM.
+Mirac Suzgun, Nathan Scales, Nathanael Schärli, Se-
+bastian Gehrmann, Yi Tay, Hyung Won Chung,
+Aakanksha Chowdhery, Quoc Le, Ed Chi, Denny
+Zhou, and Jason Wei. 2023. Challenging BIG-Bench
+tasks and whether Chain-of-Thought can solve them.
+InFindings of the Association for Computational Lin-
+guistics: ACL 2023, pages 13003–13051, Toronto,
+Canada. Association for Computational Linguistics.
+Jun Jet Tai, Jim Wong, Mauro Innocente, Nadjim
+Horri, James Brusey, and Swee King Phang. 2023.
+PyFlyt – UA V Simulation Environments for Re-
+inforcement Learning Research.arXiv preprint
+arXiv:2304.01305.
+Alon Talmor, Jonathan Herzig, Nicholas Lourie, and
+Jonathan Berant. 2019. CommonsenseQA: A ques-
+tion answering challenge targeting commonsense
+knowledge. InProceedings of the 2019 Conference
+of the North American Chapter of the Association for
+Computational Linguistics: Human Language Tech-
+nologies, Volume 1 (Long and Short Papers), pages
+4149–4158, Minneapolis, Minnesota. Association for
+Computational Linguistics.
+Sijun Tan, Siyuan Zhuang, Kyle Montgomery,
+William Yuan Tang, Alejandro Cuadron, Chen-
+guang Wang, Raluca A. Popa, and Ion Stoica. 2025.
+JudgeBench: A benchmark for evaluating LLM-
+Based judges. InThe Thirteenth International Con-
+ference on Learning Representations, ICLR 2025,
+Singapore, April 24-28, 2025. OpenReview.net.
+Liyan Tang, Igor Shalyminov, Amy Wong, Jon Burnsky,
+Jake Vincent, Yu’an Yang, Siffi Singh, Song Feng,
+Hwanjun Song, Hang Su, Lijia Sun, Yi Zhang, Saab
+Mansour, and Kathleen McKeown. 2024. TofuEval:
+Evaluating hallucinations of LLMs on Topic-Focused
+dialogue summarization. InProceedings of the 2024
+Conference of the North American Chapter of the
+Association for Computational Linguistics: Human
+Language Technologies (Volume 1: Long Papers),
+pages 4455–4480, Mexico City, Mexico. Association
+for Computational Linguistics.
+Mahbod Tavallaee, Ebrahim Bagheri, Wei Lu, and Ali A.
+Ghorbani. 2009. A detailed analysis of the KDD
+CUP 99 data set. In2009 IEEE Symposium on Com-
+putational Intelligence for Security and Defense Ap-
+plications, page 1–6. IEEE.
+The Stockfish developers. 2026. Stockfish. https:
+//stockfishchess.org.
+Martin Thoma. 2018. The WiLI benchmark dataset
+for written language identification.Preprint,
+arXiv:1801.07779.
+Katherine Tian, Eric Mitchell, Allan Zhou, Archit
+Sharma, Rafael Rafailov, Huaxiu Yao, Chelsea
+Finn, and Christopher D. Manning. 2023. Just
+Ask for Calibration: Strategies for Eliciting Cali-
+brated Confidence Scores from Language Models
+Fine-Tuned with Human Feedback.arXiv preprint
+arXiv:2305.14975.
+Emanuel Todorov, Tom Erez, and Yuval Tassa. 2012.
+MuJoCo: A physics engine for model-based control.
+InIEEE/RSJ International Conference on Intelligent
+Robots and Systems, pages 5026–5033.
+Mark Towers, Ariel Kwiatkowski, Jordan Terry, John U.
+Balis, Gianluca De Cola, Tristan Deleu, Manuel
+Goulão, Andreas Kallinteris, Markus Krimmel, Ar-
+jun KG, Rodrigo Perez-Vicente, Andrea Pierré, et al.
+2024. Gymnasium: A Standard Interface for Rein-
+forcement Learning Environments.arXiv preprint
+arXiv:2407.17032.
+Harsh Trivedi, Niranjan Balasubramanian, Tushar Khot,
+and Ashish Sabharwal. 2022. MuSiQue: Multi-
+hop questions via single-hop question composition.
+Transactions of the Association for Computational
+Linguistics, 10:539–554.
+TypeSafe AI. 2026. Jev. System One model, version
+1.13.0, accessed through the Vercel AI Gateway as
+typesafe-ai/jev.
+Karthik Valmeekam, Matthew Marquez, Alberto Olmo,
+Sarath Sreedharan, and Subbarao Kambhampati.
+2023. PlanBench: an extensible benchmark for eval-
+uating large language models on planning and rea-
+soning about change. InAdvances in Neural Infor-
+mation Processing Systems 36, NeurIPS 2023, page
+38975–38987. Neural Information Processing Sys-
+tems Foundation, Inc. (NeurIPS).
+Bertie Vidgen, Tristan Thrush, Zeerak Waseem, and
+Douwe Kiela. 2021. Learning from the worst: Dy-
+namically generated datasets to improve online hate
+detection. InProceedings of the 59th Annual Meet-
+ing of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natu-
+ral Language Processing (Volume 1: Long Papers),
+pages 1667–1682, Online. Association for Computa-
+tional Linguistics.
+Sokratis Vidros, Constantinos Kolias, Georgios Kam-
+bourakis, and Leman Akoglu. 2017. Automatic de-
+tection of online recruitment frauds: Characteris-
+tics, methods, and a public dataset.Future Internet,
+9(1):6.
+vLLM contributors. 2026. Structured gen-
+eration mode for DiffusionGemma (Jev-
+like). vLLM pull request 57250, https:
+//github.com/vllm-project/vllm/pull/57250.
+vLLM Semantic Router Team. 2026. Decision-
+2.0-Sol-2B: A Decision 2.0 model for structured
+decisions. https://huggingface.co/vllm-sr/
+Decision-2.0-Sol-2B.
+20
+
+Ellen V oorhees, Tasmeer Alam, Steven Bedrick, Dina
+Demner-Fushman, William R. Hersh, Kyle Lo, Kirk
+Roberts, Ian Soboroff, and Lucy Lu Wang. 2020.
+TREC-COVID: constructing a pandemic informa-
+tion retrieval test collection.ACM SIGIR Forum,
+54(1):1–12.
+Tu Vu, Mohit Iyyer, Xuezhi Wang, Noah Constant, Jerry
+Wei, Jason Wei, Chris Tar, Yun-Hsuan Sung, Denny
+Zhou, Quoc Le, and Thang Luong. 2024. Fresh-
+LLMs: Refreshing large language models with search
+engine augmentation. InFindings of the Association
+for Computational Linguistics: ACL 2024, pages
+13697–13720, Bangkok, Thailand. Association for
+Computational Linguistics.
+David Wadden, Shanchuan Lin, Kyle Lo, Lucy Lu
+Wang, Madeleine van Zuylen, Arman Cohan, and
+Hannaneh Hajishirzi. 2020. Fact or fiction: Verifying
+scientific claims. InProceedings of the 2020 Con-
+ference on Empirical Methods in Natural Language
+Processing (EMNLP), pages 7534–7550, Online. As-
+sociation for Computational Linguistics.
+Cunxiang Wang, Sirui Cheng, Qipeng Guo, Yuanhao
+Yue, Bowen Ding, Zhikun Xu, Yidong Wang, Xi-
+angkun Hu, Zheng Zhang, and Yue Zhang. 2023a.
+Evaluating Open-QA evaluation. InAdvances in
+Neural Information Processing Systems 36: Annual
+Conference on Neural Information Processing Sys-
+tems 2023, NeurIPS 2023, New Orleans, LA, USA,
+December 10 - 16, 2023.
+Jiayu Wang, Yifei Ming, Zhenmei Shi, Vibhav Vineet,
+Xin Wang, Sharon Li, and Neel Joshi. 2024a. Is a
+picture worth a thousand words? delving into spatial
+reasoning for vision language models. InAdvances in
+Neural Information Processing Systems 37: Annual
+Conference on Neural Information Processing Sys-
+tems 2024, NeurIPS 2024, Vancouver, BC, Canada,
+December 10 - 15, 2024.
+Ruoyao Wang, Peter Jansen, Marc-Alexandre Côté,
+and Prithviraj Ammanabrolu. 2022. ScienceWorld:
+Is your Agent Smarter than a 5th Grader?arXiv
+preprint arXiv:2203.07540.
+Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni,
+Abhranil Chandra, Shiguang Guo, Weiming Ren,
+Aaran Arulraj, Xuan He, Ziyan Jiang, Tianle Li, Max
+Ku, Kai Wang, Alex Zhuang, Rongqi Fan, Xiang
+Yue, and Wenhu Chen. 2024b. MMLU-Pro: a more
+robust and challenging Multi-Task language under-
+standing benchmark. InAdvances in Neural Infor-
+mation Processing Systems 37, NeurIPS 2024, page
+95266–95290. Neural Information Processing Sys-
+tems Foundation, Inc. (NeurIPS).
+Zhilin Wang, Yi Dong, Olivier Delalleau, Jiaqi Zeng,
+Gerald Shen, Daniel Egert, Jimmy Zhang, Makesh
+Sreedhar, and Oleksii Kuchaiev. 2024c. HelpSteer 2:
+Open-source dataset for training top-performing re-
+ward models. InAdvances in Neural Information Pro-
+cessing Systems 37, NeurIPS 2024, page 1474–1501.
+Neural Information Processing Systems Foundation,
+Inc. (NeurIPS).
+Zilong Wang, Yichao Zhou, Wei Wei, Chen-Yu Lee,
+and Sandeep Tata. 2023b. VRDU: a benchmark for
+visually-rich document understanding. InProceed-
+ings of the 29th ACM SIGKDD Conference on Knowl-
+edge Discovery and Data Mining, KDD ’23, page
+5184–5193. ACM.
+Jason Wei, Nguyen Karina, Hyung Won Chung,
+Yunxin Joy Jiao, Spencer Papay, Amelia Glaese,
+John Schulman, and William Fedus. 2024. Mea-
+suring short-form factuality in large language models.
+CoRR, abs/2411.04368.
+Robert West and Jure Leskovec. 2012. Human wayfind-
+ing in information networks. InProceedings of the
+21st international conference on World Wide Web,
+WWW 2012, page 619–628. ACM.
+Robert West, Joelle Pineau, and Doina Precup. 2009.
+Wikispeedia: An online game for inferring semantic
+distances between concepts. InInternational Joint
+Conference on Artificial Intelligence.
+Colin White, Samuel Dooley, Manley Roberts, Arka Pal,
+Benjamin Feuer, Siddhartha Jain, Ravid Shwartz-Ziv,
+Neel Jain, Khalid Saifullah, Sreemanti Dey, Shubh-
+Agrawal, Sandeep Singh Sandha, Siddartha V . Naidu,
+Chinmay Hegde, Yann LeCun, Tom Goldstein, Willie
+Neiswanger, and Micah Goldblum. 2025. LiveBench:
+a challenging, Contamination-Limited LLM bench-
+mark. InThe Thirteenth International Conference
+on Learning Representations, ICLR 2025, Singapore,
+April 24-28, 2025.
+Shuang Wu, Liwen Zhu, Tao Yang, Shiwei Xu, Qiang
+Fu, Yang Wei, and Haobo Fu. 2024. Enhance reason-
+ing for large language models in the game werewolf.
+CoRR, abs/2402.02330.
+xAI. 2026. Introducing Grok 4.7. https://x.ai/
+news/grok-4-7.
+Miao Xiong, Zhiyuan Hu, Xinyang Lu, Yifei Li, Jie
+Fu, Junxian He, and Bryan Hooi. 2023. Can LLMs
+Express Their Uncertainty? An Empirical Evaluation
+of Confidence Elicitation in LLMs.arXiv preprint
+arXiv:2306.13063.
+Jing Xu, Arthur Szlam, and Jason Weston. 2022a. Be-
+yond goldfish memory: Long-Term Open-Domain
+conversation. InProceedings of the 60th Annual
+Meeting of the Association for Computational Lin-
+guistics (Volume 1: Long Papers), pages 5180–5197,
+Dublin, Ireland. Association for Computational Lin-
+guistics.
+Wei Xu, Ling Huang, Armando Fox, David Patterson,
+and Michael I. Jordan. 2009. Detecting large-scale
+system problems by mining console logs. InProceed-
+ings of the ACM SIGOPS 22nd symposium on Op-
+erating systems principles, SOSP09, page 117–132.
+ACM.
+Xinchao Xu, Zhibin Gou, Wenquan Wu, Zheng-Yu Niu,
+Hua Wu, Haifeng Wang, and Shihang Wang. 2022b.
+Long time no see! Open-Domain conversation with
+21
+
+Long-Term persona memory. InFindings of the As-
+sociation for Computational Linguistics: ACL 2022,
+pages 2639–2650, Dublin, Ireland. Association for
+Computational Linguistics.
+Yuchen Yan, Jin Jiang, Zhenbang Ren, Yijun Li,
+Xudong Cai, Yang Liu, Xin Xu, Mengdi Zhang,
+Jian Shao, Yongliang Shen, Jun Xiao, and Yuet-
+ing Zhuang. 2026. VerifyBench: benchmarking
+reference-based reward systems for large language
+models. InThe Fourteenth International Conference
+on Learning Representations, ICLR 2026, Rio de
+Janeiro, Brazil, April 23-27, 2026.
+An Yang, Anfeng Li, Baosong Yang, Beichen Zhang,
+Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao,
+Chengen Huang, Chenxu Lv, Chujie Zheng, Dayi-
+heng Liu, et al. 2025a. Qwen3 Technical Report.
+arXiv preprint arXiv:2505.09388.
+Rui Yang, Hanyang Chen, Junyu Zhang, Mark
+Zhao, Cheng Qian, Kangrui Wang, Qineng Wang,
+Teja Venkat Koripella, Marziyeh Movahedi, Man-
+ling Li, Heng Ji, Huan Zhang, and Tong Zhang.
+2025b. EmbodiedBench: comprehensive benchmark-
+ing multi-modal large language models for Vision-
+Driven embodied agents. InForty-second Interna-
+tional Conference on Machine Learning, ICML 2025,
+Vancouver, BC, Canada, July 13-19, 2025, volume
+267 ofProceedings of Machine Learning Research.
+PMLR / OpenReview.net.
+Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio,
+William Cohen, Ruslan Salakhutdinov, and Christo-
+pher D. Manning. 2018. HotpotQA: A dataset for
+diverse, explainable multi-hop question answering.
+InProceedings of the 2018 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+2369–2380, Brussels, Belgium. Association for Com-
+putational Linguistics.
+Shunyu Yao, Howard Chen, John Yang, and Karthik
+Narasimhan. 2022. WebShop: Towards Scalable
+Real-World Web Interaction with Grounded Lan-
+guage Agents.arXiv preprint arXiv:2207.01206.
+Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik
+Narasimhan. 2024. τ-bench: A benchmark for
+Tool-Agent-User interaction in Real-World domains.
+CoRR, abs/2406.12045.
+Jingwei Yi, Yueqi Xie, Bin Zhu, Emre Kiciman,
+Guangzhong Sun, Xing Xie, and Fangzhao Wu. 2025.
+Benchmarking and defending against indirect prompt
+injection attacks on large language models. InPro-
+ceedings of the 31st ACM SIGKDD Conference on
+Knowledge Discovery and Data Mining V .1, KDD
+’25, page 1809–1820. ACM.
+Wenpeng Yin, Jamaal Hay, and Dan Roth. 2019. Bench-
+marking Zero-shot Text Classification: Datasets,
+Evaluation and Entailment Approach.arXiv preprint
+arXiv:1909.00161.
+Ping Yu, Jing Xu, Jason Weston, and Ilia Kulikov. 2024.
+Distilling System 2 into System 1.arXiv preprint
+arXiv:2407.06023.
+Tao Yu, Rui Zhang, Kai Yang, Michihiro Yasunaga,
+Dongxu Wang, Zifan Li, James Ma, Irene Li, Qingn-
+ing Yao, Shanelle Roman, Zilin Zhang, and Dragomir
+Radev. 2018. Spider: A Large-Scale Human-Labeled
+dataset for complex and Cross-Domain semantic pars-
+ing and text-to-SQL task. InProceedings of the 2018
+Conference on Empirical Methods in Natural Lan-
+guage Processing, pages 3911–3921, Brussels, Bel-
+gium. Association for Computational Linguistics.
+Tianhe Yu, Deirdre Quillen, Zhanpeng He, Ryan Julian,
+Avnish Narayan, Hayden Shively, Adithya Bellathur,
+Karol Hausman, Chelsea Finn, and Sergey Levine.
+2019. Meta-World: A Benchmark and Evaluation for
+Multi-Task and Meta Reinforcement Learning.arXiv
+preprint arXiv:1910.10897.
+Xiaoxue Zang, Abhinav Rastogi, Srinivas Sunkara,
+Raghav Gupta, Jianguo Zhang, and Jindong Chen.
+2020. MultiWOZ 2.2 : A dialogue dataset with
+additional annotation corrections and state tracking
+baselines. InProceedings of the 2nd Workshop on
+Natural Language Processing for Conversational AI,
+pages 109–117, Online. Association for Computa-
+tional Linguistics.
+Qunhong Zeng, Yuxia Zhang, Zhiqing Qiu, and Hui
+Liu. 2025. A first look at conventional commits clas-
+sification. In2025 IEEE/ACM 47th International
+Conference on Software Engineering (ICSE), page
+2277–2289. IEEE.
+Zhongshen Zeng, Yinhong Liu, Yingjia Wan, Jingyao Li,
+Pengguang Chen, Jianbo Dai, Yuxuan Yao, Rongwu
+Xu, Zehan Qi, Wanru Zhao, Linling Shen, Jianqiao
+Lu, Haochen Tan, Yukang Chen, Hao Zhang, Zhan
+Shi, Bailin Wang, Zhijiang Guo, and Jiaya Jia. 2024.
+MR-Ben: a Meta-Reasoning benchmark for evalu-
+ating System-2 thinking in LLMs. InAdvances in
+Neural Information Processing Systems 37, NeurIPS
+2024, page 119466–119546. Neural Information Pro-
+cessing Systems Foundation, Inc. (NeurIPS).
+Jifan Zhang, Lalit K. Jain, Yang Guo, Jiayi Chen,
+Kuan Lok Zhou, Siddharth Suresh, Andrew Wa-
+genmaker, Scott Sievert, Timothy T. Rogers, Kevin
+Jamieson, Bob Mankoff, and Robert Nowak. 2024.
+Humor in AI: massive scale Crowd-Sourced prefer-
+ences and benchmarks for cartoon captioning. In
+Advances in Neural Information Processing Systems
+37: Annual Conference on Neural Information Pro-
+cessing Systems 2024, NeurIPS 2024, Vancouver, BC,
+Canada, December 10 - 15, 2024.
+Linghao Zhang, Shilin He, Chaoyun Zhang, Yu Kang,
+Bowen Li, Chengxing Xie, Junhao Wang, Maoquan
+Wang, Yufan Huang, Shengyu Fu, Elsie Nallipogu,
+Qingwei Lin, Yingnong Dang, Saravan Rajmohan,
+and Dongmei Zhang. 2025a. SWE-bench goes live!
+InAdvances in Neural Information Processing Sys-
+tems 38: Annual Conference on Neural Information
+Processing Systems 2025, NeurIPS 2025, San Diego,
+CA, USA, December 2-7, 2025 / Mexico City, Mexico,
+November 30 - December 5, 2025.
+22
+
+Michael Zhang and Eunsol Choi. 2021. SituatedQA: In-
+corporating extra-linguistic contexts into QA. InPro-
+ceedings of the 2021 Conference on Empirical Meth-
+ods in Natural Language Processing, pages 7371–
+7387, Online and Punta Cana, Dominican Republic.
+Association for Computational Linguistics.
+Shaokun Zhang, Ming Yin, Jieyu Zhang, Jiale Liu,
+Zhiguang Han, Jingyang Zhang, Beibin Li, Chi
+Wang, Huazheng Wang, Yiran Chen, and Qingyun
+Wu. 2025b. Which agent causes task failures and
+when? On automated failure attribution of LLM
+Multi-Agent systems. InProceedings of the 42nd
+International Conference on Machine Learning, vol-
+ume 267 ofProceedings of Machine Learning Re-
+search, pages 76583–76599. PMLR.
+Wenyuan Zhang, Shuaiyi Nie, Xinghua Zhang, Zefeng
+Zhang, and Tingwen Liu. 2025c. Exploring the Sys-
+tem 1 Thinking Capability of Large Reasoning Mod-
+els.arXiv preprint arXiv:2504.10368.
+Chujie Zheng, Zhenru Zhang, Beichen Zhang, Runji
+Lin, Keming Lu, Bowen Yu, Dayiheng Liu, Jingren
+Zhou, and Junyang Lin. 2025. ProcessBench: Iden-
+tifying process errors in mathematical reasoning. In
+Proceedings of the 63rd Annual Meeting of the As-
+sociation for Computational Linguistics (Volume 1:
+Long Papers), pages 1009–1024, Vienna, Austria.
+Association for Computational Linguistics.
+Yunhui Zheng, Saurabh Pujar, Burn Lewis, Luca Bu-
+ratti, Edward Epstein, Bo Yang, Jim Laredo, Alessan-
+dro Morari, and Zhong Su. 2021. D2A: a dataset
+built for AI-Based vulnerability detection methods
+using differential analysis. In2021 IEEE/ACM 43rd
+International Conference on Software Engineering:
+Software Engineering in Practice (ICSE-SEIP), page
+111–120. IEEE.
+Lucen Zhong, Zhengxiao Du, Xiaohan Zhang, Haiyi Hu,
+and Jie Tang. 2025. ComplexFuncBench: exploring
+Multi-Step and constrained function calling under
+Long-Context scenario.Preprint, arXiv:2501.10132.
+Jeffrey Zhou, Tianjian Lu, Swaroop Mishra, Siddhartha
+Brahma, Sujoy Basu, Yi Luan, Denny Zhou, and
+Le Hou. 2023. Instruction-Following evaluation for
+large language models.Preprint, arXiv:2311.07911.
+Fengbin Zhu, Wenqiang Lei, Youcheng Huang, Chao
+Wang, Shuo Zhang, Jiancheng Lv, Fuli Feng, and Tat-
+Seng Chua. 2021. TAT-QA: A question answering
+benchmark on a hybrid of tabular and textual con-
+tent in finance. InProceedings of the 59th Annual
+Meeting of the Association for Computational Lin-
+guistics and the 11th International Joint Conference
+on Natural Language Processing (Volume 1: Long
+Papers), pages 3277–3287, Online. Association for
+Computational Linguistics.
+Richard Zhuang, Akshat Gupta, Richard Yang, Aniket
+Rahane, Zhengyu Li, and Gopala Anumanchipalli.
+2025a. PokerBench: training large language models
+to become professional poker players.Proceedings
+of the AAAI Conference on Artificial Intelligence,
+39(24):26175–26182.
+Richard Zhuang, Tianhao Wu, Zhaojin Wen, Andrew Li,
+Jiantao Jiao, and Kannan Ramchandran. 2025b. Em-
+bedLLM: learning compact representations of large
+language models. InThe Thirteenth International
+Conference on Learning Representations, ICLR 2025,
+Singapore, April 24-28, 2025.
+Terry Yue Zhuo, Vu Minh Chien, Jenny Chim, Han Hu,
+Wenhao Yu, Ratnadira Widyasari, Imam Nur Bani
+Yusuf, Haolan Zhan, Junda He, Indraneil Paul, Simon
+Brunner, Chen GONG, James Hoang, Armel Randy
+Zebaze, Xiaoheng Hong, Wen-Ding Li, Jean Kad-
+dour, Ming Xu, Zhihan Zhang, and 14 others. 2025.
+BigCodeBench: benchmarking code generation with
+diverse function calls and complex instructions. In
+The Thirteenth International Conference on Learning
+Representations.
+Alireza S. Ziabari, Nona Ghazizadeh, Zhivar Sourati,
+Farzan Karimi-Malekabadi, Payam Piray, and
+Morteza Dehghani. 2025. Reasoning on a Spectrum:
+Aligning LLMs to System 1 and System 2 Thinking.
+arXiv preprint arXiv:2502.12470.
+23
+
+A LLM Prompts
+The closed LLMs and the open LLMs get differ-
+ent prompts, because we get their probabilities in
+different ways (Section 4). Each family has one
+fixed prompt, and no model gets a prompt that we
+tuned for it. Both examples below use the same
+request of the date-arithmetic source (knowledge
+and reasoning).
+A.1 Closed LLMs: verbalized probabilities
+A closed LLM writes its probabilities as numbers
+in a JSON object. We do not read the probabilities
+of its tokens. All closed LLMs get the same two
+messages, and one request with all its questions is
+one call. The system message is:
+You are a classifier. Read the input
+and answer every question. For each
+question give a probability for the
+allowed options; the probabilities of
+one question must sum to 1. Reply with
+a single JSON object and nothing else.
+The user message gives the request:
+Input:
+{
+"date": "1968-03-18"
+}
+Questions:
+- "date" (choice): Which date is 80 days
+after the given date?
+- "A": June 6, 1969
+- "B": July 6, 1968
+- "C": June 5, 1968
+- "D": June 6, 1968
+Reply with JSON of the form
+{"<question>": {"<option id>": <probability>,
+...}, ...}.
+Options you leave out get probability 0.
+(We break the two long lines here for the column
+width; the model gets them unbroken.) A boolean
+question lists the options "true" and "false". A
+score question lists its levels as "0", "1", . . . with
+the description of each level.
+A.2 Open LLMs: probabilities of label tokens
+An open LLM does not write probabilities. It gets
+one question per prompt, and we read the proba-
+bility of each label token at the position where the
+answer starts (Section 4). The chat template of the
+model contains the two messages and opens the re-
+ply of the assistant; with no reasoning, the prompt
+ends there. The system message is:
+You are a classifier. Read the input
+and answer the question. Reply with the
+label of your answer only.
+The user message gives the state and one question:
+Input:
+{
+"date": "1968-03-18"
+}
+Question: Which date is 80 days after the
+given date?
+Options:
+A. June 6, 1969
+B. July 6, 1968
+C. June 5, 1968
+D. June 6, 1968
+Reply with the label of one option.
+(We break the long line again.) We read the log-
+probabilities of the tokens A, B, C and D. A boolean
+question ends with “Reply yes or no.”, and we read
+yes and no (with Yes and No added in). A score
+question lists its levels as 0., 1., . . . and ends
+with “Reply with the number of one level.” Dif-
+fusionGemma gets the same two messages. GPT-
+OSS gets them in its own chat format, and we read
+the labels after its reasoning message.
+A.3 System-1 models
+Jev gets the request through its native interface:
+the state as JSON and, for each question, its type,
+instructions and option or level descriptions. The
+OpenAI Decisions API gets the same request: the
+state is the JSON text that the LLMs see, a boolean
+question is a predicate, a choice question keeps its
+options and their descriptions, and a score ques-
+tion gives each level the label 0 to n−1 and its
+description. The API returns P(true) for a predi-
+cate and a distribution over the options or levels
+for the other types. OpenRouter’s Decisions API
+serves Microsoft-Decision-1 and takes requests in
+the same format as Jev’s interface; only the type
+name of a boolean question differs ( noul). The
+API returns P(true) for a boolean question and a
+distribution over the options or levels for the other
+types. The other System-1 models get the request
+through the code that their authors released.
+B Evaluation Details
+Static tasks.Each task has about 500 requests,
+split evenly across its sources, sampled with a fixed
+seed and stratified by label; tasks that target rare
+events are balanced instead. Some sources produce
+several requests per record (a vulnerable function
+and its fixed version, two orderings of a pairwise
+comparison); these share a group identifier for the
+pair metric. 4,425 requests carry a soft label, such
+as the share of 100 annotators who chose each
+label. Tier C instructions (33% of the requests) are
+written by us from the source’s criteria. There is no
+shared input budget: every request is sent in full.
+24
+
+The 2,607 requests whose licenses do not allow
+redistribution are rebuilt locally by loaders.
+Metrics.With k samples per request, accuracy
+is avg@k, and maj@k takes a majority vote; this
+paper uses k= 1 . The expected calibration error
+(Guo et al., 2017) uses the confidence of the top op-
+tion with 10 equal-mass bins. Tasks whose requests
+rank candidates for a query also report NDCG of
+the expected score levels, and paired requests report
+pair accuracy, the share of pairs with all questions
+correct. A question without an answer counts as
+the uniform distribution for the Brier score, the
+expected calibration error and NDCG.
+Reading open models.For a boolean question,
+the probability of the label yes includes the token
+Yes, and no includes No. A question with more than
+26 options gets number labels of several tokens
+(“001” to “151”); we score them on a prefix tree
+of their tokens, and zk is the sum of the token log-
+probabilities. We log the probability mass on the
+labels to check that the answer position is correct.
+GPT-OSS writes a reasoning message of at most
+4,096 tokens (2,048 on the agentic tasks) at its
+lowest effort, and we read the labels at the first
+token of its final message. For DiffusionGemma,
+the answer label is one slot of the denoising canvas,
+all other canvas positions are fixed, and one read-
+only denoising step returns the label probabilities
+at the slot. All open models run with vLLM (Kwon
+et al., 2023).
+Thinking budgets.Four open LLMs (Qwen3-
+8B, Qwen3.8-27B, Gemma-4-26B-A4B and Dif-
+fusionGemma) answer every question of the non-
+agentic tasks in their thinking mode. Each question
+gets one thought, sampled with the model’s own
+generation settings and written up to 2,048 tokens;
+the model is not told its budget. For a budget B
+of 0, 128, 256, 512, 1,024 or 2,048 tokens, we
+keep the first B tokens of this thought (or all of it,
+if the model ended it sooner), close it as the chat
+template closes a thought, and read the label prob-
+abilities at the next position as in Section 4. The
+budgets therefore differ only in where one sam-
+ple is cut. DiffusionGemma writes its thought in
+blocks of 16 tokens and is read at the first answer
+token. Figure 4 starts each curve at thinking off,
+the setting of Table 1. We also ran budget 0, the
+thinking prompt with an empty thought. It gener-
+ates no tokens either, but its prompt differs from
+thinking off: Qwen3.8-27B adds a line that sets
+the reasoning effort, and Gemma-4-26B-A4B and
+DiffusionGemma add a thinking flag and an empty
+thought channel (for Qwen3-8B the two prompts
+are the same string). Under this prompt, the mod-
+els often want to go on thinking instead of answer-
+ing, and budget 0 is less accurate than thinking
+off by 2.1 points (Qwen3.8-27B), 3.6 (Gemma-4-
+26B-A4B) and 13.5 (DiffusionGemma). The 95%
+intervals come from a paired bootstrap stratified by
+source. The four models used 58.8 GPU-hours on
+H100 GPUs for all budgets.
+Inputs.We do not shorten an input, with two
+exceptions: the Laya library cuts an input to 512
+tokens, and for CLM we keep the last 2,048 tokens
+of each text, the end that its training keeps.
+Calls and episodes.A call that fails in transport
+or on a rate limit is retried. A reply that cannot
+be parsed, and a request that a model refuses, are
+final, and a model never gets a second sample. The
+refusals of the OpenAI Decisions API are deter-
+ministic: the same request sent again gets the same
+refusal. An environment allows its own number of
+decisions per episode and has 1 to 114 episodes.
+Of the 138 environments, 128 report success or
+failure and 10 only a score; one of the 128 (the
+coding controller with a GPT-4.1 mini proposer)
+was played only by Jev, so the loop success is a
+mean over 127 environments. The static games and
+embodied tasks of the agent and action group are
+not part of this evaluation.
+Services and hardware.We call the closed
+LLMs through GitHub Copilot for the non-agentic
+tasks; for the agentic tasks, we call the two Luna
+models through Amazon Bedrock. Non-agentic
+Copilot costs use the recorded rate of $0.01 per
+usage credit. Copilot charges each model its listed
+credits per million input and output tokens; a GPT-
+5.6 model costs twice as many credits per input
+token as the GPT-6 model of the same tier (400 for
+GPT-5.6 Sol, 200 for GPT-6 Sol). Jev runs through
+the Vercel AI Gateway. We call the OpenAI Deci-
+sions API (public beta, October 2026) directly; its
+cost is the list price of $0.10 for one million input
+tokens, and it does not charge for output. We call
+Microsoft-Decision-1 through OpenRouter’s Deci-
+sions API (alpha, October 2026; served by Azure);
+its cost is the cost that OpenRouter reports, $0.042
+for one million input tokens, with no charge for out-
+put. The other System-1 models run locally with
+the code that their authors released. Local models
+25
+
+Table 3:The static part of the benchmark.A task is
+one kind of decision, and a source is one public dataset.
+The static questions of the agent and action group are
+the single agent steps; the games and embodied domains
+also have static tasks, which the full evaluation does not
+cover.
+Group and domain Tasks Sources Questions
+Text and knowledge
+Basic text classification 10 26 14,250
+Knowledge and reasoning 12 30 6,000
+Subjective and pluralistic 4 14 2,846
+Applied decisions
+Professional domains 9 26 8,313
+Retrieval, ranking and matching 5 13 2,499
+Structured data, tables and logs 5 13 3,500
+Code 8 17 3,886
+Forecasting 3 7 1,420
+Dialogue and interaction 5 10 4,722
+Batch semantic processing 3 6 1,500
+Evaluation and control
+LLM-as-judge and evaluators 10 24 10,469
+Safety and moderation 6 16 9,999
+Routing and orchestration 7 18 8,958
+Agent and action
+Agent single steps 7 18 6,943
+Games (static) 5 13 3,828
+Embodied and robotics (static) 6 17 2,992
+All 105 268 92,125
+run on H100 GPUs for the non-agentic tasks and
+on A100 GPUs for the agentic tasks. Latency is
+the median time of single requests: on an idle GPU
+server for a local model, and through the network
+for the closed LLMs, Jev, Microsoft-Decision-1,
+and the OpenAI Decisions API.
+C Domains and Sources of Static Tasks
+Table 3 gives the size of every domain. Table 4
+lists every source with its task, number of requests,
+instruction tier and license. All instructions and
+questions are in English, and so are the inputs of al-
+most all sources; the exceptions are FanLang-9 and
+DuLeMon (Chinese), WiLI-2018 (many languages,
+for language identification), and the CORD receipts
+(Indonesian). The source column names the dataset
+and, where the task cards give it, the paper that in-
+troduced it. A BibTeX entry per source, with the
+dataset’s page and license, is in sources.bib of
+the paper repository; construction notes and the
+exact instructions of every source are in the task
+cards of the code repository.
+D Closed-Loop Environments
+Our environments come from agent benchmarks
+for the web (MiniWoB++ (Shi et al., 2017; Liu
+et al., 2018), WebShop (Yao et al., 2022)), text
+games (TextWorld (Côté et al., 2018), Jericho
+(Hausknecht et al., 2019), ScienceWorld (Wang
+et al., 2022), ALFWorld (Shridhar et al., 2020)),
+support agents (τ 2-bench (Barres et al., 2025)), cod-
+ing agents (SWE-bench (Jimenez et al., 2023)), the
+long-horizon games of BALROG (Paglieri et al.,
+2024), and control and game simulators built for
+reinforcement learning (MuJoCo (Towers et al.,
+2024; Todorov et al., 2012), Meta-World (Yu et al.,
+2019), the Arcade Learning Environment (Belle-
+mare et al., 2012), ViZDoom (Kempka et al., 2016),
+highway-env (Leurent, 2018), and PyFlyt (Tai et al.,
+2023)). Table 5 lists every environment. A failed
+answer falls back to a fixed default action. Out-
+comes are the simulator’s own: success where the
+task defines it, and otherwise its return, score or
+progression.
+Coding controller.The coding controller turns
+SWE-bench Verified (Jimenez et al., 2023; Ope-
+nAI, 2024) into decisions. A fixed proposer inside
+the environment writes the candidate next actions
+(code views, test runs, patches, a revert); the model
+picks one, which runs in the task’s official con-
+tainer, or submits the changes so far, which SWE-
+bench’s own tests grade. The scripted proposer
+offers the reference patch among failing patches
+from public submissions, so the task is to recognize
+the right fix and stop; the GPT-5.6 Luna proposer
+writes five actions without reasoning and never the
+reference patch, so the decisions have to steer it
+toward a fix. This proposer is the only LLM inside
+a harness.
+Realtime mode.Each model m is charged a
+fixed latency Lm per decision: its median latency
+per request, measured on an idle A100 GPU and
+rounded to 10 ms. While a decision is pending,
+the environment advancesround(Lm/∆t) steps of
+length ∆t with the previous action held. A fixed
+latency, rather than the measured wall-clock time,
+keeps episodes reproducible. A two-car intersec-
+tion extends this mode to several agents, each con-
+trolled by an independent call of the same model.
+Action encodings.The action encodings follow
+the simulators. In MuJoCo each actuator is a 5-
+level score question from the strongest negative to
+the strongest positive torque; in Meta-World the
+model picks a motion primitive that a scripted con-
+troller executes; in MiniWoB++ it picks an opera-
+tion, a target element and a text; in τ 2-bench it first
+26
+
+Table 4:All sources of the static tasks.Tier A keeps the source’s instruction verbatim, B adapts it, C is newly
+written from the source’s criteria. “(loader)” marks sources whose requests are rebuilt locally by a loader instead of
+being redistributed.
+Task Source Requests Tier License
+Basic text classification
+entity_relation Few-NERD supervised, fine-grained entity types (Ding et al., 2021) 167 C CC BY-SA 4.0
+entity_relation FewRel 1.0, the 80 public Wikidata relations (Han et al., 2018) 167 A MIT
+entity_relation SemEval-2010 Task 8, relations between nominals (Hendrickx et al.,
+2010)
+166 B CC BY 3.0
+intent CLINC150, plus variant with out-of-scope queries (Larson et al., 2019) 250 C CC BY 3.0
+intent MASSIVE, en-US (FitzGerald et al., 2023) 250 C CC BY 4.0
+language_style CEFR-SP, public part (Arase et al., 2022) 167 B CC BY-SA 3.0 (Wiki-Auto part)
+/ CC BY. . .
+language_style Formality scores (Pavlick and Tetreault, 2016) 167 B CC BY 3.0
+language_style WiLI-2018 Wikipedia language identification (Thoma, 2018) 166 C ODbL 1.0
+multilabel GoEmotions (Demszky et al., 2020) 250 A Apache-2.0
+multilabel SemEval-2018 Task 1 Affect in Tweets, emotion classification E-c
+(Mohammad et al., 2018)
+250 A Research use only (loader)
+nli Adversarial NLI, round 3 test (Nie et al., 2020) 250 B CC BY-NC 4.0
+nli ChaosNLI, SNLI and MNLI parts, 100 annotations per example (Nie et
+al., 2020)
+250 A CC BY-NC 4.0
+sentiment SemEval-2018 Task 1 Affect in Tweets, valence ordinal classification
+(Mohammad et al., 2018)
+167 A Research use only (loader)
+sentiment Stanford Sentiment Treebank, 5 classes (Socher et al., 2013) 167 C Unspecified (research use)
+sentiment TweetEval sentiment (SemEval-2017 Task 4A; Barbieri et al., 2020) 166 B CC BY 3.0 (card) + Twitter ToS
+spam_phishing Enron-Spam (Metsis et al., 2006) 167 B Not stated upstream (loader)
+spam_phishing SMS Spam Collection (Almeida et al., 2011) 167 B CC BY 4.0 (UCI)
+spam_phishing SpamAssassin public corpus, ham and spam (2002-2005), and Jose
+Nazario’s phishing corpus, 2004-2006 mailboxes
+166 B SpamAssassin corpus: not stated
+(read. . .
+stance_sarcasm_humor Humicroedit, SemEval-2020 Task 7 subtask 1 (Hossain et al., 2020) 167 A Not stated (research data)
+(loader)
+stance_sarcasm_humor iSarcasmEval subtask A, English (Abu Farha et al., 2022) 167 B MIT
+stance_sarcasm_humor SemEval-2016 Task 6 stance detection (Mohammad et al., 2016), via
+TweetEval
+166 B Research use only (loader)
+topic 20 Newsgroups (Lang, 1995) 167 C CC BY 4.0 (UCI)
+topic DBpedia hierarchical classes, level 2 (DeveloperOats/DBPedia_Classes) 167 C CC0 (card)
+topic Web of Science WOS-46985 (Kowsari et al., 2017) 166 C CC BY 4.0
+toxicity Civil Comments / Jigsaw Unintended Bias (Borkan et al., 2019) 250 A CC0
+toxicity Dynamically Generated Hate Speech Dataset v0.2.3 (Vidgen et al.,
+2021)
+250 A CC BY 4.0
+Knowledge and reasoning
+answerability MuSiQue-Full, answerable and unanswerable multi-hop questions,
+validation (Trivedi et al., 2022)
+250 B CC BY 4.0
+answerability SQuAD 2.0, validation (Rajpurkar et al., 2018) 250 C CC BY-SA 4.0
+causal COPA, original test set with labels (Roemmele et al., 2011), via
+Balanced COPA
+250 B CC BY 4.0 (card)
+causal e-CARE, validation (Du et al., 2022) 250 B MIT
+citation_support AttributionBench, in-distribution test (Li et al., 2024b) 250 B Apache-2.0 (component datasets
+keep t. . .
+citation_support WiCE, Wikipedia citation entailment, sub-claims (Kamoi et al., 2023) 250 B ODC-BY (annotations)
+commonsense CommonsenseQA, validation (Talmor et al., 2019) 167 C MIT
+commonsense PIQA, validation (Bisk et al., 2020) 167 C AFL-3.0
+commonsense WinoGrande XL, validation (Sakaguchi et al., 2020) 166 C CC BY
+date_reasoning BIG-Bench Hard, date understanding (Suzgun et al., 2023) 167 C MIT
+date_reasoning Date arithmetic (generated) 167 C CC BY 4.0 (generated by
+JevArena)
+date_reasoning Timestamp comparison across time zones and formats (generated) 166 C CC BY 4.0 (generated by
+JevArena)
+fact_verification A VeriTeC real-world claims with question-answer evidence, dev
+(Schlichtkrull et al., 2023)
+167 B CC BY-NC 4.0
+fact_verification SciFact claims against paper abstracts, validation (Wadden et al., 2020) 167 B CC BY-NC 2.0
+fact_verification VitaminC contrastive fact verification (Schuster et al., 2021) 166 B CC BY-SA 3.0
+factual_judgment Natural Questions open, validation (Lee et al., 2019) 250 C CC BY-SA 3.0
+factual_judgment SimpleQA Verified (Google, 2025; Wei et al., 2024) 250 C MIT
+logic_puzzles FOLIO v2, first-order logic reasoning in natural language, validation
+(Han et al., 2024b)
+167 B MIT
+27
+
+Table 4 (continued).
+Task Source Requests Tier License
+logic_puzzles Ordering puzzles from pairwise clues (generated) 167 C CC BY 4.0 (generated by
+JevArena)
+logic_puzzles ZebraLogic, multiple-choice mode (Lin et al., 2025) 166 C Not stated
+math_verification ProcessBench model solutions (Zheng et al., 2025) 250 C Apache-2.0
+math_verification VerifyBench, math problems (Yan et al., 2026) 250 C MIT
+multihop 2WikiMultihopQA, comparison and bridge-comparison questions (Ho
+et al., 2020)
+167 C Apache-2.0
+multihop HotpotQA, distractor setting, comparison questions (Yang et al., 2018) 167 C CC BY-SA 4.0
+multihop StrategyQA, re-split test (Geva et al., 2021) 166 C MIT
+numeric_comparison EQUATE quantitative NLI: AWPNLI, NewsNLI, RedditNLI
+(Ravichander et al., 2019)
+167 B MIT
+numeric_comparison Number comparison across notations (generated) 167 C CC BY 4.0 (generated by
+JevArena)
+numeric_comparison Quantity comparison across units (generated) 166 C CC BY 4.0 (generated by
+JevArena)
+subject_mcq MMLU-Pro (Wang et al., 2024b) 250 B MIT
+subject_mcq SuperGPQA (M-A-P et al., 2025) 250 B ODC-BY
+Professional domains
+answer_grading ELLIPSE corpus of English-learner essays, test set (Crossley et al.,
+2023)
+167 A CC BY-NC-SA 4.0 (loader)
+answer_grading UNT Computer Science Short Answer Dataset v2.0 (Mohler et al.,
+2011)
+167 B Not stated upstream (UNT
+release)
+answer_grading SemEval-2013 Task 7 Student Response Analysis, SciEntsBank and
+Beetle, 5-way (Dzikovska et al., 2013)
+166 A CC BY-SA 3.0
+document_fields CORD v2 Consolidated Receipt Dataset, test and validation sets (Park et
+al., 2019)
+167 B CC BY 4.0
+document_fields SROIE, ICDAR 2019 Scanned Receipts OCR and Information
+Extraction, test set with the 14 restored annotations (Huang et al., 2019)
+167 C CC BY 4.0
+document_fields VRDU ad-buy forms (DeepForm political TV-ad invoices and contracts
+from FCC public files), mixed-template test split (Wang et al., 2023b)
+166 B Not stated (documents are US
+public r. . .
+ecommerce Shopping Queries Dataset (ESCI), English test split (Reddy et al., 2022) 167 A Apache-2.0
+ecommerce W ANDS, Wayfair product search relevance judgements (Chen et al.,
+2022)
+167 A MIT
+ecommerce WDC-25 Gold Standard for Product Categorization, test clusters (Web
+Data Commons, 2019)
+166 C Not stated (Web Data Commons
+finance Financial PhraseBank v1.0, sentences with majority agreement (Malo
+et al., 2014)
+167 A CC BY-NC-SA 3.0
+finance Trillion Dollar Words: FOMC minutes, speeches and press conferences,
+hawkish-dovish test split (Shah et al., 2023)
+167 A CC BY-NC 4.0
+finance South German Credit (UPDATE), 1,000 consumer credits 1973-1975
+(Groemping, 2019; corrected Statlog German Credit)
+166 B CC BY 4.0
+legal ContractNLI, document-level NLI on non-disclosure agreements, test
+split (Koreeda and Manning, 2021)
+167 B CC BY 4.0
+legal CUAD v1, clause-type identification on the 102 test contracts
+(Hendrycks et al., 2021b)
+167 B CC BY 4.0
+legal LegalBench, 17 classification tasks, test splits (Guha et al., 2023) 166 B Per task: CC BY 4.0 (most), CC
+BY-SA. . .
+medical Emergency department visits with expert-reviewed KTAS triage levels
+(Moon et al., 2019, PLOS ONE, S1 data)
+167 B CC BY 4.0
+medical MedQA, US (USMLE) questions with 4 options, test split (Jin et al.,
+2021)
+167 C MIT
+medical PubMedQA, expert-labelled PQA-L, official 500-question test set,
+reasoning-required setting (Jin et al., 2019)
+166 B MIT
+science arXiv metadata, papers first submitted in 2024 with a computer-science
+primary category (Cornell arXiv snapshot)
+250 A CC0 1.0 (arXiv metadata,
+including ab. . .
+science ICLR 2025 submissions with reviewer ratings and decisions, from
+OpenReview via Paper Copilot paperlists
+250 A CC BY 4.0 (ICLR 2025
+submissions and. . .
+secops NSL-KDD, KDDTest+ (Tavallaee et al., 2009; from the 1998 DARPA /
+KDD Cup 1999 data)
+167 B Redistribution permitted with
+citatio. . .
+secops NVD CVSS v3.1 base metrics assigned by NVD analysts, CVE-2025
+records (NIST National Vulnerability Database)
+167 A CVE Terms of Use (descriptions,
+MIT. . .
+secops NVD CWE mappings assigned by NVD analysts, CVE-2025 records
+(NIST National Vulnerability Database)
+166 B CVE Terms of Use (descriptions,
+MIT. . .
+support_tickets BANKING77, online banking customer queries, test split (Casanueva
+et al., 2020)
+167 C CC BY 4.0
+support_tickets CFPB Consumer Complaint Database, narratives of complaints received
+in 2022 (via a Hugging Face snapshot)
+167 B CC0 1.0 (US government public
+data)
+support_tickets Mozilla Bugzilla defect reports filed January-June 2024 and later fixed
+(bugzilla.mozilla.org)
+166 A Not stated (public bug reports
+28
+
+Table 4 (continued).
+Task Source Requests Tier License
+Retrieval, ranking and matching
+context_sufficiency DuoRC ParaphraseRC, test (Saha et al., 2018) 167 C MIT
+context_sufficiency IIRC, incomplete information reading comprehension, test (Ferguson
+et al., 2020)
+166 B CC BY 4.0
+context_sufficiency MS MARCO question answering v2.1, dev set (Bajaj et al., 2018) 166 A MS MARCO terms:
+non-commercial resear. . .
+entity_matching Abt-Buy (Köpcke et al., 2010), DeepMatcher test split (Mudgal et al.,
+2018)
+167 B Not stated (Leipzig
+entity-resolution. . .
+entity_matching DBLP-Scholar (Köpcke et al., 2010), DeepMatcher test split (Mudgal
+et al., 2018)
+167 B Not stated (Leipzig
+entity-resolution. . .
+entity_matching WDC Products, 80% corner cases, seen-products test set (Peeters et al.,
+2024)
+166 B Not stated (offers extracted from
+the. . .
+relevance_grading ANTIQUE non-factoid answer retrieval, test judgments (Hashemi et al.,
+2020)
+167 A Research use (ANTIQUE
+readme) (loader)
+relevance_grading TREC-COVID, final cumulative judgments (V oorhees et al., 2020) 167 A CORD-19 Dataset License
+Agreement (te. . . (loader)
+relevance_grading TREC 2019 and 2020 Deep Learning Track, passage judgments on MS
+MARCO (Craswell et al., 2020; 2021)
+166 A MS MARCO terms:
+non-commercial resear. . .
+reranking BRIGHT, StackExchange domains (Su et al., 2025) 250 B CC BY 4.0
+reranking TREC 2019 and 2020 Deep Learning Track, passage judgments on MS
+MARCO (Craswell et al., 2020; 2021)
+250 B MS MARCO terms:
+non-commercial resear. . .
+retrieval_need FreshQA, test questions, snapshot of 2026-04-21 (Vu et al., 2024) 250 A Apache-2.0
+retrieval_need SituatedQA, temporal context-dependent question identification, test
+(Zhang and Choi, 2021)
+250 B Not stated (SituatedQA
+annotations)
+Structured data, tables and logs
+column_types SOTAB V2, WDC Schema.org Table Annotation Benchmark, column
+type annotation test set (Korini, Peeters and Bizer, 2023)
+167 B Not stated (Web Data Commons
+column_types WDC Schema Matching Benchmark, SOTAB-SM (100-table variant),
+test split (Der and Bizer, 2023)
+167 B Not stated (Web Data Commons
+column_types WDC Schema Matching Benchmark, T2D-SM with column headers,
+test split (Der and Bizer, 2023; Ritze et al., 2015)
+166 B Not stated (Web Data Commons
+data_quality_rules Data-quality rules over generated tables (generated) 250 C CC BY 4.0 (generated by
+JevArena)
+data_quality_rules HoloClean hospital data with injected typos and its denial constraints
+(Rekatsinas et al., 2017)
+250 B Apache-2.0 (HoloClean
+repository)
+log_anomaly Loghub BGL, Blue Gene/L RAS log with alert tags from the
+administrators’ rules (Oliner and Stearley, 2007)
+167 B CC BY 4.0 (Loghub, Zenodo
+record 8196. . .
+log_anomaly Loghub BGL, alert categories assigned by the administrators’ rules
+(Oliner and Stearley, 2007)
+167 B CC BY 4.0 (Loghub, Zenodo
+record 8196. . .
+log_anomaly Loghub HDFS_v1, block-level traces labelled normal or anomalous (Xu
+et al., 2009)
+166 C CC BY 4.0 (Loghub, Zenodo
+record 8196. . .
+sql_verification NL2SQL-BUGs, BIRD dev questions with SQL from RESDSQL,
+CodeS and CHESS (Liu et al., 2025b)
+250 B Not stated (NL2SQL-BUGs
+labels)
+sql_verification Spider dev with beam predictions of SmBoP, RESDSQL+NatSQL and
+NatSQL (Yu et al., 2018; Chen et al., 2023b)
+250 B Spider CC BY-SA 4.0
+table_qa TabMWP, multiple-choice questions of the test split (Lu et al., 2023) 167 B CC BY-NC-SA 4.0
+table_qa TAT-QA, test set with released gold answers (Zhu et al., 2021) 167 C CC BY 4.0
+table_qa WikiTableQuestions, pristine-unseen-tables test set (Pasupat and Liang,
+2015)
+166 C CC BY-SA 4.0
+Code
+code_search CodeSearchNet Challenge expert relevance annotations, six languages
+(Husain et al., 2019)
+250 A MIT (annotations)
+code_search CoSQA, Bing web queries paired with Python functions, dev split
+(Huang et al., 2021)
+250 A MIT (CoCLR repository)
+commit_classification CodeReviewer diff quality estimation, test split (Li et al., 2022) 250 B CC BY 4.0 (Zenodo record)
+commit_classification CCS conventional commit classification dataset, test split (Zeng et al.,
+2025)
+250 A Apache-2.0
+fault_localization SWE-bench test set, file-level localization from the gold patch (Jimenez
+et al., 2023)
+167 C MIT (SWE-bench repository)
+fault_localization SWE-bench test set, function-level localization inside the fixed file,
+oracle file contents (Jimenez et al., 2023)
+167 C MIT (SWE-bench repository)
+fault_localization SWE-bench-Live, issues from 2024-2025, file-level localization from
+the gold patch (Zhang et al., 2025a)
+166 C MIT
+output_prediction CRUXEval-O, output prediction for 800 short Python functions (Gu
+et al., 2024)
+250 B MIT
+output_prediction LiveCodeBench code execution v2, LeetCode solutions with recorded
+outputs (Jain et al., 2025)
+250 B Not stated precisely (the
+Hugging Fac. . .
+29
+
+Table 4 (continued).
+Task Source Requests Tier License
+patch_correctness SWE-bench-extra tasks with SWE-agent final patches from Nebius’s
+open-weight agent runs and their test results (Golubev et al., 2024)
+250 C CC BY 4.0
+patch_correctness SWE-rebench tasks with OpenHands + Qwen3-Coder-480B final
+patches and their test results (Badertdinov et al., 2025)
+250 C CC BY 4.0
+static_analysis_triage D2A leaderboard, Trace + Code task, dev split: Infer warnings on C
+projects labelled by differential analysis (Zheng et al., 2021)
+250 B Apache-2.0 (as listed by the
+Hugging. . .
+static_analysis_triage OW ASP Benchmark for Java v1.2: 2,740 servlets, each a true or a false
+positive for one vulnerability category (OW ASP Foundation)
+250 C GPL-2.0
+test_outcome HumanEvalFix from HumanEvalPack, correct and buggy solutions with
+their unit tests, six languages (Muennighoff et al., 2024)
+250 C MIT
+test_outcome LiveCodeBench code generation, recorded per-test results of
+Gemini-Pro-1.5 programs (Jain et al., 2025)
+136 C MIT
+vulnerability PrimeVul v0.1, paired test set: vulnerable and patched C/C++ functions
+(Ding et al., 2025)
+250 B MIT
+vulnerability SecVulEval, C/C++ CVE fixes from NVD, vulnerable and fixed
+function pairs (Ahmed et al., 2026)
+250 B MIT
+Forecasting
+binary_events ForecastBench question sets, questions resolved from FRED,
+DBnomics, Wikipedia and Yahoo Finance data (Karger et al., 2025)
+167 B CC BY-SA 4.0
+binary_events ForecastBench question sets, prediction-market and
+forecasting-platform questions (Karger et al., 2025)
+167 B CC BY-SA 4.0
+binary_events Binary forecasting questions from Metaculus, Manifold, Polymarket,
+Good Judgment Open and INFER, test split (Halawi et al., 2024)
+166 C Apache-2.0
+multi_outcome Which related daily FRED series moves most (currencies against the
+dollar, energy prices, Treasury yields), resolved by September 2026
+170 C Public-domain series from the
+Federal. . .
+multi_outcome Polymarket multi-outcome events ended January-August 2026 (gamma
+API)
+250 C Polymarket Terms of Use
+(content rese. . . (loader)
+numeric_bins Daily FRED series (Treasury yields, breakeven inflation, exchange rates,
+oil and gas prices), values published up to September 2026
+250 C Public-domain series from the
+Federal. . .
+numeric_bins Polymarket range (’bracket’) events ended January-August 2026
+(gamma API)
+250 C Polymarket Terms of Use
+(content rese. . . (loader)
+Dialogue and interaction
+clarification_need AmbigQA / AmbigNQ, validation (Min et al., 2020) 250 B CC BY-SA 3.0
+clarification_need ShARC conversational machine reading with rules, test (Saeidi et al.,
+2018)
+250 B CC BY-SA 3.0
+end_of_turn Switchboard Dialog Act Corpus (SwDA), test conversations of Stolcke
+et al. (2000) (Jurafsky et al., 1997)
+250 C CC BY-NC-SA 3.0
+end_of_turn Taskmaster-1 spoken two-person (Wizard-of-Oz) dialogues: user turns
+transcribed from speech (Byrne et al., 2019)
+250 C CC BY 4.0
+human_handoff ABCD, Action-Based Conversations Dataset: customer-service chats
+escalated to a manager, all splits (Chen et al., 2021)
+220 B MIT
+human_handoff Scope cards over human intent labels: HINT3 v2 test sets, real queries
+to three chatbots (Arora et al., 2020), and NatCS customer-service
+requests in insurance, banking and finance (Gung et al., 2023)
+250 C HINT3: ODbL 1.0 (database)
+and DbCL 1. . .
+state_tracking MultiWOZ 2.2, test split (Zang et al., 2020; Budzianowski et al., 2018) 249 B MIT
+state_tracking Schema-Guided Dialogue (SGD / DSTC8), test split (Rastogi et al.,
+2020)
+245 B CC BY-SA 4.0
+user_satisfaction EmoWOZ, test split: MultiWOZ and DialMAGE human-machine
+dialogues (Feng et al., 2022)
+250 A CC BY-NC 4.0
+user_satisfaction User Satisfaction Simulation (USS), exchange-level ratings on
+MultiWOZ, SGD, ReDial and CCPE dialogues (Sun et al., 2021)
+250 A Not stated (source dialogues:
+MultiWO. . .
+Batch semantic processing
+semantic_filter Women’s E-Commerce Clothing Reviews, 23,486 reviews from an
+online retailer (nicapotato, Kaggle)
+250 C CC0-1.0
+semantic_filter EMSCAD, Employment Scam Aegean Dataset: 17,880 job ads from
+Workable, 866 of them fraudulent (Vidros et al., 2017)
+250 C CC0-1.0 (Kaggle release)
+semantic_grouping Amazon Berkeley Objects (ABO) product listings, English listings of
+amazon.com, .co.uk and .ca (Collins et al., 2022)
+250 C CC BY 4.0
+semantic_grouping Twitter US Airline Sentiment, negative tweets with the complaint reason
+(Figure Eight / CrowdFlower Data for Everyone, 2015)
+250 C CC BY-NC-SA 4.0
+30
+
+Table 4 (continued).
+Task Source Requests Tier License
+semantic_ranking TREC 2022 Clinical Trials track: synthetic patient cases and
+ClinicalTrials.gov records with NIST judgments (Roberts et al., 2022)
+250 A CC BY-SA 4.0 (Hugging Face
+copy)
+semantic_ranking TripAdvisor hotel reviews with the reviewers’ aspect ratings, English
+reviews of 2012 (Li et al., 2013; processed by Niimi, 2024)
+250 B Apache-2.0 (Hugging Face
+release)
+LLM-as-judge and evaluators
+agent_trajectory AgentRewardBench, expert-annotated web agent trajectories, test split
+(Lù et al., 2025)
+250 A AgentRewardBench terms of
+use: resear. . .
+agent_trajectory tau-bench historical trajectories of GPT-4o and Claude 3.5 Sonnet (new)
+in the airline and retail domains (Yao et al., 2024)
+250 C MIT
+atomic_factuality FActScore human-annotated biographies by InstructGPT, ChatGPT and
+PerplexityAI (Min et al., 2023)
+250 B MIT
+atomic_factuality FELM, segment-level factuality of ChatGPT responses (Chen et al.,
+2023c)
+250 B CC BY-NC-SA 4.0
+instruction_following IFBench test prompts (Pyatkin et al., 2025) with model responses and
+strict checker results from shisa-ai/eval-IFBench-results
+250 B ODC-BY (results)
+instruction_following IFEval prompts (Zhou et al., 2023) with sampled responses and strict
+checker results from PPE (Frick et al., 2025)
+250 B Apache-2.0 (prompts)
+pairwise_preference JudgeBench, GPT-4o and Claude-3.5-Sonnet response pairs (Tan et al.,
+2025)
+166 A MIT
+pairwise_preference RewardBench 2, Math, Precise IF, Focus and Ties subsets (Malik et al.,
+2026)
+166 B ODC-BY
+pairwise_preference RM-Bench, chat, math and code domains (Liu et al., 2025c) 166 B ODC-BY
+pointwise_rating BiGGen Bench, human evaluation split (Kim et al., 2025) 250 B CC BY-SA 4.0 (BiGGen Bench)
+pointwise_rating HelpSteer2, validation split with individual annotator ratings (Wang
+et al., 2024c)
+250 A CC BY 4.0
+process_reward MR-Ben meta-reasoning benchmark, all subjects except coding (Zeng
+et al., 2024)
+167 B MIT
+process_reward PRM800K, phase 2 test split (Lightman et al., 2024) 167 B MIT
+process_reward ProcessBench, earliest-error paragraph (Zheng et al., 2025) 166 A Apache-2.0
+rag_faithfulness BEGIN, knowledge-grounded dialogue responses, test split (Dziri et al.,
+2022)
+250 B CC BY 4.0 (WoW and
+CMU-DoG parts)
+rag_faithfulness RAGTruth, test split: QA (MS MARCO), data-to-text (Yelp) and news
+summarization (CNN/DM, Recent News) (Niu et al., 2024)
+250 B MIT
+reference_answer Answer Equivalence (AE) dataset, test split, SQuAD questions (Bulian
+et al., 2022)
+167 A Apache-2.0 (questions and
+passages fr. . .
+reference_answer EVOUNA, Natural Questions and TriviaQA answers of five QA systems
+judged by humans (Wang et al., 2023a)
+167 A Apache-2.0
+reference_answer VerifierBench (CompassVerifier; Liu et al., 2025a) 166 B CC BY-SA 4.0
+summary_consistency FaithBench, summaries by 10 modern LLMs (Bao et al., 2025) 167 B CC BY-NC-SA 4.0
+summary_consistency SummEdits, 10 domains (Laban et al., 2023) 167 B CC BY 4.0
+summary_consistency TofuEval, MeetingBank part, test split (Tang et al., 2024) 166 A MIT-0 (annotations)
+translation_quality WMT 2020 newstest MQM annotations, en-de and zh-en (Freitag et al.,
+2021)
+250 B Apache-2.0 (annotations)
+translation_quality WMT 2023 general MT MQM annotations with three ratings per
+segment, en-de and zh-en (Kocmi et al., 2023; Google MQM release)
+250 B Apache-2.0 (annotations)
+Safety and moderation
+agent_action_risk ASSEBench safety and security subsets, unambiguous records (Luo et
+al., 2025, AgentAuditor)
+250 B Apache-2.0
+agent_action_risk ATBench agent trajectory safety benchmark, 1,000-trajectory release (Li
+et al., 2026)
+250 B Apache-2.0
+custom_policy CoSApien, human-authored safety configs and test prompts (Zhang et
+al., ICLR 2025, Controllable Safety Alignment)
+167 B CDLA-Permissive-2.0
+custom_policy DynaBench test set of the DynaGuard project: business policies and
+user-agent dialogues (Hoover et al., 2026)
+167 B MIT
+custom_policy Policy variants over the OpenAI moderation evaluation set (Markov
+et al., 2023; policies generated)
+166 B Not stated (the release repository
+ha. . .
+harmfulness Aegis 2.0 / Nemotron Content Safety Dataset V2, test, user prompts
+(Ghosh et al., 2025)
+167 B CC BY 4.0
+harmfulness BeaverTails-330k, test, question-answer pairs with three annotations
+each (Ji et al., 2023)
+167 A CC BY-NC 4.0
+harmfulness WildGuardTest, prompt and response harmfulness (Han et al., 2024a) 166 C ODC-BY (AI2 Responsible Use
+Guidelines
+31
+
+Table 4 (continued).
+Task Source Requests Tier License
+injection AgentDojo tool-use trajectories of GPT-4o, clean and with injections in
+tool outputs (Debenedetti et al., 2024)
+166 C MIT
+injection BIPIA indirect prompt injection benchmark: email, table and code
+contexts with test attacks (Yi et al., 2025)
+166 C MIT (BIPIA)
+injection ToxicChat 0124, test, human-annotated user prompts with the
+jailbreaking label (Lin et al., 2023)
+166 B CC BY-NC 4.0
+pii Text Anonymization Benchmark (TAB), test split: ECHR court
+judgments annotated for anonymization (Pilán et al., 2022)
+250 B MIT
+pii Customer messages, forms and log lines with inserted personal
+information (generated)
+250 C CC BY 4.0 (generated by
+JevArena)
+refusal CoCoNot, human-verified noncompliance test set and contrast set
+(Brahman et al., 2024)
+167 B ODC-BY (repository
+LICENSE.md)
+refusal XSTest v2 prompts: 250 safe prompts and 200 unsafe contrast prompts
+(Röttger et al., 2024)
+167 B CC BY 4.0
+refusal XSTest v2 model completions with two human annotations each
+(Röttger et al., 2024)
+166 A CC BY 4.0
+Routing and orchestration
+context_pruning Leave-one-out paragraph ablation on generated multi-hop fact chains
+(generated)
+250 C CC BY 4.0 (generated by
+JevArena)
+context_pruning QASPER, questions on NLP papers with annotated evidence paragraphs,
+test split (Dasigi et al., 2021)
+250 B CC BY 4.0
+difficulty BigCodeBench-Instruct tasks with leaderboard solve rates (Zhuo et al.,
+2025)
+167 C Apache-2.0
+difficulty EmbedLLM correctness matrix, test questions (Zhuang et al., 2025b) 167 C Apache-2.0 (card)
+difficulty LiveBench code generation, code completion, typo fixing and
+Connections puzzles (White et al., 2025)
+166 C Not stated (dataset cards)
+escalation AutoMix cascade outputs on QuALITY , validation (Aggarwal et al.,
+2024)
+167 B Apache-2.0 (AutoMix)
+escalation LiveBench model answers and judgments: GPT-4o mini drafts,
+o1-preview as the stronger model (White et al., 2025)
+167 C Not stated (dataset cards)
+escalation RouterArena cached GPT-4o mini replies, full split (Lu et al., 2026) 166 C Apache-2.0 (RouterArena
+repository)
+memory_decisions DuLeMon, Chinese long-term persona memory dialogues, ’both’ test
+split (Xu et al., 2022b)
+250 C Not stated (data)
+memory_decisions Multi-Session Chat, per-turn memory summaries, test split (Xu et al.,
+2022a)
+250 B Not stated (data)
+model_correctness LiveBench code generation, code completion, typo fixing and
+Connections puzzles (White et al., 2025)
+167 C Not stated (dataset cards)
+model_correctness RouterArena sub_10 split with cached replies of three models (Lu et al.,
+2026)
+167 C Apache-2.0 (RouterArena
+repository)
+model_correctness RouterBench, zero-shot MMLU, HellaSwag and ARC-Challenge
+prompts (Hu et al., 2024)
+166 C Not stated (dataset card)
+model_selection LiveBench code generation, code completion, typo fixing and
+Connections puzzles (White et al., 2025)
+212 B Not stated (dataset cards)
+model_selection RouterBench, zero-shot MMLU, HellaSwag and ARC-Challenge
+prompts (Hu et al., 2024)
+250 B Not stated (dataset card)
+tool_selection Berkeley Function Calling Leaderboard v4, expert-written ’multiple’
+and ’irrelevance’ categories (Patil et al., 2025)
+167 B Apache-2.0
+tool_selection Berkeley Function Calling Leaderboard v4, user-contributed
+’live_multiple’ and ’live_irrelevance’ categories (Patil et al., 2025)
+167 B Apache-2.0
+tool_selection MetaTool ToolE, tool selection with and without the right tool in the list
+(Huang et al., 2024)
+166 A MIT
+Subjective and pluralistic
+moral_judgment ETHICS commonsense morality, hard test set, short scenarios
+(Hendrycks et al., 2021a)
+167 B MIT
+moral_judgment Scruples Anecdotes, test split: r/AmItheAsshole posts with the
+community’s verdict votes (Lourie et al., 2021)
+167 B Apache-2.0
+moral_judgment Social-Chem-101, rules of thumb annotated by 50 crowd workers each
+(analysis split; Forbes et al., 2020)
+166 A CC BY-SA 4.0
+opinion_distribution Collective Constitutional AI: Polis votes of about 1,000 U.S. adults on
+rules for an AI chatbot, July 2023 (Anthropic and The Collective
+Intelligence Project, 2023)
+125 B Not stated
+opinion_distribution GlobalOpinionQA: Pew Global Attitudes Survey and World Values
+Survey questions with answer shares by country (Durmus et al., 2023)
+125 B CC BY-NC-SA 4.0
+opinion_distribution Polis open data: statements from 13 English-language public
+deliberations with participants’ agree / disagree / pass votes (The
+Computational Democracy Project)
+125 B CC BY 4.0
+opinion_distribution SubPOP-Eval: General Social Survey 2022 questions with answer
+shares of 22 U.S. subpopulations (Suh et al., 2025)
+125 B CC BY-NC-SA 4.0 (gated
+(loader)
+32
+
+Table 4 (continued).
+Task Source Requests Tier License
+perspective_labeling DICES-350: adversarial chatbot conversations rated for safety by all
+104 raters of a pool balanced by gender and race (Aroyo et al., 2023)
+167 B CC BY 4.0
+perspective_labeling DICES-990: adversarial chatbot conversations, each rated for safety by
+60-70 raters balanced by gender and locale (US, India) (Aroyo et al.,
+2023)
+167 B CC BY 4.0
+perspective_labeling Measuring Hate Speech corpus, the 70 reference-set comments rated by
+240-815 U.S. crowd workers each (Kennedy et al., 2020; Sachdeva
+et al., 2022)
+166 A CC BY 4.0
+persuasion_humor Persuasion dataset: claims with human- and Claude-written arguments,
+each read by three participants (Durmus et al., 2024)
+125 B CC BY-NC-SA 4.0
+persuasion_humor ExPUN: puns and non-puns from SemEval-2017 Task 7, each rated by
+five annotators (Sun et al., 2022)
+125 B CC BY-NC 4.0 (annotations)
+persuasion_humor New Yorker Cartoon Caption Contest crowd ratings (Jain et al., 2020;
+Zhang et al., 2024), cartoons described by the human-written
+annotations of Hessel et al. (2023), ranking test split
+125 B CC BY-NC 4.0 (ratings)
+persuasion_humor UKPConvArg1, argument pairs from createdebate.com and
+convinceme.net with five crowd judgments each (Habernal and
+Gurevych, 2016)
+124 A CC BY 4.0
+Agent single steps
+action_critic AgentProcessBench, HotpotQA and GAIA (text) subsets, human step
+labels (2026)
+167 B MIT
+action_critic TRBench-BFCL, single-turn parallel and parallel-multiple categories
+(Li et al., 2025, ToolRM)
+167 B Apache-2.0 (Hugging Face card
+and LIC. . .
+action_critic WebRewardBench, Mind2Web test steps with expert and
+model-proposed actions (Chae et al., 2025, Web-Shepherd)
+166 C Not stated (WebRewardBench)
+(loader)
+completion tau2-bench telecom domain in solo mode (no user), published
+simulations of GPT-4.1 and o4-mini agents (Barres et al., 2025)
+250 C MIT
+completion Terminal-Bench 2.0 leaderboard runs of the Terminus-2 agent with eight
+models (Merrill et al., 2026)
+250 C Apache-2.0
+failure_attribution AgentErrorBench, failed ALFWorld, WebShop and GAIA runs with
+expert root-cause annotation (Zhu et al., 2025, AgentDebug)
+167 B MIT (repository license
+failure_attribution TRAIL, expert-annotated error taxonomy over GAIA and SWE-bench
+agent traces (Deshpande et al., 2025)
+148 B MIT, gated: users agree not to
+reshar. . . (loader)
+failure_attribution Who&When, failed multi-agent logs on GAIA and AssistantBench with
+annotated failure agent and step (Zhang et al., 2025b)
+166 B MIT (GitHub repository
+ag2ai/Agents_F. . .
+next_action AndroidControl official test split, human demonstrations on 833
+Android apps (Li et al., 2024a)
+250 B Apache-2.0 (google-research
+repositor. . .
+next_action Mind2Web test splits (cross-task, cross-website, cross-domain) in the
+human-verified Multimodal-Mind2Web release (Deng et al., 2023)
+250 B CC BY 4.0 (Mind2Web (loader)
+progress_success SWE-rebench July 2026 leaderboard trajectories: 111 fresh issues,
+agentic systems and models in a common scaffold (Nebius, 2026)
+167 C Other: the release does not
+relicense. . .
+progress_success tau2-bench telecom domain, published simulations of four agent models
+with a GPT-4.1 user simulator (Barres et al., 2025)
+167 C MIT
+progress_success Terminal-Bench 2.0 leaderboard runs of the Terminus-2 agent with eight
+models (Merrill et al., 2026)
+166 C Apache-2.0
+step_correctness ToolComp process-supervision pairs, human-corrected versus original
+ReAct steps and action plans (Nath et al., 2025)
+250 B Not stated (the sibling repository
+va. . .
+step_correctness TRBench-BFCL, multi-turn base category (Li et al., 2025, ToolRM),
+built on BFCL v3 multi-turn
+250 B Apache-2.0 (Hugging Face card
+and LIC. . .
+tool_arguments Berkeley Function Calling Leaderboard v4, user-contributed
+’live_simple’ category (Patil et al., 2025)
+167 B Apache-2.0
+tool_arguments Berkeley Function Calling Leaderboard v4, expert-written ’simple’
+categories in Python, Java and JavaScript (Patil et al., 2025)
+167 B Apache-2.0
+tool_arguments ComplexFuncBench, multi-step Booking.com function calling with
+recorded API results (Zhong et al., 2025)
+166 C Apache-2.0
+Games (static)
+chess_best_move ChessBench test positions with Stockfish 16 action values (Ruoss et al.,
+2024)
+250 B CC BY 4.0 (ChessBench
+annotations)
+chess_best_move Lichess puzzle database, first shard of the September 2026 export
+(lichess.org)
+250 A CC0 1.0
+poker PokerBench post-flop test set, solutions from W ASM-Postflop (Zhuang
+et al., 2025a)
+250 A Apache-2.0
+poker PokerBench pre-flop test set, solutions from GTO Wizard charts
+(Zhuang et al., 2025a)
+250 A Apache-2.0
+33
+
+Table 4 (continued).
+Task Source Requests Tier License
+position_eval ChessBench test positions with Stockfish 16 state values (Ruoss et al.,
+2024)
+167 B CC BY 4.0 (ChessBench
+annotations)
+position_eval Connect-4 opening database: all 8-ply positions with their
+game-theoretic value (John Tromp, UCI repository)
+167 C CC BY 4.0
+position_eval Lichess rated standard games of 1 June 2024, first shard of the June
+2024 export (lichess.org)
+166 C CC0 1.0
+puzzles Minesweeper Beginner positions (9x9, 10 mines) with an exact
+deduction per square (generated)
+167 C CC BY 4.0 (generated by
+JevArena)
+puzzles 8-puzzle positions with a unique best first move (generated) 167 C CC BY 4.0 (generated by
+JevArena)
+puzzles Sudoku grids: rule check and completability (generated) 166 C CC BY 4.0 (generated by
+JevArena)
+social_games It Takes Two to Lie: Diplomacy negotiation messages with the senders’
+own truthfulness labels, test games (Peskov et al., 2020)
+167 B CC BY 4.0
+social_games AH2AC2 human Hanabi games from hanab.live, 2- and 3-player
+(Dizdarevic et al., 2025), with exact card-counting beliefs
+167 C Apache-2.0
+social_games FanLang-9: human 9-player Werewolf games with roles, votes and
+transcribed speeches (Wu et al., 2024)
+166 C MIT
+Embodied and robotics (static)
+action_safety ASIMOV 2.0 injury scenarios: effect of a robot’s instruction on the
+chance of injury (Jindal et al., 2025)
+167 B Not stated
+action_safety Robot drive commands on a room floor plan (generated) 167 C CC BY 4.0 (generated by
+JevArena)
+action_safety SafeText: situations with safe and physically unsafe advice (Levy et al.,
+2022)
+166 B MIT
+failure_type ACPBench, test and validation splits (Kokel et al., 2025): plan
+validation, multiple-choice form (failure category) and the first
+inapplicable action (failure step)
+250 B CDLA-Permissive-2.0
+failure_type PlanBench plan verification task, Blocksworld and Logistics
+(Valmeekam et al., 2023)
+250 B MIT
+feasibility ACPBench, test and validation splits (Kokel et al., 2025): action
+applicability, yes/no and multiple-choice forms
+167 B CDLA-Permissive-2.0
+feasibility AI2-THOR object metadata (ProcTHOR’s dump of 8,715 objects in 195
+scenes) and placement restrictions (SimObjType.cs)
+167 C Apache-2.0
+feasibility VirtualHome object properties (properties_data.json) and the action
+checks of its evolving-graph simulator (Puig et al., 2018)
+166 C MIT
+next_skill ACPBench Hard, next action towards the goal, test and validation splits
+(Kokel et al., 2026)
+159 B CDLA-Permissive-2.0
+next_skill ALFWorld text games built on ALFRED scenes, PDDL problems of the
+0.4.2 release (Shridhar et al., 2020)
+167 C MIT
+next_skill PlanBench Blocksworld problems, next action on a shortest plan
+(Valmeekam et al., 2023; answers by exhaustive search)
+166 C MIT
+spatial_reasoning LLM-BabyBench Predict: final agent pose after an action sequence in
+BabyAI grid worlds (2025)
+167 B MIT
+spatial_reasoning SpatialEval text-only split, Spatial-Map and Maze-Nav tasks (Wang
+et al., 2024a)
+167 A Not stated
+spatial_reasoning StepGame, test set with distracting statements (Shi et al., 2022;
+regenerated February 2024)
+166 B MIT
+task_success ACPBench, test and validation splits (Kokel et al., 2025): plan
+validation, yes/no form
+167 B CDLA-Permissive-2.0
+task_success EB-ALFRED trajectory dataset of EmbodiedBench: 11 vision-language
+models in AI2-THOR (Yang et al., 2025b)
+167 B Not stated
+task_success PlanBench Blocksworld plan generation: plans written by 13 language
+models with V AL checks (Valmeekam et al., 2023-2025)
+166 B MIT
+34
+
+picks one of 43 tools or “done” and then every argu-
+ment from candidates taken from the tool schema,
+the ticket, the policy and earlier results; in chess
+it picks one of the legal moves against Stockfish
+(The Stockfish developers, 2026); in text games and
+Wikispeedia (West et al., 2009) it picks a command
+or a link, where the commands of Jericho’s text
+adventures (Hausknecht et al., 2019) are those its
+valid-action detector finds, plus “look” and “wait”.
+In WebShop (Yao et al., 2022) the model picks one
+of the page’s clickable actions, or on the search
+page one of two to four queries derived from the
+instruction by fixed rules. In ScienceWorld (Wang
+et al., 2022) an action takes up to three questions,
+first its kind and then its objects, each built from the
+simulator’s list of valid actions. The games from
+BALROG (Paglieri et al., 2024) (BabyAI, Crafter
+(Hafner, 2021), Baba Is AI (Cloos et al., 2024),
+MiniHack (Samvelyan et al., 2021) and NetHack
+(Küttler et al., 2020)) keep BALROG’s text obser-
+vations, and every key press is one choice from
+BALROG’s action list.
+Configuration changes relative to the original
+simulators are limited to what the decision interface
+needs: the quadrotor flies in PyFlyt’s position mode
+with a sparse reward and a 30-second limit, the
+two-car intersection uses destinations whose routes
+cross or share an exit, and the τ 2 telecom domain
+runs in its no-user mode with two small fixes to the
+environment’s construction. Atari games report the
+ALE game score, since they define no success.
+The newer suites keep their benchmarks’ settings
+where possible. WebShop plays the first 100 of its
+500 test goals through its own text environment;
+the search page offers two to four queries derived
+from the instruction. ScienceWorld plays one test
+variation per task type with its “easy” simplifica-
+tions and a limit of 100 actions. The BALROG
+games keep BALROG’s observations, action lists
+and step limits, with fixes that make episodes re-
+producible: Crafter keeps its creatures in insertion
+order rather than in memory-address order, and
+NetHack runs with a pinned clock, since the game
+reads the date (moon phase, Friday the 13th). Jeri-
+cho offers the commands its valid-action detector
+finds, plus “look” and “wait”, for 100 commands
+per game. The coding controller plays 40 SWE-
+bench Verified instances, balanced across repos-
+itories and validated before use, in their official
+evaluation images, and masks timings, process ids,
+addresses and temporary paths in command outputs
+so that the same actions give the same text.
+35
+
+Table 5:All closed-loop environments.Seeds are 0 to episodes −1; “Jev” is success rate / mean score over all seeds
+(“–” where success is undefined or runs are pending).
+Environment Source Mode Episodes Max dec. Score Jev
+embodied/household_loop
+alfworld ALFWorld (Shridhar et al., 2020), TextWorld version,
+out-of-distribution evaluation games (valid_unseen)
+paused 24 50 won (1) or not
+(0)
+0.46 / 0.5
+embodied/mujoco_control
+half_cheetah Gymnasium HalfCheetah-v5 (MuJoCo) paused 10 300 return – / -44.9
+hopper Gymnasium Hopper-v5 (MuJoCo) paused 10 250 return – / 306.6
+inverted_double_pendulum Gymnasium InvertedDoublePendulum-v5 (MuJoCo) paused 10 500 return 0.00 / 75.2
+inverted_pendulum Gymnasium InvertedPendulum-v5 (MuJoCo) paused 10 500 return 0.00 / 20.7
+reacher Gymnasium Reacher-v5 (MuJoCo) paused 10 50 return – / -34.5
+embodied/tabletop_loop
+button_press_topdown Meta-World button-press-topdown-v3 (MuJoCo) paused 10 80 success 0.40 / 0.4
+door_open Meta-World door-open-v3 (MuJoCo) paused 10 80 success 0.10 / 0.1
+drawer_close Meta-World drawer-close-v3 (MuJoCo) paused 10 40 success 1.00 / 1.0
+drawer_open Meta-World drawer-open-v3 (MuJoCo) paused 10 80 success 0.00 / 0.0
+peg_insert_side Meta-World peg-insert-side-v3 (MuJoCo) paused 10 80 success 0.00 / 0.0
+pick_place Meta-World pick-place-v3 (MuJoCo) paused 10 80 success 0.00 / 0.0
+push Meta-World push-v3 (MuJoCo) paused 10 80 success 0.00 / 0.0
+reach Meta-World reach-v3 (MuJoCo) paused 10 80 success 1.00 / 1.0
+window_close Meta-World window-close-v3 (MuJoCo) paused 10 80 success 1.00 / 1.0
+window_open Meta-World window-open-v3 (MuJoCo) paused 10 80 success 1.00 / 1.0
+game/chess_play
+stockfish_level0 Stockfish 19 at skill level 0 (the weakest official setting),
+move choice re-implemented with a seeded generator
+paused 20 150 result 0.00 / 0.0
+game/open_world
+crafter Crafter (Hafner, 2021; crafter 1.8.3), default world,
+through BALROG’s text wrapper
+paused 10 2000 progression (%
+of 22
+achievements)
+– / 5.5
+game/roguelike
+babyai_goto_local BabyAI GoToLocal (BabyAI-GoToLocal-v0, Minigrid) paused 10 64 reward 0.30 / 0.3
+babyai_goto_obj BabyAI GoToObj (BabyAI-GoToObj-v0, Minigrid) paused 10 64 reward 0.70 / 0.6
+babyai_mini_boss_level BabyAI MiniBossLevel (BabyAI-MiniBossLevel-v0,
+Minigrid)
+paused 10 800 reward 0.00 / 0.0
+babyai_pickup_loc BabyAI PickupLoc (BabyAI-PickupLoc-v0, Minigrid) paused 10 64 reward 0.20 / 0.2
+babyai_put_next_local BabyAI PutNextLocal (BabyAI-PutNextLocal-v0,
+Minigrid)
+paused 10 128 reward 0.00 / 0.0
+babyai_unlock_pickup BabyAI UnlockPickup (BabyAI-UnlockPickup-v0,
+Minigrid)
+paused 10 72 reward 0.00 / 0.0
+minihack_boxoban_hard MiniHack MiniHack-Boxoban-Hard-v0 (Samvelyan
+et al., 2021; BALROG’s fork 3ecb6da on balrog-nle
+0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_boxoban_medium MiniHack MiniHack-Boxoban-Medium-v0 (Samvelyan
+et al., 2021; BALROG’s fork 3ecb6da on balrog-nle
+0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_corridor_r3 MiniHack MiniHack-Corridor-R3-v0 (Samvelyan et al.,
+2021; BALROG’s fork 3ecb6da on balrog-nle 0.9.0), a
+BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_corridorbattle_dark MiniHack MiniHack-CorridorBattle-Dark-v0
+(Samvelyan et al., 2021; BALROG’s fork 3ecb6da on
+balrog-nle 0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_mazewalk_15x15 MiniHack MiniHack-MazeWalk-15x15-v0 (Samvelyan
+et al., 2021; BALROG’s fork 3ecb6da on balrog-nle
+0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_mazewalk_9x9 MiniHack MiniHack-MazeWalk-9x9-v0 (Samvelyan
+et al., 2021; BALROG’s fork 3ecb6da on balrog-nle
+0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.40 / 40.0
+minihack_quest_easy MiniHack MiniHack-Quest-Easy-v0 (Samvelyan et al.,
+2021; BALROG’s fork 3ecb6da on balrog-nle 0.9.0), a
+BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+minihack_quest_medium MiniHack MiniHack-Quest-Medium-v0 (Samvelyan
+et al., 2021; BALROG’s fork 3ecb6da on balrog-nle
+0.9.0), a BALROG task
+paused 10 100 progression (%:
+100 if solved)
+0.00 / 0.0
+nethack NetHack 3.6.6 in the NetHack Learning Environment,
+NetHackChallenge-v0 (Küttler et al., 2020; balrog-nle
+0.9.0), a BALROG task
+paused 5 2000 progression (%,
+BALROG’s
+NetHack
+progression)
+– / 0.0
+36
+
+Table 5 (continued).
+Environment Source Mode Episodes Max dec. Score Jev
+game/rule_puzzles
+baba_is_ai/goto_win Baba Is AI env/goto_win (Cloos et al., 2024; baba-is-ai
+at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/goto_win-distr_obj Baba Is AI env/goto_win-distr_obj (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/goto_win-distr_
+obj-irrelevant_rule
+Baba Is AI env/goto_win-distr_obj-irrelevant_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/goto_win-distr_obj_
+rule
+Baba Is AI env/goto_win-distr_obj_rule (Cloos et al.,
+2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/goto_win-distr_rule Baba Is AI env/goto_win-distr_rule (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/make_win Baba Is AI env/make_win (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/make_win-distr_obj Baba Is AI env/make_win-distr_obj (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/make_win-distr_
+obj-irrelevant_rule
+Baba Is AI env/make_win-distr_obj-irrelevant_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/make_win-distr_obj_
+rule
+Baba Is AI env/make_win-distr_obj_rule (Cloos et al.,
+2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/make_win-distr_rule Baba Is AI env/make_win-distr_rule (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-goto_win
+Baba Is AI env/two_room-break_stop-goto_win (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-goto_win-distr_obj
+Baba Is AI
+env/two_room-break_stop-goto_win-distr_obj (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-goto_win-distr_
+obj-irrelevant_rule
+Baba Is AI env/two_room-break_stop-goto_win-
+distr_obj-irrelevant_rule (Cloos et al., 2024; baba-is-ai
+at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-goto_win-distr_obj_rule
+Baba Is AI
+env/two_room-break_stop-goto_win-distr_obj_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-goto_win-distr_rule
+Baba Is AI
+env/two_room-break_stop-goto_win-distr_rule (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-make_win
+Baba Is AI env/two_room-break_stop-make_win
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-make_win-distr_obj
+Baba Is AI
+env/two_room-break_stop-make_win-distr_obj (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-make_win-distr_
+obj-irrelevant_rule
+Baba Is AI env/two_room-break_stop-make_win-
+distr_obj-irrelevant_rule (Cloos et al., 2024; baba-is-ai
+at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-make_win-distr_obj_rule
+Baba Is AI
+env/two_room-break_stop-make_win-distr_obj_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-break_
+stop-make_win-distr_rule
+Baba Is AI
+env/two_room-break_stop-make_win-distr_rule (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-goto_win Baba Is AI env/two_room-goto_win (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/two_room-goto_
+win-distr_obj
+Baba Is AI env/two_room-goto_win-distr_obj (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/two_room-goto_
+win-distr_obj-irrelevant_rule
+Baba Is AI
+env/two_room-goto_win-distr_obj-irrelevant_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.67 / 66.7
+baba_is_ai/two_room-goto_
+win-distr_obj_rule
+Baba Is AI env/two_room-goto_win-distr_obj_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+37
+
+Table 5 (continued).
+Environment Source Mode Episodes Max dec. Score Jev
+baba_is_ai/two_room-goto_
+win-distr_rule
+Baba Is AI env/two_room-goto_win-distr_rule (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.67 / 66.7
+baba_is_ai/two_room-goto_
+win-distr_win_rule
+Baba Is AI env/two_room-goto_win-distr_win_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/two_room-make_wall_
+win
+Baba Is AI env/two_room-make_wall_win (Cloos et al.,
+2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_win Baba Is AI env/two_room-make_win (Cloos et al.,
+2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+win-distr_obj
+Baba Is AI env/two_room-make_win-distr_obj (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+win-distr_obj-irrelevant_rule
+Baba Is AI
+env/two_room-make_win-distr_obj-irrelevant_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+win-distr_obj_rule
+Baba Is AI env/two_room-make_win-distr_obj_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+win-distr_rule
+Baba Is AI env/two_room-make_win-distr_rule (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+win-distr_win_rule
+Baba Is AI env/two_room-make_win-distr_win_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_you Baba Is AI env/two_room-make_you (Cloos et al.,
+2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-make_
+you-make_win
+Baba Is AI env/two_room-make_you-make_win (Cloos
+et al., 2024; baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-maybe_
+break_stop-goto_win
+Baba Is AI env/two_room-maybe_break_stop-goto_win
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-maybe_
+break_stop-goto_win-distr_obj
+Baba Is AI
+env/two_room-maybe_break_stop-goto_win-distr_obj
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-maybe_
+break_stop-goto_win-distr_
+obj-irrelevant_rule
+Baba Is AI env/two_room-maybe_break_stop-
+goto_win-distr_obj-irrelevant_rule (Cloos et al., 2024;
+baba-is-ai at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+baba_is_ai/two_room-maybe_
+break_stop-goto_win-distr_obj_
+rule
+Baba Is AI env/two_room-maybe_break_stop-
+goto_win-distr_obj_rule (Cloos et al., 2024; baba-is-ai
+at 40ae1b2), a BALROG task
+paused 3 100 progression (%:
+100 if solved)
+0.00 / 0.0
+baba_is_ai/two_room-maybe_
+break_stop-goto_win-distr_rule
+Baba Is AI
+env/two_room-maybe_break_stop-goto_win-distr_rule
+(Cloos et al., 2024; baba-is-ai at 40ae1b2), a BALROG
+task
+paused 3 100 progression (%:
+100 if solved)
+0.33 / 33.3
+loop/coding_controller
+swebench_verified_gpt41mini SWE-bench Verified (Jimenez et al., 2023; OpenAI,
+2024), official evaluation images and swebench 5.0.2
+grading
+paused 40 30 resolved (1) or
+not (0)
+0.12 / 0.1
+swebench_verified_gpt56luna SWE-bench Verified (Jimenez et al., 2023; OpenAI,
+2024), official evaluation images and swebench 5.0.2
+grading
+paused 40 30 resolved (1) or
+not (0)
+–
+swebench_verified_scripted SWE-bench Verified (Jimenez et al., 2023; OpenAI,
+2024), official evaluation images and swebench 5.0.2
+grading
+paused 40 30 resolved (1) or
+not (0)
+0.40 / 0.4
+loop/customer_service
+tau2_telecom_soloτ 2-bench (Barres et al., 2025), telecom domain,
+no-user (solo) mode
+paused 114 200 reward 0.91 / 0.9
+loop/science_experiments
+scienceworld ScienceWorld (Wang et al., 2022), 30 task types, test
+variations, ’easy’ simplifications
+paused 30 300 task score
+(0-100)
+0.27 / 38.4
+loop/text_games
+jericho_adventureland Jericho (Hausknecht et al., 2019) game suite:
+Adventureland (Scott Adams, 1978; Inform port, 1996)
+paused 3 100 points 0.00 / 0.0
+jericho_deephome Jericho (Hausknecht et al., 2019) game suite:
+Deephome: A Telleen Adventure (Joshua Wise, 1999)
+paused 3 100 points 0.00 / 1.0
+38
+
+Table 5 (continued).
+Environment Source Mode Episodes Max dec. Score Jev
+jericho_detective Jericho (Hausknecht et al., 2019) game suite: Detective
+(Matt Barringer, ported by Stuart Moore, 2000)
+paused 1 100 points 0.00 / 30.0
+jericho_dragon Jericho (Hausknecht et al., 2019) game suite: Dragon
+Adventure (William Stott)
+paused 3 100 points 0.00 / -13.3
+jericho_library Jericho (Hausknecht et al., 2019) game suite: All Quiet
+on the Library Front (Michael S. Phillips, 1995)
+paused 1 100 points 0.00 / 0.0
+jericho_ludicorp Jericho (Hausknecht et al., 2019) game suite: The
+Ludicorp Mystery (Cal Henderson, 2003)
+paused 1 100 points 0.00 / 5.0
+jericho_omniquest Jericho (Hausknecht et al., 2019) game suite:
+OMNIQuest (Chris Barden and Chris Ethridge, c. 1988;
+Inform port)
+paused 1 100 points 0.00 / 0.0
+jericho_pentari Jericho (Hausknecht et al., 2019) game suite: Pentari
+(Howard A. Sherman, 1998)
+paused 3 100 points 0.00 / 0.0
+jericho_zork1 Jericho (Hausknecht et al., 2019) game suite: Zork I:
+The Great Underground Empire (Infocom, 1980)
+paused 3 100 points 0.00 / 0.0
+jericho_zork3 Jericho (Hausknecht et al., 2019) game suite: Zork III:
+The Dungeon Master (Infocom, 1982)
+paused 3 100 points 0.00 / 1.0
+tw_cooking_level3 TextWorld cooking game (First TextWorld Problems
+generator), GATA test set, difficulty level 3: 1
+ingredient to find and cut
+paused 20 50 points 0.55 / 3.1
+tw_cooking_level5 TextWorld cooking game (First TextWorld Problems
+generator), GATA test set, difficulty level 5: 1
+ingredient to find
+paused 20 100 points 0.60 / 1.9
+tw_cooking_level7 TextWorld cooking game (First TextWorld Problems
+generator), GATA test set, difficulty level 7: 1
+ingredient to find, cut and cook
+paused 20 50 points 0.95 / 4.8
+tw_cooking_level9 TextWorld cooking game (First TextWorld Problems
+generator), GATA test set, difficulty level 9: 3
+ingredients to find, cut and cook
+paused 20 100 points 0.50 / 8.3
+loop/web
+miniwob/book-flight-nodelay MiniWoB++ book-flight-nodelay (Liu et al., 2018;
+miniwob 1.1)
+paused 5 25 reward 0.00 / -1.0
+miniwob/buy-ticket MiniWoB++ buy-ticket (Liu et al., 2018; miniwob 1.1) paused 5 5 reward 1.00 / 1.0
+miniwob/choose-date-nodelay MiniWoB++ choose-date-nodelay (Liu et al., 2018;
+miniwob 1.1)
+paused 5 30 reward 0.20 / -0.6
+miniwob/choose-list MiniWoB++ choose-list (Liu et al., 2018; miniwob 1.1) paused 5 6 reward 1.00 / 1.0
+miniwob/click-button MiniWoB++ click-button (Liu et al., 2018; miniwob
+1.1)
+paused 5 5 reward 1.00 / 1.0
+miniwob/click-button-sequence MiniWoB++ click-button-sequence (Liu et al., 2018;
+miniwob 1.1)
+paused 5 6 reward 1.00 / 1.0
+miniwob/click-checkboxes-large MiniWoB++ click-checkboxes-large (Liu et al., 2018;
+miniwob 1.1)
+paused 5 25 reward 1.00 / 0.9
+miniwob/click-checkboxes-soft MiniWoB++ click-checkboxes-soft (Liu et al., 2018;
+miniwob 1.1)
+paused 5 12 reward 1.00 / 0.9
+miniwob/
+click-collapsible-2-nodelay
+MiniWoB++ click-collapsible-2-nodelay (Liu et al.,
+2018; miniwob 1.1)
+paused 5 10 reward 1.00 / 1.0
+miniwob/click-dialog-2 MiniWoB++ click-dialog-2 (Liu et al., 2018; miniwob
+1.1)
+paused 5 5 reward 0.80 / 0.6
+miniwob/click-option MiniWoB++ click-option (Liu et al., 2018; miniwob
+1.1)
+paused 5 6 reward 1.00 / 1.0
+miniwob/click-scroll-list MiniWoB++ click-scroll-list (Liu et al., 2018; miniwob
+1.1)
+paused 5 12 reward 0.80 / 0.6
+miniwob/click-tab-2-hard MiniWoB++ click-tab-2-hard (Liu et al., 2018;
+miniwob 1.1)
+paused 5 10 reward 1.00 / 1.0
+miniwob/click-widget MiniWoB++ click-widget (Liu et al., 2018; miniwob
+1.1)
+paused 5 5 reward 1.00 / 1.0
+miniwob/copy-paste-2 MiniWoB++ copy-paste-2 (Liu et al., 2018; miniwob
+1.1)
+paused 5 6 reward 0.00 / -1.0
+miniwob/email-inbox MiniWoB++ email-inbox (Liu et al., 2018; miniwob
+1.1)
+paused 5 10 reward 0.20 / -0.6
+miniwob/
+email-inbox-forward-nl-turk
+MiniWoB++ email-inbox-forward-nl-turk (Liu et al.,
+2018; miniwob 1.1)
+paused 5 10 reward 0.00 / -1.0
+39
+
+Table 5 (continued).
+Environment Source Mode Episodes Max dec. Score Jev
+miniwob/enter-date MiniWoB++ enter-date (Liu et al., 2018; miniwob 1.1) paused 5 6 reward 0.00 / -1.0
+miniwob/enter-password MiniWoB++ enter-password (Liu et al., 2018; miniwob
+1.1)
+paused 5 8 reward 0.00 / -1.0
+miniwob/form-sequence-2 MiniWoB++ form-sequence-2 (Liu et al., 2018;
+miniwob 1.1)
+paused 5 8 reward 0.00 / -1.0
+miniwob/login-user-popup MiniWoB++ login-user-popup (Liu et al., 2018;
+miniwob 1.1)
+paused 5 12 reward 0.00 / -1.0
+miniwob/multi-layouts MiniWoB++ multi-layouts (Liu et al., 2018; miniwob
+1.1)
+paused 5 10 reward 0.00 / -1.0
+miniwob/navigate-tree MiniWoB++ navigate-tree (Liu et al., 2018; miniwob
+1.1)
+paused 5 10 reward 1.00 / 1.0
+miniwob/phone-book MiniWoB++ phone-book (Liu et al., 2018; miniwob
+1.1)
+paused 5 15 reward 0.80 / 0.7
+miniwob/read-table-2 MiniWoB++ read-table-2 (Liu et al., 2018; miniwob
+1.1)
+paused 5 8 reward 0.00 / -1.0
+miniwob/search-engine MiniWoB++ search-engine (Liu et al., 2018; miniwob
+1.1)
+paused 5 10 reward 0.20 / -0.6
+miniwob/social-media MiniWoB++ social-media (Liu et al., 2018; miniwob
+1.1)
+paused 5 6 reward 1.00 / 1.0
+miniwob/social-media-some MiniWoB++ social-media-some (Liu et al., 2018;
+miniwob 1.1)
+paused 5 20 reward 0.80 / 0.6
+miniwob/tic-tac-toe MiniWoB++ tic-tac-toe (Liu et al., 2018; miniwob 1.1) paused 5 10 reward 0.40 / 0.1
+miniwob/
+use-autocomplete-nodelay
+MiniWoB++ use-autocomplete-nodelay (Liu et al.,
+2018; miniwob 1.1)
+paused 5 8 reward 0.00 / -1.0
+loop/web_shopping
+webshop WebShop (Yao et al., 2022), text mode, all 1.18M
+products, human instructions (test split)
+paused 100 15 reward 0.29 / 0.6
+loop/wikiracing
+wikispeedia Wikispeedia (West and Leskovec, 2012): 2007
+Wikipedia Selection for Schools, its link graph and
+finished human games
+paused 20 30 clicks (lower is
+better)
+0.85 / 6.6
+realtime/atari
+boxing Boxing (Atari 2600) in the Arcade Learning
+Environment, objects from OCAtari
+realtime 10 1787 game score – / -16.1
+breakout Breakout (Atari 2600) in the Arcade Learning
+Environment, objects from OCAtari
+realtime 10 1800 game score – / 1.9
+freeway Freeway (Atari 2600) in the Arcade Learning
+Environment, objects from OCAtari
+realtime 10 2049 game score – / 20.0
+pong Pong (Atari 2600) in the Arcade Learning Environment,
+objects from OCAtari
+realtime 10 1800 game score – / -21.0
+realtime/doom
+basic ViZDoom basic scenario (Kempka et al., 2016) realtime 10 75 return 0.30 / -285.2
+deadly_corridor ViZDoom deadly_corridor scenario (Kempka et al.,
+2016)
+realtime 10 525 return 0.00 / 183.0
+defend_the_center ViZDoom defend_the_center scenario (Kempka et al.,
+2016)
+realtime 10 525 return – / 1.5
+health_gathering ViZDoom health_gathering scenario (Kempka et al.,
+2016)
+realtime 10 525 return 0.00 / 418.4
+realtime/drone
+quadx_waypoints PyFlyt QuadX-Waypoints-v4 (Tai et al., 2023) realtime 10 902 return 0.00 / -70.2
+realtime/highway
+highway highway-env highway-v0 (Leurent, 2018) realtime 10 40 return 0.00 / 7.1
+intersection highway-env intersection-v0 (Leurent, 2018) realtime 10 13 return 0.30 / 0.6
+intersection_multi_agent highway-env intersection-multi-agent-v0 (Leurent,
+2018), destinations changed so that the paths conflict
+realtime 10 20 return 0.10 / 3.9
+merge highway-env merge-v0 (Leurent, 2018) realtime 10 30 return 0.00 / 4.9
+roundabout highway-env roundabout-v0 (Leurent, 2018) realtime 10 11 return 0.70 / 8.5
+40

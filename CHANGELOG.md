@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-23
+
+- Registered and retrieved Tev1, H2OLightning, Kev and VLLMDecision2 source-only snapshots, with immutable revisions, retained licenses and model-weight/data exclusions.
+
+- Added the eight owner-requested OpenAI, Together, H2O.ai, Inception, Upstage, Fastino, Kev and vLLM primary sources to the live Decision Models Zotero collection and the web registry, with complete source summaries and synthesis integration. Preserved all pre-existing Zotero records.
+- Added DECISION_MODELS.md: a model-only comparison with boolean open-source status, explicit weight-license qualifications, source dates, parameters, modality/output contracts, effective context limits and dated API rates. Unknown fields and conflicting primary documentation remain explicit.
+
+- Reconciled the live 23-source Decision Models collection: added System1-Arena, Releasing the Inner Jev and Typed Decision Models on Tabular Data with unchanged attached PDFs, generated text, curated citation keys and complete summaries.
+- Integrated readout/adaptation controls, static-versus-closed-loop evaluation and table-format robustness into the synthesis; sorted the sixteen-paper chronology by filed version date.
+- Registered and retrieved revision-pinned System1Arena and Jeff source snapshots, retaining notices and excluding datasets/results. Recorded the missing author-code link for the tabular decision paper; no Zotero records or downstream pins changed.
+- Validation: 74 offline tests and documentation, symbol, text and live Zotero checks passed. The separate version audit reports the existing StartLux-Decision PDF as v1 while arXiv has v2 (20 October); its Zotero-selected attachment was preserved.
+
 ## 2026-10-20
 
 - Audited all thirteen paper summaries against the generated paper text and corrected mislabelled method details: AnyJev's batch (not contextual) calibration; JEV-as-a-Judge's point rule in §8 versus lower-bound rule in §9 and its 183-item adjudication; LLM-as-Jev's illegal-exit-token anchor; Beyond Calibration's controls; SearchJev's Appendix E.2 and Intern-Decision's Tables 5–7 pointers.

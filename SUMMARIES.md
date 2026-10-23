@@ -1,6 +1,6 @@
 # Decision models: source summaries
 
-The selected Zotero **Decision Models** collection contains thirteen research papers
+The selected Zotero **Decision Models** collection contains sixteen research papers
 and seven web-only releases/model cards. The current evidence concerns fast,
 schema-conditioned probabilistic decisions. It does not constitute a general
 survey of decision theory or optimization. Read [the synthesis](SYNTHESIS.md) for
@@ -8,7 +8,7 @@ comparisons, and [the implementation guide](REPOSITORIES.md) for source maps.
 
 Dates below describe the PDF version filed. Publication dates remain separately
 recorded in [the provenance manifest](papers/manifest.json); multiple October
-versions are ordered by their confirmed day. All thirteen are arXiv preprints: no
+versions are ordered by their confirmed day. All sixteen are arXiv preprints: no
 peer-reviewed venue is confirmed in the curated records. Source-specific numbers
 are reported results, not measurements rerun by this library. Citation keys come
 from Zotero and remain unchanged.
@@ -27,9 +27,12 @@ from Zotero and remain unchanged.
 | 2026-10 | Sharma et al. | TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models | Policy-generated tasks evaluate wording robustness, calibration noise floors and decisions under asymmetric costs. | [pdf](papers/2026/10_Sharma_et_al._TypedBench_A_Benchmark_for_Calibration_Framing_Sensitivity_and_Cost_in_System_One_Decision_Models.pdf) |
 | 2026-10 | Duan et al. | General Decision Models: Benchmarking and Insights Beyond Jev | A broad benchmark, analytic probability probes and agent tests separate local speed from system reliability. | [pdf](papers/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.pdf) |
 | 2026-10 | Zhuang et al. | StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | [pdf](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) |
+| 2026-10 | Geuter et al. | Releasing the Inner Jev: A Simple Recipe for Open Decision Models | Answer-letter readout and short LoRA training yield competitive open decisions on OpenDecisions and JevBench. | [pdf](papers/2026/10_Geuter_et_al._Releasing_the_Inner_Jev_A_Simple_Recipe_for_Open_Decision_Models.pdf) |
 | 2026-10 | Li and Wagle | LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them | Prefix-free candidate scoring tests when frozen LLMs suffice and when anchored fine-tuning or bounded reasoning helps. | [pdf](papers/2026/10_Li_and_Wagle_LLM_as_Jev_LLMs_Are_Already_Jev_Style_Decision_Models_When_and_How_to_Fine_Tune_Them.pdf) |
 | 2026-10 | Imperatrice et al. | Are AI Decision Models Biased? A Case Study of Jev | Behavioral tasks distinguish selected answers from probability shifts under irrelevant context, framing and option order. | [pdf](papers/2026/10_Imperatrice_et_al._Are_AI_Decision_Models_Biased_A_Case_Study_of_Jev.pdf) |
+| 2026-10 | Zhang et al. | Typed Decision Models on Tabular Data | Four decision models and three LLMs separate option-format robustness from table-serialization robustness. | [pdf](papers/2026/10_Zhang_et_al._Typed_Decision_Models_on_Tabular_Data.pdf) |
 | 2026-10 | Zhu et al. | Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling | Multimodal masked decision training scores multiple fields in one causal pass, with separate calibration and handoff evaluations. | [pdf](papers/2026/10_Zhu_et_al._Intern_Decision_Efficient_Multimodal_Decision_Making_with_Autoregressive_Masked_Language_Modeling.pdf) |
+| 2026-10 | Chen et al. | System1-Arena: Which Decisions Can Be Left to System 1? | Shared probability-scoring requests separate strong static decisions from weak closed-loop control across 30 models. | [pdf](papers/2026/10_Chen_et_al._System1_Arena_Which_Decisions_Can_Be_Left_to_System_1.pdf) |
 
 <a id="beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms"></a>
 
@@ -237,6 +240,24 @@ Headline results: on the public Decision Index 0.3 subset the Instant models bea
 
 **Evidence locations.** Abstract; §§2–6; Figure 2; Eqs. 1–6; §4.1; Appendix D. See [StartLux source map](REPOSITORIES.md#startluxdecisiontxt).
 
+<a id="releasing-the-inner-jev-a-simple-recipe-for-open-decision-models"></a>
+
+## 2026-10 — Geuter et al. — Releasing the Inner Jev: A Simple Recipe for Open Decision Models
+
+**Venue/provenance.** arXiv preprint 2610.17205v1, 12 October 2026; Harvard University and the Kempner Institute. This is the Jeff release, distinct from SII-Decision. [Primary record](https://arxiv.org/abs/2610.17205).
+
+**Zotero citation key:** `2026.GEUTER.releasinginnerjevsimplerecipeopendecisionmodels`. **PDF:** [open](papers/2026/10_Geuter_et_al._Releasing_the_Inner_Jev_A_Simple_Recipe_for_Open_Decision_Models.pdf).
+
+**Where it fits.** Complements Zhang et al. 2026 (*AnyJev Technical Report*) and Li and Wagle 2026 (*LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them*) by separating pretrained capability, head adaptation and backbone adaptation.
+
+**What it contains.** Sections 3–5 introduce OpenDecisions: 2,352 questions, eleven families, three question types and 23 languages. Four Gemma/Qwen backbones use answer-letter logits and temperature scaling. LoRA and a head initialized from LM-head letter rows are trained on a 417,825-question pool. At 400 steps Gemma 4 31B rises from 79.6 to 84.4 Capability on OpenDecisions, versus Jev's 80.1, and scores 81.5 on JevBench v1.7. The paper reports three runs and about five GPU-hours per run. Backbone adaptation drives most improvement; head-only training contributes little and longer training is not consistently better.
+
+**Strengths.** Zero-shot, head-only, LoRA and training-duration controls isolate what training adds. The paper reports calibration, seed variation and external tasks, and releases [Jeff serving source](https://github.com/j-geuter/Jeff), weights and OpenDecisions.
+
+**Limitations.** The validation set resembles JevBench and includes synthetic/model-labelled examples. Capability is a benchmark composite, not universal utility. Some ablations use one seed, and validation-based temperature/checkpoint choices do not establish external dominance. The public serving repository alone does not establish release of the full training pipeline.
+
+---
+
 <a id="llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them"></a>
 
 ## 2026-10 — Li and Wagle — LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them
@@ -277,6 +298,24 @@ Effects are smaller than in humans but present. An irrelevant dice value shifts 
 
 **Evidence locations.** §§3–8; Tables 1 and 3; Figures 1–6. The separate conjunction robustness sample should not be silently counted inside the 41,500-response main protocol.
 
+<a id="typed-decision-models-on-tabular-data"></a>
+
+## 2026-10 — Zhang et al. — Typed Decision Models on Tabular Data
+
+**Venue/provenance.** arXiv preprint 2610.19536v1, 14 October 2026; Wisconsin–Madison, Jilin University and CUHK Shenzhen. [Primary record](http://arxiv.org/abs/2610.19536).
+
+**Zotero citation key:** `2026.ZHANG.typeddecisionmodelstabulardata`. **PDF:** [open](papers/2026/10_Zhang_et_al._Typed_Decision_Models_on_Tabular_Data.pdf).
+
+**Where it fits.** Connects Sharma et al. 2026 (*TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models*) and Xu et al. 2026 (*JevOut: Natural Context Can Flip Decision Models*) to serialized tables, rather than conventional supervised numerical TFMs.
+
+**What it contains.** Sections 3–6 compare Jev, Clef, Kev-27B and GPT-6 Luna Decisions with three generative LLMs on row classification, fact verification and anomaly detection. Original requests are evaluated under 21 applicable rewrite types: option names/order, table format and row/column order. Decision models achieve competitive accuracy at lower reported cost. Jev, Clef and Kev are relatively stable to option formulation; GPT-6 Luna Decisions remains order-sensitive. Every model changes at least a third of row decisions under some rewrite despite fairly stable aggregate accuracy. Selectively re-querying low-confidence rows recovers much of the benefit of re-querying all rows.
+
+**Strengths.** Information-preserving rewrites distinguish representation from content, and decision-level analyses reveal instability hidden by average scores. Related-backbone comparisons and a selective re-querying intervention strengthen interpretation.
+
+**Limitations.** Seven models, three tasks and 21 rewrites do not establish arbitrary robustness. Confidence tracks stability more strongly than correctness; stable errors can be confident. Re-querying adds requests and partly repairs weak initial serialization. No author-linked code repository is identified in the filed paper.
+
+---
+
 <a id="intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling"></a>
 
 ## 2026-10 — Zhu et al. — Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling
@@ -297,27 +336,84 @@ The 4B model reports 90.02% unweighted accuracy over seven suites versus 88.74% 
 
 **Evidence locations.** §§3–5; Eqs. 1–3; Tables 1–7 (latency in Table 5, pilot in Table 6, handoff in Table 7); Appendices A–C. See [Intern-Decision source map](REPOSITORIES.md#interndecisiontxt).
 
+<a id="system1-arena-which-decisions-can-be-left-to-system-1"></a>
+
+## 2026-10 — Chen et al. — System1-Arena: Which Decisions Can Be Left to System 1?
+
+**Venue/provenance.** arXiv preprint 2610.21244v1, 15 October 2026; University of Texas at Austin. [Primary record](https://arxiv.org/abs/2610.21244).
+
+**Zotero citation key:** `2026.CHEN.system1arenawhichdecisionscanbeleftsystem1`. **PDF:** [open](papers/2026/10_Chen_et_al._System1_Arena_Which_Decisions_Can_Be_Left_to_System_1.pdf).
+
+**Where it fits.** Extends Duan et al. 2026 (*General Decision Models: Benchmarking and Insights Beyond Jev*) to a common interface spanning static tasks and closed loops. It tests whether fast, accurate local readout actually produces successful control.
+
+**What it contains.** Sections 3–5 define 92,125 questions across 105 tasks from 268 public sources and 138 environments in 18 families. Thirty systems comprise seven closed LLMs, thirteen open answer-token LLMs and ten System-1 models. Accuracy, Brier score, latency and cost are measured; real-time environments advance during inference. Strong System-1 models match fast closed LLMs on non-agentic tasks with better probability quality at about one-quarter of their latency. A reasoning LLM is more accurate at about 70 times the cost. Closed-loop success reaches 32.9% for a large open LLM, while small System-1 models rarely succeed. The headline closed-loop table uses 127 environments, a subset of the 138 supplied.
+
+**Strengths.** Identical decision requests, explicit probability scoring and static/closed-loop comparisons reveal ranking reversals. [S1-Arena source](https://github.com/TianyuCodings/S1-Arena) and a dataset are released.
+
+**Limitations.** Section 7 notes inherited label noise, some authored instructions, possible pretraining exposure and changing hosted APIs. One draw per request does not estimate run-to-run variability. Static accuracy is not closed-loop success or evidence of an optimal policy.
+
+---
+
 ## Web-source overview
 
-These seven selected sources have no PDF attachment. Their curated metadata,
-original URLs, date precision and review date are retained in
-[the web-source registry](papers/web_sources.json). They are represented by source
-links and authored summaries rather than fabricated PDFs or manual PDF text.
-Dates distinguish public announcements from model-card/checkpoint history.
-Intern-Decision's 26 September release is corroborated by a same-day public
-demo announcement, in addition to its upload history.
+These fifteen selected sources have no PDF attachment. Their curated metadata,
+original URLs, date precision and review dates are retained in
+[the web-source registry](papers/web_sources.json). They have source summaries,
+not fabricated PDFs. Year-only dates mean the original publication day is
+unconfirmed; Hub creation times are not treated as public launch dates.
+See [DECISION_MODELS.md](DECISION_MODELS.md) for model specifications and costs.
 
 | Date | Authors | Title | Contribution | Summary |
 |---|---|---|---|---|
+| 2026 | H2O.ai | H2O-Lightning-4B | A multimodal decision checkpoint exposes calibrated option scoring and checkpoint-specific attention/serving settings. | [source summary](#web-skwpxqtg) |
+| 2026 | Inception | Mercury Decide: Create a decision | A hosted decision endpoint specifies typed probabilities, multimodal request rules and input-only promotional billing. | [source summary](#web-ps2pzgda) |
 | 2026-09-15 | Diogo Almeida | Introducing System One Models & Jev | A provider release defines the typed probabilistic interface. | [source summary](#web-qezz55x7) |
+| 2026-09-22 | Upstage | Solar Decide | A Solar Mini 4 decision endpoint provides typed probabilities with a documented 512K context. | [source summary](#web-qzkmbk7l) |
+| 2026-09-23 | Together AI | Tev1-4B-experimental | An experimental supervised fine-tune selects an answer letter using the ordinary language-model head. | [source summary](#web-rgvmcn25) |
 | 2026-09-26 | InternLM | Intern-Decision-4B | A multimodal model card specifies multi-field candidate readout and calibration. | [source summary](#web-x58irxca) |
+| 2026-09-30 | Sahibzada Allahyar, Mary Newhauser | Introducing GLiDE: The First Thinking Decision Model | Adaptive reasoning adds computation when direct structured scoring is uncertain. | [source summary](#web-msejsvgw) |
+| 2026-09-30 | Jared Palmer | Kev-27B | A public pointer-head model provides typed probabilities and a tested long-document serving contract. | [source summary](#web-q9s5d6r2) |
 | 2026-10-01 | Michelle Chen, Alex Reneau, Kevin Flansburg | Introducing Clef: our open-source decision models, and new RL fine-tuning platform | A release combines schema scoring, cross-field attention and adaptation. | [source summary](#web-mwjhy75j) |
 | 2026-10-01 | Marc Brooker, Mike Chambers, Fabio Nonato de Paula | Introducing Strands Decider 2B: a small, open source, decision model | A small pointer-head model exposes a training and experimentation path. | [source summary](#web-gi68ips2) |
+| 2026-10-03 | vLLM Semantic Router Team | Decision-2.0-Vega-27B | An Apache-licensed model family scores multiple typed questions over a shared request without prose generation. | [source summary](#web-bh58bep7) |
 | 2026-10-06 | Perplexity AI | pplx-decider-v1.1-27b | A model card makes attention and calibration part of the inference contract. | [source summary](#web-de9kqqlx) |
 | 2026-10-07 | Liquid AI | Open d1: Edge decision models for text, vision, and audio | An edge-focused release adds text, image and audio decision variants. | [source summary](#web-4u52t7rc) |
 | 2026-10-09 | Achint Srivastava | Introducing Microsoft-Decision-1, our model for fast decision-making | A hosted release emphasizes scoring, perturbation robustness and benchmark breadth. | [source summary](#web-lelm4ubr) |
+| 2026-10-22 | OpenAI | Build more responsive apps with the Decisions API | Hosted predicate, choice and rubric scoring with text, image and native JSON inputs. | [source summary](#web-q9x2h26h) |
 
 ## Web sources
+
+<a id="web-skwpxqtg"></a>
+
+### 2026 — H2O-Lightning-4B
+
+**Venue / provenance:** H2O.ai; report. [Primary source](https://huggingface.co/h2oai/h2o-lightning-4b). Reviewed 2026-10-23. Undated live model card, accessed 2026-10-23. Hub repository created 2026-10-02; creation time alone is not proof of public release date. Apache-2.0 for this Qwen-based checkpoint.
+
+**Zotero citation key:** `2026.H2O.AI.h2olightning4b`
+
+**Where it fits.** H2O.ai (2026), *H2O-Lightning-4B*, documents an Apache-licensed Qwen3.5-4B decision model.
+
+**What it contains.** A serving shim returns choice, yes/no and ordinal-score probabilities for text and images. The current release distinguishes one-way and two-way reading, saved calibration and yes/no adjustments. Serving examples use a 40,960-token engine context and a separate 32,000-token state cap.
+
+**Strengths.** Code, configuration and revision-specific checks expose reproduction hazards beyond the weights.
+
+**Limitations.** Provider leaderboard results are not independent validation. State truncation and billing differ from processed-input length; the full backbone configuration is not a validated serving limit. The live card is undated, and repository creation alone does not establish its public launch date.
+
+<a id="web-ps2pzgda"></a>
+
+### 2026 — Mercury Decide: Create a decision
+
+**Venue / provenance:** Inception Platform; report. [Primary source](https://docs.inceptionlabs.ai/api-reference/decisions/create-a-decision). Reviewed 2026-10-23. Undated model/API reference, accessed 2026-10-23. Exact original public release date not confirmed from the primary reference. Pricing source: https://docs.inceptionlabs.ai/get-started/models .
+
+**Zotero citation key:** `2026.INCEPTION.mercurydecidecreatedecision`
+
+**Where it fits.** Inception (2026), *Mercury Decide: Create a decision*, defines a hosted structured-decision interface.
+
+**What it contains.** Shared state and named questions produce binary probabilities, categorical choices or ordinal scores. The reference permits base64 images in state/instructions with explicit image and request-body limits. The model/pricing page lists input-only billing at a promotional rate.
+
+**Strengths.** A dedicated request/response reference separates decision scoring from chat completions and tool execution.
+
+**Limitations.** The selected sources disclose neither weights nor a reproducible training implementation. A body-size limit is not a token-context guarantee. The exact original public-release day and parameter count remain unconfirmed; Mercury's general diffusion branding does not establish this endpoint's architecture.
 
 <a id="web-qezz55x7"></a>
 
@@ -335,6 +431,38 @@ demo announcement, in addition to its upload history.
 
 **Limitations.** This is a provider announcement. Type validity does not establish factual correctness, calibration or reliable action selection. Its workflow evidence is agreement with reference models rather than independent outcome truth; reported efficiency should not be generalized beyond those workloads.
 
+<a id="web-qzkmbk7l"></a>
+
+### 2026-09 — Solar Decide
+
+**Venue / provenance:** Upstage Console; report. [Primary source](https://console.upstage.ai/docs/models/solar-decide). Reviewed 2026-10-23. Live model card/API documentation. Its Versions section explicitly dates solar-decide beta to 2026-09-22. Accessed 2026-10-23.
+
+**Zotero citation key:** `2026.UPSTAGE.solardecide`
+
+**Where it fits.** Upstage (2026), *Solar Decide*, adds a hosted System One interface built on Solar Mini 4.
+
+**What it contains.** State and typed questions return a choice, yes/no probability or ordinal score. The card dates the beta to 22 September 2026, advertises 512K context and lists input, cached-input and free-output rates. It emphasizes Korean understanding for routing and policy checks.
+
+**Strengths.** The provider states version, endpoint, context and billing explicitly.
+
+**Limitations.** The release is beta, with no public weights or verified parameter count in the selected card. Language and context claims are provider specifications; they do not establish probability quality or accuracy across all supported lengths.
+
+<a id="web-rgvmcn25"></a>
+
+### 2026-09 — Tev1-4B-experimental
+
+**Venue / provenance:** Together AI; report. [Primary source](https://huggingface.co/togethercomputer/Tev1-4B-experimental). Reviewed 2026-10-23. Model card. Public launch on 2026-09-23 corroborated by https://www.together.ai/blog/how-to-train-your-own-jev . Fine-tuned weight license is being finalized; the base-model license alone does not establish open-source status.
+
+**Zotero citation key:** `2026.TOGETHERAI.tev14bexperimental`
+
+**Where it fits.** Together AI (2026), *Tev1-4B-experimental*, supplies a lightweight adaptation baseline alongside specialized decision heads.
+
+**What it contains.** A Qwen3.5-4B fine-tune reads state, a question and 2–24 labelled options, then generates an answer letter. The official recipe releases training code and describes ordinary LoRA supervision with the existing LM head. A smaller 0.8B variant is available.
+
+**Strengths.** Public weights and a concrete data/training recipe make the adaptation path inspectable.
+
+**Limitations.** The endpoint returns a letter; native multi-question probability vectors are not established by that example. The card calls the release experimental and says the fine-tuned weight license is still being finalized. Development benchmarks and base-model context configuration do not establish independent transfer or validated long-context operation.
+
 <a id="web-x58irxca"></a>
 
 ### 2026-09 — Intern-Decision-4B
@@ -350,6 +478,38 @@ demo announcement, in addition to its upload history.
 **Strengths.** It specifies inference semantics, limits and calibration, making reproduction less ambiguous than generic text-generation examples.
 
 **Limitations.** Provider benchmarks and a small diagnostic pilot do not establish broad distributional correctness. Generic Hub generation snippets are not the documented decision-scoring path.
+
+<a id="web-msejsvgw"></a>
+
+### 2026-09 — Introducing GLiDE: The First Thinking Decision Model
+
+**Venue / provenance:** Fastino Blog; blogPost. [Primary source](https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model). Reviewed 2026-10-23. Announcement date and byline from the primary page. Current model catalog and capability documentation supersede the announcement's older 40k context claim: https://docs.fastino.ai/concepts/models and https://docs.fastino.ai/concepts/glide-capabilities .
+
+**Zotero citation key:** `2026.ALLAHYAR.introducingglidefirstthinkingdecisionmodel`
+
+**Where it fits.** Allahyar and Newhauser (2026), *Introducing GLiDE: The First Thinking Decision Model*, extend direct readout with selective additional reasoning.
+
+**What it contains.** GLiDE first scores caller-defined options and can reason further on uncertain cases. Current capability documentation supports choice, yes/no and score outputs, images and a 65,536-token rendered-prompt limit; this supersedes the announcement's older 40k description.
+
+**Strengths.** The design makes computation conditional on decision difficulty while retaining structured probabilities.
+
+**Limitations.** The benchmark comparison is provider-run. Multiple internal passes and questions affect usage, so one request is not necessarily one forward pass. Current HTML and Markdown catalogs disagree on parameter disclosure; a firm count is unconfirmed. No public-weight release was verified.
+
+<a id="web-q9s5d6r2"></a>
+
+### 2026-09 — Kev-27B
+
+**Venue / provenance:** Jared Palmer / Kev; report. [Primary source](https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-27b.md). Reviewed 2026-10-23. Model card for Kev-27B v2 (Kev 1.0), explicitly released on 2026-09-30. This dates the documented release rather than the whole family's first experiment. Weights: https://huggingface.co/jaredpalmer/kev-27b .
+
+**Zotero citation key:** `2026.PALMER.kev27b`
+
+**Where it fits.** Palmer (2026), *Kev-27B*, documents the large member of a self-hosted decision-model family.
+
+**What it contains.** The 30 September v2 combines a fully fine-tuned Qwen3.8-27B torso with a small pointer head and fitted temperature. It supports choice, yes/no and ordinal-score questions. The card distinguishes 65,536-token states from question overhead and publishes training/serving code.
+
+**Strengths.** Public weights, code and a dedicated context-validation protocol make the release inspectable.
+
+**Limitations.** The card acknowledges checkpoint selection after earlier test results, so reported margins can be optimistic. Calibration and knowledge remain domain-dependent. Family size names are rounded backbone labels, not exact loaded parameter totals; the large checkpoint requires substantial memory.
 
 <a id="web-mwjhy75j"></a>
 
@@ -382,6 +542,22 @@ demo announcement, in addition to its upload history.
 **Strengths.** The public development history and training materials support inspection and reproduction beyond a hosted API.
 
 **Limitations.** Iterative tuning against a public benchmark risks benchmark-specific selection. Local timing depends on hardware and input length; an illustrative guardrail integration does not establish safe or reliable deployment. This is a release article, not a controlled independent study.
+
+<a id="web-bh58bep7"></a>
+
+### 2026-10 — Decision-2.0-Vega-27B
+
+**Venue / provenance:** vLLM Semantic Router; report. [Primary source](https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B). Reviewed 2026-10-23. Model card. Public Decision 2.0 release corroborated by the official project announcement/implementation issue dated 2026-10-03: https://github.com/vllm-project/semantic-router/issues/4479 . Earlier Hub creation is not treated as the public release date.
+
+**Zotero citation key:** `2026.VLLMSEMANTICROUTERTEAM.decision20vega27b`
+
+**Where it fits.** vLLM Semantic Router Team (2026), *Decision-2.0-Vega-27B*, connects typed decisions to an established inference-routing project.
+
+**What it contains.** Decision 2.0 spans 0.6B–27B size labels. Vega's card reports 29.37B actual parameters, 32,768-token context and simultaneous choice, yes/no and score probabilities. The official runtime specifies candidate readout and checkpoint-specific execution.
+
+**Strengths.** Weights, licensing and runtime behavior are public, enabling local inspection and version pinning.
+
+**Limitations.** The card's evaluation is release-specific and includes provider/maintainer comparisons. Nominal size labels are not exact parameter totals. A shared forward pass constrains latency, not correctness, calibration transfer or sequential planning quality.
 
 <a id="web-de9kqqlx"></a>
 
@@ -430,3 +606,19 @@ demo announcement, in addition to its upload history.
 **Strengths.** It explicitly separates accuracy, robustness, probability quality and runtime, and states that evaluation benchmarks were blinded from training.
 
 **Limitations.** These are provider claims; the selected source does not supply a reproducible training implementation. Its perturbation protocol differs from adaptive context search, so a low average flip rate cannot rebut JevOut's adversarial findings. The article was updated after release and has no immutable PDF in Zotero.
+
+<a id="web-q9x2h26h"></a>
+
+### 2026-10 — Build more responsive apps with the Decisions API
+
+**Venue / provenance:** OpenAI; blogPost. [Primary source](https://openai.com/index/decisions-api/). Reviewed 2026-10-23. General-availability announcement. Public beta began on 2026-10-06; API specifications and pricing were checked on 2026-10-23.
+
+**Zotero citation key:** `2026.OPENAI.buildmoreresponsiveappsdecisionsapi`
+
+**Where it fits.** OpenAI (2026), *Build more responsive apps with the Decisions API*, documents a hosted alternative to local decision checkpoints.
+
+**What it contains.** GPT-6 Luna answers predicates, choices and ordered-rubric scores through a dedicated endpoint. The general-availability release adds native JSON, shared-input caching, question-specific images and up to 400 questions per request. Current documentation charges input and cache operations, with no output-token charge.
+
+**Strengths.** The provider specifies answer semantics and usage accounting rather than requiring applications to parse generated prose.
+
+**Limitations.** Weights and training details are unavailable. Provider/customer latency examples are workload-specific; an API probability is not independently validated calibration. Beta and general-availability pricing differ, and a general Luna context window must not be assumed for this endpoint.

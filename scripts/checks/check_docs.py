@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lib.library import ROOT as _ROOT, github_slug
 from lib.config import PROJECT_MARKERS
 
-DOCS = ["README.md", "AGENTS.md", "SUMMARIES.md", "SYNTHESIS.md", "REPOSITORIES.md", "CHANGELOG.md", "PROJECT_SPECIFIC.template.md"]
-NEUTRAL_DOCS = ["SUMMARIES.md", "SYNTHESIS.md", "REPOSITORIES.md"]
+DOCS = ["README.md", "AGENTS.md", "SUMMARIES.md", "SYNTHESIS.md", "REPOSITORIES.md", "DECISION_MODELS.md", "CHANGELOG.md", "PROJECT_SPECIFIC.template.md"]
+NEUTRAL_DOCS = ["SUMMARIES.md", "SYNTHESIS.md", "REPOSITORIES.md", "DECISION_MODELS.md"]
 # Add a consumer name only if an owner identifies it; never inherit another library's list.
 _DATE = r"\d{4}-(?:0[1-9]|1[0-2])"
 _ENTRY = re.compile(rf"^## ({_DATE}) — (.+)$", re.M)

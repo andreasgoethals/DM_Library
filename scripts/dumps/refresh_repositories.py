@@ -46,6 +46,12 @@ _EXCLUDE = {"tokenizer.json", "*.safetensors.index.json", "results/*", "outputs/
             "training/aws/*", "*/stats.json"}
 
 REPOSITORIES: dict[str, dict] = {
+    "Tev1.txt": {"url": "https://github.com/togethercomputer/tev1", "identity": "https://huggingface.co/togethercomputer/Tev1-4B-experimental", "exclude": ["runs/*", "data/*.json", "data/*.jsonl", "data/*.csv"]},
+    "H2OLightning.txt": {"url": "https://huggingface.co/h2oai/h2o-lightning-4b", "identity": "https://huggingface.co/h2oai/h2o-lightning-4b", "exclude": ["data/*", "eval/*", "evaluation/results/*"]},
+    "Kev.txt": {"url": "https://github.com/jaredpalmer/kev", "identity": "https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-27b.md", "exclude": ["runs/*", "experiments/*", "data/*.json", "data/*.jsonl", "data/*.csv", "data/*.parquet"]},
+    "VLLMDecision2.txt": {"url": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B", "identity": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B"},
+    "System1Arena.txt": {"url": "https://github.com/TianyuCodings/S1-Arena", "identity": "https://arxiv.org/abs/2610.21244", "exclude": ["data/*", "datasets/*", "docs/site/*", "results/*", "runs/*"]},
+    "Jeff.txt": {"url": "https://github.com/j-geuter/Jeff", "identity": "https://arxiv.org/abs/2610.17205"},
     "JevOut.txt": {"url": "https://github.com/xzx34/JevOut", "identity": "https://arxiv.org/html/2609.30243v1"},
     "SearchJev.txt": {"url": "https://github.com/EvoScientist/SearchJev", "identity": "https://arxiv.org/html/2610.05107v1"},
     "SIIDecision.txt": {"url": "https://github.com/amazingljy1206/SII-Decision", "identity": "https://arxiv.org/html/2610.03935v2"},

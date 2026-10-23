@@ -1,0 +1,1763 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://github.com/j-geuter/Jeff",
+  "revision": "12ba07920283231fb9bab46359679a70e3f9eb1e",
+  "revision_date": "2026-10-16T13:24:42-04:00",
+  "slug": "j-geuter/Jeff",
+  "retrieved_utc": "2026-10-23T07:17:14+00:00",
+  "identity_source": "https://arxiv.org/abs/2610.17205",
+  "included_files": 19,
+  "excluded_files": 2,
+  "file_sha256": [
+    {
+      "path": "Dockerfile",
+      "bytes": 1042,
+      "sha256": "446d17fc553a3b8d1763a42480a3846ccb4c413ef6c460c71013833af56c6fc7"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 10745,
+      "sha256": "8489ebe7c8abe903fcdaace4080ef1660bba98ea44c8007923bfb91777945e37"
+    },
+    {
+      "path": "NOTICE",
+      "bytes": 2160,
+      "sha256": "3f6e267f1955402eaad96b4c6d05def3e932595caf8a9e58aa29538d3de9814b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7374,
+      "sha256": "751dbfdf8ecf419a133186dbecf28ea6df899af683c6e4d36d6f01f3e0be9031"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 837,
+      "sha256": "80d48073e861fa126be178289bfb7baab1659d33abd757916d15365dafd2990e"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 236,
+      "sha256": "135c56fdb9ddf7b4ca5bafda4612833e5eb5bacf7730f8f72f817d4d58c7a8da"
+    },
+    {
+      "path": "scripts/smoke_expected.json",
+      "bytes": 3963,
+      "sha256": "d2ace285777e96f25e44ae8a22693fb3750e5df3c4d71873870593f1cf088d9b"
+    },
+    {
+      "path": "scripts/smoke_test.py",
+      "bytes": 3524,
+      "sha256": "68c6532d981a9bf9906ea192d8182c6c516a853844a18932a06c240c8f27ab58"
+    },
+    {
+      "path": "src/jeff/__init__.py",
+      "bytes": 178,
+      "sha256": "e6d7c59ed3d8fe9e430c3e48f123a6682c4e802e4843178140cc5ea9accbd688"
+    },
+    {
+      "path": "src/jeff/head.py",
+      "bytes": 2777,
+      "sha256": "99c2840383b2f23d388dc095725d38b98137eab6cf0e6a3ff095cd34c6a11f7c"
+    },
+    {
+      "path": "src/jeff/model.py",
+      "bytes": 8041,
+      "sha256": "e50fb73595560cf6cefaf3bde4192b4c704ebaf926d3675af7e416a0c44dd44e"
+    },
+    {
+      "path": "src/jeff/prompting.py",
+      "bytes": 3617,
+      "sha256": "53d8622624571e952e1f9fcbd07f3bfea02cc7e17248b58ffc56267d71ad3fee"
+    },
+    {
+      "path": "src/jeff/serve.py",
+      "bytes": 5645,
+      "sha256": "38b9e722f8be5998c5ad4b57da256f9069f57cd364cd348ba4382d9bdcf3e854"
+    },
+    {
+      "path": "src/jeff/typesafe.py",
+      "bytes": 4460,
+      "sha256": "74dd5c028081eb6e0fac36df81d31e0d009350fe11b40e1af4d16bc8bbeb97fc"
+    },
+    {
+      "path": "tests/test_head.py",
+      "bytes": 2726,
+      "sha256": "bd040e5dd872e71917a223355084b9c683bb738b7a6c0ea5f33cc2e236176805"
+    },
+    {
+      "path": "tests/test_model.py",
+      "bytes": 1425,
+      "sha256": "00249b6cec9a05bc058f90f1f7e36439028f9a718a524579a3104366621c318b"
+    },
+    {
+      "path": "tests/test_prompting.py",
+      "bytes": 2894,
+      "sha256": "96a970427868693ec19e638d5d67280a1a6c244f5a5846396f0724840ee9e2ce"
+    },
+    {
+      "path": "tests/test_serve.py",
+      "bytes": 3788,
+      "sha256": "46e4488f205a4c776331b01fcb7d2a80327b558dff82582fa8842fcf7d6e10d7"
+    },
+    {
+      "path": "tests/test_typesafe.py",
+      "bytes": 3011,
+      "sha256": "f68ef526d87dc524840931a797636256ce36ef1a642954a5ab745ba0df8c25af"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+# Jeff: Jev-style decision models from open LLMs
+
+Serving code for the **Jeff 1.0** Jev-style decision models: a state, a typed question, and its options go in, and
+one forward pass returns a probability for each option.
+
+| Model | Base model (+ LoRA, merged) | Download | GPU memory | Tested revision |
+|---|---|---|---|---|
+| [jgeuter/Jeff-1.0-Large](https://huggingface.co/jgeuter/Jeff-1.0-Large) | Gemma 4 31B | 61 GB | 80 GB | `275325a5eab52cce4f109a09ee3832f2eb89fe2f` |
+| [jgeuter/Jeff-1.0-Qwen-27B](https://huggingface.co/jgeuter/Jeff-1.0-Qwen-27B) | Qwen3.6-27B | 54 GB | 80 GB | `eb99f94481c493f5a1e9f61d371168215a4b422d` |
+| [jgeuter/Jeff-1.0-Medium](https://huggingface.co/jgeuter/Jeff-1.0-Medium) | Gemma 4 12B | 24 GB | 40 GB | `1fcdb4d648eec28c4f95f2a1cf2fd0e456a556cb` |
+| [jgeuter/Jeff-1.0-Qwen-4B](https://huggingface.co/jgeuter/Jeff-1.0-Qwen-4B) | Qwen3.5-4B | 8 GB | 16 GB | `5f441c5f385ab8fe4889dc597fa48bd1d372e19e` |
+
+All four are served the same way; the examples below use Jeff-1.0-Large, swap in another repo id and revision from the table.
+
+## How it works
+
+Each question is rendered as a multiple-choice prompt. A decision head turns the last hidden state $h$ into one
+logit per option, and a softmax over the $K$ options gives the probabilities:
+
+$$z = c\tanh(W_0 h / c) + A \mathrm{std}(h) + b, \qquad p = \mathrm{softmax}(z_1 / T, \dots, z_K / T),$$
+
+where $W_0$ are the language-model-head rows of the answer letters (A, B, C, ...), $c = 30$ is Gemma's final-logit
+soft-capping (Qwen models have none), $\mathrm{std}(h)$ standardizes each feature with statistics computed once on training data, and the
+learned correction $A$, $b$ starts at zero, so training starts exactly at the model's own letter readout. $T$ is a
+temperature per question type (choice, yes/no, score), fitted on our validation data and stored in the model's
+`serving_rule.json` (for Jeff-1.0-Large: 1.52 for choice, 1.31 for yes/no and score).
+
+Question types: `choice` (2 to 16 options), `noul` (yes/no; the answer is `P(yes)`) and `score` (ordered levels,
+2 to 16). Inputs up to 8,192 tokens.
+
+## Run without Docker
+
+```bash
+pip install -r requirements.txt && pip install .
+jeff-serve jgeuter/Jeff-1.0-Large --revision 275325a5eab52cce4f109a09ee3832f2eb89fe2f --host 127.0.0.1 --port 8013
+```
+
+On the first start this downloads the weights (about 61 GB) into the Hugging Face cache, which is `~/.cache/huggingface`
+unless you set `HF_HOME` (set it to a disk with enough space). `--revision` pins the version we tested; leave it out to
+get the newest. Instead of the repo id you can also pass a folder that already holds the weights.
+
+## Run with Docker
+
+The image holds the code and its dependencies, but not the weights. Download the weights first, to any folder with
+about 61 GB free (`hf` comes with `pip install huggingface_hub`):
+
+```bash
+export JEFF_DIR=$HOME/models/Jeff-1.0-Large          # any folder you like
+hf download jgeuter/Jeff-1.0-Large --revision 275325a5eab52cce4f109a09ee3832f2eb89fe2f --local-dir "$JEFF_DIR"
+docker build -t jeff .
+docker run --gpus '"device=0"' -v "$JEFF_DIR":/model:ro -p 127.0.0.1:8013:8013 jeff
+python scripts/smoke_test.py --endpoint http://127.0.0.1:8013      # check it
+```
+
+The container reads the weights from `/model` and needs no network access (it also runs with `--network none`). It
+needs one GPU with the memory given in the table (for the 31B and 27B models e.g. H100 80GB, H200 or RTX PRO 6000
+96GB); `--gpus` needs the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/)
+on the host. `-p 127.0.0.1:8013:8013` makes the server reachable only from this machine. The server has no
+authentication, so do not expose it to the internet.
+
+## Requirements
+
+Tested with Python 3.12, torch 2.13.0 (CUDA 13.0), transformers 5.17.0 and accelerate 1.15.0 (`requirements.txt`).
+Without Docker, the machine needs a C compiler (e.g. `gcc`; the image has one): Triton, which torch uses for some GPU
+operations, compiles a small helper with it on the first request. The GPU driver must support CUDA 13.0 (R580 or
+newer). The Qwen models need nothing extra: without `flash-linear-attention` and `causal-conv1d`, transformers runs their
+linear-attention layers with a slower PyTorch implementation (same results; we tested this way).
+
+## Request/response format
+
+```
+POST /v1/systemone
+{"state": {...} or "text",
+ "model": "Jeff-1.0-Large",
+ "questions": {
+   "route":    {"type": "choice", "instructions": "Which team should handle this ticket?",
+                "criteria": {"billing": "Payments and refunds", "technical": "Bugs and outages"}},
+   "urgent":   {"type": "noul", "instructions": "Does this need a reply today?",
+                "criteria": {"true": "Reply today", "false": "Can wait"}},
+   "severity": {"type": "score", "instructions": "How severe is the problem?",
+                "criteria": ["trivial", "minor", "moderate", "serious", "critical"]}}}
+->
+{"answers": {"route":    {"type": "choice", "choice": "billing", "probabilities": {"billing": 0.97, "technical": 0.03}},
+             "urgent":   {"type": "noul", "noul": 0.801},
+             "severity": {"type": "score", "score": 2, "probabilities": {"0": 0.01, "1": 0.2, ...}}},
+ "model": "Jeff-1.0-Large", "usage": {"input_tokens": 612, "output_tokens": 0}, "runtime": {...}}
+```
+
+Each question is one forward pass; questions of one request are answered one after another. Invalid requests,
+questions with more than 16 options and inputs over 8,192 tokens get HTTP 422; a failure during the forward pass (for
+example, out of GPU memory) gets HTTP 500. Both come with `{"error": "..."}`.
+
+Yes/no answers: JevBench counts $0.2 < P(\text{yes}) < 0.8$ as wrong, so by default the server commits such answers to
+0.199 or 0.801 (whichever edge is nearer, as `"urgent"` above). Start it with `--no-commit` (Python: `commit=False`) to get
+the calibrated $P(\text{yes})$ instead.
+
+## Python
+
+```python
+from jeff import JeffModel
+model = JeffModel("jgeuter/Jeff-1.0-Large")      # or a local folder with the weights; commit=False: calibrated P(yes)
+model.decide({"ticket": "Refund not received after 14 days"},
+             {"route": {"type": "choice", "instructions": "Which team should handle this?",
+                        "criteria": {"billing": "Payments and refunds", "tech": "Technical problems"}}})
+```
+
+## Tests
+
+```bash
+pip install ".[test]" && pytest                                  # CPU tests of the prompt, head, rule and server
+python scripts/smoke_test.py --endpoint http://127.0.0.1:8013   # a running server's answers vs. ours
+```
+
+This test checks the outputs on three example questions against the probabilities we got for the same model
+(`scripts/smoke_expected.json`).
+
+## Licence
+
+The code is Apache-2.0 (`LICENSE`); it contains code derived from SemIf and JevBench (MIT), see `NOTICE`. The model
+weights are CC BY-NC 4.0, as given in the model cards.
+
+## Citation
+
+If you find this repository helpful, please consider citing our paper:
+
+```bibtex
+@misc{geuter2026releasinginnerjevsimple,
+      title={Releasing the Inner Jev: A Simple Recipe for Open Decision Models}, 
+      author={Jonathan Geuter and Andrew Cheng and David Alvarez-Melis},
+      year={2026},
+      eprint={2610.17205},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2610.17205}, 
+}
+```
+
+
+
+================================================
+FILE: Dockerfile
+================================================
+# Jeff decision-model server (TypeSafe System One wire format, POST /v1/systemone).
+# The CUDA runtime comes with the torch wheel; the host needs an NVIDIA driver for CUDA 13.0 (R580 or newer).
+FROM python:3.12-slim
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 TOKENIZERS_PARALLELISM=false
+WORKDIR /app
+# A C compiler: Triton (used by torch for some GPU ops, e.g. in Gemma's rotary embedding) compiles a small driver
+# helper with it on the first request. Without it the server fails at its first forward pass.
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt pyproject.toml README.md LICENSE NOTICE ./
+COPY src ./src
+RUN pip install -r requirements.txt && pip install --no-deps .
+EXPOSE 8013
+# Default: serve a model folder mounted at /model (weights fetched beforehand; works offline).
+# Or pass a Hugging Face repo id instead of /model (then the container needs network access).
+ENTRYPOINT ["jeff-serve"]
+CMD ["/model", "--host", "0.0.0.0", "--port", "8013"]
+
+
+
+================================================
+FILE: LICENSE
+================================================
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, or other
+      liability obligations and/or rights consistent with this License.
+      However, in accepting such obligations, You may act only on Your
+      own behalf and on Your sole responsibility, not on behalf of any
+      other Contributor, and only if You agree to indemnify, defend, and
+      hold each Contributor harmless for any liability incurred by, or
+      claims asserted against, such Contributor by reason of your
+      accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   Copyright 2026 Mark Marosi
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+
+================================================
+FILE: NOTICE
+================================================
+Jeff serving code
+Copyright 2026 Jonathan Geuter, Andrew Cheng, David Alvarez-Melis
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This software contains code derived from the following projects, both under the MIT License (text below):
+
+- SemIf (https://github.com/TheoLeeCJ/SemIf)
+  Copyright (c) 2026 TheoLeeCJ
+  src/jeff/prompting.py reimplements SemIf's prompt construction (system message, JSON payload, answer letters A-P).
+
+- JevBench (https://github.com/fstandhartinger/jevbench)
+  Copyright (c) 2026 Florian Standhartinger and contributors
+  src/jeff/typesafe.py maps TypeSafe questions to multiple-choice rows the way JevBench's semif_direct adapter does.
+
+The model weights are not part of this repository. The Jeff 1.0 models are released on Hugging Face under CC BY-NC 4.0
+(see each model card). Each one is fine-tuned from a base model released under the Apache License 2.0:
+
+  jgeuter/Jeff-1.0-Large      google/gemma-4-31B-it
+  jgeuter/Jeff-1.0-Medium     google/gemma-4-12B-it
+  jgeuter/Jeff-1.0-Qwen-27B   Qwen/Qwen3.6-27B
+  jgeuter/Jeff-1.0-Qwen-4B    Qwen/Qwen3.5-4B
+
+MIT License (SemIf, JevBench):
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+================================================
+FILE: pyproject.toml
+================================================
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jeff"
+version = "1.1.1"
+description = "Serving code for Jeff decision models (TypeSafe System One wire format, as used by JevBench)"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+authors = [{name = "Jonathan Geuter"}, {name = "Andrew Cheng"}, {name = "David Alvarez-Melis"}]
+# Exact versions we tested with are pinned in requirements.txt (and the Dockerfile).
+dependencies = ["torch>=2.11", "transformers>=5.17", "safetensors>=0.5", "huggingface_hub>=1.0", "accelerate>=1.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+jeff-serve = "jeff.serve:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+
+
+================================================
+FILE: requirements.txt
+================================================
+# Versions we evaluated and tested the release with (CUDA 13.0 wheels for torch).
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.13.0
+transformers==5.17.0
+safetensors==0.8.0
+huggingface_hub==1.32.0
+accelerate==1.15.0
+
+
+
+================================================
+FILE: scripts/smoke_expected.json
+================================================
+{
+ "_note": "Answers of jeff-serve 1.1.1 (torch 2.13.0, transformers 5.17.0) to scripts/smoke_test.py's request, with and without the yes/no commitment; Large, Medium and Qwen-27B on an H100 80GB, Qwen-4B on an A100 slice (MIG 3g.20gb). smoke_test.py compares a running server's answers with these.",
+ "Jeff-1.0-Large": {
+  "commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.994699,
+     "technical": 0.002728,
+     "shipping": 0.002573
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.869384
+   },
+   "severity": {
+    "type": "score",
+    "score": 2,
+    "probabilities": {
+     "0": 0.013508,
+     "1": 0.15541,
+     "2": 0.476138,
+     "3": 0.317618,
+     "4": 0.037325
+    }
+   }
+  },
+  "no-commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.994699,
+     "technical": 0.002728,
+     "shipping": 0.002573
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.869384
+   },
+   "severity": {
+    "type": "score",
+    "score": 2,
+    "probabilities": {
+     "0": 0.013508,
+     "1": 0.15541,
+     "2": 0.476138,
+     "3": 0.317618,
+     "4": 0.037325
+    }
+   }
+  }
+ },
+ "Jeff-1.0-Medium": {
+  "commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.999373,
+     "technical": 0.000479,
+     "shipping": 0.000148
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.972857
+   },
+   "severity": {
+    "type": "score",
+    "score": 3,
+    "probabilities": {
+     "0": 0.020025,
+     "1": 0.142891,
+     "2": 0.345629,
+     "3": 0.463676,
+     "4": 0.027779
+    }
+   }
+  },
+  "no-commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.999373,
+     "technical": 0.000479,
+     "shipping": 0.000148
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.972857
+   },
+   "severity": {
+    "type": "score",
+    "score": 3,
+    "probabilities": {
+     "0": 0.020025,
+     "1": 0.142891,
+     "2": 0.345629,
+     "3": 0.463676,
+     "4": 0.027779
+    }
+   }
+  }
+ },
+ "Jeff-1.0-Qwen-27B": {
+  "commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.997786,
+     "technical": 0.000791,
+     "shipping": 0.001423
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.811578
+   },
+   "severity": {
+    "type": "score",
+    "score": 2,
+    "probabilities": {
+     "0": 0.036876,
+     "1": 0.232755,
+     "2": 0.504635,
+     "3": 0.204238,
+     "4": 0.021496
+    }
+   }
+  },
+  "no-commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.997786,
+     "technical": 0.000791,
+     "shipping": 0.001423
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.811578
+   },
+   "severity": {
+    "type": "score",
+    "score": 2,
+    "probabilities": {
+     "0": 0.036876,
+     "1": 0.232755,
+     "2": 0.504635,
+     "3": 0.204238,
+     "4": 0.021496
+    }
+   }
+  }
+ },
+ "Jeff-1.0-Qwen-4B": {
+  "commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.986277,
+     "technical": 0.011738,
+     "shipping": 0.001986
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.199
+   },
+   "severity": {
+    "type": "score",
+    "score": 1,
+    "probabilities": {
+     "0": 0.090623,
+     "1": 0.482172,
+     "2": 0.355945,
+     "3": 0.063306,
+     "4": 0.007954
+    }
+   }
+  },
+  "no-commit": {
+   "route": {
+    "type": "choice",
+    "choice": "billing",
+    "probabilities": {
+     "billing": 0.986277,
+     "technical": 0.011738,
+     "shipping": 0.001986
+    }
+   },
+   "urgent": {
+    "type": "noul",
+    "noul": 0.434312
+   },
+   "severity": {
+    "type": "score",
+    "score": 1,
+    "probabilities": {
+     "0": 0.090623,
+     "1": 0.482172,
+     "2": 0.355945,
+     "3": 0.063306,
+     "4": 0.007954
+    }
+   }
+  }
+ }
+}
+
+
+
+================================================
+FILE: scripts/smoke_test.py
+================================================
+"""Send three example decisions (choice, yes/no, score) to a running server, print the answers, and compare the
+probabilities with the answers we got for the same model (smoke_expected.json next to this script).
+
+    python scripts/smoke_test.py --endpoint http://127.0.0.1:8013
+
+Other GPUs and drivers can shift the probabilities slightly; the check allows --tolerance (default 0.05; across
+A100, H100 and RTX PRO 6000 GPUs we saw differences up to about 0.03 on 99% of questions).
+"""
+import argparse
+import json
+import sys
+import time
+import urllib.request
+from pathlib import Path
+
+REQUEST = {
+    "state": {"ticket": "I was charged twice for order #4411 and want the second charge refunded.",
+              "customer_tier": "gold"},
+    "model": "Jeff-1.0-Large",
+    "questions": {
+        "route": {"type": "choice", "instructions": "Which team should handle this ticket?",
+                  "criteria": {"billing": "Payments, charges and refunds", "technical": "Bugs and outages",
+                               "shipping": "Delivery problems"}},
+        "urgent": {"type": "noul", "instructions": "Does this ticket need a reply today?",
+                   "criteria": {"true": "A reply is needed today", "false": "It can wait"}},
+        "severity": {"type": "score", "instructions": "How severe is the customer's problem?",
+                     "criteria": ["trivial", "minor", "moderate", "serious", "critical"]},
+    },
+}
+EXPECTED = Path(__file__).with_name("smoke_expected.json")
+
+
+def probabilities(answers: dict) -> dict:
+    """All probabilities of the answers: {"route/billing": p, ..., "urgent": P(yes), ...}."""
+    out = {}
+    for key, answer in answers.items():
+        if answer["type"] == "noul":
+            out[key] = answer["noul"]
+        else:
+            out.update({f"{key}/{option}": p for option, p in answer["probabilities"].items()})
+    return out
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser()
+    p.add_argument("--endpoint", default="http://127.0.0.1:8013")
+    p.add_argument("--tolerance", type=float, default=0.05, help="largest allowed difference of a probability")
+    a = p.parse_args()
+    req = urllib.request.Request(a.endpoint.rstrip("/") + "/v1/systemone", data=json.dumps(REQUEST).encode(),
+                                 headers={"Content-Type": "application/json"})
+    t0 = time.perf_counter()
+    with urllib.request.urlopen(req, timeout=120) as r:
+        body = json.loads(r.read())
+    print(json.dumps(body["answers"], indent=1))
+    print(f"input tokens {body['usage']['input_tokens']}, round trip {time.perf_counter() - t0:.3f} s")
+    assert set(body["answers"]) == set(REQUEST["questions"]), "missing answers"
+
+    commit = "noul_edge" in body.get("runtime", {}).get("serving_rule", {})
+    mode = "commit" if commit else "no-commit"
+    reference = json.loads(EXPECTED.read_text()).get(body["model"], {}).get(mode)
+    if reference is None:
+        print(f"no reference answers for {body['model']} ({mode}); not checked")
+        sys.exit(0)
+    got, want = probabilities(body["answers"]), probabilities(reference)
+    if set(got) != set(want):
+        sys.exit(f"FAIL: the answers have other options than our reference: {sorted(set(got) ^ set(want))}")
+    worst = max(abs(got[k] - want[k]) for k in want)
+    if worst > a.tolerance:
+        sys.exit(f"FAIL: a probability differs from our reference by {worst:.4f} (allowed: {a.tolerance})")
+    print(f"OK: matches our answers for {body['model']} ({mode}); largest difference {worst:.4f}")
+
+
+
+================================================
+FILE: src/jeff/__init__.py
+================================================
+"""Jeff: Jev-style decision models from open LLMs (letter readout + decision head + serving rule)."""
+from .model import JeffModel
+
+__all__ = ["JeffModel"]
+__version__ = "1.1.1"
+
+
+
+================================================
+FILE: src/jeff/head.py
+================================================
+"""The Jeff decision head: one logit per answer option from the language model's last hidden state.
+
+    z = c * tanh(W0 h / c) + A std(h) + b,        std(h) = (h - mu) / sigma
+
+h is the post-final-norm hidden state at the last prompt position (what the LM head reads). W0 are the LM-head rows of
+the answer letters A-P, so the first term is the model's own letter readout. c is the LM's final-logit soft-capping
+(Gemma 4: 30); Qwen models have none, and the first term is then W0 h. mu and sigma were computed once on training
+data. The correction A, b was learned; it started at zero, so training started exactly at the letter readout. Slot j
+belongs to the option labeled LETTERS[j]; a question with k options uses the first k slots.
+
+Release format: head_config.json and head.safetensors, with fp32 tensors base_rows (W0), delta.weight (A), delta.bias
+(b), mu and sigma. The released files also hold an abstain unit (abstain_net.*), used only in training; it never
+enters the option probabilities and is not loaded.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import torch
+from torch import nn
+
+from .prompting import MAX_OPTIONS
+
+
+class DecisionHead(nn.Module):
+    def __init__(self, d_model: int, k_slots: int = MAX_OPTIONS, softcap: float | None = None):
+        super().__init__()
+        self.d_model, self.k_slots = d_model, k_slots
+        self.softcap = float(softcap) if softcap else None
+        self.register_buffer("base_rows", torch.zeros(k_slots, d_model))
+        self.delta = nn.Linear(d_model, k_slots, bias=True)
+        self.register_buffer("mu", torch.zeros(d_model))
+        self.register_buffer("sigma", torch.ones(d_model))
+
+    def forward(self, h: torch.Tensor) -> torch.Tensor:
+        """h [B, d_model] -> logits [B, k_slots]; a question with k options reads the first k."""
+        z0 = h @ self.base_rows.T
+        if self.softcap is not None:
+            z0 = self.softcap * torch.tanh(z0 / self.softcap)
+        return z0 + self.delta((h - self.mu) / self.sigma)
+
+
+def load_head(folder) -> DecisionHead:
+    """The decision head of a released model folder, in fp32."""
+    from safetensors.torch import load_file
+    folder = Path(folder)
+    config = json.loads((folder / "head_config.json").read_text())
+    if (config.get("kind") != "residual" or config.get("extra_dim") or config.get("extra_layers")
+            or config.get("k_slots") != MAX_OPTIONS):
+        raise ValueError(f"{folder}: unsupported decision head {config}")
+    head = DecisionHead(config["d_model"], config["k_slots"], config.get("softcap"))
+    tensors = load_file(str(folder / "head.safetensors"))
+    head.load_state_dict({k: v for k, v in tensors.items() if not k.startswith("abstain_net.")})  # strict
+    return head.float()
+
+
+
+================================================
+FILE: src/jeff/model.py
+================================================
+"""Load a released Jeff model and answer decisions: one forward pass per question, no generation.
+
+A released model folder (or Hugging Face repo) holds the merged weights and tokenizer (standard transformers files),
+the decision head (head.safetensors + head_config.json), the serving rule (serving_rule.json) and jeff_config.json.
+Each question is rendered as a SemIf-format multiple-choice prompt (options labeled A, B, C, ...; chat template with
+thinking disabled), the model reads it once, the head turns the last hidden state into one logit per option, and the
+serving rule is applied to the softmax. This computes exactly what we evaluated the released models with.
+
+    from jeff import JeffModel
+    model = JeffModel("jgeuter/Jeff-1.0-Large")
+    model.decide({"ticket": "Refund not received after 14 days"},
+                 {"route": {"type": "choice", "instructions": "Which team should handle this?",
+                            "criteria": {"billing": "Payments and refunds", "tech": "Technical problems"}}})
+"""
+from __future__ import annotations
+
+import json
+import time
+from pathlib import Path
+
+from . import typesafe as T
+from .head import load_head
+from .prompting import PROMPT_VERSION, encode_prompt
+
+MAX_TOKENS = 8192          # as in all our evaluations; longer inputs are refused (JevBench counts them as wrong)
+CUDNN_MIN_TOKENS = 8192    # cuDNN attention only for inputs at least this long (see disable_cudnn_attention)
+
+
+def disable_cudnn_attention() -> None:
+    """Turn off PyTorch's cuDNN attention kernel for this process.
+
+    cuDNN attention builds a new execution plan for every new input shape, and served requests almost always have a
+    new length. For Gemma 4 31B this costs about 2x per request on H200 (0.123 s vs 0.061 s median on our validation
+    items) and up to 10x on H100 with torch 2.11 (0.72 s vs 0.07 s); answers do not change. The flash and
+    memory-efficient kernels have no per-shape cost. Very long inputs are the exception, so the Decider turns cuDNN
+    back on from CUDNN_MIN_TOKENS tokens.
+    """
+    import torch
+    torch.backends.cuda.enable_cudnn_sdp(False)
+
+
+def model_folder(ref: str | Path, revision: str | None = None) -> Path:
+    """A local folder, or a snapshot of a Hugging Face model repo (downloaded once, then cached)."""
+    path = Path(ref).expanduser()
+    if path.is_dir():
+        return path
+    text = str(ref)
+    if text.startswith((".", "/", "~")) or text.count("/") != 1:   # a path, not a Hugging Face repo id like org/name
+        raise FileNotFoundError(f"model folder not found: {text}. Download the weights first, e.g. "
+                                f"`hf download jgeuter/Jeff-1.0-Large --local-dir {text}`, or pass a repo id.")
+    from huggingface_hub import snapshot_download
+    return Path(snapshot_download(text, revision=revision))
+
+
+def load_causal_model(folder: Path, device: str = "cuda", dtype: str = "bfloat16"):
+    import torch
+    import transformers
+    common = {"local_files_only": True, "trust_remote_code": False}
+    config = transformers.AutoConfig.from_pretrained(folder, **common)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(folder, **common)
+    model, loading = transformers.AutoModelForCausalLM.from_pretrained(
+        folder, config=config, dtype=getattr(torch, dtype), device_map={"": device}, low_cpu_mem_usage=True,
+        output_loading_info=True, **common)
+    if any(loading.get(key) for key in ("missing_keys", "mismatched_keys", "error_msgs")):
+        raise RuntimeError(f"Checkpoint did not load completely: {loading}")
+    return model.eval(), tokenizer
+
+
+class Decider:
+    """One model + head; decide(row) -> option probabilities, option logits, input tokens, seconds."""
+
+    def __init__(self, model, tokenizer, head, max_tokens: int = MAX_TOKENS):
+        import torch
+        self.model, self.tokenizer, self.max_tokens = model, tokenizer, max_tokens
+        self.base = getattr(model, "model", model)
+        self.device = next(model.parameters()).device
+        self.head = head.to(self.device).eval()
+        self._torch = torch
+        self.cudnn_min_tokens = None   # set: cuDNN attention only for inputs this long (see disable_cudnn_attention)
+
+    def decide(self, row: dict) -> tuple[list[float], list[float], int, float]:
+        torch = self._torch
+        ids = encode_prompt(self.tokenizer, row, self.max_tokens)
+        if self.cudnn_min_tokens is not None:
+            torch.backends.cuda.enable_cudnn_sdp(len(ids) >= self.cudnn_min_tokens)
+        start = time.perf_counter()
+        with torch.inference_mode():
+            hidden = self.base(input_ids=torch.tensor([ids], device=self.device), use_cache=False,
+                               return_dict=True).last_hidden_state[:, -1]
+            h = hidden.to(torch.bfloat16).float()  # as in our evaluations
+            logits = self.head(h)[0, : len(row["options"])]
+            probs = torch.softmax(logits, dim=-1).tolist()
+        if self.device.type == "cuda":
+            torch.cuda.synchronize(self.device)
+        return probs, logits.tolist(), len(ids), time.perf_counter() - start
+
+
+def served_answer(qtype: str, option_ids: list[str], probabilities: list[float], rule: dict) -> dict:
+    """TypeSafe answer object with the serving rule applied (identity without a rule)."""
+    out = T.answer(qtype, option_ids, probabilities)
+    if not rule:
+        return out
+    if qtype == "noul":
+        return {"type": "noul", "noul": T.apply_rule("noul", {"yes": out["noul"], "no": 1 - out["noul"]}, rule)["yes"]}
+    probs = T.apply_rule(qtype, out["probabilities"], rule)
+    best = max(option_ids, key=lambda i: probs[i])
+    return {**out, qtype: best if qtype == "choice" else int(best), "probabilities": probs}
+
+
+class JeffModel:
+    """commit (default True): the yes/no commitment of the released serving rule. JevBench counts a yes/no answer with
+    0.2 < P(yes) < 0.8 as wrong, so the rule moves such answers to just outside the nearer edge (0.801 or 0.199).
+    commit=False keeps the calibrated P(yes) (temperatures still apply)."""
+
+    def __init__(self, ref: str | Path, revision: str | None = None, device: str = "cuda",
+                 rule: dict | None = None, cudnn_attention: bool = False, commit: bool = True):
+        folder = model_folder(ref, revision)
+        self.folder = folder
+        self.config = json.loads((folder / "jeff_config.json").read_text())
+        self.name = self.config.get("name", folder.name)
+        for key, supported in (("prompt_version", PROMPT_VERSION), ("noul_mapping", "tf-true-first")):
+            if self.config.get(key, supported) != supported:
+                raise ValueError(f"{folder}: {key} {self.config[key]!r} is not supported (only {supported!r})")
+        self.rule = json.loads((folder / "serving_rule.json").read_text()) if rule is None else rule
+        if not commit:
+            self.rule = {k: v for k, v in self.rule.items() if k != "noul_edge"}
+        if not cudnn_attention:
+            disable_cudnn_attention()
+        model, tokenizer = load_causal_model(folder, device=device)
+        self.decider = Decider(model, tokenizer, load_head(folder), int(self.config.get("max_input_tokens", MAX_TOKENS)))
+        if not cudnn_attention:
+            self.decider.cudnn_min_tokens = CUDNN_MIN_TOKENS
+
+    def row(self, state, question: dict, key: str = "q") -> dict:
+        return T.question_row(state, question, key)
+
+    def answer(self, qtype: str, option_ids: list[str], probabilities: list[float]) -> dict:
+        return served_answer(qtype, option_ids, probabilities, self.rule)
+
+    def decide(self, state, questions: dict) -> dict:
+        """TypeSafe request: state + {name: {type, instructions, criteria}} -> {name: answer}."""
+        answers = {}
+        for key, question in questions.items():
+            row = self.row(state, question, key)
+            probs, _, _, _ = self.decider.decide(row)
+            answers[key] = self.answer(question["type"], [o["id"] for o in row["options"]], probs)
+        return answers
+
+
+
+================================================
+FILE: src/jeff/prompting.py
+================================================
+"""Prompts for decision rows, in the format of SemIf (github.com/TheoLeeCJ/SemIf, MIT).
+
+A row is {"id": str, "state": str | dict | list, "question": str, "options": [{"id": str, "description": str}, ...]}
+with 2 to 16 options. Score questions use the same format: the ordered levels are the options.
+
+The prompt is SemIf's: a system message, then the row as a JSON object {evidence, criterion, options} with the options
+labeled A, B, C, ..., rendered with the model's chat template with thinking disabled. Jeff models were trained and
+evaluated with exactly this prompt (PROMPT_VERSION). It is byte-identical to SemIf's; we checked this against the
+prompt hashes (prompt_sha256) in SemIf's published prediction files.
+"""
+
+from __future__ import annotations
+
+import json
+
+LETTERS = "ABCDEFGHIJKLMNOP"
+MAX_OPTIONS = len(LETTERS)  # the decision head has one slot per letter
+PROMPT_VERSION = "direct-options-v1"
+DIRECT_SYSTEM = (
+    "Apply the supplied criterion to the supplied evidence. Choose exactly one listed option. "
+    "Respond with only its uppercase letter, with no explanation or reasoning."
+)
+
+
+def validate_row(row: dict) -> None:
+    required = {"id", "state", "question", "options"}
+    if not required <= row.keys():
+        raise ValueError(f"Row is missing fields: {sorted(required - row.keys())}")
+    if not all(isinstance(row[key], str) and row[key] for key in ("id", "question")):
+        raise ValueError("id and question must be nonempty strings")
+    state = row["state"]
+    if not isinstance(state, (str, dict, list)) or not state:
+        raise ValueError("state must be a nonempty string, object, or array")
+    try:
+        json.dumps(state, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError) as error:
+        raise ValueError("state must be finite JSON-compatible data") from error
+    options = row["options"]
+    if not isinstance(options, list) or not 2 <= len(options) <= MAX_OPTIONS:
+        raise ValueError(f"options must contain 2-{MAX_OPTIONS} entries (Jeff has {MAX_OPTIONS} answer slots)")
+    ids = []
+    for option in options:
+        if not isinstance(option, dict) or not isinstance(option.get("id"), str) or not isinstance(option.get("description"), str):
+            raise ValueError("Each option needs string id and description fields")
+        ids.append(option["id"])
+    if len(ids) != len(set(ids)):
+        raise ValueError("Option IDs must be unique")
+
+
+def messages(row: dict) -> list[dict]:
+    """Chat messages of a row: SemIf's system message, then the row as JSON."""
+    validate_row(row)
+    payload = {
+        "evidence": row["state"],
+        "criterion": row["question"],
+        "options": [
+            {"letter": LETTERS[index], "description": option["description"]}
+            for index, option in enumerate(row["options"])
+        ],
+    }
+    return [
+        {"role": "system", "content": DIRECT_SYSTEM},
+        {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+    ]
+
+
+def render_prompt(tokenizer, row: dict) -> str:
+    return tokenizer.apply_chat_template(
+        messages(row), tokenize=False, add_generation_prompt=True, enable_thinking=False
+    )
+
+
+def encode_prompt(tokenizer, row: dict, max_tokens: int) -> list[int]:
+    """Token ids of a row's prompt. Rows longer than max_tokens are rejected, not truncated (as in SemIf)."""
+    ids = tokenizer.encode(render_prompt(tokenizer, row), add_special_tokens=False)
+    if not ids or len(ids) > max_tokens:
+        raise ValueError(f"Row {row['id']}: {len(ids)} input tokens exceed limit {max_tokens}; no truncation allowed")
+    return ids
+
+
+
+================================================
+FILE: src/jeff/serve.py
+================================================
+"""Serve a Jeff model over the TypeSafe "System One" wire format, as JevBench's stock `typesafe` adapter calls it.
+
+    POST /v1/systemone  {"state": ..., "model": ..., "questions": {name: {type, instructions, criteria}}}
+    -> {"answers": {name: answer}, "model": ..., "usage": {"input_tokens", "output_tokens": 0}, "runtime": {...}}
+    GET  /             health check: {"status": "ok", "model": ...}
+
+Answers: choice -> {"type": "choice", "choice": best option, "probabilities": {...}}; noul -> {"type": "noul",
+"noul": P(yes)}; score -> {"type": "score", "score": best level, "probabilities": {...}}. One question per forward pass,
+requests served one at a time. Invalid requests, questions with more than 16 options and inputs above the model's
+input limit (8,192 tokens) get HTTP 422; a failure in the forward pass (e.g. out of GPU memory) gets HTTP 500. Both
+come with {"error": message}. Yes/no answers between 0.2 and 0.8 are committed to 0.199 / 0.801 unless --no-commit is
+given.
+
+    python -m jeff.serve jgeuter/Jeff-1.0-Large --host 0.0.0.0 --port 8013
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import time
+import traceback
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+
+from .model import JeffModel
+
+WARMUP = {"id": "warmup", "state": "The sky is blue.", "question": "Is the sky blue?",
+          "options": [{"id": "true", "description": "true: yes"}, {"id": "false", "description": "false: no"}]}
+
+
+def make_handler(model: JeffModel, meta: dict):
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):  # quiet
+            pass
+
+        def _send(self, status: int, body: dict):
+            data = json.dumps(body).encode()
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+        def do_GET(self):
+            self._send(200, {"status": "ok", "model": model.name})
+
+        def do_POST(self):
+            if self.path.rstrip("/") != "/v1/systemone":
+                return self._send(404, {"error": "not found"})
+            try:
+                body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))))
+                questions = body["questions"]
+                if not isinstance(questions, dict) or not questions:
+                    raise ValueError("questions must be a nonempty object")
+                answers, tokens, forward = {}, 0, 0.0
+                for key, question in questions.items():
+                    row = model.row(body["state"], question, key)
+                    probs, _, n, seconds = model.decider.decide(row)
+                    answers[key] = model.answer(question["type"], [o["id"] for o in row["options"]], probs)
+                    tokens, forward = tokens + n, forward + seconds
+            except (KeyError, TypeError, ValueError) as error:
+                return self._send(422, {"error": f"{type(error).__name__}: {error}"})
+            except Exception as error:  # e.g. out of GPU memory: answer with the error instead of dropping the connection
+                traceback.print_exc()
+                return self._send(500, {"error": f"{type(error).__name__}: {error}"})
+            self._send(200, {"answers": answers, "model": model.name,
+                             "usage": {"input_tokens": tokens, "output_tokens": 0},
+                             "runtime": {**meta, "forward_seconds": forward, "input_tokens": tokens}})
+    return Handler
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("model", help="Hugging Face repo id or local folder of a released Jeff model")
+    parser.add_argument("--revision", default=None, help="Hugging Face revision (commit) to pin")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8013)
+    parser.add_argument("--ready-file", type=Path, default=None, help="written once the server listens")
+    parser.add_argument("--no-commit", action="store_true",
+                        help="return the calibrated P(yes) for yes/no questions instead of committing answers between "
+                             "0.2 and 0.8 to 0.199 / 0.801 (the commitment is on by default; JevBench counts answers "
+                             "in that band as wrong)")
+    args = parser.parse_args()
+
+    import torch
+    started = time.perf_counter()
+    model = JeffModel(args.model, revision=args.revision, commit=not args.no_commit)
+    for _ in range(3):  # warm-up: kernels, allocator
+        model.decider.decide(WARMUP)
+    gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    print(f"loaded {model.name} from {model.folder} in {time.perf_counter() - started:.0f}s on {gpu}; "
+          f"serving rule {model.rule}", flush=True)
+    meta = {"model": model.name, "gpu": gpu, "dtype": "bfloat16", "readout": "decision head",
+            "probability_origin": "softmax over the options + serving rule", "serving_rule": model.rule,
+            "torch": torch.__version__, "cudnn_attention": torch.backends.cuda.cudnn_sdp_enabled()}
+    httpd = HTTPServer((args.host, args.port), make_handler(model, meta))
+    if args.ready_file:
+        args.ready_file.write_text(json.dumps({"port": args.port, **meta}) + "\n")
+    print(f"serving {model.name} on http://{args.host}:{args.port}/v1/systemone", flush=True)
+    httpd.serve_forever()
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: src/jeff/typesafe.py
+================================================
+"""JevBench / TypeSafe wire format <-> decision rows, and the serving rule.
+
+- question_row(): a TypeSafe question (state + typed question with instructions and criteria) becomes one decision row,
+  the way JevBench's own `semif_direct` adapter maps it: yes/no -> options "true", "false"; choice -> one option per
+  criteria key, in request order; score -> options "0".."K-1"; every description is prefixed with "<id>: ";
+- answer() turns the option distribution back into a TypeSafe answer object;
+- apply_rule() is the serving rule: per-type temperatures, then yes/no answers with 0.2 < P(yes) < 0.8 moved to just
+  outside the nearer edge (0.801 or 0.199), because JevBench counts answers inside that band as abstentions (wrong).
+"""
+
+from __future__ import annotations
+
+import math
+
+NOUL_YES, NOUL_NO = 0.80, 0.20      # JevBench's yes/no band
+BAND_YES, BAND_NO = 0.801, 0.199    # where a committed answer moves to
+
+
+def question_options(question: dict) -> list[dict]:
+    """Options of one TypeSafe question, as JevBench's semif_direct adapter builds them."""
+    qtype, criteria = question["type"], question.get("criteria")
+    if qtype == "noul":
+        options = [{"id": key, "description": (criteria or {}).get(key, f"The proposition is {key}.")}
+                   for key in ("true", "false")]
+    elif qtype == "choice":
+        if isinstance(criteria, dict):
+            options = [{"id": key, "description": value or key} for key, value in criteria.items()]
+        else:  # a bare list of option ids
+            options = [{"id": str(key), "description": str(key)} for key in criteria]
+    elif qtype == "score":
+        options = [{"id": str(i), "description": level} for i, level in enumerate(criteria)]
+    else:
+        raise ValueError(f"unknown question type {qtype!r}")
+    return [{"id": o["id"], "description": o["id"] + ": " + o["description"]} for o in options]
+
+
+def question_row(state, question: dict, row_id: str = "jevbench") -> dict:
+    """One decision row (prompting.messages input) for a TypeSafe question."""
+    return {"id": row_id, "state": state, "question": question["instructions"],
+            "options": question_options(question)}
+
+
+def answer(qtype: str, option_ids: list[str], probabilities: list[float]) -> dict:
+    """TypeSafe answer object from our distribution over the row's options."""
+    probs = {i: float(p) for i, p in zip(option_ids, probabilities)}
+    if qtype == "noul":
+        return {"type": "noul", "noul": probs["true"]}
+    best = max(option_ids, key=lambda i: probs[i])
+    if qtype == "choice":
+        return {"type": "choice", "choice": best, "probabilities": probs}
+    return {"type": "score", "score": int(best), "probabilities": probs}
+
+
+# ------------------------------------------------------------------ serving rule
+
+def _logit(p: float) -> float:
+    p = min(max(p, 1e-9), 1 - 1e-9)
+    return math.log(p / (1 - p))
+
+
+def noul_temperature(p: float, temp: float) -> float:
+    return 1 / (1 + math.exp(-_logit(p) / temp))
+
+
+def noul_edge(p: float, margin: float = 0.0) -> float:
+    """Inside the abstention band and at least `margin` from 0.5: move to the band edge."""
+    if NOUL_NO < p < NOUL_YES and abs(p - 0.5) >= margin and p != 0.5:
+        return BAND_YES if p > 0.5 else BAND_NO
+    return p
+
+
+def score_temperature(probs: list[float], temp: float) -> list[float]:
+    logs = [math.log(max(p, 1e-12)) / temp for p in probs]
+    top = max(logs)
+    exp = [math.exp(v - top) for v in logs]
+    total = sum(exp)
+    return [v / total for v in exp]
+
+
+def apply_rule(qtype: str, probs: dict, rule: dict) -> dict:
+    """rule: {"noul_t": T, "noul_edge": margin or None, "score_t": T, "choice_t": T} (missing = identity).
+    noul probs {"yes", "no"}; score probs {"0": ..}; choice probs {label: p}."""
+    if qtype == "choice" and rule.get("choice_t", 1.0) != 1.0:
+        keys = list(probs)
+        return dict(zip(keys, score_temperature([probs[k] for k in keys], rule["choice_t"])))
+    if qtype == "noul":
+        p = probs["yes"]
+        if rule.get("noul_t", 1.0) != 1.0:
+            p = noul_temperature(p, rule["noul_t"])
+        if rule.get("noul_edge") is not None:
+            p = noul_edge(p, rule["noul_edge"])
+        return {"yes": p, "no": 1.0 - p}
+    if qtype == "score" and rule.get("score_t", 1.0) != 1.0:
+        keys = sorted(probs, key=int)
+        return dict(zip(keys, score_temperature([probs[k] for k in keys], rule["score_t"])))
+    return probs
+
+
+
+================================================
+FILE: tests/test_head.py
+================================================
+"""The decision head: its formula and the release format."""
+import json
+
+import pytest
+import torch
+from safetensors.torch import save_file
+
+from jeff.head import DecisionHead, load_head
+
+D = 8
+
+
+def random_head(softcap=None) -> DecisionHead:
+    torch.manual_seed(0)
+    head = DecisionHead(D, softcap=softcap)
+    with torch.no_grad():
+        head.base_rows.normal_()
+        head.delta.weight.normal_()
+        head.delta.bias.normal_()
+        head.mu.normal_()
+        head.sigma.uniform_(0.5, 2.0)
+    return head
+
+
+@pytest.mark.parametrize("softcap", [None, 30.0, 2.0])
+def test_formula(softcap):
+    head, h = random_head(softcap), torch.randn(3, D)
+    readout = h @ head.base_rows.T
+    if softcap:
+        readout = softcap * torch.tanh(readout / softcap)
+    correction = ((h - head.mu) / head.sigma) @ head.delta.weight.T + head.delta.bias
+    torch.testing.assert_close(head(h), readout + correction)
+
+
+def test_zero_correction_is_the_letter_readout():
+    head, h = DecisionHead(D), torch.randn(2, D)
+    with torch.no_grad():
+        head.base_rows.normal_()
+        head.delta.weight.zero_()
+        head.delta.bias.zero_()
+    torch.testing.assert_close(head(h), h @ head.base_rows.T)
+
+
+def save_release(folder, head: DecisionHead, config: dict | None = None, drop: set = frozenset()) -> None:
+    """head_config.json + head.safetensors as in the released models, including the unused abstain unit."""
+    config = {"d_model": D, "k_slots": 16, "abstain": True, "kind": "residual", "extra_dim": 0, "extra_layers": [],
+              "logit_stats": False, "t_min": 0.05, **({"softcap": head.softcap} if head.softcap else {}), **(config or {})}
+    (folder / "head_config.json").write_text(json.dumps(config))
+    tensors = {k: v.contiguous() for k, v in head.state_dict().items() if k not in drop}
+    tensors.update({"abstain_net.weight": torch.zeros(1, D), "abstain_net.bias": torch.full((1,), -3.0)})
+    save_file(tensors, str(folder / "head.safetensors"))
+
+
+def test_load_release_format(tmp_path):
+    head = random_head(30.0)
+    save_release(tmp_path, head)
+    loaded, h = load_head(tmp_path), torch.randn(2, D)
+    assert loaded.softcap == 30.0
+    torch.testing.assert_close(loaded(h), head(h), rtol=0, atol=0)
+
+
+def test_missing_tensor_is_an_error(tmp_path):
+    save_release(tmp_path, random_head(), drop={"mu"})
+    with pytest.raises(RuntimeError, match="mu"):
+        load_head(tmp_path)
+
+
+@pytest.mark.parametrize("change", [{"kind": "linear"}, {"kind": "temperature"}, {"extra_dim": 4}, {"k_slots": 8}])
+def test_other_heads_are_refused(tmp_path, change):
+    save_release(tmp_path, random_head(), change)
+    with pytest.raises(ValueError, match="unsupported"):
+        load_head(tmp_path)
+
+
+
+================================================
+FILE: tests/test_model.py
+================================================
+"""Model folder lookup, the serving rule on answers, and refusing model folders this code cannot serve."""
+import json
+
+import pytest
+
+from jeff.model import JeffModel, model_folder, served_answer
+
+RULE = {"choice_t": 1.5, "noul_t": 1.0, "score_t": 1.0, "noul_edge": 0.0}
+
+
+def test_local_folder(tmp_path):
+    assert model_folder(tmp_path) == tmp_path
+
+
+@pytest.mark.parametrize("ref", ["./missing", "/no/such/folder", "a/b/c"])
+def test_missing_folder_has_a_clear_error(ref):
+    with pytest.raises(FileNotFoundError, match="hf download"):
+        model_folder(ref)
+
+
+def test_rule_commits_yes_no_answers():
+    assert served_answer("noul", ["true", "false"], [0.6, 0.4], RULE) == {"type": "noul", "noul": 0.801}
+    no_commit = {k: v for k, v in RULE.items() if k != "noul_edge"}
+    assert served_answer("noul", ["true", "false"], [0.6, 0.4], no_commit)["noul"] == pytest.approx(0.6)
+
+
+def test_rule_tempers_choices():
+    out = served_answer("choice", ["a", "b"], [0.2, 0.8], RULE)
+    assert out["choice"] == "b" and 0.2 < out["probabilities"]["a"] < 0.5
+
+
+@pytest.mark.parametrize("config", [{"prompt_version": "another-format"}, {"noul_mapping": "another-layout"}])
+def test_unsupported_model_folders_are_refused(tmp_path, config):
+    (tmp_path / "jeff_config.json").write_text(json.dumps({"name": "x", **config}))
+    with pytest.raises(ValueError, match="not supported"):
+        JeffModel(tmp_path, device="cpu")
+
+
+
+================================================
+FILE: tests/test_prompting.py
+================================================
+"""The prompt: SemIf's format, row checks and the input limit."""
+import json
+
+import pytest
+
+from jeff.prompting import DIRECT_SYSTEM, LETTERS, encode_prompt, messages, render_prompt, validate_row
+
+ROW = {"id": "route", "state": {"ticket": "Refund not received"}, "question": "Which team should handle this?",
+       "options": [{"id": "billing", "description": "billing: Payments"}, {"id": "tech", "description": "tech: Bugs"}]}
+
+
+def changed(**change) -> dict:
+    return {**ROW, **change}
+
+
+def options(n: int) -> list[dict]:
+    return [{"id": f"o{i}", "description": f"o{i}: option {i}"} for i in range(n)]
+
+
+def test_semif_messages():
+    system, user = messages(ROW)
+    assert system == {"role": "system", "content": DIRECT_SYSTEM}
+    assert user == {"role": "user", "content":
+                    '{"evidence": {"ticket": "Refund not received"}, "criterion": "Which team should handle this?", '
+                    '"options": [{"letter": "A", "description": "billing: Payments"}, '
+                    '{"letter": "B", "description": "tech: Bugs"}]}'}
+
+
+def test_text_is_not_escaped():
+    _, user = messages(changed(state="RÃ¼ckerstattung Ã¼ber 50 â‚¬"))
+    assert "RÃ¼ckerstattung Ã¼ber 50 â‚¬" in user["content"]
+
+
+def test_sixteen_options_get_letters_a_to_p():
+    payload = json.loads(messages(changed(options=options(16)))[1]["content"])
+    assert [o["letter"] for o in payload["options"]] == list(LETTERS)
+
+
+@pytest.mark.parametrize("change", [
+    {"options": options(1)}, {"options": options(17)}, {"options": [ROW["options"][0]] * 2},
+    {"options": [{"id": "a"}, {"id": "b"}]}, {"state": ""}, {"state": {"x": float("nan")}}, {"question": ""},
+])
+def test_invalid_rows_are_refused(change):
+    with pytest.raises(ValueError):
+        validate_row(changed(**change))
+
+
+def test_missing_field_is_refused():
+    with pytest.raises(ValueError, match="missing"):
+        validate_row({k: v for k, v in ROW.items() if k != "state"})
+
+
+class FakeTokenizer:
+    """Records the chat-template arguments; one token per character."""
+
+    def apply_chat_template(self, messages, **kwargs):
+        self.kwargs = kwargs
+        return "".join(m["content"] for m in messages)
+
+    def encode(self, text, add_special_tokens):
+        assert add_special_tokens is False
+        return [ord(c) for c in text]
+
+
+def test_chat_template_without_thinking():
+    tokenizer = FakeTokenizer()
+    assert render_prompt(tokenizer, ROW).startswith(DIRECT_SYSTEM)
+    assert tokenizer.kwargs == {"tokenize": False, "add_generation_prompt": True, "enable_thinking": False}
+
+
+def test_long_inputs_are_refused_not_truncated():
+    tokenizer = FakeTokenizer()
+    n = len(encode_prompt(tokenizer, ROW, max_tokens=10_000))
+    assert len(encode_prompt(tokenizer, ROW, max_tokens=n)) == n
+    with pytest.raises(ValueError, match="exceed limit"):
+        encode_prompt(tokenizer, ROW, max_tokens=n - 1)
+
+
+
+================================================
+FILE: tests/test_serve.py
+================================================
+"""The HTTP server: answers, and errors as HTTP status codes (with a stand-in model, so no GPU is needed)."""
+import json
+import threading
+import urllib.error
+import urllib.request
+from http.server import HTTPServer
+
+import pytest
+
+from jeff import typesafe as T
+from jeff.model import served_answer
+from jeff.serve import make_handler
+
+QUESTIONS = {"route": {"type": "choice", "instructions": "Team?", "criteria": {"billing": "Payments", "tech": "Bugs"}},
+             "urgent": {"type": "noul", "instructions": "Urgent?"},
+             "severity": {"type": "score", "instructions": "How severe?", "criteria": ["low", "mid", "high"]}}
+
+
+class StandInModel:
+    """JeffModel's interface: every option gets probability 1/k, or decide() raises `error`."""
+    name = "stand-in"
+
+    def __init__(self, error: Exception | None = None):
+        self.error, self.rule, self.decider = error, {}, self
+
+    def row(self, state, question, key="q"):
+        return T.question_row(state, question, key)
+
+    def decide(self, row):
+        if self.error:
+            raise self.error
+        k = len(row["options"])
+        return [1 / k] * k, [0.0] * k, 100, 0.01
+
+    def answer(self, qtype, option_ids, probabilities):
+        return served_answer(qtype, option_ids, probabilities, self.rule)
+
+
+@pytest.fixture
+def start():
+    servers = []
+
+    def run(model) -> str:
+        httpd = HTTPServer(("127.0.0.1", 0), make_handler(model, {"model": model.name}))
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        servers.append(httpd)
+        return f"http://127.0.0.1:{httpd.server_address[1]}"
+    yield run
+    for httpd in servers:
+        httpd.shutdown()
+        httpd.server_close()
+
+
+def call(url: str, body=None, path: str = "/v1/systemone") -> tuple[int, dict]:
+    data = None if body is None else body if isinstance(body, bytes) else json.dumps(body).encode()
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url + path, data=data), timeout=10) as r:
+            return r.status, json.loads(r.read())
+    except urllib.error.HTTPError as error:
+        return error.code, json.loads(error.read())
+
+
+def test_answers(start):
+    status, body = call(start(StandInModel()), {"state": "Charged twice", "questions": QUESTIONS})
+    assert status == 200
+    assert body["answers"]["route"] == {"type": "choice", "choice": "billing",
+                                        "probabilities": {"billing": 0.5, "tech": 0.5}}
+    assert body["answers"]["urgent"] == {"type": "noul", "noul": 0.5}
+    assert body["answers"]["severity"]["score"] == 0
+    assert body["usage"] == {"input_tokens": 300, "output_tokens": 0}
+
+
+def test_health_check_and_unknown_path(start):
+    url = start(StandInModel())
+    assert call(url, path="/") == (200, {"status": "ok", "model": "stand-in"})
+    assert call(url, {"state": "s", "questions": QUESTIONS}, path="/v1/other")[0] == 404
+
+
+@pytest.mark.parametrize("body", [b"not json", {"state": "s"}, {"state": "s", "questions": {}},
+                                  {"state": "s", "questions": {"q": {"type": "rank", "instructions": "?"}}}])
+def test_bad_requests_get_422(start, body):
+    status, out = call(start(StandInModel()), body)
+    assert status == 422 and "error" in out
+
+
+def test_invalid_rows_get_422(start):
+    model = StandInModel(ValueError("Row q: 9000 input tokens exceed limit 8192; no truncation allowed"))
+    status, out = call(start(model), {"state": "s", "questions": QUESTIONS})
+    assert status == 422 and "exceed limit" in out["error"]
+
+
+def test_forward_pass_failure_gets_500(start):
+    status, out = call(start(StandInModel(RuntimeError("CUDA out of memory"))), {"state": "s", "questions": QUESTIONS})
+    assert (status, out) == (500, {"error": "RuntimeError: CUDA out of memory"})
+
+
+
+================================================
+FILE: tests/test_typesafe.py
+================================================
+"""TypeSafe questions -> rows, answer objects and the serving rule."""
+import math
+
+import pytest
+
+from jeff import typesafe as T
+
+
+def test_yes_no_question():
+    q = {"type": "noul", "instructions": "Urgent?", "criteria": {"true": "Reply today", "false": "Can wait"}}
+    assert T.question_row("state", q, "urgent") == {
+        "id": "urgent", "state": "state", "question": "Urgent?",
+        "options": [{"id": "true", "description": "true: Reply today"},
+                    {"id": "false", "description": "false: Can wait"}]}
+
+
+def test_yes_no_question_without_criteria():
+    options = T.question_options({"type": "noul", "instructions": "Urgent?"})
+    assert [o["description"] for o in options] == ["true: The proposition is true.", "false: The proposition is false."]
+
+
+def test_choice_keeps_request_order():
+    q = {"type": "choice", "instructions": "Team?", "criteria": {"tech": "Bugs", "billing": ""}}
+    assert T.question_options(q) == [{"id": "tech", "description": "tech: Bugs"},
+                                     {"id": "billing", "description": "billing: billing"}]
+    assert [o["id"] for o in T.question_options({"type": "choice", "criteria": ["x", "y"]})] == ["x", "y"]
+
+
+def test_score_levels_are_numbered():
+    q = {"type": "score", "instructions": "Severity?", "criteria": ["low", "high"]}
+    assert T.question_options(q) == [{"id": "0", "description": "0: low"}, {"id": "1", "description": "1: high"}]
+
+
+def test_unknown_type_is_refused():
+    with pytest.raises(ValueError):
+        T.question_options({"type": "rank", "criteria": ["a", "b"]})
+
+
+def test_answer_objects():
+    assert T.answer("choice", ["a", "b"], [0.3, 0.7]) == {"type": "choice", "choice": "b",
+                                                          "probabilities": {"a": 0.3, "b": 0.7}}
+    assert T.answer("noul", ["true", "false"], [0.8, 0.2]) == {"type": "noul", "noul": 0.8}
+    assert T.answer("score", ["0", "1", "2"], [0.2, 0.5, 0.3])["score"] == 1
+
+
+def softmax(z: list[float]) -> list[float]:
+    e = [math.exp(v - max(z)) for v in z]
+    return [v / sum(e) for v in e]
+
+
+@pytest.mark.parametrize("qtype, ids, key", [("choice", ["a", "b", "c"], "choice_t"), ("score", ["0", "1", "2"], "score_t")])
+def test_temperature_divides_the_logits(qtype, ids, key):
+    z = [1.0, 2.5, -0.3]
+    out = T.apply_rule(qtype, dict(zip(ids, softmax(z))), {key: 1.5})
+    assert [out[i] for i in ids] == pytest.approx(softmax([v / 1.5 for v in z]))
+
+
+def test_yes_no_temperature():
+    out = T.apply_rule("noul", {"yes": 1 / (1 + math.exp(-2.0)), "no": 0.0}, {"noul_t": 2.0})
+    assert out["yes"] == pytest.approx(1 / (1 + math.exp(-1.0)))
+
+
+@pytest.mark.parametrize("p, committed", [(0.6, 0.801), (0.3, 0.199), (0.9, 0.9), (0.1, 0.1), (0.5, 0.5)])
+def test_commitment(p, committed):
+    assert T.apply_rule("noul", {"yes": p, "no": 1 - p}, {"noul_edge": 0.0})["yes"] == committed
+
+
+def test_empty_rule_changes_nothing():
+    probs = {"a": 0.25, "b": 0.75}
+    assert T.apply_rule("choice", probs, {}) == probs
+
+

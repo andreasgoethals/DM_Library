@@ -3,6 +3,46 @@
   "collection_substring": "Decision Models",
   "sources": [
     {
+      "zotero_item_key": "SKWPXQTG",
+      "citation_key": "2026.H2O.AI.h2olightning4b",
+      "title": "H2O-Lightning-4B",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026",
+      "url": "https://huggingface.co/h2oai/h2o-lightning-4b",
+      "authors": [
+        "H2O.ai"
+      ],
+      "venue": "H2O.ai",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Undated live model card, accessed 2026-10-23. Hub repository created 2026-10-02; creation time alone is not proof of public release date. Apache-2.0 for this Qwen-based checkpoint.",
+      "date_precision": "year",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 722
+    },
+    {
+      "zotero_item_key": "PS2PZGDA",
+      "citation_key": "2026.INCEPTION.mercurydecidecreatedecision",
+      "title": "Mercury Decide: Create a decision",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026",
+      "url": "https://docs.inceptionlabs.ai/api-reference/decisions/create-a-decision",
+      "authors": [
+        "Inception"
+      ],
+      "venue": "Inception Platform",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Undated model/API reference, accessed 2026-10-23. Exact original public release date not confirmed from the primary reference. Pricing source: https://docs.inceptionlabs.ai/get-started/models .",
+      "date_precision": "year",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 725
+    },
+    {
       "zotero_item_key": "QEZZ55X7",
       "citation_key": "2026.ALMEIDA.introducingsystemonemodelsjev",
       "title": "Introducing System One Models & Jev",
@@ -25,6 +65,46 @@
       ],
       "metadata_verified_on": "2026-10-20",
       "zotero_version_at_review": 376
+    },
+    {
+      "zotero_item_key": "QZKMBK7L",
+      "citation_key": "2026.UPSTAGE.solardecide",
+      "title": "Solar Decide",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026-09-22",
+      "url": "https://console.upstage.ai/docs/models/solar-decide",
+      "authors": [
+        "Upstage"
+      ],
+      "venue": "Upstage Console",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Live model card/API documentation. Its Versions section explicitly dates solar-decide beta to 2026-09-22. Accessed 2026-10-23.",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 728
+    },
+    {
+      "zotero_item_key": "RGVMCN25",
+      "citation_key": "2026.TOGETHERAI.tev14bexperimental",
+      "title": "Tev1-4B-experimental",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026-09-23",
+      "url": "https://huggingface.co/togethercomputer/Tev1-4B-experimental",
+      "authors": [
+        "Together AI"
+      ],
+      "venue": "Together AI",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Model card. Public launch on 2026-09-23 corroborated by https://www.together.ai/blog/how-to-train-your-own-jev . Fine-tuned weight license is being finalized; the base-model license alone does not establish open-source status.",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 719
     },
     {
       "zotero_item_key": "X58IRXCA",
@@ -54,6 +134,47 @@
       ],
       "metadata_verified_on": "2026-10-20",
       "zotero_version_at_review": 379
+    },
+    {
+      "zotero_item_key": "MSEJSVGW",
+      "citation_key": "2026.ALLAHYAR.introducingglidefirstthinkingdecisionmodel",
+      "title": "Introducing GLiDE: The First Thinking Decision Model",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-09-30",
+      "url": "https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model",
+      "authors": [
+        "Sahibzada Allahyar",
+        "Mary Newhauser"
+      ],
+      "venue": "Fastino Blog",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Announcement date and byline from the primary page. Current model catalog and capability documentation supersede the announcement's older 40k context claim: https://docs.fastino.ai/concepts/models and https://docs.fastino.ai/concepts/glide-capabilities .",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 731
+    },
+    {
+      "zotero_item_key": "Q9S5D6R2",
+      "citation_key": "2026.PALMER.kev27b",
+      "title": "Kev-27B",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026-09-30",
+      "url": "https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-27b.md",
+      "authors": [
+        "Jared Palmer"
+      ],
+      "venue": "Jared Palmer / Kev",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Model card for Kev-27B v2 (Kev 1.0), explicitly released on 2026-09-30. This dates the documented release rather than the whole family's first experiment. Weights: https://huggingface.co/jaredpalmer/kev-27b .",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 734
     },
     {
       "zotero_item_key": "MWJHY75J",
@@ -96,6 +217,26 @@
       "reviewed_on": "2026-10-20",
       "metadata_verified_on": "2026-10-20",
       "zotero_version_at_review": 328
+    },
+    {
+      "zotero_item_key": "BH58BEP7",
+      "citation_key": "2026.VLLMSEMANTICROUTERTEAM.decision20vega27b",
+      "title": "Decision-2.0-Vega-27B",
+      "item_type": "report",
+      "report_type": "Model card and API documentation",
+      "publication_date": "2026-10-03",
+      "url": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B",
+      "authors": [
+        "vLLM Semantic Router Team"
+      ],
+      "venue": "vLLM Semantic Router",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "Model card. Public Decision 2.0 release corroborated by the official project announcement/implementation issue dated 2026-10-03: https://github.com/vllm-project/semantic-router/issues/4479 . Earlier Hub creation is not treated as the public release date.",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 737
     },
     {
       "zotero_item_key": "DE9KQQLX",
@@ -162,6 +303,26 @@
       "reviewed_on": "2026-10-20",
       "metadata_verified_on": "2026-10-20",
       "zotero_version_at_review": 331
+    },
+    {
+      "zotero_item_key": "Q9X2H26H",
+      "citation_key": "2026.OPENAI.buildmoreresponsiveappsdecisionsapi",
+      "title": "Build more responsive apps with the Decisions API",
+      "item_type": "blogPost",
+      "report_type": "",
+      "publication_date": "2026-10-22",
+      "url": "https://openai.com/index/decisions-api/",
+      "authors": [
+        "OpenAI"
+      ],
+      "venue": "OpenAI",
+      "archive_path": null,
+      "status": "web-only; no PDF attached; summarized from primary source",
+      "date_note": "General-availability announcement. Public beta began on 2026-10-06; API specifications and pricing were checked on 2026-10-23.",
+      "date_precision": "day",
+      "reviewed_on": "2026-10-23",
+      "metadata_verified_on": "2026-10-23",
+      "zotero_version_at_review": 716
     }
   ]
 }

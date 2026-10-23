@@ -2,8 +2,8 @@
 
 A standalone knowledge repository for **models and methods for choosing actions**.
 The owner's Zotero collection matching **Decision Models** defines the exact corpus.
-Its selection concerns fast, schema-conditioned decision models: thirteen
-research papers and seven web-only release posts/model cards. It is maintained
+Its selection concerns fast, schema-conditioned decision models: sixteen
+research papers and fifteen web-only release posts/model cards. It is maintained
 here and consumed elsewhere as a pinned, read-only Git submodule.
 
 ## The commands that matter
@@ -59,6 +59,7 @@ actions; verify the published commit and authorized consumers before propagation
 | File | Purpose |
 |---|---|
 | [SYNTHESIS.md](SYNTHESIS.md) | Cross-paper argument, timelines, assumptions, evaluation differences and open questions |
+| [DECISION_MODELS.md](DECISION_MODELS.md) | Model-only comparison: release dates, licenses, parameters, inputs/outputs, context and API costs |
 | [SUMMARIES.md](SUMMARIES.md) | One substantive summary per selected source, with provenance, strengths, limitations and Zotero citation keys |
 | [REPOSITORIES.md](REPOSITORIES.md) | Official code snapshot overview, exact revisions, source paths and symbols |
 | [CHANGELOG.md](CHANGELOG.md) | Substantive updates, newest first |
@@ -140,7 +141,7 @@ replace the requirement that the canonical corpus match the selected collection;
 prefer `--zotero ITEM_KEY` together with a supplied PDF path when resolving a missing
 attachment. The tool records overrides and refuses to move a Zotero-owned attachment.
 
-The seven selected blog posts/model cards are represented explicitly in the web
+The fifteen selected blog posts/model cards are represented explicitly in the web
 registry and summaries, with source URLs and review dates. No PDF or publication
 month is fabricated. TypeSafe's launch is dated 15 September 2026. Intern-Decision-4B
 is dated 26 September 2026: its first substantive model-card/checkpoint upload is
@@ -211,7 +212,7 @@ Zotero or upstream services. `--uninstall` removes the hooks-path setting.
 
 ## Code snapshots
 
-The [implementation guide](REPOSITORIES.md) documents all 13 registered sources.
+The [implementation guide](REPOSITORIES.md) documents all 19 registered sources.
 Refreshes preserve stable filenames, upstream commit revisions, licenses and useful
 configuration/scripts. Weights, checkpoints, large datasets and generated responses
 are excluded. Failed downloads leave the old snapshot intact; a replacement below
