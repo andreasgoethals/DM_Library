@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-27
+
+- Refreshed StrandsDecider to upstream revision `13c0514` (26 October), which removed the alternative `SlotHead` readout; REPOSITORIES.md and the synthesis model table now describe the current pointer-only implementation.
+
+## 2026-10-26
+
+- Rewrote all 31 SUMMARIES.md entries to one structure (provenance, method, **Key results** with table pointers, Strengths, author-stated vs reviewer Limitations, evidence locations). Each paper entry was re-verified against its full text; overview rows now state method plus headline result; web entries mark provider claims.
+- Corrected summary errors: AnyJev's label-prior effect, TypedBench's asymmetric-cost claim (Kev-9B saves cost on phishing), System1-Arena's simulated real-time protocol and stated limitations, the tabular paper's one-third flip claim, LLM-as-Jev's thinking-cost comparison and an unsupported Intern-Decision release claim. Added missing provenance for Geuter, Zhang (tabular) and Chen; fixed the web-source count (15).
+- Restructured SYNTHESIS.md: TL;DR, "What a decision model is" with five design levers, a 22-row model/architecture comparison (readout, attention, multi-field, weights, calibration, evidence type), "Which evidence to trust" (benchmark denominators and conflicts of interest, protocol checklist) and "When to use a decision model, an LLM or a trained classifier". Merged overlapping evaluation and robustness material.
+- Replaced StartLux-Decision with its arXiv v2 PDF (20 October, now also in Zotero), regenerated its text and updated the manifest hash/version. v2 only reflows layout and updates affiliations; every number cited in the summary was rechecked against v2.
+- Refreshed registered source snapshots: H2OLightning, Jeff and StrandsDecider changed upstream; all 179 cited symbols across 19 snapshots still resolve.
+- Synthesis corrections against the paper texts: DecisionPivot is authored by the StartLux team; Jev's architecture is undisclosed; the JevBench scoring rule and its sampling noise are stated.
+
 ## 2026-10-23
 
 - Refreshed all registered source snapshots. Fixed the Windows locale-dependent formatter so complete valid UTF-8 text is retained, including characters beyond the initial sample and across its byte boundary; added regression coverage and regenerated affected snapshots. The existing StartLux paper-version alert remains explicit.

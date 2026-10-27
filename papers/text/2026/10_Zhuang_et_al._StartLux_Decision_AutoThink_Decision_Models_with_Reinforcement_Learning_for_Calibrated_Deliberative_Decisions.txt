@@ -1,7 +1,7 @@
 StartLux-Decision: AutoThink Decision Models with
 Reinforcement Learning for Calibrated Deliberative Decisions
-Xialie Zhuang1,2 Zunhai Su1,2 Jia Pan2 Ngai Wong2 Guanhua Chen3,* Chuan-Wei Kuo1,*
-1StartLux 2The University of Hong Kong 3Southern University of Science and Technology
+Xialie Zhuang1,2 Zunhai Su1,2 Jia Pan2 Ngai Wong2,3 Guanhua Chen4,* Chuan-Wei Kuo1,*
+1StartLux 2The University of Hong Kong 3EMUS Lab 4Southern University of Science and Technology
 Abstract:We introduce StartLux-Decision, state-of-the-art decision models spanning 0.8B–27B parameters, com-
 bining efficient single-pass prediction with adaptive, confidence-guided reasoning. TheInstantmodels leverage
 bidirectional attention in full-attention layers to improve decision accuracy while preserving efficient single-pass
@@ -112,7 +112,7 @@ Other decision models
 Figure 1. StartLux-Decision leads at every evaluated scale on the public subset of Decision Index 0.3.
 *Corresponding authors.
 1
-arXiv:2610.17309v1  [cs.CL]  12 Oct 2026
+arXiv:2610.17309v2  [cs.CL]  20 Oct 2026
 
 StartLux-Decision Contents
 Contents
@@ -140,36 +140,36 @@ Contents
 6 Efficient Inference and Deployment 23
 6.1 Runtime Support . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
 6.2 GPU Serving Performance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
-6.3 Local Inference on Apple Silicon . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
-6.4 Quantized Inference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
-7 Conclusion 28
-References 28
+6.3 Local Inference on Apple Silicon . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+6.4 Quantized Inference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+7 Conclusion 26
+References 27
 2
 
 StartLux-Decision Contents
-A Data Sources 30
-A.1 Record Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-A.2 Data Composition Across Training Stages . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-A.3 Benchmark-Specific Training Coverage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-A.4 Licensing and Data Usage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-A.5 Generated and Model-Written Data . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-A.6 Data Integrity Checks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-B Training Implementation and Additional Analyses 31
-B.1 Bidirectional Prompt Attention . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-B.2 Additional Training Ablations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
-B.3 Calibration and Resolution under Proper Scoring Rules . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
-B.4 Direct Probability Optimization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
-C Policy-Aware Calibration: Proofs and Details 33
-C.1 Setting and Notation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
-C.2 Theoretical Properties . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
-C.3 Evaluation Protocols . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
-C.4 Results Across Decision Pipelines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
-C.5 Policy-Specific Threshold Certification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
-D Evaluation Details 36
-D.1 Decision Index Evaluation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
-D.2 GSM8K Benchmark Reconstruction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
-D.3 Evaluation Reliability and Serving Configuration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
-D.4 Handling Multiple Questions and Long Option Lists . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+A Data Sources 29
+A.1 Record Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+A.2 Data Composition Across Training Stages . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+A.3 Benchmark-Specific Training Coverage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+A.4 Licensing and Data Usage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+A.5 Generated and Model-Written Data . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+A.6 Data Integrity Checks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+B Training Implementation and Additional Analyses 30
+B.1 Bidirectional Prompt Attention . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+B.2 Additional Training Ablations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+B.3 Calibration and Resolution under Proper Scoring Rules . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+B.4 Direct Probability Optimization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+C Policy-Aware Calibration: Proofs and Details 32
+C.1 Setting and Notation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+C.2 Theoretical Properties . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+C.3 Evaluation Protocols . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+C.4 Results Across Decision Pipelines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+C.5 Policy-Specific Threshold Certification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+D Evaluation Details 35
+D.1 Decision Index Evaluation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+D.2 GSM8K Benchmark Reconstruction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+D.3 Evaluation Reliability and Serving Configuration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+D.4 Handling Multiple Questions and Long Option Lists . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
 3
 
 StartLux-Decision Introduction
@@ -1438,6 +1438,8 @@ policies condition returned predictions on confidence and other decision signals
 cascade, and select-then-think policies. Using StartLux-Decision-9B as a verifier reveals a substantial selection-
 induced calibration gap. Among individual responses assigned 80–90% confidence, 92% are correct. After selecting
 the highest-scoring response from 32 candidates, accuracy within the same confidence range falls to 78%. Calibrating
+individual responses does not eliminate this effect: selected-response accuracy at fixed confidence declines as the
+candidate pool grows (Figure 15a).
 21
 
 StartLux-Decision Capability and Reliability Analysis
@@ -1481,8 +1483,6 @@ underlying models.(a) Accuracy of responses selected by a 9B verifier from N can
 of 80–90%. Shaded bands indicate variation across 20 splits. (b) Mean absolute confidence–accuracy gaps across 184 settings
 spanning best-of-N, think-gate, cascade, and select-then-think pipelines. Policy-aware calibration reduces these gaps across all
 four pipelines, with signed gaps ranging from−2.7 to+2.1 percentage points.
-individual responses does not eliminate this effect: selected-response accuracy at fixed confidence declines as the
-candidate pool grows (Figure 15a).
 Selection changes the conditional distribution of returned predictions. Choosing the highest-scoring candidate can
 favor upward fluctuations in confidence estimates, an effect related to theoptimizer’s curse. Competing candidates’
 scores also convey information about problem difficulty that the winning score alone may not capture. Consequently,
@@ -1508,6 +1508,9 @@ and routing. We apply the deployed policy to labeled calibration examples and fi
 returned predictions, their reported confidence, and the associated selection or routing scores. For confidence-based
 gates and cascades, predictions are stratified by routing-confidence quantiles, with isotonic calibration fitted within
 each stratum. For candidate selection, we fit a logistic model using reported confidence, mean candidate score,
+candidate count N, and logN , followed by isotonic calibration of its predictions. This procedure calibrates reported
+confidence without modifying the underlying models, while acceptance thresholds are certified separately for the
+relevant policy routes (Appendices C.4 and C.5).
 22
 
 StartLux-Decision Efficient Inference and Deployment
@@ -1526,9 +1529,6 @@ FP8 256 26 25 30 29 51 30 30 49
 1,024 33 33 39 40 72 38 38 70
 4,096 37 36 61 85 251 56 79 239
 8,192 43 59 119 172 534 105 154 489
-candidate count N, and logN , followed by isotonic calibration of its predictions. This procedure calibrates reported
-confidence without modifying the underlying models, while acceptance thresholds are certified separately for the
-relevant policy routes (Appendices C.4 and C.5).
 Across 184 settings spanning best-of-N, think-gate, cascade, and select-then-think pipelines, policy-aware calibration
 reduces signed confidence–accuracy gaps from [−11.7, +20.5] to [−2.7, +2.1] percentage points (Figure 15b). Mean
 absolute gaps decrease across all four pipelines. Nevertheless, calibration remains sensitive to distribution shift:
@@ -1554,42 +1554,11 @@ Available precisions include BF16 across all three backends, load-time FP8 weigh
 Q8_0 and Q4_K_M on llama.cpp, and 8-bit and 4-bit MLX builds. We implement bidirectional attention separately
 for each runtime. On vLLM, a plugin recomputes prompt representations in full-attention layers without the
 causal mask, achieving 99.5–99.8% top-choice agreement with the reference implementation. For llama.cpp, GGUF
-23
-
-StartLux-Decision Efficient Inference and Deployment
 conversion marks Instant models as non-causal, while a small server patch processes each prompt as a single unit
 without modifying the model computation code. On MLX, our backend implements the bidirectional prompt mask,
 with BF16 builds achieving 99.4–99.9% top-choice agreement with vLLM. Top-choice agreement does not imply
 numerical agreement between predicted probabilities.
-6.2 GPU Serving Performance
-Single-Readout Latency on vLLM.On a single NVIDIA H200, BF16 Instant readouts take 24–52 ms for 256-token
-prompts and 31–98 ms for 1,024-token prompts (Table 5). The latter setting covers most DI request lengths. FP8
-achieves comparable latency for short prompts while reducing readout latency by approximately 25–30% at 8,192
-tokens for the 9B and 27B Instant models. Across the 4B–27B models in BF16 and FP8, Instant readouts have
-approximately 2–8% higher latency than causal AutoThink readouts at 1,024 tokens and 6–14% at 8,192 tokens.
-Matched Model Comparison on vLLM.Table 6 compares per-request latency with third-party decision models
-on 186 of 300 requests that all systems process in one forward pass. After prompt-length weighting, this subset
-represents approximately 91% of the DI request distribution. At 4B and 9B, Instant achieves median latency within
-3 ms of the fastest comparable-scale reference, and within approximately 6 ms at 27B, while attaining substantially
-higher DI 0.3 scores. Mean latencies remain comparable across the evaluated 4B–27B models.
-GGUF Inference on llama.cpp.We evaluate GGUF Q8_0 builds on an H200 using the same request subset and
-prompt-length weighting as the vLLM comparison (Table 7); reference models are converted using the llama.cpp
-converter. The 4B Instant model achieves the lowest median latency among comparable-scale references, while
-the 9B model is within 3 ms of the fastest. At 2B and 27B, median latency is approximately 5 ms and 14 ms
-higher than d1-3B and Kev 27B, respectively. At 0.8B, Instant matches Bosun 3.1 1.7B in median latency, with
-broadly comparable mean latencies across similar scales. Instant GGUF inference uses standard llama.cpp model
-computation with the server-side prompt handling described in Section 6.1.
-6.3 Local Inference on Apple Silicon
-We evaluate local inference using MLX on an Apple M5 Pro with 64 GB of unified memory (Table 8). For 1,024-token
-prompts, BF16 Instant readout latency ranges from 59 ms at 0.8B to approximately 1.1 s at 9B. While the 27B models
-exceed the available memory in BF16, 8-bit and 4-bit quantization enable their local deployment.
-6.4 Quantized Inference
-StartLux-Decision supports reduced-precision inference with FP8 on vLLM, GGUF Q8_0 and Q4_K_M on llama.cpp,
-and 8-bit and 4-bit builds on MLX. FP8 and Q8_0 largely preserve BF16 decision performance across the evaluated
-settings, whereas Q4_K_M can incur larger losses, reaching 4.3 points for the 27B AutoThink model on DecisionPivot
-(Table 9). MLX 8-bit builds achieve 99.5–99.6% top-choice agreement with the vLLM BF16 reference, compared with
-96.3–97.5% for 4-bit builds.
-24
+23
 
 StartLux-Decision Efficient Inference and Deployment
 Table 6. Instant achieves higher DI 0.3 scores with competitive latency among comparable-scale decision models.Per-request
@@ -1627,7 +1596,22 @@ StartLux-Decision-0.8B-Instant 24.8 33.7 36.6 0 53.75
 Decision 2.0 Kai, 0.6B (vLLM Semantic Router) 10.2 17.7 19.6 0.08% 16.68
 Bosun 3.1 1.7B (Hanno Labs) 11.8 20.8 22.6 0 20.55
 Decision 2.0 Eos, 0.8B (vLLM Semantic Router) 24.5 32.6 34.1 0 20.57
-25
+6.2 GPU Serving Performance
+Single-Readout Latency on vLLM.On a single NVIDIA H200, BF16 Instant readouts take 24–52 ms for 256-token
+prompts and 31–98 ms for 1,024-token prompts (Table 5). The latter setting covers most DI request lengths. FP8
+achieves comparable latency for short prompts while reducing readout latency by approximately 25–30% at 8,192
+tokens for the 9B and 27B Instant models. Across the 4B–27B models in BF16 and FP8, Instant readouts have
+approximately 2–8% higher latency than causal AutoThink readouts at 1,024 tokens and 6–14% at 8,192 tokens.
+Matched Model Comparison on vLLM.Table 6 compares per-request latency with third-party decision models
+on 186 of 300 requests that all systems process in one forward pass. After prompt-length weighting, this subset
+represents approximately 91% of the DI request distribution. At 4B and 9B, Instant achieves median latency within
+3 ms of the fastest comparable-scale reference, and within approximately 6 ms at 27B, while attaining substantially
+higher DI 0.3 scores. Mean latencies remain comparable across the evaluated 4B–27B models.
+GGUF Inference on llama.cpp.We evaluate GGUF Q8_0 builds on an H200 using the same request subset and
+prompt-length weighting as the vLLM comparison (Table 7); reference models are converted using the llama.cpp
+converter. The 4B Instant model achieves the lowest median latency among comparable-scale references, while
+the 9B model is within 3 ms of the fastest. At 2B and 27B, median latency is approximately 5 ms and 14 ms
+24
 
 StartLux-Decision Efficient Inference and Deployment
 Table 7. GGUF Q8_0 Instant models achieve competitive single-pass request latency on llama.cpp.Per-request latency in
@@ -1662,9 +1646,22 @@ StartLux-Decision-0.8B-Instant 21.1 68.1 36.1 0
 Decision 2.0 Kai, 0.6B (vLLM Semantic Router) 15.0 45.4 21.1 0.08%
 Bosun 3.1 1.7B (Hanno Labs) 21.1 63.9 30.6 0
 Decision 2.0 Eos, 0.8B (vLLM Semantic Router) 21.6 66.0 31.3 0
-26
+higher than d1-3B and Kev 27B, respectively. At 0.8B, Instant matches Bosun 3.1 1.7B in median latency, with
+broadly comparable mean latencies across similar scales. Instant GGUF inference uses standard llama.cpp model
+computation with the server-side prompt handling described in Section 6.1.
+6.3 Local Inference on Apple Silicon
+We evaluate local inference using MLX on an Apple M5 Pro with 64 GB of unified memory (Table 8). For 1,024-token
+prompts, BF16 Instant readout latency ranges from 59 ms at 0.8B to approximately 1.1 s at 9B. While the 27B models
+exceed the available memory in BF16, 8-bit and 4-bit quantization enable their local deployment.
+6.4 Quantized Inference
+StartLux-Decision supports reduced-precision inference with FP8 on vLLM, GGUF Q8_0 and Q4_K_M on llama.cpp,
+and 8-bit and 4-bit builds on MLX. FP8 and Q8_0 largely preserve BF16 decision performance across the evaluated
+settings, whereas Q4_K_M can incur larger losses, reaching 4.3 points for the 27B AutoThink model on DecisionPivot
+(Table 9). MLX 8-bit builds achieve 99.5–99.6% top-choice agreement with the vLLM BF16 reference, compared with
+96.3–97.5% for 4-bit builds.
+25
 
-StartLux-Decision Efficient Inference and Deployment
+StartLux-Decision Conclusion
 Table 8. MLX supports local BF16 and quantized inference across model sizes.Median single-readout latency in milliseconds
 at the specified prompt length, measured using mlx-lm on an Apple M5 Pro with 64 GB of unified memory. Measurements
 use three runs after warm-up, with one request in flight. A dash indicates unavailable BF16 results for the 27B models due to
@@ -1699,9 +1696,6 @@ AutoThink
 4B 68.11 68.09 65.3 65.6 65.6 63.5
 9B 70.47 70.19 63.8 66.4 64.7 64.2
 27B 73.52 73.20 88.6 87.3 89.5 84.3
-27
-
-StartLux-Decision References
 7. Conclusion
 StartLux-Decision combines efficient single-pass prediction with confidence-guided reasoning through a unified
 probability interface. RLCD 2 improves reasoning termination and efficiency through proper-score rewards and
@@ -1711,6 +1705,9 @@ tions induced by selection and routing. Support for vLLM, llama.cpp, and MLX ena
 and local inference environments. Future work will focus on generalization beyond represented task families and
 robust probability reliability under distribution shift. Together, these results advance efficient and reliable decision
 modeling by integrating direct prediction, selective reasoning, and calibrated confidence.
+26
+
+StartLux-Decision References
 References
 Jiawei Gu, Xuhui Jiang, Zhichao Shi, Hexiang Tan, Xuehao Zhai, Chengjin Xu, Wei Li, Yinghan Shen, Shengjie Ma,
 Honghao Liu, et al. A survey on LLM-as-a-Judge.arXiv preprint arXiv:2411.15594, 2024.
@@ -1727,8 +1724,8 @@ Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar. Scaling LLM test-time c
 effective than scaling model parameters.arXiv preprint arXiv:2408.03314, 2024.
 Diogo Almeida. Introducing System One models & Jev. TypeSafe AI blog, https://typesafe.ai/blog/
 introducing-system-one-models-and-jev, September 2026. Posted 15 September 2026.
-StartLux. DecisionPivot: Benchmarking Reliable Decision-Making at the Control Points of LLM Systems. Dataset
-https://huggingface.co/datasets/Lie24/DecideBench, 2026. Companion paper.
+StartLux. DecisionPivot: A Diagnostic Benchmark for Decision Models in LLM Systems. Dataset https://
+huggingface.co/datasets/startlux-models/DecisionPivot, 2026. Companion paper.
 Benchmark Heaven. JevBench: Benchmark for AI decision models. Repository https://github.com/fstandhartinger/
 jevbench; board https://benchmarkheaven.com/jev-models, 2026. Living benchmark; this report uses release v1.4.2
 of 25 September 2026.
@@ -1748,9 +1745,6 @@ Ma, Xiao Bi, et al. DeepSeek-R1 incentivizes reasoning in LLMs through reinforce
 633–638, 2025. doi: 10.1038/s41586-025-09422-z.
 Peixian Ma, Xialie Zhuang, Chengjin Xu, Xuhui Jiang, Ran Chen, and Jian Guo. SQL-R1: Training natural language
 to SQL reasoning model by reinforcement learning. InAdvances in Neural Information Processing Systems 38, 2025.
-28
-
-StartLux-Decision References
 Qiying Yu, Zheng Zhang, Ruofei Zhu, Yufeng Yuan, Xiaochen Zuo, Yu Yue, Weinan Dai, Tiantian Fan, Gaohong
 Liu, Lingjun Liu, et al. DAPO: An open-source LLM reinforcement learning system at scale.arXiv preprint
 arXiv:2503.14476, 2025.
@@ -1762,6 +1756,9 @@ Y. K. Li, Y. Wu, and Daya Guo. DeepSeekMath: Pushing the limits of mathematical 
 models.arXiv preprint arXiv:2402.03300, 2024.
 Zichen Liu, Changyu Chen, Wenjun Li, Penghui Qi, Tianyu Pang, Chao Du, Wee Sun Lee, and Min Lin. Under-
 standing R1-Zero-like training: A critical perspective.arXiv preprint arXiv:2503.20783, 2025.
+27
+
+StartLux-Decision References
 Tobias Deußer, Lorenz Sparrenberg, and Rafet Sifa. Evaluating and benchmarking the System One model Jev.arXiv
 preprint arXiv:2609.37647, 2026.
 Riccardo Porcedda. Jev thinks “I don’t know”, but doesn’t say it: Introducing Sys1Cal-v1 dataset for probability
@@ -1777,7 +1774,7 @@ Representations, 2024.
 Gianluca Bailo. System Switch: When should a fast decision model stop and think? a closed-loop study with typed-
 decision models and a vision reasoner in Doom. Code and data, https://github.com/dexmac221/system-switch,
 2026. Not peer-reviewed; the README says “arXiv link to follow”.
-29
+28
 
 StartLux-Decision Data Sources
 Appendix A. Data Sources
@@ -1820,7 +1817,7 @@ no evaluation item is used in training for either the preview or the released mo
 A.4 Licensing and Data Usage
 The inference code is released under Apache-2.0, while model weights are distributed under CC BY-NC 4.0 for
 non-commercial use, with separate licensing available for commercial applications. Training sources have varying
-30
+29
 
 StartLux-Decision Training Implementation and Additional Analyses
 Table A.2. Benchmark-specific training coverage in the Stage 2 mixture of the preview models.T = official training split of the
@@ -1862,7 +1859,7 @@ Bidirectional prompt attention is enabled by removing the causal mask from full-
 prediction, while linear-attention layers retain causal recurrence. With bidirectional attention disabled, the modified
 implementation produces outputs bit-identical to those of the original causal implementation. Runtime integration
 and cross-backend validation are described in Section 6.1.
-31
+30
 
 StartLux-Decision Training Implementation and Additional Analyses
 Table B.1. Targeted ablations of the StartLux-Decision training design.Results use the 4B model unless otherwise specified.
@@ -1930,7 +1927,7 @@ a similar DI score of 52.55 but no calibration improvement, favoring exact gradi
 The optimized model produces sharper raw predictions, with the fitted temperature increasing from 1.37 to 1.60.
 Since the contributions of individual objective terms are not isolated, the calibration improvement is attributed to
 their combined effect.
-32
+31
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Appendix C. Policy-Aware Calibration: Proofs and Details
@@ -1972,7 +1969,7 @@ independence.■
 We diagnose residual routing information using the AUROC of initial confidence for predicting correctness within
 bins of post-reasoning confidence. Values above or below 0.5 indicate residual ranking direction, but AUROC 0.5
 does not establish conditional independence. The analysis also applies to cascades.
-33
+32
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Proposition 3 (Marginal certification does not imply route-wise certification).Let C be the confidence returned by
@@ -2013,7 +2010,7 @@ CJ-Bench, a collection of challenging decisions in Chinese.
 Signed overconfidence is mean reported confidence minus empirical accuracy, in percentage points. The route effect
 is the difference between routed and non-routed accuracy at matched reported confidence. Acceptance thresholds
 use a 95% fixed-sequence Clopper–Pearson procedure on the calibration half of each of 20 source-problem splits.
-34
+33
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Table C.1. Policy-aware calibration reduces signed confidence–accuracy gaps across selection and routing pipelines.
@@ -2070,7 +2067,7 @@ between overall reasoner accuracy and accuracy on deferred items, versus 2.1 poi
 C.5 Policy-Specific Threshold Certification
 Table C.2 compares conventional and policy-specific threshold certification. Policy-specific thresholds reduce
 observed error violations, although some routes accept no predictions.
-35
+34
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Table C.2. Policy-specific threshold certification reduces violations of target error rates among accepted predictions.Entries
@@ -2132,7 +2129,7 @@ Reasoning (25.8%)
 65.40 60.65 59.42 53.27 57.48 50.49 36.03 28.45 51.96 52.80 53.87
 GPQA Diamond⋆ 63.3 35.4 47.6 33.3 41.5 28.6 11.6 6.8 41.5 31.3 71.4
 GSM8K 96.4 80.2 93.6 64.3 94.9 63.7 41.9 24.9 72.0 52.1 66.2
-36
+35
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Table D.1 (continued)
@@ -2203,7 +2200,7 @@ configuration (Table D.2).
 D.4 Handling Multiple Questions and Long Option Lists
 Long Option Lists.A single readout supports up to 26 options, each mapped to one letter token. Longer lists use
 parallel groups of at most 25 options, advancing the top three from each group to a final readout. For lists of up to
-37
+36
 
 StartLux-Decision Policy-Aware Calibration: Proofs and Details
 Table D.2. Safeguards for reliable decision evaluation.Observed effects of vLLM 0.19.1 serving configurations relative to the
@@ -2235,4 +2232,4 @@ does not change existing predictions. For long documents, the evaluated serving 
 representations when the attention pattern permits it. For a 3,200-token document with 32 questions, this increases
 measured throughput from 2.8 to 27 decisions per second at 27B. The gain depends on the serving configuration;
 bidirectional prompt attention prevents reuse of a question-independent document encoding (Section 5.1).
-38
+37

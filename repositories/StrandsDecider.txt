@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/strands-labs/strands-decider",
-  "revision": "d942e5515db750f80a51032629ec312455a87976",
-  "revision_date": "2026-10-21T11:40:48-04:00",
+  "revision": "13c05149265dc404c09d2469636f71b1320e1713",
+  "revision_date": "2026-10-26T14:55:38-04:00",
   "slug": "strands-labs/strands-decider",
-  "retrieved_utc": "2026-10-23T08:24:41+00:00",
+  "retrieved_utc": "2026-10-27T08:18:04+00:00",
   "identity_source": "https://strandsagents.com/blog/introducing-strands-decider/",
   "included_files": 206,
   "excluded_files": 91,
@@ -67,8 +67,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": ".github/workflows/release-pypi.yml",
-      "bytes": 5810,
-      "sha256": "9ffe94fc37b28313a33db09dbfc33677105033d962070190514d096b4a6bccff"
+      "bytes": 9573,
+      "sha256": "ccf33798708101c1267c360ff82bd6ede410a4a4ce627c0c58c629db2fb8b4a6"
     },
     {
       "path": ".github/workflows/security-audit.yml",
@@ -612,8 +612,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/__init__.py",
-      "bytes": 111,
-      "sha256": "64440255949ecad2ddef1b0b9fe20e9a335b3bdf73bc9d659ace44becfdcf4f6"
+      "bytes": 488,
+      "sha256": "b0045ad95aa3cbc729122541be0bdcb95929ba5ee11c44f247f3b8ddb3c50220"
     },
     {
       "path": "src/strands_decider/cli.py",
@@ -627,18 +627,18 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/infer.py",
-      "bytes": 26074,
-      "sha256": "a29fbee918e4e67be1d5f302785e39cd16d7eb1d7b96d8074d2a205602c24e7a"
+      "bytes": 25158,
+      "sha256": "98145fe55586aaf3c867d6fe313d26399547403e812877d6e907b975728bf30b"
     },
     {
       "path": "src/strands_decider/mlx_engine.py",
-      "bytes": 14506,
-      "sha256": "23fc7ac64b063d9090dfe09e8a76493883e5d07b2b906d133cb7a9bce48440a2"
+      "bytes": 14364,
+      "sha256": "88735fa711d75737faf8f6e786fc141a4fb564750083cdc55b21376e700d5a94"
     },
     {
       "path": "src/strands_decider/modeling.py",
-      "bytes": 34262,
-      "sha256": "943552707a858fb6dac9b8b89e3b4b5a6fb31cfada78c0713d1c4b3e44d3973e"
+      "bytes": 28365,
+      "sha256": "c1d03de284b6000859f245df9094daa3ffdf0a5dff09873384be48f00c174dc6"
     },
     {
       "path": "src/strands_decider/mps_kernels.py",
@@ -657,13 +657,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/server.py",
-      "bytes": 5066,
-      "sha256": "dfe2cbd5616fa5ee6068f54819c19b5b8194f864ea64b0f0956cf86ad89a2252"
+      "bytes": 5014,
+      "sha256": "e513b5e907385ab83daf2ab27a534f236476798ad5af25e75f44d3af2b73e735"
     },
     {
       "path": "src/strands_decider/vision.py",
-      "bytes": 25049,
-      "sha256": "47c873a2e11ecb1ef0fb03b68d1833949a508b89e6e9580149bce575432ab8b1"
+      "bytes": 24347,
+      "sha256": "705238d4f294b9724bee9026d3365594cd075ce1bf3b4fd0aa97dc49a80cbdd5"
     },
     {
       "path": "tests/fixtures/v19-p5-run1/hobson_config.json",
@@ -677,38 +677,38 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_batch_tokens.py",
-      "bytes": 5042,
-      "sha256": "87d415dd6da2ea276b3dfa9547d0249a029d46c417acf8199b24cdb684b122c9"
+      "bytes": 4984,
+      "sha256": "4c4e90b7c28387c794367eb12634c12d2056fdd88789c021380dee2eb6c0ef9f"
     },
     {
       "path": "tests/test_checkpoint_load.py",
-      "bytes": 8573,
-      "sha256": "c804a2d724a9f7fb85017ad63299ab9ad0821e84d465887b30ea0761e52fbf7a"
+      "bytes": 8776,
+      "sha256": "c0c9f2121a3eb1c71496890e2113d0dfc0e2844bea17b3791eb8e26871576176"
     },
     {
       "path": "tests/test_cli_eval_devices.py",
-      "bytes": 7407,
-      "sha256": "341b51c99489821882e4a0966fcbc54f50ffd73621c63e6dc98e950b127ac510"
+      "bytes": 7357,
+      "sha256": "69104954ebb65dd537bb31d2251f38673caadb21703c2425b0d73b80343ff9ea"
     },
     {
       "path": "tests/test_cli_exit.py",
-      "bytes": 4598,
-      "sha256": "fa4a57bb1c7ab96064785983cacbfee13c10b11ee91804154dde5b148af8d31e"
+      "bytes": 4563,
+      "sha256": "41605b8bc71625bdd6c4fc97b7e952958dcd93b1d4a9dada4afda0635b090e5d"
     },
     {
       "path": "tests/test_cpu_kernels.py",
-      "bytes": 5937,
-      "sha256": "b610eb2ac01b15e53c903bfab6ba61bc2382bcf3ef086b74a6bccb5483ddf13f"
+      "bytes": 5902,
+      "sha256": "e2886b6bc48b80c2ba762ab1086f19ae8d1ce237b64c6412ea37951de2bd21ea"
     },
     {
       "path": "tests/test_devices.py",
-      "bytes": 3735,
-      "sha256": "8fc878c1258fcfec4cb183b6c38f599a884cecff9a924dfa782903074c948a4d"
+      "bytes": 3677,
+      "sha256": "5d77f5dab32fda71cce9d44f49d42726e6f91cdd4c7f1a7201a056a0b2df6935"
     },
     {
       "path": "tests/test_engine_concurrency.py",
-      "bytes": 5807,
-      "sha256": "43c3960ded10378497268cfb8649df19e96700e42437db79fa9bbab8a3964ca6"
+      "bytes": 5745,
+      "sha256": "b209c6a6ca2255a71acc038be204ef82a39d864839b3997d0d8b4ca5e81648e6"
     },
     {
       "path": "tests/test_engine_dtype.py",
@@ -717,13 +717,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_gemma4.py",
-      "bytes": 6627,
-      "sha256": "15fd6b507dd8f2134ab4505983e78fec71671925256e6f9e2a7856c57abcee38"
+      "bytes": 5667,
+      "sha256": "1a7b3ffefb92226bef7c10107dc3f305bb865d3fcea9aa3325a25ac5b462a318"
     },
     {
       "path": "tests/test_hf_export.py",
-      "bytes": 28334,
-      "sha256": "12bad1dea6fe457f47da9eb9e6e80acc555d7b8916913585b670566b927a8a57"
+      "bytes": 28376,
+      "sha256": "2773b54843e72dcf5a26e99776dfad41069510b4cbaeff5f1f76703ac0b0639a"
     },
     {
       "path": "tests/test_hybrid.py",
@@ -737,8 +737,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_mlx_engine.py",
-      "bytes": 11615,
-      "sha256": "0947dd5abf189332cbb2951419404822a08282ec3a4180cfbf77608788b840b3"
+      "bytes": 11472,
+      "sha256": "dbe541869dca73918ec9be6826d0747beff15763eb7e221df2cd6b486f5861ea"
     },
     {
       "path": "tests/test_mps_kernels.py",
@@ -757,8 +757,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_server.py",
-      "bytes": 12641,
-      "sha256": "04839a34804cac9419b081d97de7e6145914e224cbb0f6138884ec9bb05b5f74"
+      "bytes": 12622,
+      "sha256": "807052590e834232e40b1560362c46efc4d2ed1d2b27d43a9ce3067aa2fe9b48"
     },
     {
       "path": "tests/test_serving_attn.py",
@@ -767,8 +767,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_vision.py",
-      "bytes": 18712,
-      "sha256": "e8a51d3b048342853268134fc5e09b685b358ca8909085a4fd340cf5b7fab4b1"
+      "bytes": 18683,
+      "sha256": "1e734a66d94a0a188ce42208d151317a93b5ec0be703b036d87e5e20871f64a2"
     },
     {
       "path": "training/AGENTS.md",
@@ -807,8 +807,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/data/collate.py",
-      "bytes": 10531,
-      "sha256": "8fde9f26f09db105977c154e55b71f4b5e7d293c6e5e7be56def99331a5b97ed"
+      "bytes": 9789,
+      "sha256": "1ee4da7b6c49a956b8ae2438c2ada671c1298e7b433e05dc914a674cfd0b02b8"
     },
     {
       "path": "training/data/distill.py",
@@ -872,8 +872,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/data/teacher.py",
-      "bytes": 13499,
-      "sha256": "c039236d359eec2c4279a57a7f4f6e59c7ec971a44df6aac98724d74a0d228ea"
+      "bytes": 13433,
+      "sha256": "d94fac6309dbac36f6c7bc0251861779633f730bcbfbfaf1129089ab07c02db4"
     },
     {
       "path": "training/distributed.py",
@@ -882,8 +882,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/evaluate.py",
-      "bytes": 22124,
-      "sha256": "2ec79125c0d57b0001031ea0c1580d075a88d8972f7db000e40b0a6059376b7c"
+      "bytes": 22009,
+      "sha256": "17dbed20ea8f70b652ce561a8938371ccc4168f9f3984c7d56c2b652d472e5b0"
     },
     {
       "path": "training/hardware.md",
@@ -892,8 +892,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/hf_export.py",
-      "bytes": 49181,
-      "sha256": "b2c092977f11fd9789e1f1b3f06ec8f2f200fc67e06f0a3168c9242adcb4d742"
+      "bytes": 47854,
+      "sha256": "597c10639b9d0a8815f463312d066425056b0c239db484bded8d0758ba869862"
     },
     {
       "path": "training/legacy-v7.md",
@@ -922,8 +922,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/soup.py",
-      "bytes": 10453,
-      "sha256": "1e77aea05eb65ae932955c26312b218d74f2523506aa609f9c3034e2bc2f5396"
+      "bytes": 9891,
+      "sha256": "31033a1bf9e21d55314e1fe319c63cb5d3c2c46078cd7e3c5593336f317e1a6f"
     },
     {
       "path": "training/steps.md",
@@ -947,13 +947,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_configs.py",
-      "bytes": 3496,
-      "sha256": "4f468468a0c5855dd105a59b8f817fd5818a6a6a901c9f0051439f2001e7f078"
+      "bytes": 4204,
+      "sha256": "416612d47ce924ee13fc8b521045958ed08ea3f685c2a26bba4bc2f844e9fc34"
     },
     {
       "path": "training/tests/test_core.py",
-      "bytes": 35745,
-      "sha256": "dfb6047baf134faae0c494ff49d3cc56ba43ee72b47050954ac50e0b3f2625d7"
+      "bytes": 35278,
+      "sha256": "ae0617c85424be4963cded6a95875e163ee4dc59f5a6b316b5f7bb0f2186ffd6"
     },
     {
       "path": "training/tests/test_data_identity.py",
@@ -962,8 +962,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_ddp.py",
-      "bytes": 29255,
-      "sha256": "380952e1b7cdc414578dd46c3fdecedcf5acb9de9f5138f54dc8e9d78b1a2d5d"
+      "bytes": 26288,
+      "sha256": "1e8f5ab8948be46ba8b67887ef789aa0e6482d9a63c29b4611d28e6fe0b58e93"
     },
     {
       "path": "training/tests/test_distill.py",
@@ -977,8 +977,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_gemma4_train.py",
-      "bytes": 9352,
-      "sha256": "4d03cd78eb276857ffe62bf776f00427e8ecfcc9680849f627cb45ee9c35383c"
+      "bytes": 9192,
+      "sha256": "1a229b3a2fea939f078920f5b72d2e952a5bfeed177d9461e559c6a41789ea2a"
     },
     {
       "path": "training/tests/test_generated.py",
@@ -987,18 +987,18 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_gpu_smoke.py",
-      "bytes": 17932,
-      "sha256": "ddd2a935263fc097a8f2e6029b7e036f2e350c28b34a7bb2288e563c977e0927"
+      "bytes": 17843,
+      "sha256": "e8bdb636f3e64c89535d48c14c854f3dd7c223fdba56f38abcdda5096fc3967a"
     },
     {
       "path": "training/tests/test_init_from.py",
-      "bytes": 9533,
-      "sha256": "5b2e376a9ba477ff6c853b7d88fa9efab2ffa44a9d87a50dcfcddde030ab9ce9"
+      "bytes": 7622,
+      "sha256": "707579b3e0a6a4c51208e206bf16bfa8d4370ffb41e89de5d4f1146c281c75a3"
     },
     {
       "path": "training/tests/test_kl_anchor.py",
-      "bytes": 9609,
-      "sha256": "55d9d07294a68f5258e06dd827948a7c1eb82f3a29f1f8c25859b94c5b0cbfd5"
+      "bytes": 10966,
+      "sha256": "e76473508acf68f8819f02f4584500807623af82d3c7201ba1f24bcae2e567ec"
     },
     {
       "path": "training/tests/test_multistep.py",
@@ -1032,13 +1032,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_variance.py",
-      "bytes": 13241,
-      "sha256": "a9b955fe62ceecd3143a572ebaa62c7d919fb855754128e89f8b8b15ff979473"
+      "bytes": 13970,
+      "sha256": "918cfe15056811d4e98deda2a370505af15d3cf0dfd8a7374b310d859ebfae72"
     },
     {
       "path": "training/train.py",
-      "bytes": 39602,
-      "sha256": "d62b18c6475d119d28006188a3ed2b36983594023dcd66470abde96e51305ff0"
+      "bytes": 37311,
+      "sha256": "1fde680a43273dfe05ecf1e85cf43a243d956691a822fb1d655e642400f41ace"
     }
   ]
 }
@@ -20632,7 +20632,16 @@ FILE: src/strands_decider/__init__.py
 ================================================
 """strands-decider: a System One model -- typed, calibrated answers instead of text."""
 
-__version__ = "0.1.0"
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
+
+try:
+    __version__ = _pkg_version("strands-decider")
+except PackageNotFoundError:
+    # Editable install without installed metadata (e.g. a fresh checkout
+    # that was never `pip install -e .`'d). Fall back to a sentinel so
+    # imports still succeed.
+    __version__ = "0.0.0+unknown"
 
 
 
@@ -21016,6 +21025,7 @@ from typing import Any
 
 import torch
 
+from . import __version__
 from .modeling import StrandsDeciderModel, apply_temperature, masked_log_softmax, pool_last_token
 from .prompting import (
     RenderedQuestion,
@@ -21046,7 +21056,7 @@ class EngineConfig:
     device: str = "cuda"
     use_prefix_cache: bool = True
     max_batch: int = 32
-    model_name: str = "strands-decider-0.1.0"
+    model_name: str = f"strands-decider-{__version__}"
     # Largest share of the context window the question may claim before the state
     # starts being squeezed. Questions are normally short, so this rarely binds.
     max_question_fraction: float = 0.75
@@ -21299,12 +21309,8 @@ class SystemOneEngine:
         """
         ids, mask = self._pad([s + qi for qi in q])
         # This path forwards the whole prompt, so option positions sit after the state.
-        assert rendered is not None or self.model.config.head_type != "pointer"
-        opt_idx = (
-            self._option_idx(rendered, len(s), offsets)  # type: ignore[arg-type]
-            if self.model.config.head_type == "pointer"
-            else None
-        )
+        assert rendered is not None
+        opt_idx = self._option_idx(rendered, len(s), offsets)
         out = self.model(
             input_ids=ids,
             attention_mask=mask,
@@ -21357,16 +21363,13 @@ class SystemOneEngine:
         # last real *suffix* token -- which is `<answer>`, the position that has
         # attended to state and question alike.
         pooled = pool_last_token(hidden, full_mask).to(torch.float32)
-        if self.model.config.head_type == "pointer":
-            # `hidden` is the suffix only, so option positions are suffix-relative and
-            # need no prefix offset -- the cached state never enters the gather.
-            from .modeling import gather_options
+        # `hidden` is the suffix only, so option positions are suffix-relative and
+        # need no prefix offset -- the cached state never enters the gather.
+        from .modeling import gather_options
 
-            assert rendered is not None
-            options = gather_options(hidden, self._option_idx(rendered, 0, offsets))
-            raw = self.model.head(pooled, options.to(torch.float32))
-        else:
-            raw = self.model.head(pooled)
+        assert rendered is not None
+        options = gather_options(hidden, self._option_idx(rendered, 0, offsets))
+        raw = self.model.head(pooled, options.to(torch.float32))
         logits = apply_temperature(raw, self._temperatures(kinds))
         log_probs = masked_log_softmax(logits, torch.tensor(n_slots, device=self.device))
         n_tokens = prefix_len + int(suffix_mask.sum().item())
@@ -21380,21 +21383,7 @@ class SystemOneEngine:
         names = list(request.questions.keys())
         questions: list[Question] = [request.questions[n] for n in names]
 
-        rendered: list[RenderedQuestion] = []
-        for q in questions:
-            rq = render_question(q)
-            # A pointer head scores each option from its own hidden state, so there is
-            # no slot count to exceed; only the fixed-width readout has a ceiling.
-            if (
-                self.model.config.head_type != "pointer"
-                and rq.n_slots > self.model.config.num_slots
-            ):
-                raise ValueError(
-                    f"question has {rq.n_slots} options but this model has "
-                    f"{self.model.config.num_slots} slots; split the question or "
-                    f"retrain with a larger num_slots"
-                )
-            rendered.append(rq)
+        rendered: list[RenderedQuestion] = [render_question(q) for q in questions]
 
         state_text = render_state(request.state)
         n_slots = [rq.n_slots for rq in rendered]
@@ -21772,17 +21761,15 @@ class MLXEngine(SystemOneEngine):
         """
         rows, width, dim = hidden.shape
         positions = [row * width + position for row, position in enumerate(last)]
-        options = opt_idx.clamp_min(0).tolist() if opt_idx is not None else []
+        assert opt_idx is not None, "pointer head needs opt_idx"
+        options = opt_idx.clamp_min(0).tolist()
         for row, row_options in enumerate(options):
             positions += [row * width + position for position in row_options]
         picked = hidden.reshape(rows * width, dim)[mx.array(positions, dtype=mx.int32)]
         states = _to_torch(picked.astype(mx.float32)).reshape(len(positions), dim)
         pooled = states[:rows]
         with torch.inference_mode():
-            if options:
-                raw = self.model.head(pooled, states[rows:].reshape(rows, len(options[0]), dim))
-            else:
-                raw = self.model.head(pooled)
+            raw = self.model.head(pooled, states[rows:].reshape(rows, len(options[0]), dim))
             logits = apply_temperature(raw, self._temperatures(kinds))
             return masked_log_softmax(logits, torch.tensor(n_slots)).exp()
 
@@ -21791,9 +21778,7 @@ class MLXEngine(SystemOneEngine):
         rendered: list[RenderedQuestion] | None,
         base: int,
         offsets: list[list[tuple[int, int]]],
-    ) -> torch.Tensor | None:
-        if self.model.config.head_type != "pointer":
-            return None
+    ) -> torch.Tensor:
         assert rendered is not None
         return self._option_idx(rendered, base, offsets)
 
@@ -21917,15 +21902,14 @@ def load_mlx_engine(
 ================================================
 FILE: src/strands_decider/modeling.py
 ================================================
-"""The model: a pretrained LLM torso with its LM head removed, plus a readout head.
+"""The model: a pretrained LLM torso with its LM head removed, plus a pointer readout.
 
-    input -> [LLM torso] -> hidden states -> [head] -> one logit per option
+    input -> [LLM torso] -> hidden states -> [PointerHead] -> one logit per option
 
-Two heads exist. The pointer head, the v19 readout, scores option k from the hidden
-state of option k's own last token, so the option count is unbounded; see PointerHead.
-The slot head, the v1-v6 readout, maps the last-token state to K fixed slots. In both
-cases the logits past N, the number of options this question declared, are masked
-before the softmax, and one mechanism serves all three primitives; see schema.py.
+The pointer head, the v19 readout, scores option k from the hidden state of option k's
+own last token, so the option count is unbounded; see PointerHead. Logits past N, the
+number of options this question declared, are masked before the softmax, and one
+mechanism serves all three primitives; see schema.py.
 
 Why last-token pooling on a causal model rather than a BERT-style [CLS]: the torso
 is a decoder, so only the final position has attended to the whole prompt. Keeping
@@ -21935,7 +21919,6 @@ which matters a great deal when the adaptation is a rank-16 LoRA adapter.
 
 from __future__ import annotations
 
-import contextlib
 import json
 import os
 from collections.abc import Callable
@@ -21947,12 +21930,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from huggingface_hub import snapshot_download
 from transformers import AutoConfig, AutoModel, AutoTokenizer
-
-# Slots the head can address. This must match the largest option count the corpus
-# actually contains: slots beyond that never receive a gradient and would ship at
-# their random initialisation. `python -m training.data build --max-options 24` is the matching
-# default. Questions with more options are rejected, not silently truncated.
-DEFAULT_NUM_SLOTS = 24
 
 # Large negative rather than -inf: keeps softmax finite under autocast/bf16, where
 # -inf can produce NaNs if an entire row is masked by a malformed batch.
@@ -21987,27 +21964,17 @@ class StrandsDeciderConfig:
     # Hub revision of base_model the adapter was trained on. None loads the repo's default branch;
     # `load` falls back to the checkpoint's provenance.json.
     base_revision: str | None = None
-    num_slots: int = DEFAULT_NUM_SLOTS
-    # 0 = single linear projection. >0 inserts one GELU hidden layer of this width.
-    head_hidden: int = 0
     head_dropout: float = 0.0
     # 3072 covers every JevBench long_policy item whole. Measured: 1024 -> 3072 moved
     # long_policy 0.263 -> 0.368 and changed nothing else; 3072 -> 4096 changed nothing
     # at all, so this is where the context curve goes flat.
     max_length: int = 3072
     torch_dtype: str = "bfloat16"
-    # "random" (default) or "lm_head": seed slot k from the output-embedding row for
-    # the token "k+1", the digit the LM would emit after `<answer>` if it were asked
-    # for the option number. Only slots 0-8 have a single-token form in this
-    # tokeniser, so higher slots keep the default init.
-    head_init: str = "random"
-    # >0 adds KL(frozen || student) to the loss, pulling the trained head toward the
-    # untouched torso's own reading of the option-number tokens.
-    kl_frozen_weight: float = 0.0
-    # "slot" = Linear(hidden, num_slots), the v1-v6 readout. "pointer" scores each
-    # option from its own hidden state; see PointerHead. Defaults to "slot" so every
-    # existing checkpoint keeps loading unchanged.
-    head_type: str = "slot"
+    # Not read by this version (the pointer head is the only readout); kept on the config
+    # so every export writes `head_type: "pointer"` into its JSON. Older strands-decider
+    # versions default a missing head_type to "slot" and crash loading a pointer export,
+    # and out-of-tree readers may parse this field directly.
+    head_type: str = "pointer"
     pointer_dim: int = 256
     # Populated after `python -m training.evaluate calibrate` runs; 1.0 is a no-op. `temperature` is the
     # fallback; `temperature_by_kind` overrides it per primitive where fitted.
@@ -22057,6 +22024,17 @@ class StrandsDeciderConfig:
             raise ValueError(
                 f"{path}: full_weight_targets is set; this version loads LoRA checkpoints only"
             )
+        # Released checkpoints carry head_type="pointer" explicitly. A slot-era checkpoint
+        # would set it to "slot": fail cleanly rather than silently loading as pointer.
+        head_type = d.get("head_type")
+        if head_type is not None and head_type != "pointer":
+            raise ValueError(
+                f"{path}: head_type={head_type!r}; this version loads pointer-head checkpoints only"
+            )
+        # Drop any key the current dataclass does not know (e.g. legacy head_type="pointer",
+        # num_slots, head_hidden, head_init, kl_frozen_weight on a released config).
+        allowed = set(cls.__dataclass_fields__)
+        d = {k: v for k, v in d.items() if k in allowed}
         return cls(**d)
 
 
@@ -22127,31 +22105,6 @@ def ensure_bos(tok: Any) -> Any:
     return tok
 
 
-class SlotHead(nn.Module):
-    """Projects a pooled hidden state to K slot logits.
-
-    LayerNorm first: the torso's final hidden states are not normalised on most
-    decoder architectures, and their scale drifts with sequence length, which makes
-    an unnormalised linear head slow to converge.
-    """
-
-    def __init__(self, hidden_size: int, num_slots: int, hidden: int = 0, dropout: float = 0.0):
-        super().__init__()
-        self.norm = nn.LayerNorm(hidden_size)
-        self.dropout = nn.Dropout(dropout) if dropout > 0 else nn.Identity()
-        if hidden > 0:
-            self.proj: nn.Module = nn.Sequential(
-                nn.Linear(hidden_size, hidden),
-                nn.GELU(),
-                nn.Linear(hidden, num_slots),
-            )
-        else:
-            self.proj = nn.Linear(hidden_size, num_slots)
-
-    def forward(self, pooled: torch.Tensor) -> torch.Tensor:
-        return self.proj(self.dropout(self.norm(pooled)))
-
-
 class PointerHead(nn.Module):
     """Scores option k from option k's own hidden state, not from a fixed slot.
 
@@ -22160,8 +22113,8 @@ class PointerHead(nn.Module):
     causal attention. So an option's logit depends on what it *says*, and there is no
     per-slot parameter for a positional bias to live in.
 
-    Three consequences. The option count is unbounded rather than capped at
-    `num_slots`. Genericity is structural instead of something option shuffling has to
+    Three consequences. The option count is unbounded rather than capped at a fixed
+    slot count. Genericity is structural instead of something option shuffling has to
     beat into a positional head. And the parameter count does not grow with K.
 
     Measured on frozen v6 features, against the slot head refitted on the same rows:
@@ -22190,24 +22143,12 @@ class PointerHead(nn.Module):
 
 
 def build_head(config: StrandsDeciderConfig, hidden_size: int) -> nn.Module:
-    """The readout named by `config.head_type`, in fp32 either way.
+    """The pointer readout, in fp32.
 
     The head trains in fp32 even when the torso is bf16: it is tiny, and a
     low-precision classifier is a needless source of calibration error.
     """
-    if config.head_type == "pointer":
-        head: nn.Module = PointerHead(
-            hidden_size, dim=config.pointer_dim, dropout=config.head_dropout
-        )
-    elif config.head_type == "slot":
-        head = SlotHead(
-            hidden_size,
-            config.num_slots,
-            hidden=config.head_hidden,
-            dropout=config.head_dropout,
-        )
-    else:
-        raise ValueError(f"unknown head_type {config.head_type!r}")
+    head = PointerHead(hidden_size, dim=config.pointer_dim, dropout=config.head_dropout)
     return head.to(torch.float32)
 
 
@@ -22270,7 +22211,7 @@ def apply_temperature(logits: torch.Tensor, temperature: Any) -> torch.Tensor:
 
 
 class StrandsDeciderModel(nn.Module):
-    """LLM torso + slot head. The LM output head is never loaded."""
+    """LLM torso + pointer head. The LM output head is never loaded."""
 
     def __init__(self, config: StrandsDeciderConfig, torso: nn.Module, tokenizer: Any):
         super().__init__()
@@ -22377,7 +22318,7 @@ class StrandsDeciderModel(nn.Module):
             lora_dropout=self.config.lora_dropout,
             target_modules=self.config.lora_targets,
             bias="none",
-            # No PEFT task head -- our SlotHead is the task head and is saved separately.
+            # No PEFT task head -- our pointer head is the task head and is saved separately.
             task_type="FEATURE_EXTRACTION",
         )
         self.torso = get_peft_model(self.torso, lora_cfg)
@@ -22406,94 +22347,6 @@ class StrandsDeciderModel(nn.Module):
         )
         return out.last_hidden_state
 
-    # ---- pretrained-readout hooks ------------------------------------------
-    def slot_token_ids(self) -> dict[int, int]:
-        """slot index -> token id of the option number the prompt shows for it.
-
-        `_option_block` numbers options from 1, and the prompt ends at `<answer>`, so
-        the natural continuation for slot k is the token "k+1". Only 1-9 are single
-        tokens in the Qwen vocabulary; slots past that have no usable row and are
-        omitted, which covers 78.6% of the training corpus and almost every real
-        request (JevBench families are mostly 2-5 options).
-        """
-        out: dict[int, int] = {}
-        for k in range(self.config.num_slots):
-            ids = self.tokenizer.encode(str(k + 1), add_special_tokens=False)
-            if len(ids) == 1:
-                out[k] = ids[0]
-        return out
-
-    def _output_embedding(self) -> torch.Tensor:
-        """The LM output matrix. Qwen3 ties embeddings, so the input table *is* it.
-
-        `AutoModel` never loads `lm_head`, so without the tie there would be nothing
-        to read; assert rather than silently seeding from an unrelated matrix.
-        """
-        base = self.torso
-        base = getattr(base, "base_model", base)
-        base = getattr(base, "model", base)
-        emb = base.get_input_embeddings() if hasattr(base, "get_input_embeddings") else None
-        if emb is None:
-            raise RuntimeError("torso exposes no input embedding to use as an LM head")
-        cfg = getattr(self.torso, "config", None)
-        if cfg is not None and not getattr(cfg, "tie_word_embeddings", False):
-            raise RuntimeError(
-                "base model does not tie embeddings, so the input table is not the LM head"
-            )
-        return emb.weight
-
-    def init_head_from_lm_head(self) -> int:
-        """Seed the slot head with the LM's own option-number readout directions."""
-        if self.config.head_hidden:
-            raise ValueError("lm_head init applies to the linear head only")
-        table = self._output_embedding()
-        slots = self.slot_token_ids()
-        proj = self.head.proj
-        with torch.no_grad():
-            rows = table[list(slots.values())].to(torch.float32)
-            # Match the scale the randomly-initialised head was given, so the change
-            # under test is the *direction* carried by the LM head, not a larger step.
-            rows = rows * (proj.weight.std() / rows.std().clamp_min(1e-8))
-            for position, slot in enumerate(slots):
-                proj.weight[slot].copy_(rows[position].to(proj.weight.device))
-            if proj.bias is not None:
-                proj.bias[list(slots)] = 0.0
-        return len(slots)
-
-    def frozen_slot_log_probs(
-        self, input_ids: torch.Tensor, attention_mask: torch.Tensor, n_slots: torch.Tensor
-    ) -> tuple[torch.Tensor, torch.Tensor]:
-        """The untouched torso's own option-number distribution, and who it covers.
-
-        Adapters are disabled rather than a second copy loaded, so this costs one
-        extra forward and no extra weights. Rows needing a slot without a
-        single-token number are excluded and reported in the mask.
-        """
-        slots = self.slot_token_ids()
-        usable = max(slots) + 1 if slots else 0
-        eligible = n_slots <= usable
-        if not bool(eligible.any()):
-            return torch.zeros(0, device=input_ids.device), eligible
-        table = self._output_embedding()
-        with torch.no_grad():
-            disable = getattr(self.torso, "disable_adapter", None)
-            ctx = disable() if callable(disable) else contextlib.nullcontext()
-            with ctx:
-                hidden = self.encode(input_ids, attention_mask)
-            pooled = pool_last_token(hidden, attention_mask).to(torch.float32)
-            rows = table[[slots[k] for k in sorted(slots)]].to(torch.float32)
-            logits = pooled @ rows.t()
-            # The LM's own final transform, where it has one: Gemma soft-caps its logits
-            # at 30. Without it the read distribution is not the model's (options 1-3:
-            # 0.37 / 0.50 / 0.14 raw against the model's 0.36 / 0.40 / 0.24).
-            cap = getattr(getattr(self.torso, "config", None), "final_logit_softcapping", None)
-            if cap:
-                logits = cap * torch.tanh(logits / cap)
-            pad = self.config.num_slots - logits.size(-1)
-            if pad > 0:
-                logits = F.pad(logits, (0, pad), value=MASK_VALUE)
-            return masked_log_softmax(logits, n_slots), eligible
-
     def forward(
         self,
         input_ids: torch.Tensor,
@@ -22506,18 +22359,15 @@ class StrandsDeciderModel(nn.Module):
         temperature: Any | None = None,
         opt_idx: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
+        if opt_idx is None:
+            raise ValueError("pointer head needs opt_idx (option token positions)")
         hidden = self.encode(input_ids, attention_mask, past_key_values=past_key_values)
         pooled = pool_last_token(hidden, attention_mask).to(torch.float32)
-        if self.config.head_type == "pointer":
-            if opt_idx is None:
-                raise ValueError("pointer head needs opt_idx (option token positions)")
-            # Indices are relative to what was actually forwarded, so with a shared
-            # prefix cache the caller passes suffix-relative positions and this works
-            # unchanged -- `hidden` is the suffix in that case.
-            options = gather_options(hidden, opt_idx).to(torch.float32)
-            logits = self.head(pooled, options)
-        else:
-            logits = self.head(pooled)
+        # Indices are relative to what was actually forwarded, so with a shared
+        # prefix cache the caller passes suffix-relative positions and this works
+        # unchanged -- `hidden` is the suffix in that case.
+        options = gather_options(hidden, opt_idx).to(torch.float32)
+        logits = self.head(pooled, options)
 
         logits = apply_temperature(
             logits, self.config.temperature if temperature is None else temperature
@@ -22547,10 +22397,13 @@ class StrandsDeciderModel(nn.Module):
         return out
 
     def save_pretrained(self, path: str) -> None:
+        from safetensors.torch import save_file
+
         os.makedirs(path, exist_ok=True)
         with open(os.path.join(path, CONFIG_NAME), "w", encoding="utf-8") as fh:
             fh.write(self.config.to_json())
-        torch.save(self.head.state_dict(), os.path.join(path, "slot_head.pt"))
+        state = {k: v.detach().cpu().contiguous() for k, v in self.head.state_dict().items()}
+        save_file(state, os.path.join(path, "head.safetensors"), metadata={"format": "pt"})
         if self.config.use_lora:
             self.torso.save_pretrained(os.path.join(path, "lora"))
         self.tokenizer.save_pretrained(path)
@@ -22656,21 +22509,30 @@ def checkpoint_dir(path: str, revision: str | None = None) -> str:
 
 
 def load_head_state(path: str) -> dict[str, torch.Tensor]:
-    """The head weights: `head.safetensors` (a Hugging Face export) or the `slot_head.pt`
-    that `save_pretrained` writes. Both hold the same state dict. This function refuses a
-    directory with both files, because nothing tells which one is correct."""
+    """The head weights: `head.safetensors`, written by `save_pretrained` and by the
+    Hugging Face export. For local checkpoints trained before the slot-head removal
+    `slot_head.pt` is read as a fallback (pointer heads were pickled under that filename
+    too). Raises FileNotFoundError if neither is present."""
     st = os.path.join(path, "head.safetensors")
-    pt = os.path.join(path, "slot_head.pt")
-    if os.path.exists(st) and os.path.exists(pt):
-        raise ValueError(f"{path}: holds both head.safetensors and slot_head.pt. Keep only one.")
     if os.path.exists(st):
         from safetensors.torch import load_file
 
         loaded: dict[str, torch.Tensor] = load_file(st)
         return loaded
-    # weights_only=True is the default from torch 2.6. It is passed explicitly anyway.
-    state: dict[str, torch.Tensor] = torch.load(pt, map_location="cpu", weights_only=True)
-    return state
+    pt = os.path.join(path, "slot_head.pt")
+    if os.path.exists(pt):
+        import warnings
+
+        warnings.warn(
+            f"{pt}: loading from the pre-pointer pickle filename. Re-save with "
+            "`model.save_pretrained(path)` to write head.safetensors.",
+            UserWarning,
+            stacklevel=2,
+        )
+        # weights_only=True refuses pickle code; it has been the torch default since 2.6.
+        state: dict[str, torch.Tensor] = torch.load(pt, map_location="cpu", weights_only=True)
+        return state
+    raise FileNotFoundError(f"{path}: neither head.safetensors nor slot_head.pt is present")
 
 
 
@@ -23288,6 +23150,7 @@ import time
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 
+from . import __version__
 from .infer import EngineConfig, SystemOneEngine, load_mlx
 from .modeling import StrandsDeciderModel
 from .schema import SystemOneRequest, SystemOneResponse
@@ -23325,7 +23188,7 @@ def create_app(
 
     app = FastAPI(
         title="strands-decider System One",
-        version="0.1.0",
+        version=__version__,
         description="Typed, calibrated answers. Choice, Score and Noul over one state.",
     )
 
@@ -23364,7 +23227,6 @@ def create_app(
             "model": eng.cfg.model_name,
             "checkpoint": checkpoint,
             "base_model": eng.model.config.base_model,
-            "num_slots": eng.model.config.num_slots,
             "max_length": eng.model.config.max_length,
             "temperature": eng.model.config.temperature,
             "device": eng.cfg.device,
@@ -23384,7 +23246,7 @@ def create_app(
             with guard:
                 response = eng.evaluate(request)
         except ValueError as exc:
-            # Option count over num_slots, malformed permutation, etc. -- caller error.
+            # Malformed permutation, etc. -- caller error.
             raise HTTPException(status_code=422, detail=str(exc)) from exc
         elapsed_ms = (time.perf_counter() - started) * 1000
         payload = response.model_dump()
@@ -23747,21 +23609,6 @@ class VisionDeciderModel(StrandsDeciderModel):
         finally:
             self._mm = (None, None)
 
-    def frozen_slot_log_probs(
-        self,
-        input_ids: torch.Tensor,
-        attention_mask: torch.Tensor,
-        n_slots: torch.Tensor,
-        pixel_values: torch.Tensor | None = None,
-        image_grid_thw: torch.Tensor | None = None,
-    ) -> tuple[torch.Tensor, torch.Tensor]:
-        """The untouched torso's option-number reading, with the image in the prompt."""
-        self._mm = (pixel_values, image_grid_thw)
-        try:
-            return super().frozen_slot_log_probs(input_ids, attention_mask, n_slots)
-        finally:
-            self._mm = (None, None)
-
     @classmethod
     def load(
         cls,
@@ -23788,8 +23635,6 @@ class VisionDeciderModel(StrandsDeciderModel):
         path = checkpoint_dir(path)
         config = StrandsDeciderConfig.from_json(config_path(path))
         config.base_revision = base_revision(path, config)
-        if config.head_type != "pointer":
-            raise ValueError("image input needs a pointer-head checkpoint")
         lora_file = os.path.join(path, "lora", "adapter_model.safetensors")
         if config.use_lora and not os.path.exists(lora_file):
             raise FileNotFoundError(
@@ -24112,9 +23957,7 @@ def _model(texts, max_length):
         StrandsDeciderConfig(
             base_model="tiny-gemma4",
             use_lora=False,
-            head_type="pointer",
             pointer_dim=16,
-            num_slots=4,
             max_length=max_length,
             force_bos=True,
             torch_dtype="float32",
@@ -24195,17 +24038,12 @@ downloaded."""
 import copy
 import json
 import os
-import pickle
 import shutil
 
 import pytest
 import torch
 
 from strands_decider.modeling import StrandsDeciderConfig, StrandsDeciderModel
-
-
-class _NotATensor:
-    """A global that torch's weights_only unpickler refuses."""
 
 
 def _tokenizer():
@@ -24243,9 +24081,7 @@ def ckpt(tmp_path, monkeypatch):
         return copy.deepcopy(base)
 
     monkeypatch.setattr(StrandsDeciderModel, "_load_torso", staticmethod(load_torso))
-    cfg = StrandsDeciderConfig(
-        base_model="tiny", head_type="pointer", pointer_dim=16, lora_r=2, torch_dtype="float32"
-    )
+    cfg = StrandsDeciderConfig(base_model="tiny", pointer_dim=16, lora_r=2, torch_dtype="float32")
     model = StrandsDeciderModel(cfg, copy.deepcopy(base), _tokenizer())
     model.attach_lora()
     with torch.no_grad():  # lora_B starts at zero: make the adapter change the torso
@@ -24265,12 +24101,7 @@ def _same(a, b):
 def test_a_complete_checkpoint_and_its_safetensors_head_load_unchanged(ckpt):
     path, model, loads = ckpt
     assert _same(StrandsDeciderModel.load(str(path)), model)
-    from safetensors.torch import save_file
-
-    save_file(torch.load(path / "slot_head.pt", weights_only=True), str(path / "head.safetensors"))
-    os.remove(path / "slot_head.pt")
-    assert _same(StrandsDeciderModel.load(str(path)), model)
-    assert loads == ["tiny", "tiny"]
+    assert loads == ["tiny"]
 
 
 def test_a_missing_adapter_is_refused_before_the_torso_loads(ckpt):
@@ -24281,27 +24112,39 @@ def test_a_missing_adapter_is_refused_before_the_torso_loads(ckpt):
     assert loads == []
 
 
-def test_two_head_files_are_refused_before_the_torso_loads(ckpt):
-    path, model, loads = ckpt
+def test_a_missing_head_file_is_refused_before_the_torso_loads(ckpt):
+    path, _, loads = ckpt
+    os.remove(path / "head.safetensors")
+    with pytest.raises(FileNotFoundError, match="head"):
+        StrandsDeciderModel.load(str(path))
+    assert loads == []
+
+
+def test_load_head_state_falls_back_to_slot_head_pt_with_warning(tmp_path):
+    """A local pointer checkpoint saved before the slot-head removal wrote weights to
+    slot_head.pt. load_head_state reads it with a UserWarning and weights_only=True."""
+    import warnings
+
+    from strands_decider.modeling import load_head_state
+
+    torch.save({"q.weight": torch.randn(4, 8)}, tmp_path / "slot_head.pt")
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        state = load_head_state(str(tmp_path))
+    assert "q.weight" in state
+    assert any("slot_head.pt" in str(w.message) for w in caught)
+
+
+def test_load_head_state_prefers_head_safetensors_when_both_exist(tmp_path):
+    """A directory holding both files reads head.safetensors; the fallback is for the
+    pre-pointer-only shape where only slot_head.pt is on disk."""
     from safetensors.torch import save_file
 
-    save_file(
-        {k: torch.zeros_like(v) for k, v in model.head.state_dict().items()},
-        str(path / "head.safetensors"),
-    )
-    with pytest.raises(ValueError, match="both head"):
-        StrandsDeciderModel.load(str(path))
-    assert loads == []
+    from strands_decider.modeling import load_head_state
 
-
-def test_the_head_pickle_is_read_with_weights_only(ckpt, monkeypatch):
-    path, model, loads = ckpt
-    torch.save(dict(model.head.state_dict(), extra=_NotATensor()), path / "slot_head.pt")
-    # Makes torch.load unpickle anything unless the call itself sets weights_only=True.
-    monkeypatch.setenv("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
-    with pytest.raises(pickle.UnpicklingError, match="Weights only load failed"):
-        StrandsDeciderModel.load(str(path))
-    assert loads == []
+    save_file({"q.weight": torch.zeros(4, 8)}, str(tmp_path / "head.safetensors"))
+    torch.save({"q.weight": torch.ones(4, 8)}, tmp_path / "slot_head.pt")
+    assert torch.equal(load_head_state(str(tmp_path))["q.weight"], torch.zeros(4, 8))
 
 
 def test_a_hub_repo_id_loads_from_the_downloaded_snapshot(ckpt, monkeypatch):
@@ -24614,9 +24457,7 @@ def test_real_cpu_checkpoint_calibrates_and_evaluates(rows, tmp_path, monkeypatc
     config = StrandsDeciderConfig(
         base_model=str(base),
         use_lora=False,
-        head_type="pointer",
         pointer_dim=8,
-        num_slots=2,
         torch_dtype="float32",
         max_length=128,
     )
@@ -24759,9 +24600,7 @@ def _tiny_checkpoint(tmp_path):
             head_dim=8,
         )
     ).save_pretrained(base)
-    cfg = StrandsDeciderConfig(
-        base_model=str(base), head_type="pointer", pointer_dim=8, torch_dtype="float32", lora_r=2
-    )
+    cfg = StrandsDeciderConfig(base_model=str(base), pointer_dim=8, torch_dtype="float32", lora_r=2)
     model = StrandsDeciderModel(cfg, Qwen3Model.from_pretrained(base), tok)
     model.attach_lora()
     model.save_pretrained(str(tmp_path / "ckpt"))
@@ -24888,9 +24727,7 @@ def _tiny_checkpoint(tmp_path):
             layer_types=["linear_attention"] * 3 + ["full_attention"],
         )
     ).save_pretrained(base)
-    cfg = StrandsDeciderConfig(
-        base_model=str(base), head_type="pointer", pointer_dim=8, torch_dtype="float32", lora_r=2
-    )
+    cfg = StrandsDeciderConfig(base_model=str(base), pointer_dim=8, torch_dtype="float32", lora_r=2)
     torso = Qwen3_5ForCausalLM.from_pretrained(base).model
     model = StrandsDeciderModel(cfg, torso, tok)
     model.attach_lora()
@@ -25026,9 +24863,7 @@ def test_the_server_builds_the_mlx_engine_for_device_mlx(monkeypatch):
             (),
             {
                 "config": type(
-                    "Config",
-                    (),
-                    {"base_model": "stub", "num_slots": 24, "temperature": 1.0, "max_length": 512},
+                    "Config", (), {"base_model": "stub", "temperature": 1.0, "max_length": 512}
                 )()
             },
         )()
@@ -25113,12 +24948,7 @@ def engine():
         )
     )
     cfg = StrandsDeciderConfig(
-        base_model="tiny",
-        head_type="pointer",
-        pointer_dim=16,
-        use_lora=False,
-        torch_dtype="float32",
-        max_length=512,
+        base_model="tiny", pointer_dim=16, use_lora=False, torch_dtype="float32", max_length=512
     )
     model = StrandsDeciderModel(cfg, torso, tok)
     return SystemOneEngine(model, EngineConfig(device="cpu"))
@@ -25297,7 +25127,6 @@ from strands_decider.infer import _expand_cache  # noqa: E402
 from strands_decider.modeling import (  # noqa: E402
     HostEmbedding,
     StrandsDeciderConfig,
-    StrandsDeciderModel,
 )
 
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
@@ -25327,13 +25156,6 @@ def _lm(num_kv_shared_layers=1, softcap=30.0):
     return transformers.Gemma4ForCausalLM(cfg).eval()
 
 
-class _Digits:
-    """Just enough tokenizer for slot_token_ids: "1".."9" -> ids 11..19."""
-
-    def encode(self, text, add_special_tokens=False):
-        return [10 + int(text)] if text.isdigit() and len(text) == 1 else [1, 2]
-
-
 def test_host_embedding_stays_on_cpu_and_matches():
     table = _lm().model.embed_tokens_per_layer
     ids = torch.tensor([[3, 7, 9, 2]])
@@ -25347,20 +25169,6 @@ def test_host_embedding_stays_on_cpu_and_matches():
     model.to(torch.float64)  # a dtype cast is applied, still on the CPU
     assert host.inner.weight.dtype == torch.float64 and host.inner.weight.device.type == "cpu"
     assert StrandsDeciderConfig().host_embeddings is False
-
-
-def test_frozen_readout_applies_softcap():
-    lm = _lm(softcap=2.0)  # a small cap makes the difference visible on random weights
-    config = StrandsDeciderConfig(base_model="tiny", num_slots=4, head_type="pointer")
-    model = StrandsDeciderModel(config, lm.model, _Digits())
-    ids = torch.tensor([[5, 6, 7, 8, 9, 20, 21]])
-    mask = torch.ones_like(ids)
-    lp, eligible = model.frozen_slot_log_probs(ids, mask, torch.tensor([3]))
-    assert bool(eligible[0])
-    with torch.no_grad():
-        logits = lm(input_ids=ids, attention_mask=mask).logits[0, -1]  # soft-capped by Gemma
-    want = torch.log_softmax(logits[[11, 12, 13]].float(), -1)
-    assert torch.allclose(lp[0, :3], want, atol=1e-4)
 
 
 @pytest.mark.parametrize("shared", [0, 1], ids=["no-kv-sharing", "kv-sharing"])
@@ -25448,6 +25256,7 @@ import tempfile
 
 import pytest
 import torch
+from safetensors.torch import save_file
 
 from strands_decider.modeling import load_head_state
 from training import hf_export
@@ -25456,12 +25265,7 @@ from training import hf_export
 def _ckpt(root, window=4096):
     os.makedirs(os.path.join(root, "lora"))
     json.dump(
-        {
-            "base_model": hf_export.BASE_MODEL,
-            "head_type": "pointer",
-            "num_slots": 24,
-            "max_length": window,
-        },
+        {"base_model": hf_export.BASE_MODEL, "max_length": window},
         open(os.path.join(root, "hobson_config.json"), "w"),
         indent=2,
     )
@@ -25474,9 +25278,11 @@ def _ckpt(root, window=4096):
         "q.weight": torch.randn(4, 8, generator=g),
         "k.bias": torch.randn(4, generator=g),
     }
-    torch.save(head, os.path.join(root, "slot_head.pt"))
-    from safetensors.torch import save_file
-
+    save_file(
+        {k: v.contiguous() for k, v in head.items()},
+        os.path.join(root, "head.safetensors"),
+        metadata={"format": "pt"},
+    )
     save_file(
         {"base_model.model.layers.0.lora_A.weight": torch.randn(2, 8, generator=g)},
         os.path.join(root, "lora", "adapter_model.safetensors"),
@@ -25573,7 +25379,6 @@ def test_export_is_pickle_free_loadable_and_deterministic(tmp_path):
     out = tmp_path / "out"
     assert _export(tmp_path, ckpt, out, [jev]) == "written"
     hf_export.verify(str(out))
-    assert not os.path.exists(out / "slot_head.pt")
     assert not any(hf_export.is_pickle(str(out / p)) for p in hf_export.files(str(out)))
     back = load_head_state(str(out))
     assert set(back) == set(head) and all(torch.equal(back[k], head[k]) for k in head)
@@ -25634,7 +25439,9 @@ def test_a_different_export_is_refused(tmp_path):
     _ckpt(str(ckpt))
     out = tmp_path / "out"
     _export(tmp_path, ckpt, out)
-    torch.save({"norm.weight": torch.zeros(8)}, ckpt / "slot_head.pt")
+    save_file(
+        {"norm.weight": torch.zeros(8)}, str(ckpt / "head.safetensors"), metadata={"format": "pt"}
+    )
     with pytest.raises(SystemExit, match="different export"):
         _export(tmp_path, ckpt, out)
 
@@ -25703,7 +25510,9 @@ def test_a_destination_that_is_not_an_export_is_kept_unless_replace(tmp_path):
     hf_export.verify(str(out))
     os.remove(out / "MANIFEST.sha256")  # an unfinished copy by this module
     assert _export(tmp_path, ckpt, out) == "replaced"
-    torch.save({"norm.weight": torch.zeros(8)}, ckpt / "slot_head.pt")
+    save_file(
+        {"norm.weight": torch.zeros(8)}, str(ckpt / "head.safetensors"), metadata={"format": "pt"}
+    )
     assert _export(tmp_path, ckpt, out, replace=True) == "replaced"  # a different export
 
 
@@ -26741,7 +26550,7 @@ def _tokenizer():
     )
 
 
-def _checkpoint(tmp_path, head_type, torch_dtype="float32"):
+def _checkpoint(tmp_path, torch_dtype="float32"):
     tok = _tokenizer()
     torch.manual_seed(0)
     base_cfg = transformers.Qwen3_5TextConfig(
@@ -26763,7 +26572,6 @@ def _checkpoint(tmp_path, head_type, torch_dtype="float32"):
     transformers.Qwen3_5ForCausalLM(base_cfg).save_pretrained(base)
     cfg = StrandsDeciderConfig(
         base_model=str(base),
-        head_type=head_type,
         pointer_dim=16,
         max_length=512,
         torch_dtype=torch_dtype,
@@ -26793,9 +26601,9 @@ def _probabilities(response):
     return out
 
 
-@pytest.fixture(scope="module", params=["pointer", "slot"])
-def engines(request, tmp_path_factory):
-    path = _checkpoint(tmp_path_factory.mktemp(request.param), request.param)
+@pytest.fixture(scope="module")
+def engines(tmp_path_factory):
+    path = _checkpoint(tmp_path_factory.mktemp("pointer"))
     return load_engine(str(path), device="cpu"), load_engine(str(path), device="mlx"), path
 
 
@@ -26919,7 +26727,7 @@ def test_an_adapter_the_merge_cannot_represent_is_refused(tmp_path, tensors, con
 )  # PEFT, saving the fixture
 def test_a_checkpoint_with_an_embedding_lora_does_not_load_on_mlx(tmp_path, monkeypatch):
     monkeypatch.setattr(sys.modules[__name__], "LORA_TARGETS", [*LORA_TARGETS, "embed_tokens"])
-    path = _checkpoint(tmp_path, "pointer")
+    path = _checkpoint(tmp_path)
     with pytest.raises(ValueError, match="lora_embedding"):
         load_engine(str(path), device="mlx")
 
@@ -26927,9 +26735,7 @@ def test_a_checkpoint_with_an_embedding_lora_does_not_load_on_mlx(tmp_path, monk
 def test_a_bf16_checkpoint_answers_from_another_thread(tmp_path):
     # The server evaluates on a thread pool. The base is fp32 here, so loading casts the torso
     # to bf16, and a cast left lazy belongs to the loading thread's stream.
-    engine = load_engine(
-        str(_checkpoint(tmp_path, "pointer", torch_dtype="bfloat16")), device="mlx"
-    )
+    engine = load_engine(str(_checkpoint(tmp_path, torch_dtype="bfloat16")), device="mlx")
     with ThreadPoolExecutor(1) as pool:
         response = pool.submit(engine.evaluate, REQUESTS[1]).result()
     assert set(response.answers) == set(QUESTIONS)
@@ -26938,7 +26744,7 @@ def test_a_bf16_checkpoint_answers_from_another_thread(tmp_path):
 def test_mlx_loads_the_base_at_the_revision_in_provenance(tmp_path, monkeypatch):
     import strands_decider.mlx_engine as mlx_engine
 
-    path = _checkpoint(tmp_path, "pointer")
+    path = _checkpoint(tmp_path)
     base = str(tmp_path / "base")
     provenance = {"base_model": base, "base_model_revision": "abc123"}
     (path / "provenance.json").write_text(json.dumps(provenance))
@@ -27293,7 +27099,6 @@ class _StubCfg:
 
 class _StubModelCfg:
     base_model = "stub"
-    num_slots = 24
     temperature = 1.0
     max_length = 512
 
@@ -27804,7 +27609,6 @@ def ckpt(base_dir, tmp_path_factory):
     """A text Strands Decider checkpoint on that base, with a non-trivial adapter."""
     cfg = StrandsDeciderConfig(
         base_model=base_dir,
-        head_type="pointer",
         pointer_dim=32,
         torch_dtype="float32",
         max_length=1024,
@@ -29365,11 +29169,7 @@ def collect_logits(
     model = SystemOneEngine(model, EngineConfig(device=device)).model
     coll = SystemOneCollator(
         model.tokenizer,
-        CollatorConfig(
-            max_length=max_length,
-            num_slots=model.config.num_slots,
-            head_type=model.config.head_type,
-        ),
+        CollatorConfig(max_length=max_length),
         train=False,  # no option shuffling: evaluation must be deterministic
     )
     loader = DataLoader(
@@ -29962,8 +29762,8 @@ FILE: training/hf_export.py
     python -m training.hf_export index ROOT          (INDEX.json + INDEX.md of every export)
 
 CKPT, OUT, --run-dir and --jevbench may be local paths or s3:// URIs. The folder holds no
-pickles: `slot_head.pt` becomes `head.safetensors` (same tensors, checked), which
-`StrandsDeciderModel.load` reads. Everything else strands-decider needs is copied byte for byte. A model
+pickles: `head.safetensors` is copied through, which `StrandsDeciderModel.load` reads.
+Everything else strands-decider needs is copied byte for byte. A model
 card with Hub metadata, provenance, the run's timings and evals, and a sha256 manifest
 (written last) complete it. The run records (timings, eval reports, JevBench outputs) are
 copied through `scrub`, which removes host paths, cloud identifiers, cost fields and any
@@ -29989,8 +29789,6 @@ from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from typing import Any
 
-import torch
-
 from strands_decider.modeling import CONFIG_NAME, LEGACY_CONFIG_NAME, config_path
 
 FORMAT = "hobson-hf-export/1"
@@ -30002,6 +29800,7 @@ COPY = [
     "tokenizer.json",
     "tokenizer_config.json",
     "chat_template.jinja",
+    "head.safetensors",
     "lora/adapter_config.json",
     "lora/adapter_model.safetensors",
 ]
@@ -30009,7 +29808,7 @@ REQUIRED = [
     "lora/adapter_config.json",
     "lora/adapter_model.safetensors",
     "tokenizer.json",
-    "slot_head.pt",
+    "head.safetensors",
 ]
 # The Hub datasets that the corpus build (data/recipes.py), data/multistep.py and the recipe's
 # downloads read. hotpotqa/hotpot_qa is for evaluation only.
@@ -30138,14 +29937,13 @@ def _gemma4(size: str, revision: str) -> Base:
         ],
         decoder=f"the Gemma 4 text decoder\n(`transformers.{cls}(...).model.language_model`){moe}",
         example="",
-        teacher_route="They are training\n  targets, next to a frozen-KL anchor toward the v19 "
-        "checkpoint's own distributions\n  (a Qwen3.5-2B decider; `kl_frozen_reference`).",
+        teacher_route="They are training targets, directly or through a parent model that the "
+        "recipe trains first.",
         trained_by="""Trained by `strands-decider train` of the code repository under `torchrun` on a `{host}`
 host ({gpu}): recipe wall clock {wall} s, training stage {train} s. Configs:
 `train_config.json`, `training/configs/`.""",
         retrain="""To retrain, train with the recipe in `train_config.json` on one 8-GPU H100 host, after
-`training/recipe.sh build fetch multistep generated adequacy distill`, with the v19
-checkpoint where its `kl_frozen_reference` points.""",
+`training/recipe.sh build fetch multistep generated adequacy distill`.""",
     )
 
 
@@ -30297,31 +30095,8 @@ def _record(src: str, dst: str, literals: Sequence[str] = ()) -> None:
 
 
 # ---------------------------------------------------------------- the head
-
-
-def convert_head(ckpt: str, out: str) -> tuple[str, str]:
-    """slot_head.pt -> head.safetensors, proven equal. Returns (pickle sha, safetensors sha)."""
-    from safetensors.torch import load_file, save_file
-
-    src = os.path.join(ckpt, "slot_head.pt")
-    state = torch.load(src, map_location="cpu", weights_only=True)
-    if not isinstance(state, dict) or not all(isinstance(v, torch.Tensor) for v in state.values()):
-        raise SystemExit(f"{src}: not a flat state dict of tensors")
-    pickle_sha = sha256(src)
-    dst = os.path.join(out, "head.safetensors")
-    # One metadata key only: safetensors writes the metadata map in hash order, so more
-    # keys would make the file's bytes differ between runs. The source pickle's sha256 is
-    # in provenance.json.
-    save_file({k: v.contiguous() for k, v in state.items()}, dst, metadata={"format": "pt"})
-    back = load_file(dst)
-    if set(back) != set(state) or not all(
-        back[k].dtype == state[k].dtype
-        and back[k].shape == state[k].shape
-        and torch.equal(back[k], state[k])
-        for k in state
-    ):
-        raise SystemExit("head.safetensors does not equal slot_head.pt")
-    return pickle_sha, sha256(dst)
+# head.safetensors is written directly by `StrandsDeciderModel.save_pretrained`, so the
+# export copies it byte for byte (as a listed COPY file). No conversion step.
 
 
 # ---------------------------------------------------------------- evaluations
@@ -30639,14 +30414,7 @@ their timings and results; host paths, cloud identifiers and cost fields are rem
 
 
 def provenance(
-    name: str,
-    run_id: str,
-    role: str,
-    ckpt: str,
-    out: str,
-    stages: list[dict],
-    pickle_sha: str,
-    base: Base = QWEN,
+    name: str, run_id: str, role: str, ckpt: str, out: str, stages: list[dict], base: Base = QWEN
 ) -> dict:
     train = [s for s in stages if s.get("stage") in ("parent", "train")]
     mine = [s for s in train if s.get("stage") == ("parent" if role == "parent" else "train")]
@@ -30672,7 +30440,6 @@ def provenance(
         else None,
         "adapter_sha256": sha256(os.path.join(ckpt, "lora/adapter_model.safetensors")),
         "head_sha256": sha256(os.path.join(out, "head.safetensors")),
-        "source_head_pickle_sha256": pickle_sha,
         "source_checkpoint_fingerprint": fingerprint(ckpt),
         "host_shape": next((s.get("host_shape") for s in stages if s.get("host_shape")), None),
         "gpu": next((s.get("gpu_name") for s in stages if s.get("gpu_name")), None),
@@ -30794,7 +30561,6 @@ def build(
             _record(src, os.path.join(out, p), redact)
         else:
             _copy(src, os.path.join(out, p))
-    pickle_sha, _ = convert_head(ckpt, out)
     stages: list[dict] = []
     if run_dir:
         for src, dst in (("stages.jsonl", "stages.jsonl"), ("sha256.txt", "data_sha256.txt")):
@@ -30840,7 +30606,7 @@ def build(
     }
     with open(_mk(os.path.join(out, "eval", "summary.json")), "w") as fh:
         json.dump(summary, fh, indent=2, sort_keys=True)
-    prov = provenance(name, run_id, role, ckpt, out, stages, pickle_sha, base)
+    prov = provenance(name, run_id, role, ckpt, out, stages, base)
     with open(os.path.join(out, "provenance.json"), "w") as fh:
         json.dump(prov, fh, indent=2, sort_keys=True)
     with open(os.path.join(out, "LICENSE.md"), "w") as fh:
@@ -31869,6 +31635,7 @@ import json
 import math
 import os
 import shutil
+from dataclasses import asdict
 
 import torch
 import typer
@@ -31900,36 +31667,22 @@ def _fold_norm(
     return w * g[None, :], w @ beta + b
 
 
-def soup_heads(states: list[dict[str, torch.Tensor]], head_type: str) -> dict[str, torch.Tensor]:
-    """The head whose logit is the mean of `states`' logits (see the module docstring)."""
+def soup_heads(states: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
+    """The pointer head whose logit is the mean of `states`' logits (see the module docstring)."""
     n = len(states)
     folded = []
     for s in states:
         g, beta = s["norm.weight"].double(), s["norm.bias"].double()
         f = {}
-        for name in ("q", "k", "proj", "proj.0"):
-            if f"{name}.weight" in s:
-                f[name] = _fold_norm(
-                    s[f"{name}.weight"].double(), s[f"{name}.bias"].double(), g, beta
-                )
-        if "proj.2.weight" in s:
-            f["proj.2"] = (s["proj.2.weight"].double(), s["proj.2.bias"].double())
+        for name in ("q", "k"):
+            f[name] = _fold_norm(s[f"{name}.weight"].double(), s[f"{name}.bias"].double(), g, beta)
         folded.append(f)
     out: dict[str, torch.Tensor] = {}
-    if head_type == "pointer":
-        # cat over heads; 1/sqrt(n) on k turns the new (n * dim) ** -0.5 scale into the old / n
-        out["q.weight"] = torch.cat([f["q"][0] for f in folded])
-        out["q.bias"] = torch.cat([f["q"][1] for f in folded])
-        out["k.weight"] = torch.cat([f["k"][0] for f in folded]) / math.sqrt(n)
-        out["k.bias"] = torch.cat([f["k"][1] for f in folded]) / math.sqrt(n)
-    elif "proj.weight" in states[0]:  # linear slot head
-        out["proj.weight"] = torch.stack([f["proj"][0] for f in folded]).mean(0)
-        out["proj.bias"] = torch.stack([f["proj"][1] for f in folded]).mean(0)
-    else:  # MLP slot head: stack the hidden units
-        out["proj.0.weight"] = torch.cat([f["proj.0"][0] for f in folded])
-        out["proj.0.bias"] = torch.cat([f["proj.0"][1] for f in folded])
-        out["proj.2.weight"] = torch.cat([f["proj.2"][0] for f in folded], dim=1) / n
-        out["proj.2.bias"] = torch.stack([f["proj.2"][1] for f in folded]).mean(0)
+    # cat over heads; 1/sqrt(n) on k turns the new (n * dim) ** -0.5 scale into the old / n
+    out["q.weight"] = torch.cat([f["q"][0] for f in folded])
+    out["q.bias"] = torch.cat([f["q"][1] for f in folded])
+    out["k.weight"] = torch.cat([f["k"][0] for f in folded]) / math.sqrt(n)
+    out["k.bias"] = torch.cat([f["k"][1] for f in folded]) / math.sqrt(n)
     hidden = states[0]["norm.weight"].numel()
     out["norm.weight"] = torch.ones(hidden, dtype=torch.float64)
     out["norm.bias"] = torch.zeros(hidden, dtype=torch.float64)
@@ -31974,17 +31727,19 @@ def soup(checkpoints: list[str], out: str, replace: bool = False) -> str:
         raise ValueError("no checkpoints")
     _check_paths(checkpoints, out, replace)
     n = len(checkpoints)
-    cfgs = [_json(config_path(c)) for c in checkpoints]
+    # from_json drops stale slot-era keys (num_slots, head_type="pointer", head_hidden,
+    # head_init, kl_frozen_weight) that pre-PR and v1-2610 pointer checkpoints still carry,
+    # and rejects head_type="slot" cleanly so a slot-era input stops here rather than
+    # halfway through, after soup has written an adapter file.
+    typed = [StrandsDeciderConfig.from_json(config_path(c)) for c in checkpoints]
+    cfgs = [asdict(c) for c in typed]
     recipe = [{k: v for k, v in c.items() if k not in FITTED | {"base_revision"}} for c in cfgs]
     if any(r != recipe[0] for r in recipe):
         raise ValueError(
             "the checkpoints' configs differ beyond their temperatures: not one recipe"
         )
     # The base revision is compared as the loader resolves it (config, else provenance.json).
-    revisions = {
-        base_revision(c, StrandsDeciderConfig(**cf))
-        for c, cf in zip(checkpoints, cfgs, strict=True)
-    }
+    revisions = {base_revision(c, t) for c, t in zip(checkpoints, typed, strict=True)}
     if len(revisions) > 1:
         raise ValueError(
             f"the checkpoints were trained on different base revisions: {sorted(map(str, revisions))}"
@@ -32028,12 +31783,13 @@ def soup(checkpoints: list[str], out: str, replace: bool = False) -> str:
             json.dump({**acfg, "r": n * r, "lora_alpha": alpha}, fh, indent=2)
         cfg = {**cfg, "lora_r": n * r, "lora_alpha": alpha}
 
-    head = soup_heads([load_head_state(c) for c in checkpoints], cfg["head_type"])
-    torch.save(head, os.path.join(out, "slot_head.pt"))
-    if cfg["head_type"] == "pointer":
-        cfg = {**cfg, "pointer_dim": n * cfg["pointer_dim"]}
-    elif cfg.get("head_hidden"):
-        cfg = {**cfg, "head_hidden": n * cfg["head_hidden"]}
+    head = soup_heads([load_head_state(c) for c in checkpoints])
+    save_file(
+        {k: v.contiguous() for k, v in head.items()},
+        os.path.join(out, "head.safetensors"),
+        metadata={"format": "pt"},
+    )
+    cfg = {**cfg, "pointer_dim": n * cfg["pointer_dim"]}
     cfg = {**cfg, "temperature": 1.0, "temperature_by_kind": {}}  # calibrate the soup
     with open(os.path.join(out, CONFIG_NAME), "w", encoding="utf-8") as fh:
         json.dump(cfg, fh, indent=2)
@@ -32042,7 +31798,6 @@ def soup(checkpoints: list[str], out: str, replace: bool = False) -> str:
     for f in os.listdir(checkpoints[0]):
         src = os.path.join(checkpoints[0], f)
         if os.path.isfile(src) and f not in {
-            "slot_head.pt",
             "head.safetensors",
             "history.json",
             os.path.basename(config_path(checkpoints[0])),
@@ -32274,14 +32029,13 @@ and what they measure are in [Internal evaluations](../evaluation/README.md#inte
 ================================================
 FILE: training/train.py
 ================================================
-"""Training the readout head (slot or pointer; see modeling.py) and a LoRA adapter on the torso.
+"""Training the pointer head (see modeling.py) and a LoRA adapter on the torso.
 
-The objective is deliberately plain -- cross-entropy over the masked slots, plus
-optional teacher and frozen-KL terms (the reference recipe uses both) -- because the
-interesting work is in the *distribution* the examples are drawn from, not the loss.
-Each step shows the model a different task, a different number of options, and a
-different option ordering. What has to be learned to fit that is precisely the
-behaviour we want at serving time.
+The objective is deliberately plain -- cross-entropy over the masked slots, plus an
+optional teacher term -- because the interesting work is in the *distribution* the
+examples are drawn from, not the loss. Each step shows the model a different task, a
+different number of options, and a different option ordering. What has to be learned
+to fit that is precisely the behaviour we want at serving time.
 
 The TrainConfig defaults are sized for a single 24 GB card: a Qwen3-1.7B-Base torso in
 bf16, LoRA rank 16, gradient checkpointing on, micro-batch 8 at 3072 tokens. The
@@ -32301,7 +32055,6 @@ from typing import Any
 
 import torch
 import typer
-from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
 
 from strands_decider.modeling import (
@@ -32330,8 +32083,6 @@ class TrainConfig:
 
     # model
     base_model: str = "Qwen/Qwen3-1.7B-Base"
-    num_slots: int = 24
-    head_hidden: int = 0
     head_dropout: float = 0.05
     max_length: int = 3072
     use_lora: bool = True
@@ -32348,34 +32099,34 @@ class TrainConfig:
     # (modeling.HostEmbedding). For one GPU: under torchrun every rank would hold a copy.
     host_embeddings: bool = False
     freeze_torso: bool = False
-    # "lm_head" seeds the slot head from the LM's own option-number readout rather
-    # than at random. Measured teacher quality for that readout on JevBench is
-    # 0.550 overall but uneven -- 0.474 long_policy against the trained model's
-    # 0.368, 0.167 ordinal against 0.833 -- so it is a starting point, not a target.
-    head_type: str = "slot"
     pointer_dim: int = 256
-    head_init: str = "random"
-    # >0 adds KL(frozen || student) so training cannot drift away from that readout.
-    kl_frozen_weight: float = 0.0
-    # A trained checkpoint whose option distribution (temperature 1, no calibration) is the
-    # frozen-KL reference in place of the untouched torso's option-number readout. The same
-    # rows are eligible (at most as many options as the readout covers). It may have
-    # another tokenizer than the student (`_frozen_reference`). Needs precompute_frozen_kl:
-    # the reference is computed once, before step 1. None: the untouched torso, as before.
-    kl_frozen_reference: str | None = None
-    # Rows trained ONLY by that KL term: no label loss, never in the validation split.
-    # For prompts with no gold answer -- e.g. changed questions, where the frozen
-    # torso's own reading is the target (data/question_transforms.py). Each needs <= 9
-    # options, since the frozen readout reads single-token option numbers.
-    kl_only_files: list[str] = field(default_factory=list)
-    # A KL-only row's KL weight. The label loss is weighted 1 per row, so 1.0 gives a
-    # KL-only row the same total weight as a labelled one.
-    kl_only_weight: float = 1.0
     # A frozen teacher's option distribution per training row (data/teacher.py): JSONL of
     # {"i": row index in the concatenated train_files, "probs": [...canonical order]}.
     # Rows it covers get teacher_weight * KL(teacher || student) on top of the label loss.
     teacher_file: str | None = None
     teacher_weight: float = 0.0
+    # > 0 adds KL(reference || student) so training is anchored to a trained reference's
+    # own distribution. The reference is a trained checkpoint (`kl_frozen_reference`), not
+    # the base torso's option-number readout: the pointer head scores each option from its
+    # own hidden state, with no fixed slot grid for the LM's digit rows to project onto.
+    kl_frozen_weight: float = 0.0
+    # Trained checkpoint whose option distribution (temperature 1, no calibration) is the
+    # frozen-KL reference. It may use another tokenizer than the student (`_frozen_reference`
+    # re-renders every row with the reference's tokenizer, keeping the collator's option
+    # permutation). Required when `kl_frozen_weight > 0`.
+    kl_frozen_reference: str | None = None
+    # Rows trained ONLY by the KL term: no label loss, never in the validation split.
+    # For prompts with no gold answer -- e.g. changed questions, where the reference's
+    # own reading is the target (data/question_transforms.py).
+    kl_only_files: list[str] = field(default_factory=list)
+    # A KL-only row's KL weight. The label loss is weighted 1 per row, so 1.0 gives a
+    # KL-only row the same total weight as a labelled one.
+    kl_only_weight: float = 1.0
+    # Speed only: compute the frozen-KL reference for every training row in one no-grad
+    # pass before step 1 (`_frozen_reference`). Required when `kl_frozen_weight > 0` and
+    # `group_by_length` must be on so the batch order is known. Same numbers up to bf16
+    # batch-shape rounding as a per-step forward.
+    precompute_frozen_kl: bool = False
     # Direction of both KL terms, the teacher's and the frozen anchor's: "forward" =
     # KL(target || student) (mass-covering, every run so far); "reverse" = KL(student ||
     # target) (mode-seeking).
@@ -32426,10 +32177,6 @@ class TrainConfig:
     save_every: int = 0  # 0 = only at the end
     max_steps: int = 0  # 0 = full epochs; otherwise a hard cap (smoke tests)
     attn_implementation: str | None = None
-    # Speed only: compute the frozen-KL reference for every training row in one no-grad
-    # pass before step 1 (`_frozen_reference`) instead of a second forward in every step.
-    # Same numbers up to bf16 batch-shape rounding. Needs group_by_length.
-    precompute_frozen_kl: bool = False
 
     @classmethod
     def from_yaml(cls, path: str) -> TrainConfig:
@@ -32437,22 +32184,32 @@ class TrainConfig:
 
         with open(path, encoding="utf-8") as fh:
             raw = yaml.safe_load(fh) or {}
-        known = {f for f in cls.__dataclass_fields__}
-        unknown = set(raw) - known
-        if unknown:
-            raise ValueError(f"unknown config keys: {sorted(unknown)}")
+        # Model-architecture fields the slot head owned, which the v1-2610 and earlier YAMLs
+        # still carry. Drop them silently so a historical recipe retrains with the current
+        # pointer-only architecture; a typo in any other key still raises.
+        known = set(cls.__dataclass_fields__)
+        for k, v in raw.items():
+            if k == "head_type" and v != "pointer":
+                raise ValueError(
+                    f"{path}: head_type={v!r}; this version trains pointer-head checkpoints only"
+                )
+            if k not in known and k not in RETIRED_YAML_KEYS:
+                raise ValueError(f"{path}: unknown config key {k!r}")
+        raw = {k: v for k, v in raw.items() if k in known}
         cfg = cls(**raw)
         cfg.yaml_keys = frozenset(raw)  # type: ignore[attr-defined]  # what _given reads
         return cfg
 
 
+# Slot-era TrainConfig keys the current dataclass no longer carries. Dropped silently by
+# from_yaml so a published recipe still parses; a typo in any other key raises.
+RETIRED_YAML_KEYS = frozenset({"num_slots", "head_type", "head_hidden", "head_init"})
+
+
 # The fields of a TrainConfig that a checkpoint fixes: with init_from they are the checkpoint's.
 INIT_FROM_ARCH = (
     "base_model",
-    "num_slots",
-    "head_type",
     "pointer_dim",
-    "head_hidden",
     "use_lora",
     "lora_r",
     "lora_alpha",
@@ -32501,8 +32258,6 @@ def _init_from(cfg: TrainConfig) -> StrandsDeciderModel:
             f"init_from {cfg.init_from}: the checkpoint has no LoRA adapter to train "
             "on; set freeze_torso: true to train its head alone"
         )
-    if cfg.head_init != "random":
-        raise ValueError("init_from keeps the checkpoint's trained head; head_init must be random")
     if not _given(cfg, "max_length"):
         cfg.max_length = ck.max_length
     print(f"[strands-decider] continuing from {cfg.init_from}")
@@ -32518,7 +32273,7 @@ def _init_from(cfg: TrainConfig) -> StrandsDeciderModel:
     c.temperature, c.temperature_by_kind = 1.0, {}
     # This run's settings, saved with the result as a run from the base model saves them.
     c.max_length, c.ordinal_smoothing = cfg.max_length, cfg.ordinal_smoothing
-    c.kl_frozen_weight, c.head_dropout = cfg.kl_frozen_weight, cfg.head_dropout
+    c.head_dropout = cfg.head_dropout
     model.head.dropout = (
         torch.nn.Dropout(cfg.head_dropout) if cfg.head_dropout > 0 else torch.nn.Identity()
     )
@@ -32641,79 +32396,53 @@ def evaluate_loss(
     }
 
 
-# Padded tokens per forward of the frozen-reference pass: it has no backward, and it is
-# launch-bound, so fewer, larger forwards win.
-FROZEN_PASS_TOKENS = 32768
-
-
 def _frozen_reference(
     model: StrandsDeciderModel,
     examples: list[Example],
     batches: list[list[int]],
     coll_cfg: CollatorConfig,
     device: str,
-    ref_model: StrandsDeciderModel | None = None,
+    ref_model: StrandsDeciderModel,
 ) -> torch.Tensor:
-    """`frozen_slot_log_probs` for every row the run trains on: ref[micro-batch, row].
+    """`ref_model`'s log-probs for every row the run trains on: ref[micro-batch, row, slot].
 
     A fresh collator with the training collator's seed walks the run's micro-batches in
-    training order, so each row is rendered exactly as training will render it. Under
-    torchrun rank m % world renders micro-batch m (the others only draw its augmentations)
-    and a sum over ranks assembles the table. Rows are forwarded sorted by length and
-    packed; right padding never reaches a row's real tokens (causal attention and
-    recurrence), the reference is the adapter-disabled torso whose weights training never
-    changes, and it draws no random numbers -- so only the batch shapes differ from
-    computing it inside each step.
+    training order, so each row is rendered exactly as training will render it. Each
+    rendered micro-batch goes through `ref_model` as it is, at temperature 1; columns past
+    a row's option count are -inf. The reference renders with its own tokenizer, so it may
+    have another than the student's (a Gemma student, a Qwen reference): a fresh collator
+    with the reference's tokenizer draws the same option permutation from its seed before
+    any tokenisation, so both see each row with the same options in the same slots.
 
-    With `ref_model` (kl_frozen_reference), each rendered micro-batch goes through that
-    checkpoint as it is, at temperature 1, instead; columns past a row's options are -inf.
-    The reference renders with its own tokenizer, so it may have another than the
-    student's (a Gemma student, a Qwen reference): the table is over option slots, and the
-    collator draws option order and phrasing from its seed alone, before any tokenisation,
-    so both see each row with the same options in the same slots.
+    Under torchrun rank m % world renders micro-batch m (the others only draw its
+    augmentations) and a sum over ranks assembles the table.
     """
     rank, _, world = distributed.env()
-    tok = model.tokenizer if ref_model is None else ref_model.tokenizer
-    coll = SystemOneCollator(tok, coll_cfg, train=True)
-    ref = torch.zeros(len(batches), max(map(len, batches)), model.config.num_slots, device=device)
-    todo: list[Any] = []  # (micro-batch, row, token ids, option count)
+    coll = SystemOneCollator(ref_model.tokenizer, coll_cfg, train=True)
+    width = max(max(examples[i].n_options for i in b) for b in batches)
+    ref = torch.zeros(len(batches), max(map(len, batches)), width, device=device)
     for m, idx in enumerate(batches):
         rows = [examples[i] for i in idx]
         if m % world != rank:
             coll.skip(rows)
             continue
         b = coll(rows)
-        if ref_model is not None:
-            with torch.no_grad():
-                lp = ref_model(
-                    input_ids=b["input_ids"].to(device),
-                    attention_mask=b["attention_mask"].to(device),
-                    n_slots=b["n_slots"].to(device),
-                    opt_idx=b["opt_idx"].to(device) if "opt_idx" in b else None,
-                    temperature=1.0,
-                )["log_probs"]
-            w = min(lp.shape[-1], ref.shape[-1])
-            ref[m, : len(rows)] = float("-inf")
-            ref[m, : len(rows), :w] = lp[:, :w]
-            continue
-        for r in range(len(rows)):
-            n = int(b["attention_mask"][r].sum())
-            todo.append((m, r, b["input_ids"][r, :n], int(b["n_slots"][r])))
-    todo.sort(key=lambda t: -t[2].numel())
-    i = 0
-    while i < len(todo):
-        longest = todo[i][2].numel()
-        chunk = todo[i : i + max(1, FROZEN_PASS_TOKENS // longest)]
-        i += len(chunk)
-        ts = [t for _, _, t, _ in chunk]  # right padding, as the collator pads
-        ids = pad_sequence(ts, batch_first=True, padding_value=model.tokenizer.pad_token_id)
-        mask = pad_sequence([torch.ones_like(t) for t in ts], batch_first=True)
-        n_slots = torch.tensor([t[3] for t in chunk], device=device)
-        lp, _ = model.frozen_slot_log_probs(ids.to(device), mask.to(device), n_slots)
-        if lp.numel():
-            ref[[t[0] for t in chunk], [t[1] for t in chunk]] = lp
+        with torch.no_grad():
+            lp = ref_model(
+                input_ids=b["input_ids"].to(device),
+                attention_mask=b["attention_mask"].to(device),
+                n_slots=b["n_slots"].to(device),
+                opt_idx=b["opt_idx"].to(device),
+                temperature=1.0,
+            )["log_probs"]
+        # -inf past each row's option count and past the batch's max K (padding slots
+        # the ref_model would not score). all_reduce adds zeros from the other ranks,
+        # which leaves both -inf and real values unchanged.
+        w = min(lp.shape[-1], ref.shape[-1])
+        ref[m, : len(rows)] = float("-inf")
+        ref[m, : len(rows), :w] = lp[:, :w]
     if world > 1:
-        torch.distributed.all_reduce(ref)  # others add zeros: -inf + 0 stays -inf
+        torch.distributed.all_reduce(ref)
     return ref
 
 
@@ -32753,10 +32482,12 @@ def _teacher_kl(tea: torch.Tensor, stu: torch.Tensor, direction: str) -> torch.T
 @distributed.entry_point  # under torchrun, this process is one rank of the run
 def train(cfg: TrainConfig) -> str:
     rank, _, world = distributed.env()
-    if cfg.kl_frozen_reference and not (cfg.precompute_frozen_kl and cfg.kl_frozen_weight > 0):
-        raise ValueError("kl_frozen_reference needs kl_frozen_weight > 0 and precompute_frozen_kl")
     if cfg.kl_direction not in ("forward", "reverse"):
         raise ValueError(f"kl_direction must be forward or reverse, not {cfg.kl_direction!r}")
+    if cfg.kl_frozen_weight > 0 and not cfg.kl_frozen_reference:
+        raise ValueError("kl_frozen_weight > 0 needs kl_frozen_reference (a trained checkpoint)")
+    if cfg.kl_frozen_reference and not (cfg.precompute_frozen_kl and cfg.kl_frozen_weight > 0):
+        raise ValueError("kl_frozen_reference needs kl_frozen_weight > 0 and precompute_frozen_kl")
     if cfg.host_embeddings and world > 1:  # DDP refuses a module with parameters on the CPU
         raise ValueError("host_embeddings is for one GPU; under torchrun keep the table on the GPU")
     torch.manual_seed(cfg.seed)
@@ -32769,8 +32500,6 @@ def train(cfg: TrainConfig) -> str:
         print(f"[strands-decider] loading base model {cfg.base_model}")
         model_cfg = StrandsDeciderConfig(
             base_model=cfg.base_model,
-            num_slots=cfg.num_slots,
-            head_hidden=cfg.head_hidden,
             head_dropout=cfg.head_dropout,
             max_length=cfg.max_length,
             use_lora=cfg.use_lora and not cfg.freeze_torso,
@@ -32781,9 +32510,6 @@ def train(cfg: TrainConfig) -> str:
             # Serving needs this to correct the variance floor smoothing imposes on
             # score confidence; without it a score could never reach high confidence.
             ordinal_smoothing=cfg.ordinal_smoothing,
-            head_init=cfg.head_init,
-            kl_frozen_weight=cfg.kl_frozen_weight,
-            head_type=cfg.head_type,
             pointer_dim=cfg.pointer_dim,
         )
         if cfg.lora_targets:
@@ -32793,11 +32519,6 @@ def train(cfg: TrainConfig) -> str:
         )
         if cfg.freeze_torso:
             model.freeze_torso()
-    if cfg.head_init == "lm_head":
-        seeded = model.init_head_from_lm_head()
-        print(f"[strands-decider] head seeded from lm_head rows for {seeded} slots")
-    elif cfg.head_init != "random":
-        raise ValueError(f"unknown head_init {cfg.head_init!r}")
     # Checkpointing needs a grad-requiring input; a frozen torso has none, and it
     # buys nothing anyway since no backward pass traverses it.
     if cfg.gradient_checkpointing and not cfg.freeze_torso:
@@ -32850,8 +32571,6 @@ def train(cfg: TrainConfig) -> str:
             raise ValueError("labelled rows must have weight > 0: weight 0 marks KL-only rows")
         kl_rows = load_examples(cfg.kl_only_files)
         for ex in kl_rows:
-            if ex.n_options > 9:
-                raise ValueError(f"KL-only row from {ex.task!r} has {ex.n_options} options")
             ex.weight = 0.0  # no label loss; the training loop reads 0 as "KL only"
         # Added after the split, so none reaches validation, whose labels would be fake.
         train_examples = train_examples + kl_rows
@@ -32863,12 +32582,10 @@ def train(cfg: TrainConfig) -> str:
 
     coll_cfg = CollatorConfig(
         max_length=cfg.max_length,
-        num_slots=cfg.num_slots,
         shuffle_options=cfg.shuffle_options,
         ordinal_smoothing=cfg.ordinal_smoothing,
         reverse_score_prob=cfg.reverse_score_prob,
         seed=cfg.seed,
-        head_type=cfg.head_type,
     )
     train_collate = SystemOneCollator(model.tokenizer, coll_cfg, train=True)
     if cfg.group_by_length:
@@ -32924,10 +32641,10 @@ def train(cfg: TrainConfig) -> str:
         os.makedirs(cfg.output_dir, exist_ok=True)
         with open(os.path.join(cfg.output_dir, "train_config.json"), "w", encoding="utf-8") as fh:
             json.dump(asdict(cfg), fh, indent=2)
-    slots = model.slot_token_ids()  # the rows frozen_slot_log_probs covers
-    kl_slots = max(slots) + 1 if slots else 0
     if world > 1:  # each rank iterates its share of every step's rows instead
-        train_loader = distributed.StepSlices(train_loader, kl_slots, cfg.grad_accum, total_steps)
+        # 0 for kl_slots: all rows are eligible under a pointer-head reference, so no
+        # eligibility counter is needed in StepSlices.
+        train_loader = distributed.StepSlices(train_loader, 0, cfg.grad_accum, total_steps)
 
     refs = None
     if cfg.precompute_frozen_kl and cfg.kl_frozen_weight > 0:
@@ -32935,18 +32652,17 @@ def train(cfg: TrainConfig) -> str:
             raise ValueError("precompute_frozen_kl needs group_by_length (a known batch order)")
         run = [b for e in range(cfg.epochs) for b in sampler.batches(e)]
         t_ref = time.time()
-        model.train()  # the mode the in-step reference forward runs in
-        ref_model = None
-        if cfg.kl_frozen_reference:
-            ref_model = StrandsDeciderModel.load(
-                cfg.kl_frozen_reference, attn_implementation=cfg.attn_implementation
-            )
-            ref_model.to(device).eval()
-            own = ref_model.tokenizer.get_vocab() == model.tokenizer.get_vocab()
-            print(
-                f"[strands-decider] frozen-KL reference: {cfg.kl_frozen_reference}"
-                + ("" if own else " (its own tokenizer, not the student's)")
-            )
+        model.train()
+        assert cfg.kl_frozen_reference is not None  # enforced by _validate above
+        ref_model = StrandsDeciderModel.load(
+            cfg.kl_frozen_reference, attn_implementation=cfg.attn_implementation
+        )
+        ref_model.to(device).eval()
+        own = ref_model.tokenizer.get_vocab() == model.tokenizer.get_vocab()
+        print(
+            f"[strands-decider] frozen-KL reference: {cfg.kl_frozen_reference}"
+            + ("" if own else " (its own tokenizer, not the student's)")
+        )
         refs = _frozen_reference(
             model, train_examples, run[: total_steps * cfg.grad_accum], coll_cfg, device, ref_model
         )
@@ -32987,37 +32703,29 @@ def train(cfg: TrainConfig) -> str:
             )
             step_loss = out["loss"] * part.weights
             if cfg.kl_frozen_weight > 0:
-                if refs is None:
-                    ref_lp, eligible = model.frozen_slot_log_probs(
-                        batch["input_ids"], batch["attention_mask"], batch["n_slots"]
-                    )
-                else:  # the same numbers, computed before step 1 (_frozen_reference)
-                    m, a = (part.micro, part.start) if world > 1 else (micro, 0)
-                    ref_lp = refs[m, a : a + batch["labels"].numel()]
-                    eligible = batch["n_slots"] <= kl_slots
-                if ref_lp.numel() and bool(eligible.any()):
-                    ref = ref_lp[eligible]
-                    stu = out["log_probs"][eligible]
-                    # The frozen reference is always num_slots wide; a pointer student
-                    # is only as wide as the batch's widest question. Every column the
-                    # student drops is past some row's option count and already -inf in
-                    # the reference, so trimming changes no probability mass.
-                    ref = ref[:, : stu.shape[-1]]
-                    # Masked slots are -inf in both; -inf - -inf is NaN, so restrict
-                    # the sum to entries finite on both sides rather than patching
-                    # the NaN afterwards.
-                    valid = torch.isfinite(ref) & torch.isfinite(stu)
-                    per_row = _kl(ref, stu, valid, cfg.kl_direction)
-                    kl = per_row.mean() * part.kl
-                    if cfg.kl_only_files:
-                        # KL-only rows (weight 0) carry their own KL weight; with none
-                        # in the batch this equals kl_frozen_weight * kl exactly.
-                        only = batch["weights"][eligible] == 0
-                        coef = torch.where(only, cfg.kl_only_weight, cfg.kl_frozen_weight)
-                        step_loss = step_loss + (coef * per_row).mean() * part.kl
-                    else:
-                        step_loss = step_loss + cfg.kl_frozen_weight * kl
-                    running_kl += float(kl)
+                assert refs is not None  # populated above when kl_frozen_weight > 0
+                m, a = (part.micro, part.start) if world > 1 else (micro, 0)
+                ref_lp = refs[m, a : a + batch["labels"].numel()]
+                stu = out["log_probs"]
+                # The reference is sized to the widest option count the run saw; a batch
+                # whose rows are narrower than that gets the padded columns trimmed off.
+                # Trimmed columns are past some row's option count and already -inf in
+                # both the reference and the student, so no probability mass is dropped.
+                ref_lp = ref_lp[:, : stu.shape[-1]]
+                # Masked slots are -inf in both; -inf - -inf is NaN, so restrict the sum
+                # to entries finite on both sides rather than patching the NaN afterwards.
+                valid = torch.isfinite(ref_lp) & torch.isfinite(stu)
+                per_row = _kl(ref_lp, stu, valid, cfg.kl_direction)
+                kl = per_row.mean() * part.kl
+                if cfg.kl_only_files:
+                    # KL-only rows (weight 0) carry their own KL weight; with none in the
+                    # batch this equals kl_frozen_weight * kl exactly.
+                    only = batch["weights"] == 0
+                    coef = torch.where(only, cfg.kl_only_weight, cfg.kl_frozen_weight)
+                    step_loss = step_loss + (coef * per_row).mean() * part.kl
+                else:
+                    step_loss = step_loss + cfg.kl_frozen_weight * kl
+                running_kl += float(kl)
             if (
                 cfg.teacher_weight > 0
                 and "has_teacher" in batch
@@ -33116,7 +32824,7 @@ def _cli(
     micro_batch_size: int | None = typer.Option(None),
     max_steps: int | None = typer.Option(None, help="Hard step cap (smoke tests)."),
 ) -> None:
-    """Train the slot heads and a LoRA adapter on the torso."""
+    """Train the pointer head and a LoRA adapter on the torso."""
     cfg = TrainConfig.from_yaml(config) if config else TrainConfig()
     if train_file:
         cfg.train_files = list(train_file)
@@ -33593,10 +33301,6 @@ from .format import Example
 @dataclass
 class CollatorConfig:
     max_length: int = 3072
-    num_slots: int = 24
-    # "pointer" makes the collator emit option token positions and size the target
-    # distribution to the batch's widest option count instead of num_slots.
-    head_type: str = "slot"
     shuffle_options: bool = True
     # Score levels are ordered, so they are never permuted -- but reversing the whole
     # rubric (and the label with it) is meaning-preserving and doubles the orderings seen.
@@ -33709,7 +33413,7 @@ class SystemOneCollator:
         if ex.kind != "score" or self.cfg.ordinal_smoothing <= 0:
             return None
 
-        dist = torch.zeros(self.cfg.num_slots, dtype=torch.float32)
+        dist = torch.zeros(n_options, dtype=torch.float32)
         eps = self.cfg.ordinal_smoothing
         gold_level = ex.label
         neighbours = [lv for lv in (gold_level - 1, gold_level + 1) if 0 <= lv < n_options]
@@ -33737,15 +33441,8 @@ class SystemOneCollator:
         weights: list[float] = []
         teachers: list[list[float] | None] = []
 
-        pointer = self.cfg.head_type == "pointer"
         spans: list[Any] = []
         for ex in batch:
-            # A pointer head has no fixed slot count, so only the slot head caps options.
-            if not pointer and ex.n_options > self.cfg.num_slots:
-                raise ValueError(
-                    f"example from task {ex.task!r} has {ex.n_options} options but the "
-                    f"model has only {self.cfg.num_slots} slots"
-                )
             order = self._option_order(ex)
             prompt, rq = build_prompt(
                 ex.state,
@@ -33773,7 +33470,7 @@ class SystemOneCollator:
             # Right padding: pool_last_token finds the final real token by mask length,
             # and the shared-prefix cache in infer.py assumes the prompt starts at 0.
             padding_side="right",
-            return_offsets_mapping=pointer,
+            return_offsets_mapping=True,
         )
 
         out: dict[str, torch.Tensor] = {
@@ -33783,28 +33480,22 @@ class SystemOneCollator:
             "labels": torch.tensor(labels, dtype=torch.long),
             "weights": torch.tensor(weights, dtype=torch.float32),
         }
-        width = self.cfg.num_slots
-        if pointer:
-            offs = enc["offset_mapping"].tolist()
-            per = [self.option_token_index(offs[i], sp, base) for i, (base, sp) in enumerate(spans)]
-            width = max(len(p) for p in per)
-            out["opt_idx"] = torch.tensor(
-                [p + [-1] * (width - len(p)) for p in per], dtype=torch.long
-            )
+        offs = enc["offset_mapping"].tolist()
+        per = [self.option_token_index(offs[i], sp, base) for i, (base, sp) in enumerate(spans)]
+        width = max(len(p) for p in per)
+        out["opt_idx"] = torch.tensor([p + [-1] * (width - len(p)) for p in per], dtype=torch.long)
         if any(d is not None for d in dists):
-            stacked = torch.stack(
-                [
-                    d
-                    if d is not None
-                    else torch.nn.functional.one_hot(
-                        torch.tensor(lab), num_classes=self.cfg.num_slots
-                    ).float()
-                    for d, lab in zip(dists, labels, strict=True)
-                ]
-            )
-            # A pointer head emits one logit per option present, so the target must be
-            # cut to the batch's widest option count rather than the slot count.
-            out["label_dist"] = stacked[:, :width] if pointer else stacked
+            # The pointer head emits one logit per option present, so each target is
+            # padded to the batch's widest option count rather than to a fixed slot count.
+            padded = []
+            for d, lab in zip(dists, labels, strict=True):
+                if d is None:
+                    row = torch.nn.functional.one_hot(torch.tensor(lab), num_classes=width).float()
+                else:
+                    row = torch.zeros(width, dtype=torch.float32)
+                    row[: d.numel()] = d
+                padded.append(row)
+            out["label_dist"] = torch.stack(padded)
         if any(t is not None for t in teachers):
             tt = torch.zeros((len(batch), width), dtype=torch.float32)
             for i, t in enumerate(teachers):
@@ -38289,8 +37980,7 @@ def label(
     letters = letter_ids(tok)
     head = model.get_output_embeddings().weight
     # The LM's own final transform, where it has one: Gemma soft-caps its logits at 30.
-    # Without it the letters' distribution is not the model's (as for the frozen readout,
-    # modeling.frozen_slot_log_probs).
+    # Without it the letters' distribution is not the model's.
     cfg: Any = getattr(model, "config", None)
     text_cfg = cfg.get_text_config() if hasattr(cfg, "get_text_config") else cfg
     cap = getattr(text_cfg, "final_logit_softcapping", None)
@@ -38700,6 +38390,26 @@ def test_v19_saved_configs_load():
     }
 
 
+def test_from_yaml_rejects_a_slot_head_config(tmp_path):
+    """A slot-era retrain config fails cleanly, not silently as a pointer run."""
+    import yaml
+
+    p = tmp_path / "slot.yaml"
+    p.write_text(yaml.safe_dump({"head_type": "slot"}))
+    with pytest.raises(ValueError, match="pointer-head"):
+        TrainConfig.from_yaml(str(p))
+
+
+def test_from_yaml_raises_on_an_unknown_key(tmp_path):
+    """A typo stops the run before training; only the retired slot-era keys are silently dropped."""
+    import yaml
+
+    p = tmp_path / "typo.yaml"
+    p.write_text(yaml.safe_dump({"kl_frozn_weight": 0.3}))
+    with pytest.raises(ValueError, match="unknown config key"):
+        TrainConfig.from_yaml(str(p))
+
+
 
 ================================================
 FILE: training/tests/test_core.py
@@ -38708,10 +38418,18 @@ FILE: training/tests/test_core.py
 
 from __future__ import annotations
 
+import json
+
 import pytest
 import torch
 
-from strands_decider.modeling import masked_log_softmax, pool_last_token
+from strands_decider.modeling import (
+    PointerHead,
+    StrandsDeciderConfig,
+    build_head,
+    masked_log_softmax,
+    pool_last_token,
+)
 from strands_decider.prompting import (
     build_prompt,
     read_choice,
@@ -38992,7 +38710,7 @@ class _FakeTokenizer:
 
 
 def test_collator_label_binding_is_correct():
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=8, seed=3), train=True)
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(seed=3), train=True)
     ex = _choice_example()
     gold_name = ex.options[ex.label][0]
     for _ in range(30):
@@ -39003,7 +38721,7 @@ def test_collator_label_binding_is_correct():
 
 
 def test_collator_does_not_shuffle_in_eval_mode():
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=8), train=False)
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(), train=False)
     ex = _choice_example()
     for _ in range(10):
         assert coll._option_order(ex) is None
@@ -39013,7 +38731,7 @@ def test_score_options_never_arbitrarily_permuted():
     """Score slots are ordinal: only a full reversal is meaning-preserving."""
     coll = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=8, reverse_score_prob=1.0, seed=1),
+        CollatorConfig(reverse_score_prob=1.0, seed=1),
         train=True,
     )
     ex = Example(
@@ -39032,7 +38750,7 @@ def test_score_options_never_arbitrarily_permuted():
 def test_ordinal_smoothing_puts_mass_on_neighbours():
     coll = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=8, ordinal_smoothing=0.2, reverse_score_prob=0.0),
+        CollatorConfig(ordinal_smoothing=0.2, reverse_score_prob=0.0),
         train=True,
     )
     ex = Example(
@@ -39055,7 +38773,7 @@ def test_ordinal_smoothing_at_rubric_edge():
     """Level 0 has only one neighbour; all the smoothing mass goes there."""
     coll = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=8, ordinal_smoothing=0.2, reverse_score_prob=0.0),
+        CollatorConfig(ordinal_smoothing=0.2, reverse_score_prob=0.0),
         train=True,
     )
     ex = Example(
@@ -39070,12 +38788,6 @@ def test_ordinal_smoothing_at_rubric_edge():
     assert dist[0].item() == pytest.approx(0.8)
     assert dist[1].item() == pytest.approx(0.2)
     assert dist[2].item() == pytest.approx(0.0)
-
-
-def test_collator_rejects_more_options_than_slots():
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=2), train=True)
-    with pytest.raises(ValueError, match="only 2 slots"):
-        coll([_choice_example()])
 
 
 # ---------------------------------------------------------------- data format
@@ -39417,7 +39129,7 @@ def _varied_example():
 def test_collator_samples_among_instruction_phrasings():
     """A head that keyed on the exact instruction string should be wrong most of
     the time -- the same argument that motivates option shuffling."""
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=8, seed=1), train=True)
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(seed=1), train=True)
     ex = _varied_example()
     seen = {coll._instruction(ex) for _ in range(200)}
     assert seen == set(ex.all_instructions())
@@ -39425,7 +39137,7 @@ def test_collator_samples_among_instruction_phrasings():
 
 def test_eval_always_uses_the_canonical_phrasing():
     """Otherwise successive eval runs of the same checkpoint would not be comparable."""
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=8), train=False)
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(), train=False)
     ex = _varied_example()
     assert {coll._instruction(ex) for _ in range(20)} == {None}
 
@@ -39433,14 +39145,14 @@ def test_eval_always_uses_the_canonical_phrasing():
 def test_instruction_variation_can_be_disabled():
     coll = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=8, vary_instructions=False),
+        CollatorConfig(vary_instructions=False),
         train=True,
     )
     assert coll._instruction(_varied_example()) is None
 
 
 def test_example_without_variants_is_unaffected():
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=8, seed=1), train=True)
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(seed=1), train=True)
     plain = Example("choice", "s", "only phrasing", [["a", ""], ["b", ""]], 0, task="t")
     assert coll._instruction(plain) is None
     assert plain.all_instructions() == ["only phrasing"]
@@ -39455,8 +39167,6 @@ def test_sampled_phrasing_reaches_the_prompt():
 
 
 def test_instruction_variants_round_trip_through_jsonl():
-    import json
-
     ex = _varied_example()
     back = Example.from_dict(json.loads(ex.to_json()))
     assert back.instruction_variants == ex.instruction_variants
@@ -39465,8 +39175,6 @@ def test_instruction_variants_round_trip_through_jsonl():
 
 def test_legacy_examples_without_the_field_still_load():
     """Corpora built before instruction variants existed must keep working."""
-    import json
-
     d = json.loads(_varied_example().to_json())
     del d["instruction_variants"]
     back = Example.from_dict(d)
@@ -39539,7 +39247,7 @@ def test_option_token_index_refuses_a_truncated_option():
 def test_pointer_collator_emits_padded_option_indices():
     coll = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=24, head_type="pointer", max_length=4096),
+        CollatorConfig(max_length=4096),
         train=False,
     )
     noul = Example(
@@ -39559,13 +39267,8 @@ def test_pointer_collator_emits_padded_option_indices():
         assert all(i == -1 for i in row[k:])  # padding
 
 
-def test_slot_collator_emits_no_option_indices():
-    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(num_slots=24), train=False)
-    assert "opt_idx" not in coll([_choice_example()])
-
-
-def test_pointer_collator_allows_more_options_than_num_slots():
-    """The slot count is a property of the fixed-width readout, not of the model."""
+def test_pointer_collator_handles_any_option_count():
+    """A pointer collator has no fixed-slot ceiling: opt_idx stretches to the row width."""
     wide = Example(
         kind="choice",
         state="s",
@@ -39576,21 +39279,13 @@ def test_pointer_collator_allows_more_options_than_num_slots():
     )
     pointer = SystemOneCollator(
         _FakeTokenizer(),
-        CollatorConfig(num_slots=24, head_type="pointer", max_length=8192),
+        CollatorConfig(max_length=8192),
         train=False,
     )
     assert pointer([wide])["opt_idx"].shape[1] == 30
 
-    slot = SystemOneCollator(
-        _FakeTokenizer(), CollatorConfig(num_slots=24, max_length=8192), train=False
-    )
-    with pytest.raises(ValueError, match="only 24 slots"):
-        slot([wide])
-
 
 def test_pointer_head_scores_each_option_from_its_own_state():
-    from strands_decider.modeling import PointerHead
-
     head = PointerHead(16, dim=8)
     decide = torch.randn(2, 16)
     options = torch.randn(2, 5, 16)
@@ -39615,19 +39310,26 @@ def test_gather_options_ignores_padding():
     assert torch.equal(out[1, 2], hidden[1, 7])
 
 
-def test_build_head_branches_on_head_type():
-    from strands_decider.modeling import PointerHead, SlotHead, StrandsDeciderConfig, build_head
-
-    assert isinstance(build_head(StrandsDeciderConfig(), 32), SlotHead)
-    assert isinstance(build_head(StrandsDeciderConfig(head_type="pointer"), 32), PointerHead)
-    with pytest.raises(ValueError, match="unknown head_type"):
-        build_head(StrandsDeciderConfig(head_type="nonsense"), 32)
+def test_build_head_returns_pointer_head():
+    assert isinstance(build_head(StrandsDeciderConfig(), 32), PointerHead)
 
 
-def test_head_type_defaults_to_slot_so_old_checkpoints_load():
-    from strands_decider.modeling import StrandsDeciderConfig
+def test_slot_era_head_type_is_rejected_by_config_loader(tmp_path):
+    """A checkpoint whose config names a slot head fails cleanly, not silently."""
+    path = tmp_path / "cfg.json"
+    path.write_text(json.dumps({"base_model": "x", "head_type": "slot"}))
+    with pytest.raises(ValueError, match="pointer-head"):
+        StrandsDeciderConfig.from_json(str(path))
+    # A legacy `head_type: "pointer"` config loads unchanged (the field is dropped).
+    path.write_text(json.dumps({"base_model": "x", "head_type": "pointer", "num_slots": 24}))
+    cfg = StrandsDeciderConfig.from_json(str(path))
+    assert cfg.base_model == "x"
 
-    assert StrandsDeciderConfig().head_type == "slot"
+
+def test_head_type_is_written_to_the_exported_config():
+    """Older strands-decider versions default a missing head_type to slot and crash on a
+    pointer export, and out-of-tree readers may parse this field directly."""
+    assert json.loads(StrandsDeciderConfig(base_model="x").to_json())["head_type"] == "pointer"
 
 
 def test_collect_logits_masks_the_padded_columns():
@@ -39641,8 +39343,6 @@ def test_collect_logits_masks_the_padded_columns():
         tokenizer = _FakeTokenizer()
 
         class config:
-            num_slots = 24
-            head_type = "pointer"
             max_length = 3072
 
         torso = torch.nn.Module()  # no parameters: the CPU upcast has nothing to cast
@@ -39681,9 +39381,7 @@ def test_teacher_targets_follow_option_shuffling():
     """Slot k must carry the teacher's mass for the option actually shown at slot k."""
     names = ["World", "Sports", "Business", "Sci/Tech", "Health"]
     teacher = [0.05, 0.6, 0.2, 0.1, 0.05]
-    coll = SystemOneCollator(
-        _FakeTokenizer(), CollatorConfig(head_type="pointer", seed=3), train=True
-    )
+    coll = SystemOneCollator(_FakeTokenizer(), CollatorConfig(seed=3), train=True)
     slots = set()
     for _ in range(20):
         ex = Example(
@@ -39925,7 +39623,6 @@ def _tiny_checkpoint(out: str, tokenizer_path: str, torso_dir: str, seed: int = 
         **{
             **dict(
                 base_model="tiny",
-                head_type="pointer",
                 pointer_dim=16,
                 lora_r=2,
                 lora_alpha=4,
@@ -40006,18 +39703,6 @@ def worker(cfg_path: str) -> None:
     torso_dir = spec.pop("torso", None)
     if torso_dir:  # init_from: the base model of the checkpoint
         StrandsDeciderModel._load_torso = staticmethod(_load_saved_torso(torso_dir))
-    ref_tokenizer = spec.pop("ref_tokenizer", None)
-    if ref_tokenizer:  # kl_frozen_reference: a tiny checkpoint, the same on every rank
-
-        def load(path, **k):
-            from strands_decider.modeling import StrandsDeciderConfig
-
-            with torch.random.fork_rng():
-                torch.manual_seed(123)
-                cfg = StrandsDeciderConfig(base_model="tiny", head_type="pointer", pointer_dim=16)
-                return _tiny_model_factory(ref_tokenizer)(cfg)
-
-        StrandsDeciderModel.load = staticmethod(load)
     rank = int(os.environ.get("RANK", "0"))
 
     grads, init = [], []
@@ -40050,16 +39735,6 @@ def worker(cfg_path: str) -> None:
         return out
 
     SystemOneCollator.__call__ = call
-    real_reference = T._frozen_reference
-
-    def reference(*a, **k):  # renders every row ahead of training: not what a step trains on
-        SystemOneCollator.__call__ = real_call
-        try:
-            return real_reference(*a, **k)
-        finally:
-            SystemOneCollator.__call__ = call
-
-    T._frozen_reference = reference
     if spec.pop("skew_rank1", False) and rank == 1:  # this rank reads a longer last row
         real_load = T.load_examples
 
@@ -40088,10 +39763,7 @@ def _run(corpus, tmp_path, world: int, *, expect_ok: bool = True, **over) -> dic
         train_files=[str(corpus / "train.jsonl")],
         val_files=[str(corpus / "val.jsonl")],
         base_model="tiny",
-        num_slots=24,
-        head_type="pointer",
         pointer_dim=16,
-        kl_frozen_weight=0.3,
         teacher_file=str(corpus / "teacher.jsonl"),
         teacher_weight=1.0,
         head_dropout=0.0,
@@ -40227,62 +39899,15 @@ def test_ddp_matches_single_process_variants(corpus, tmp_path, over):
 
 
 @pytest.mark.distributed
-@pytest.mark.parametrize("world", [1, 3, 8])
-def test_precomputed_frozen_reference_matches_single_process(corpus, plain_run, tmp_path, world):
-    """precompute_frozen_kl: the same rows, rendering, gradients and losses."""
-    got = _run(corpus, tmp_path, world, precompute_frozen_kl=True)
-    assert "frozen-KL reference for 32 micro-batches" in got["stdout"]
-    _assert_same_run(plain_run, got, world)
-
-
-@pytest.mark.distributed
-@pytest.mark.parametrize("tokenizer", ["tokenizer.json", "other_tokenizer.json"])
-def test_ddp_frozen_reference_checkpoint_matches_single_process(corpus, tmp_path, tokenizer):
-    """kl_frozen_reference: each rank renders its micro-batches with the reference's tokenizer."""
-    over = dict(
-        precompute_frozen_kl=True,
-        kl_frozen_reference="tiny-ref",
-        ref_tokenizer=str(corpus / tokenizer),
-    )
-    ref = _run(corpus, tmp_path / "a", 1, **over)
-    assert "frozen-KL reference: tiny-ref" in ref["stdout"]
-    _assert_same_run(ref, _run(corpus, tmp_path / "b", 3, **over), 3)
-
-
-@pytest.mark.distributed
 def test_ddp_init_from_matches_single_process(corpus, tmp_path):
-    """init_from a trained checkpoint, anchored to that checkpoint's own answers."""
+    """init_from a trained checkpoint."""
     tok = str(corpus / "tokenizer.json")
     torso = _tiny_torso(str(tmp_path / "torso"), tok)
     ckpt = _tiny_checkpoint(str(tmp_path / "ckpt"), tok, torso)
-    # One epoch, 4 steps: the checkpoint's random adapter amplifies fp32 rounding, and by
-    # step 8 the gradients differ by 3e-4 (relative) with or without the reference.
-    over = dict(
-        init_from=ckpt, torso=torso, precompute_frozen_kl=True, kl_frozen_reference=ckpt, epochs=1
-    )
+    over = dict(init_from=ckpt, torso=torso, epochs=1)
     ref = _run(corpus, tmp_path / "a", 1, **over)
     assert f"continuing from {ckpt}" in ref["stdout"]
     _assert_same_run(ref, _run(corpus, tmp_path / "b", 3, **over), 3)
-
-
-@pytest.fixture(scope="module")
-def kl_only_plain_run(corpus, tmp_path_factory):
-    return _run(
-        corpus,
-        tmp_path_factory.mktemp("klonly"),
-        1,
-        kl_only_files=[str(corpus / "klonly.jsonl")],
-        kl_only_weight=0.7,
-    )
-
-
-@pytest.mark.distributed
-@pytest.mark.parametrize("world", [3, 8])
-def test_ddp_matches_single_process_kl_only_rows(corpus, kl_only_plain_run, tmp_path, world):
-    got = _run(
-        corpus, tmp_path, world, kl_only_files=[str(corpus / "klonly.jsonl")], kl_only_weight=0.7
-    )
-    _assert_same_run(kl_only_plain_run, got, world)
 
 
 @pytest.mark.distributed
@@ -40364,7 +39989,7 @@ def test_skipping_rows_matches_collating_them(corpus):
 
     tok = _load_tokenizer(str(corpus / "tokenizer.json"))
     rows = _examples(64, seed=5)
-    cfg = CollatorConfig(num_slots=24, head_type="pointer", seed=7, max_length=2048)
+    cfg = CollatorConfig(seed=7, max_length=2048)
     full, part = SystemOneCollator(tok, cfg), SystemOneCollator(tok, cfg)
     for b in range(0, 64, 8):
         whole = full(rows[b : b + 8])
@@ -40699,13 +40324,10 @@ def test_gemma4_trains_and_reloads(tmp_path, layout):
         train_files=[str(tmp_path / "train.jsonl")],
         val_files=[str(tmp_path / "val.jsonl")],
         base_model=str(base),
-        head_type="pointer",
         pointer_dim=16,
         lora_targets=GEMMA_TARGETS,
         force_bos=True,
         host_embeddings=True,
-        kl_frozen_weight=0.3,
-        precompute_frozen_kl=True,
         head_dropout=0.0,
         max_length=2048,
         micro_batch_size=4,
@@ -40729,9 +40351,7 @@ def test_gemma4_trains_and_reloads(tmp_path, layout):
     table = getattr(torso, "embed_tokens_per_layer", None)
     assert (table is not None) == (layout == "e2b")
     assert table is None or isinstance(table, HostEmbedding)
-    b = T.SystemOneCollator(model.tokenizer, T.CollatorConfig(head_type="pointer"), train=False)(
-        rows[:3]
-    )
+    b = T.SystemOneCollator(model.tokenizer, T.CollatorConfig(), train=False)(rows[:3])
     with torch.no_grad():
         lp = model(
             input_ids=b["input_ids"],
@@ -40776,7 +40396,6 @@ def test_a_token_budget_per_forward_keeps_the_answers(tmp_path):
             train_files=[str(tmp_path / "train.jsonl")],
             val_files=[str(tmp_path / "val.jsonl")],
             base_model=str(base),
-            head_type="pointer",
             pointer_dim=16,
             lora_targets=GEMMA_TARGETS,
             force_bos=True,
@@ -40992,14 +40611,16 @@ SMALL_BASE = os.environ.get("STRANDS_DECIDER_TEST_BASE", "Qwen/Qwen3-0.6B-Base")
 def model():
     from strands_decider.modeling import StrandsDeciderConfig, StrandsDeciderModel
 
-    cfg = StrandsDeciderConfig(base_model=SMALL_BASE, num_slots=8, max_length=512, use_lora=False)
+    cfg = StrandsDeciderConfig(base_model=SMALL_BASE, max_length=512, use_lora=False)
     m = StrandsDeciderModel.from_pretrained_base(cfg)
     return m.to("cuda").eval()
 
 
 def test_torso_loads_without_lm_head(model):
     assert not hasattr(model.torso, "lm_head")
-    assert model.head.proj.out_features == 8
+    from strands_decider.modeling import PointerHead
+
+    assert isinstance(model.head, PointerHead)
 
 
 def test_forward_produces_masked_distribution(model):
@@ -41013,9 +40634,7 @@ def test_forward_produces_masked_distribution(model):
         label=0,
         task="smoke",
     )
-    coll = SystemOneCollator(
-        model.tokenizer, CollatorConfig(num_slots=8, max_length=512), train=False
-    )
+    coll = SystemOneCollator(model.tokenizer, CollatorConfig(max_length=512), train=False)
     batch = {k: v.to("cuda") for k, v in coll([ex]).items()}
     with torch.no_grad():
         out = model(
@@ -41040,7 +40659,6 @@ def fp32_model():
 
     cfg = StrandsDeciderConfig(
         base_model=SMALL_BASE,
-        num_slots=8,
         max_length=512,
         use_lora=False,
         torch_dtype="float32",
@@ -41161,7 +40779,6 @@ def test_lora_checkpoint_save_load_roundtrip(tmp_path):
 
     cfg = StrandsDeciderConfig(
         base_model=SMALL_BASE,
-        num_slots=8,
         max_length=512,
         use_lora=True,
         lora_r=4,
@@ -41184,7 +40801,6 @@ def test_lora_checkpoint_save_load_roundtrip(tmp_path):
     after = SystemOneEngine(reloaded.to("cuda").eval(), EngineConfig()).evaluate(request)
 
     assert _max_answer_delta(before, after) < 1e-4
-    assert reloaded.config.num_slots == 8
     assert reloaded.config.lora_r == 4
 
 
@@ -41199,7 +40815,6 @@ def test_temperature_is_applied_on_load(tmp_path):
 
     cfg = StrandsDeciderConfig(
         base_model=SMALL_BASE,
-        num_slots=8,
         max_length=512,
         use_lora=False,
         torch_dtype="float32",
@@ -41476,9 +41091,7 @@ def saved_torso(corpus, monkeypatch):
 
 def _batch(model, corpus):
     rows = load_examples([str(corpus / "val.jsonl")])[:8]
-    coll = SystemOneCollator(
-        model.tokenizer, CollatorConfig(max_length=2048, head_type="pointer"), train=False
-    )
+    coll = SystemOneCollator(model.tokenizer, CollatorConfig(max_length=2048), train=False)
     b = coll(rows)
     return dict(
         input_ids=b["input_ids"],
@@ -41507,7 +41120,6 @@ def _train(corpus, out, monkeypatch, cfg=None, **over):
         model.eval()
         with torch.no_grad():
             start["out"] = model(**b)["log_probs"]
-            start["frozen"] = _frozen(model, b)
         model.train()
         start["state"] = _state(model)
         start["trainable"] = {n for n, p in model.named_parameters() if p.requires_grad}
@@ -41533,19 +41145,13 @@ def _train(corpus, out, monkeypatch, cfg=None, **over):
         return start, json.load(fh)
 
 
-def _frozen(model, b):
-    """The frozen-KL readout: the torso's own option numbers, adapter disabled."""
-    return model.frozen_slot_log_probs(b["input_ids"], b["attention_mask"], b["n_slots"])[0]
-
-
 def _same(a, b):
     return set(a) == set(b) and all(torch.equal(a[k], b[k]) for k in a)
 
 
 def test_training_continues_from_the_checkpoint(corpus, tmp_path, monkeypatch):
     src = StrandsDeciderModel.load(str(corpus / "s0")).eval()
-    # head_type is set to the checkpoint's: no conflict
-    start, _ = _train(corpus, tmp_path / "out", monkeypatch, head_type="pointer")
+    start, _ = _train(corpus, tmp_path / "out", monkeypatch)
     # step 0 is the checkpoint: its head and adapter, its outputs at temperature 1
     assert _same(start["state"], _state(src))
     b = _batch(src, corpus)
@@ -41553,14 +41159,6 @@ def test_training_continues_from_the_checkpoint(corpus, tmp_path, monkeypatch):
         want = src(**b, temperature=1.0)["log_probs"]
     torch.testing.assert_close(start["out"], want, rtol=0, atol=1e-6)
     assert start["config"].temperature == 1.0 and start["config"].temperature_by_kind == {}
-    # the frozen readout is the base torso's own, without the checkpoint's adapter
-    cfg = copy.deepcopy(src.config)
-    cfg.use_lora = False
-    plain = StrandsDeciderModel(cfg, _load_saved_torso(str(corpus / "torso"))(cfg), src.tokenizer)
-    with torch.no_grad():
-        torch.testing.assert_close(start["frozen"], _frozen(plain, b), rtol=0, atol=1e-6)
-        hidden = src.encode(b["input_ids"], b["attention_mask"])  # the adapter matters here
-        assert not torch.allclose(hidden, plain.encode(b["input_ids"], b["attention_mask"]))
     # the adapter and the head train, the base torso does not; checkpointing is on
     assert start["trainable"] == set(start["state"])
     assert any("lora_A" in n for n in start["trainable"]) and "head.q.weight" in start["trainable"]
@@ -41599,28 +41197,7 @@ def test_a_soup_trains_on_and_its_fine_tunes_soup(corpus, tmp_path, monkeypatch)
         assert torch.isfinite(s2(**_batch(s2, corpus))["log_probs"][:, :2]).all()
 
 
-def test_anchored_to_the_checkpoint_itself(corpus, tmp_path, monkeypatch):
-    """kl_frozen_reference = init_from: the first step starts at KL 0 from its reference."""
-    _, history = _train(
-        corpus,
-        tmp_path / "out",
-        monkeypatch,
-        kl_frozen_weight=0.3,
-        precompute_frozen_kl=True,
-        group_by_length=True,
-        length_group_mega=2,
-        kl_frozen_reference=str(corpus / "s0"),
-    )
-    kl = [h["kl"] for h in history if "kl" in h]
-    assert len(kl) == 3 and kl[0] < 1e-9 < kl[2]  # step 1 is at lr 0 (warmup)
-    # without a reference, the anchor is the base torso's readout: not 0 at the start
-    _, history = _train(corpus, tmp_path / "base", monkeypatch, kl_frozen_weight=0.3)
-    assert history[0]["kl"] > 1e-3
-
-
-@pytest.mark.parametrize(
-    "over", [dict(pointer_dim=32), dict(base_model="Qwen/Qwen3.5-2B-Base"), dict(head_hidden=8)]
-)
+@pytest.mark.parametrize("over", [dict(pointer_dim=32), dict(base_model="Qwen/Qwen3.5-2B-Base")])
 def test_an_architecture_other_than_the_checkpoint_is_refused(corpus, tmp_path, monkeypatch, over):
     with pytest.raises(ValueError, match=f"sets {next(iter(over))}=.*remove {next(iter(over))}"):
         _train(corpus, tmp_path, monkeypatch, **over)
@@ -41653,16 +41230,11 @@ def test_a_yaml_null_lora_targets_is_the_default_list(corpus, tmp_path):
     assert cfg.lora_targets == StrandsDeciderConfig().lora_targets
 
 
-def test_head_init_cannot_replace_the_trained_head(corpus, tmp_path, monkeypatch):
-    with pytest.raises(ValueError, match="head_init"):
-        _train(corpus, tmp_path, monkeypatch, head_init="lm_head")
-
-
 
 ================================================
 FILE: training/tests/test_kl_anchor.py
 ================================================
-"""kl_frozen_reference: a trained checkpoint's own distribution as the frozen-KL reference.
+"""kl_frozen_reference: a trained checkpoint's own distribution as the frozen-KL anchor.
 
 CPU only, with test_ddp.py's tiny Qwen3 torso and test-trained tokenizer.
 """
@@ -41695,10 +41267,21 @@ def corpus(tmp_path_factory):
     return d
 
 
-def _train(corpus, out, monkeypatch, **over):
-    """2 optimizer steps of train(); the gradient of each step, where train.py clips it."""
+def _tiny(corpus, tokenizer="tokenizer.json"):
+    cfg = T.StrandsDeciderConfig(base_model="tiny", pointer_dim=16)
+    return _tiny_model_factory(str(corpus / tokenizer))(cfg)
+
+
+def _train(corpus, out, monkeypatch, *, ref_model=None, **over):
+    """2 optimizer steps of train(); the gradient of each step, where train.py clips it.
+
+    `ref_model` is monkey-patched into `StrandsDeciderModel.load` so the frozen-KL anchor
+    has a reference to load. Pass None to test paths that error out before the load.
+    """
     factory = _tiny_model_factory(str(corpus / "tokenizer.json"))
     monkeypatch.setattr(StrandsDeciderModel, "from_pretrained_base", staticmethod(factory))
+    if ref_model is not None:
+        monkeypatch.setattr(StrandsDeciderModel, "load", staticmethod(lambda path, **k: ref_model))
     grads = []
 
     def clip(params, max_norm, *a, **k):
@@ -41711,9 +41294,9 @@ def _train(corpus, out, monkeypatch, **over):
         train_files=[str(corpus / "a.jsonl")],
         val_files=[str(corpus / "val.jsonl")],
         base_model="tiny",
-        head_type="pointer",
         pointer_dim=16,
         kl_frozen_weight=0.3,
+        kl_frozen_reference="ref",
         head_dropout=0.0,
         max_length=2048,
         micro_batch_size=8,
@@ -41730,26 +41313,38 @@ def _train(corpus, out, monkeypatch, **over):
         return grads, json.load(fh)
 
 
-def _tiny(corpus, tokenizer="tokenizer.json"):
-    cfg = T.StrandsDeciderConfig(base_model="tiny", head_type="pointer", pointer_dim=16)
-    return _tiny_model_factory(str(corpus / tokenizer))(cfg)
-
-
 def _batches():
     return [list(range(i, i + 8)) for i in range(0, 48, 8)]
 
 
-@pytest.mark.parametrize("over", [dict(), dict(kl_frozen_weight=0.0, precompute_frozen_kl=True)])
+@pytest.mark.parametrize(
+    "over",
+    [
+        dict(),  # kl_frozen_weight=0.3 default, precompute_frozen_kl=False (default)
+        dict(kl_frozen_weight=0.0, precompute_frozen_kl=True),
+    ],
+)
 def test_reference_needs_the_precomputed_pass_and_the_kl_term(corpus, tmp_path, monkeypatch, over):
     with pytest.raises(ValueError, match="kl_frozen_reference"):
         _train(corpus, tmp_path, monkeypatch, kl_frozen_reference=str(tmp_path), **over)
+
+
+def test_weight_without_reference_is_refused(corpus, tmp_path, monkeypatch):
+    """kl_frozen_weight > 0 needs a reference checkpoint: there is no base-torso fallback.
+
+    The slot head could read the untouched torso's option-number distribution; the pointer
+    head scores each option from its own hidden state, so no such base-model-only path
+    exists. Every config/v1 recipe sets `kl_frozen_reference` to the v19 pointer checkpoint.
+    """
+    with pytest.raises(ValueError, match="kl_frozen_reference"):
+        _train(corpus, tmp_path, monkeypatch, kl_frozen_reference=None, precompute_frozen_kl=True)
 
 
 def test_reference_rows_are_the_checkpoint_own_distribution(corpus):
     torch.manual_seed(0)
     student, ref_model = _tiny(corpus), _tiny(corpus).eval()
     rows = load_examples([str(corpus / "a.jsonl")])
-    coll_cfg = CollatorConfig(max_length=2048, head_type="pointer", seed=0)
+    coll_cfg = CollatorConfig(max_length=2048, seed=0)
     ref = T._frozen_reference(student, rows, _batches(), coll_cfg, "cpu", ref_model)
     coll = SystemOneCollator(student.tokenizer, coll_cfg, train=True)  # the same renders
     for m, idx in enumerate(_batches()):
@@ -41765,8 +41360,6 @@ def test_reference_rows_are_the_checkpoint_own_distribution(corpus):
         for r, n in enumerate(b["n_slots"].tolist()):
             assert torch.equal(ref[m, r, :n], lp[r, :n])
             assert torch.isneginf(ref[m, r, n:]).all()
-    base = T._frozen_reference(student, rows, _batches(), coll_cfg, "cpu")
-    assert not torch.equal(base, ref)
 
 
 def test_reference_with_its_own_tokenizer_sees_the_student_slot_order(corpus):
@@ -41778,7 +41371,7 @@ def test_reference_with_its_own_tokenizer_sees_the_student_slot_order(corpus):
     rows = load_examples([str(corpus / "a.jsonl")])
     for i, ex in enumerate(rows):  # a teacher distribution makes each slot identifiable
         ex.teacher = [(j + 1) / 100 + i for j in range(ex.n_options)]
-    coll_cfg = CollatorConfig(max_length=2048, head_type="pointer", seed=0)
+    coll_cfg = CollatorConfig(max_length=2048, seed=0)
     ref = T._frozen_reference(student, rows, _batches(), coll_cfg, "cpu", ref_model)
     stu_coll = SystemOneCollator(student.tokenizer, coll_cfg, train=True)  # training's renders
     ref_coll = SystemOneCollator(ref_model.tokenizer, coll_cfg, train=True)
@@ -41808,10 +41401,20 @@ def test_reference_with_its_own_tokenizer_sees_the_student_slot_order(corpus):
 def test_train_with_a_reference(corpus, tmp_path, monkeypatch, tokenizer):
     torch.manual_seed(1)  # seed 0 would build the student's own initial weights: KL 0
     ref_model = _tiny(corpus, tokenizer)
-    monkeypatch.setattr(StrandsDeciderModel, "load", staticmethod(lambda path, **k: ref_model))
-    plain, _ = _train(corpus, tmp_path / "plain", monkeypatch, precompute_frozen_kl=True)
+    plain, _ = _train(
+        corpus,
+        tmp_path / "plain",
+        monkeypatch,
+        ref_model=ref_model,
+        kl_frozen_weight=0.0,
+        kl_frozen_reference=None,
+    )
     grads, history = _train(
-        corpus, tmp_path / "ref", monkeypatch, precompute_frozen_kl=True, kl_frozen_reference="ref"
+        corpus,
+        tmp_path / "ref",
+        monkeypatch,
+        ref_model=ref_model,
+        precompute_frozen_kl=True,
     )
     assert all(h["kl"] > 0 for h in history if "kl" in h)
     assert not all(
@@ -41860,12 +41463,37 @@ def test_reverse_kl_is_student_against_target():
 def test_reverse_kl_changes_training_and_unknown_direction_is_refused(
     corpus, tmp_path, monkeypatch
 ):
-    plain, _ = _train(corpus, tmp_path / "plain", monkeypatch)
-    fwd, _ = _train(corpus, tmp_path / "fwd", monkeypatch, kl_direction="forward")
-    rev, _ = _train(corpus, tmp_path / "rev", monkeypatch, kl_direction="reverse")
+    torch.manual_seed(1)
+    ref_model = _tiny(corpus)
+    plain, _ = _train(
+        corpus, tmp_path / "plain", monkeypatch, ref_model=ref_model, precompute_frozen_kl=True
+    )
+    fwd, _ = _train(
+        corpus,
+        tmp_path / "fwd",
+        monkeypatch,
+        ref_model=ref_model,
+        precompute_frozen_kl=True,
+        kl_direction="forward",
+    )
+    rev, _ = _train(
+        corpus,
+        tmp_path / "rev",
+        monkeypatch,
+        ref_model=ref_model,
+        precompute_frozen_kl=True,
+        kl_direction="reverse",
+    )
     assert _same(plain, fwd) and not _same(fwd, rev)
     with pytest.raises(ValueError, match="kl_direction"):
-        _train(corpus, tmp_path / "bad", monkeypatch, kl_direction="sideways")
+        _train(
+            corpus,
+            tmp_path / "bad",
+            monkeypatch,
+            ref_model=ref_model,
+            precompute_frozen_kl=True,
+            kl_direction="sideways",
+        )
 
 
 def test_teacher_forward_kl_is_unchanged():
@@ -42713,6 +42341,7 @@ import json
 
 import pytest
 import torch
+from safetensors.torch import load_file
 from test_checkpoint_load import _tokenizer
 from test_ddp import _examples, _tiny_model_factory, _tokenizer_file
 from test_hf_export import _export, _jev
@@ -42753,7 +42382,6 @@ def ckpts(tmp_path, monkeypatch):
         torch.manual_seed(seed)
         cfg = StrandsDeciderConfig(
             base_model=hf_export.BASE_MODEL,
-            head_type="pointer",
             pointer_dim=16,
             lora_r=2,
             torch_dtype="float32",
@@ -42827,23 +42455,6 @@ def test_the_soup_averages_delta_w_and_the_heads_logits(ckpts, tmp_path):
         assert not torch.allclose(naive(decide, options), s.head(decide, options), atol=1e-3)
 
 
-@pytest.mark.parametrize("hidden", [0, 8])
-def test_slot_heads_soup_to_their_mean_logit(hidden):
-    from strands_decider.modeling import SlotHead
-    from training.soup import soup_heads
-
-    heads = [SlotHead(32, 5, hidden=hidden) for _ in range(3)]
-    with torch.no_grad():
-        for h in heads:
-            h.norm.weight.normal_()
-            h.norm.bias.normal_()
-    s = SlotHead(32, 5, hidden=3 * hidden)
-    s.load_state_dict(soup_heads([h.state_dict() for h in heads], "slot"))
-    x = torch.randn(4, 32)
-    with torch.no_grad():
-        torch.testing.assert_close(s(x), sum(h(x) for h in heads) / 3)
-
-
 def test_the_soup_exports(ckpts, tmp_path):
     out = tmp_path / "soup"
     soup(ckpts, str(out))
@@ -42862,11 +42473,38 @@ def test_the_cli_writes_the_soup(ckpts, tmp_path):
 
 def test_checkpoints_of_different_recipes_are_refused(ckpts, tmp_path):
     cfg = json.load(open(f"{ckpts[1]}/strands_decider_config.json"))
-    json.dump(
-        {**cfg, "kl_frozen_weight": 0.5}, open(f"{ckpts[1]}/strands_decider_config.json", "w")
-    )
+    json.dump({**cfg, "lora_r": 4}, open(f"{ckpts[1]}/strands_decider_config.json", "w"))
     with pytest.raises(ValueError, match="one recipe"):
         soup(ckpts, str(tmp_path / "soup"))
+
+
+def test_soup_accepts_stale_slot_era_keys_in_the_input_configs(ckpts, tmp_path):
+    """Pre-PR and v1-2610 configs still carry num_slots, head_type: 'pointer', head_hidden,
+    head_init, kl_frozen_weight. Soup drops them cleanly through from_json and does not
+    propagate them to the output config."""
+    for c in ckpts:
+        p = f"{c}/strands_decider_config.json"
+        cfg = json.load(open(p))
+        cfg.update(
+            {"num_slots": 24, "head_hidden": 0, "head_init": "random", "kl_frozen_weight": 0.3}
+        )
+        json.dump(cfg, open(p, "w"))
+    out = tmp_path / "soup"
+    soup(ckpts, str(out))
+    souped = json.load(open(out / "strands_decider_config.json"))
+    for k in ("num_slots", "head_hidden", "head_init", "kl_frozen_weight"):
+        assert k not in souped, k
+
+
+def test_soup_rejects_a_slot_head_input_config(ckpts, tmp_path):
+    """A slot-era checkpoint fails the config read before any adapter file is written."""
+    p = f"{ckpts[0]}/strands_decider_config.json"
+    cfg = json.load(open(p))
+    json.dump({**cfg, "head_type": "slot"}, open(p, "w"))
+    out = tmp_path / "soup"
+    with pytest.raises(ValueError, match="pointer-head"):
+        soup(ckpts, str(out))
+    assert not out.exists()
 
 
 def _tree(path):
@@ -42910,7 +42548,10 @@ def test_a_nonempty_out_is_refused_unless_replaced(ckpts, tmp_path):
         soup(ckpts, str(out))
     assert (out / "head.safetensors").read_bytes() == b"stale"
     soup(ckpts, str(out), replace=True)
-    assert not (out / "head.safetensors").exists() and not (out / "provenance.json").exists()
+    # the stale pre-existing files are gone; the fresh soup's head.safetensors replaces the
+    # stale bytes but is a real safetensors file (loads cleanly).
+    assert (out / "head.safetensors").read_bytes() != b"stale"
+    assert not (out / "provenance.json").exists()
     assert StrandsDeciderModel.load(str(out)).config.base_revision is None
 
 
@@ -42989,7 +42630,6 @@ def _train(corpus, out, monkeypatch, **over):
         train_files=[str(corpus / "a.jsonl")],
         val_fraction=0.1,
         base_model="tiny",
-        head_type="pointer",
         pointer_dim=16,
         head_dropout=0.0,
         max_length=2048,
@@ -43001,7 +42641,7 @@ def _train(corpus, out, monkeypatch, **over):
         output_dir=str(out),
     )
     T.train(T.TrainConfig(**{**base, **over}))
-    return grads, vals[0], torch.load(out / "slot_head.pt", weights_only=True)
+    return grads, vals[0], load_file(str(out / "head.safetensors"))
 
 
 def _same(a, b):
@@ -43018,7 +42658,7 @@ def test_val_split_seed_fixes_the_validation_rows_and_nothing_else(corpus, tmp_p
     f1 = _train(corpus, tmp_path / "d", monkeypatch, seed=1, val_split_seed=7)[1]
     assert f0 == f1 and f0 != v0
     g, v, h = _train(corpus, tmp_path / "e", monkeypatch, seed=0, val_split_seed=0)
-    h0 = torch.load(tmp_path / "a" / "slot_head.pt", weights_only=True)
+    h0 = load_file(str(tmp_path / "a" / "head.safetensors"))
     assert v == v0 and _same(g, g0) and all(torch.equal(h[k], h0[k]) for k in h)
 
 
@@ -43983,9 +43623,62 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  integration-test:
+    # Download a published checkpoint from the Hugging Face Hub and run
+    # `strands-decider ask` against it, using the candidate wheel we just
+    # built. Gates the publish step so a wheel that cannot actually run the
+    # released models never reaches PyPI.
+    name: Download + run model against candidate wheel
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Override from the Actions dispatch dialog if you want to validate a
+      # newer release before promoting it. The default is the first v1 release.
+      MODEL: StrandsAgents/strands-decider-2B-qwen3.5-v1-2610
+    steps:
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Download dist artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: dist
+          path: dist
+
+      - name: Install the candidate wheel
+        # Pin torch to the cpu wheel index for parity with the smoke test
+        # above; the integration test runs with --device cpu.
+        run: |
+          set -euo pipefail
+          WHEEL=$(find "$GITHUB_WORKSPACE/dist" -maxdepth 1 -name '*.whl' -print -quit)
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install "$WHEEL"
+
+      - name: Download the published model and answer a question
+        # Shells out to the installed `strands-decider` console script, pipes
+        # `ask --json` into a tiny python validator, and fails the job if the
+        # response is not a well-formed SystemOneResponse with a noul probability.
+        run: |
+          set -euo pipefail
+          strands-decider ask "$MODEL" \
+            --state "The sky is blue on a clear day." \
+            --noul "Is the statement true?" \
+            --device cpu --json > answer.json
+          python - <<'PY'
+          from strands_decider.schema import SystemOneResponse
+          r = SystemOneResponse.model_validate_json(open("answer.json").read())
+          [(name, ans)] = r.answers.items()
+          assert name == "noul_0" and ans.type == "noul", (name, ans)
+          assert 0.0 <= ans.noul <= 1.0, ans.noul
+          print(f"OK: P(true) = {ans.noul:.3f}")
+          PY
+
   publish:
     name: Publish to PyPI
-    needs: build
+    needs: [build, integration-test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -44006,6 +43699,46 @@ jobs:
           packages-dir: dist
           # attestations: true is the default — signs the artefacts with the
           # workflow's OIDC identity so consumers can verify provenance.
+
+  github-release:
+    name: Create GitHub release
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write  # Required to create the tag and release.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Download dist artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: dist
+          path: dist
+
+      - name: Create GitHub release
+        # Tags the current commit as v<version> and publishes a release with
+        # auto-generated notes (commits since the previous tag). Attaches the
+        # same sdist + wheel we uploaded to PyPI so the GitHub release and the
+        # PyPI release carry identical artefacts.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::error::release $TAG already exists"
+            exit 1
+          fi
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
+            --generate-notes \
+            dist/*
 
 
 

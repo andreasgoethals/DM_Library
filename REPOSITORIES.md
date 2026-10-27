@@ -120,8 +120,10 @@ Response-specific license notices are retained even though response data are exc
 links this repository directly. The snapshot is newer than the launch article and
 includes subsequent configurations; it should not be mistaken for a frozen launch release.
 
-- `src/strands_decider/modeling.py` — `PointerHead`, `SlotHead` and
-  `StrandsDeciderModel` permit direct comparison of the two readout designs.
+- `src/strands_decider/modeling.py` — `PointerHead`, `build_head` and
+  `StrandsDeciderModel` implement the pointer readout. Upstream removed the alternative
+  slot head on 26 October 2026 (revision `13c0514`); earlier snapshots in this repository's
+  history retain it for comparison.
 - `src/strands_decider/infer.py` — `SystemOneEngine` and `load_engine` implement
   request evaluation and model loading.
 - `training/train.py` — `TrainConfig` and `train` define optimization.
