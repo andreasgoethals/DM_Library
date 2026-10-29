@@ -182,7 +182,6 @@ are not claims about training-data inheritance or priority.
 | 2026-09 | Li et al. (2026), [Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms?](SUMMARIES.md#beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms) | Label-free logical checks expose inconsistency between negation, disjunction, yes/no and categorical probabilities. | Probability coherence beyond marginal calibration |
 | 2026-09 | Deußer et al. (2026), [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | Frozen-template evaluation distinguishes calibration across output primitives | Typed choice, binary and ordinal interfaces |
 | 2026-09 | Zhang et al. (2026), [AnyJev Technical Report](SUMMARIES.md#anyjev-technical-report) | Frozen-LLM readouts separate label-prior correction, option-order averaging, calibration and adaptive rotation cost. | Restricted next-token probabilities and permutation averaging |
-| 2026-10 | Cao et al. (2026), [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning and delegation; filed 4 October | Direct readout and hybrid search control |
 | 2026-10 | Rafe and Das (2026), [Benchmarking System One decision models against trained classifiers and language models for automated decision gates](SUMMARIES.md#benchmarking-system-one-decision-models-against-trained-classifiers-and-language-models-for-automated-decision-gates) | Matched decision gates compare specialist models, trained classifiers and LLM readouts under calibration, rejection and cascade costs. | Supervised baselines, selective risk and application-level routing |
 | 2026-10 | Xu et al. (2026), [JevOut: Natural Context Can Flip Decision Models](SUMMARIES.md#jevout) | Answer-preserving context search exposes confident errors; filed 8 October | Input invariance and robustness |
 | 2026-10 | Li et al. (2026), [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 9 October | Selective prediction and cascaded judging |
@@ -195,6 +194,7 @@ are not claims about training-data inheritance or priority.
 | 2026-10 | Zhang et al. 2026 — [Typed Decision Models on Tabular Data](SUMMARIES.md#typed-decision-models-on-tabular-data) | Four decision models and three LLMs separate option-format robustness from table-serialization robustness. | Semantic-preserving rewrites of tabular decisions and selective re-querying |
 | 2026-10 | Zhu et al. (2026), [Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling](SUMMARIES.md#intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling) | Multimodal masked decision training scores multiple fields in one causal pass, with separate calibration and handoff evaluations. | Native LM-head scoring, multimodal inputs and post-hoc calibration |
 | 2026-10 | Chen et al. 2026 — [System1-Arena: Which Decisions Can Be Left to System 1?](SUMMARIES.md#system1-arena-which-decisions-can-be-left-to-system-1) | Shared probability-scoring requests separate strong static decisions from weak closed-loop control across 30 models. | Typed decisions, broad benchmarks and latency-aware closed-loop evaluation |
+| 2026-10 | Cao et al. (2026), [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning; v2 adds one-hot and component ablations; filed 23 October | Direct readout and hybrid search control |
 
 ## Web-source timeline
 
@@ -230,9 +230,9 @@ The application supplies the candidates; the model neither discovers a feasible
 set nor shows that all useful actions were offered.
 
 Cao et al. 2026 (*SearchJev: A Fast and Calibrated System-1 Model for Search
-Agents*) make the controller explicit: bounded relevance, sufficiency and
-verification judgments guide search while a larger model generates queries and
-answers. Li et al. 2026 (*JEV-as-a-Judge: Accept When Confident, Escalate When
+Agents*) make the controller explicit: bounded relevance and sufficiency
+judgments guide search while a larger model generates queries and answers;
+verification is a post-hoc support score that does not control the loop. Li et al. 2026 (*JEV-as-a-Judge: Accept When Confident, Escalate When
 Unsure*) decide whether to accept a cheap verdict or pay for a fallback; their
 threshold rules minimize expense under an empirical accuracy tolerance, not an
 optimum under arbitrary error costs. Xu et al. 2026 (*JevOut: Natural Context Can
@@ -309,7 +309,9 @@ distribution.
 **Calibration under shift and after selection.** Cao et al. 2026 (*SearchJev: A
 Fast and Calibrated System-1 Model for Search Agents*) train against soft targets
 with proper-scoring losses; held-out families keep accuracy while calibration
-worsens (Table 5). Zhuang et al. 2026 (*StartLux-Decision: AutoThink Decision
+worsens (Table 5). The v2 one-hot ablation slightly improves mean ID ECE;
+soft targets improve some OOD accuracies but worsen rewriting ECE. Proper-scoring
+training alone therefore does not establish uniformly better calibration. Zhuang et al. 2026 (*StartLux-Decision: AutoThink Decision
 Models with Reinforcement Learning for Calibrated Deliberative Decisions*) show
 that selection and routing shift confidence–accuracy gaps, and policy-aware
 calibration narrows them from [−11.7, +20.5] to [−2.7, +2.1] points while still
@@ -382,7 +384,11 @@ and Calibrated System-1 Model for Search Agents*) report that on 100
 BrowseComp-Plus questions, hybrids with SearchJev-4B reach 54% versus 45% for
 System 2 alone and 46% for a Jev 1.13 hybrid, at far lower active time. The
 SearchJev runs record no explicit short-decision fallback calls, so the gain does
-not isolate the confidence gate. Duan et al. 2026 (*General Decision Models:
+not isolate the confidence gate, whose threshold is now specified as 0.8
+(Table 10). The v2 component ablations attribute the largest observed accuracy
+drops to replacing sufficiency (30 and 10 points at 0.8B/4B); differences from
+replacing post-hoc verification reflect stochastic reruns, not a causal verification
+effect. Duan et al. 2026 (*General Decision Models:
 Benchmarking and Insights Beyond Jev*) replace τ-bench action selection with Jev:
 success falls from 77.6% to 66.1% and P95 time rises, although median time falls.
 Chen et al. 2026 (*System1-Arena: Which Decisions Can Be Left to System 1?*) find

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-29
+
+- Reconciled all 31 selected sources with live Zotero. Filed SearchJev arXiv v2 (23 October), regenerated text and recorded version-specific title/authors separately from unchanged Zotero metadata. Updated its summary, overview and synthesis for one-hot and component ablations, the explicit confidence threshold and the limits of the calibration-utility result; moved the entry to its filed-version date order.
+
 ## 2026-10-27
 
 - Refreshed StrandsDecider to upstream revision `13c0514` (26 October), which removed the alternative `SlotHead` readout; REPOSITORIES.md and the synthesis model table now describe the current pointer-only implementation.

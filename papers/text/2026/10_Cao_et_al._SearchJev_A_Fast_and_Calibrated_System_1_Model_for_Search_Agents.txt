@@ -1,6 +1,6 @@
-SearchJev: A Fast and Calibrated System-1 Model for Search Agents
+SearchJev: A Calibrated System-1 Model for Search Agents
 Congfeng Cao1 Lipeng Zuo1 Konstantinos Papakostas1 Qiwei Xu1 Songwei Xu1
-Lun Zhou1 Zhaochun Ren2 Yougang Lyu1* Xiaohui Yan1*
+Qianru Meng1 Lun Zhou1 Zhaochun Ren2 Yougang Lyu1* Xiaohui Yan1*
 1Huawei Technologies Co., Ltd. 2Leiden University
 /gtbCode
  Models
@@ -10,17 +10,17 @@ sions about relevance, evidence sufficiency, and
 search actions. Using generative language mod-
 els for these decisions introduces latency and
 unreliable confidence. We present SEARCH-
-JEV, a fast and calibrated System-1 model
-that separates search decisions from System-
-2 reasoning and generation. Given a search
-state and a decision schema, SEARCHJEVdi-
-rectly scores legal options without autoregres-
-sive output generation. We propose Soft-Label
-Learning for Calibrated Decisions (SLCD) to
-learn decision probabilities from uncertain su-
-pervision and calibrate their confidence. In a
-dual-system search agent, SEARCHJEVhan-
-dles short decisions and delegates uncertain
+JEV, a calibrated System-1 model that sepa-
+rates search decisions from System-2 reason-
+ing and generation. Given a search state and
+a decision schema, SEARCHJEVscores legal
+options without autoregressive output gener-
+ation. We propose Soft-Label Learning for
+Calibrated Decisions (SLCD) to learn decision
+probabilities from uncertain supervision and
+improve the reliability of decision confidence.
+In a dual-system search agent, SEARCHJEV
+handles short decisions and delegates uncertain
 judgments to System 2, which retains planning,
 query generation, and answer composition. We
 also introduce SearchDecision-Bench, a bench-
@@ -33,7 +33,8 @@ average expected calibration error by 41-74%.
 On BrowseComp-Plus, the dual-system agents
 achieve a 3.7-4.7 × speedup in active search
 time while improving answer accuracy from
-45% to up to 54%.
+45% to up to 54%. The benchmark and code
+are available1.
 1 Introduction
 LLM-based search agents interleave reasoning with
 retrieval to answer complex questions (Yao et al.,
@@ -42,10 +43,8 @@ trajectories, agents repeatedly make short decisions:
 Is this passage relevant? Is the evidence sufficient
 to answer? Which link should be explored next?
 These judgments determine which evidence is used
-and how the search proceeds. Drawing on the dis-
-tinction between System 1 and System 2 (Kahne-
-man, 2011), we view them asSystem-1decisions
 * Corresponding authors.
+1https://github.com/EvoScientist/SearchJev
 0 1 2 4 6 8
 Speedup (×)
 50
@@ -71,25 +70,30 @@ System-2-only Jev Dual-system Search Agent
 (b) End-to-end agentic search.
 Figure 1: Search decision performance and end-to-
 end agentic search. (a) On SearchDecision-Bench,
-SEARCHJEV achieves 5.2–5.3× faster decisions than
+SEARCHJEV achieves 5.2-5.3× faster decisions than
 same-size Qwen3.5. The x-axis uses Qwen3.5-4B
 as the 1 × reference. (b) On BrowseComp-Plus,
 dual-system agents with SEARCHJEV-0.8B/4B reach
 46.0%/54.0% answer accuracy, compared with 45.0%
-for System-2-only and 46.0% for Jev 1.13. Relative
-to System-2-only, they achieve 3.7–4.7× faster search
-with 3.3–4.8×fewer output tokens.
+for System-2 only and 46.0% for Jev 1.13, a closed
+System-1 model (Almeida, 2026). Relative to System-2
+only, they achieve 3.7-4.7× faster search with 3.3-4.8×
+fewer output tokens.
+and how the search proceeds. Drawing on the dis-
+tinction between System 1 and System 2 (Kahne-
+man, 2011), we view them asSystem-1decisions
 alongside theSystem-2reasoning needed for plan-
 ning and answer generation. Handling both through
 the same generative process adds sequential decod-
 ing overhead to frequent search decisions.
 Two common approaches illustrate the diffi-
+1
+arXiv:2610.05107v2  [cs.IR]  23 Oct 2026
+
 culty of unifying search decisions. Task-specific
 rerankers (Nogueira et al., 2020) and query-
 complexity classifiers (Jeong et al., 2024) support
 individual functions, but require separate models
-arXiv:2610.05107v1  [cs.IR]  4 Oct 2026
-
 and supervision for different decisions. Prompt-
 ing a general LLM accommodates diverse tasks,
 but uses autoregressive generation to produce short
@@ -97,43 +101,35 @@ judgments. Its confidence, whether verbalized or
 derived from token probabilities, is often miscal-
 ibrated (Kadavath et al., 2022; Tian et al., 2023;
 Xiong et al., 2024). Reliable confidence is needed
-to determine whether a decision can be accepted
-or requires further reasoning. The challenge is
-therefore to handle heterogeneous search decisions
-with a unified model that is both efficient and well
-calibrated.
+to determine whether a decision can be accepted or
+requires reasoning. The challenge is therefore to
+handle heterogeneous search decisions with a uni-
+fied model that is both efficient and well calibrated.
 To address this challenge, we propose SEARCH-
 JEV, a fast and calibrated System-1 model for
-search agents. Inspired by Jev’s use of typed prob-
-abilistic outputs for automation (Almeida, 2026),
-our central idea is to learn search judgments as
-schema-conditioned probabilistic predictions and
-separate them from System-2 reasoning and gener-
-ation. This separation allows one model to handle
-multiple decision types and provides confidence
-estimates for deciding when to invoke System 2 for
-a judgment.
+search agents. Inspired by Jev’s probabilistic out-
+puts for automation (Almeida, 2026), we formulate
+search judgments as schema-conditioned proba-
+bilistic decisions, separating them from System-2
+reasoning and generation (see Appendix A for re-
+lated work). This allows one model to handle multi-
+ple decision types and provide confidence estimates
+for deciding when to invoke System 2.
 SEARCHJEVhas three components. (i) The
-System-1 Search Decision Modeluses a textual
-schema to specify each decision and its legal op-
-tions. Given the search state and schema, it normal-
-izes the LM’s first-output-token logits over legal
-option labels to directly produce a decision distri-
-bution, avoiding autoregressive output generation.
-(ii)Soft-Label Learning for Calibrated Decisions
-(SLCD) learns these distributions from soft targets
-that represent uncertainty in the supervision. It
-combines proper scoring losses with subsequent
-temperature calibration to improve the reliability of
-decision confidence (Gneiting and Raftery, 2007;
-Guo et al., 2017). (iii) TheDual-System Search
-Agentuses SEARCHJEVfor short search decisions
-and delegates uncertain judgments to System 2,
-which retains planning, query generation, and an-
-swer composition. This division of labor replaces
-repeated generative judgments with direct predic-
-tions while preserving access to System-2 reason-
-ing.
+System-1 Search Decision Modeldirectly scores le-
+gal options from the LM’s first-output-token logits,
+conditioned on the search state and a textual deci-
+sion schema, avoiding autoregressive output gener-
+ation. (ii)Soft-Label Learning for Calibrated De-
+cisions(SLCD) learns decision distributions from
+uncertain supervision using soft targets and proper
+scoring losses, followed by temperature calibration
+to improve confidence and generalization to held-
+out data (Gneiting and Raftery, 2007; Guo et al.,
+2017). (iii) TheDual-System Search Agentaccepts
+confident SEARCHJEVdecisions and delegates un-
+certain judgments to System 2, which retains plan-
+ning, query generation, and answer composition.
 To support unified training and evaluation, we
 introduce SearchDecision-Bench. Existing super-
 vision for search decisions comes from heteroge-
@@ -154,26 +150,25 @@ ing 5.2-5.3× faster decisions. On BrowseComp-
 Plus (Chen et al., 2026), the dual-system agents
 achieve a 3.7-4.7× speedup in median active time
 while improving answer accuracy from 45% to up
-to 54%, compared with the System-2-only agent.
+to 54%, compared with the System-2 only agent.
 Figure 1 summarizes these gains in search decision
 performance and end-to-end agentic search.
 Our contributions are:
 • We propose SEARCHJEV, a schema-conditioned
-search decision model that directly predicts le-
-gal options and learns calibrated probabilities
-through SLCD.
+search decision model that directly predicts legal
+options and learns decision probabilities through
+SLCD.
 • We build a dual-system search agent that sepa-
 rates short decisions from reasoning and gener-
 ation, and delegates uncertain judgments from
 System 1 to System 2.
-• We formalize six types of search decisions and in-
-troduce SearchDecision-Bench for unified train-
-ing and evaluation.
+• We introduce SearchDecision-Bench, unifying
+six search decision types.
 • We demonstrate improved decision quality, av-
 erage calibration, and efficiency over same-size
 autoregressive models, and better end-to-end an-
 swer accuracy with lower search time than a
-System-2-only agent.
+System-2 only agent.
 2 SearchDecision-Bench
 We introduce SearchDecision-Bench to train and
 evaluate short decisions made during agentic
@@ -191,6 +186,11 @@ Ct ={c 1, . . . , cn} such as documents, links, or
 sources. A schema σ={f 1, . . . , fk} specifies
 the decisions as named fields, each with a natural-
 language question and a set of legal options V(f) .
+A sample consists of a serialized state, a schema,
+and a target for each field; several fields can share
+the same state. We write s=s t when the step
+index is not needed.
+2
 
 Decision Type Decision Task Output Type Task Example
 Routing
@@ -243,10 +243,6 @@ Navigation 56,981 10,213 0
 Verification 47,830 10,334 20,631
 Table 2: Statistics of SearchDecision-Bench. Counts
 denote state-schema pairs.
-A sample consists of a serialized state, a schema,
-and a target for each field; several fields can share
-the same state. We write s=s t when the step
-index is not needed.
 Decision types.We organize search decisions
 into six types:routingidentifies a query’s intent or
 retrieval needs;rewritingchecks a candidate query
@@ -258,9 +254,9 @@ dence supports a claim. Table 1 presents represen-
 tative tasks and examples for each type.
 Output types.SearchDecision-Bench uses
 Choicefor categorical selection,Scorefor ordinal
-scoring, andNoulfor binary judgments. Legal
-options are specified in text; a decision type can
-use multiple output types.
+scoring, andNoulfor binary judgments following
+Jev (Almeida, 2026). Legal options are specified in
+text; a decision type can use multiple output types.
 2.2 Data Construction and Splits
 Data sources.We draw on Chinese and
 English resources that provide supervision
@@ -271,6 +267,16 @@ LCQMC (Liu et al., 2018), and QReCC (Anantha
 et al., 2021), support intent classification and
 query-equivalence decisions. Retrieval datasets,
 including T2Ranking (Xie et al., 2023) and
+DuReader-Retrieval (Qiu et al., 2022), provide
+passage-level judgments. Multi-hop QA and agent
+demonstrations support sufficiency and navigation
+decisions, while claim-evidence resources such
+as VitaminC (Schuster et al., 2021) provide
+verification labels. Training also includes natural
+language inference, sentiment analysis, topic
+classification, and reading comprehension data (Xu
+et al., 2020; Tan and Zhang, 2008).
+3
 
 Search State s
 (q, H t, C t)
@@ -281,19 +287,10 @@ Choice:{A,B,C, . . .}
 Score:{1,2,3, . . .}
 Noul:{True,False}
 Qwen3.5-0.8B/4B causal LM: direct decision scoring
-Existing LM logits:ℓ f (v) = [z θ (x f )] αf (v) ⇒normalize over legal options:p f (v)
+Existing LM logits:ℓ f (v) = [z θ(x f )] αf (v) ⇒normalize over legal options:p f (v)
 Figure 2: SEARCHJEVdecision model. A search state, the question and output type of task f, and its legal options
 form the decision input xf . Choice uses letter labels; Score and Noul show example values. The model normalizes
 option-label logits into a decision distribution without autoregressive output generation.
-DuReader-Retrieval (Qiu et al., 2022), provide
-passage-level judgments. Multi-hop QA and agent
-demonstrations support sufficiency and navigation
-decisions, while claim-evidence resources such
-as VitaminC (Schuster et al., 2021) provide
-verification labels. Training also includes natural
-language inference, sentiment analysis, topic
-classification, and reading comprehension data (Xu
-et al., 2020; Tan and Zhang, 2008).
 Sample construction and annotation.We con-
 vert each source instance into a search state and
 instantiate decision fields with textual questions
@@ -319,140 +316,128 @@ source appears in an evaluation split. Training and
 validation inputs whose states also occur in a test
 set are removed.
 Splits and statistics.In-distribution (ID) tests
-use held-out samples from the same datasets used
-for training. Out-of-distribution (OOD) evaluation
-uses held-out datasets and splits: FRAMES (Kr-
-ishna et al., 2025), RAGTruth (Niu et al., 2024),
-CANDY (Guo et al., 2025), Search Arena (Miroyan
-et al., 2026), AgentRewardBench (Lù et al., 2025),
-and the QReCC test split. Both ID and OOD test
-samples are excluded from training. Table 2 counts
-state-schema pairs for the six search-decision types:
-all six have ID tests, and four have OOD tests. The
-general-language training tasks are outside these
-counts. BrowseComp-Plus (Chen et al., 2026) is
-used only for separate end-to-end agentic search
-evaluation.
+use held-out samples from training datasets. Out-
+of-distribution (OOD) evaluation uses held-out
+datasets and splits: FRAMES (Krishna et al., 2025),
+RAGTruth (Niu et al., 2024), CANDY (Guo et al.,
+2025), Search Arena (Miroyan et al., 2026), Agen-
+tRewardBench (Lù et al., 2025), and the QReCC
+test split. ID and OOD test samples are excluded
+from training. Table 2 counts state-schema pairs
+across six search-decision types: all six have
+ID tests, and four have OOD tests. General-
+language training tasks are outside these counts.
+BrowseComp-Plus (Chen et al., 2026) is used only
+for end-to-end agentic search evaluation.
 3 SEARCHJEV
 SEARCHJEVseparates short search decisions from
-the reasoning and generation performed by Sys-
-tem 2. A token-logit readout directly predicts a
-distribution over legal options without autoregres-
-sive output generation. Soft-label learning trains
-these probabilities, followed by confidence calibra-
-tion. The dual-system agent then uses SEARCHJEV
-for search decisions, delegating uncertain cases to
-System 2 while retaining System 2 for planning,
-query generation, and answers.
+System 2 reasoning and generation. It directly
+predicts calibrated distributions over legal options
+without autoregressive decoding, delegating uncer-
+tain decisions to System 2, which handles planning,
+query generation, and answer synthesis.
 3.1 System-1 Search Decision Model
-Short search decisions often require choosing
-among a small set of legal options. SEARCH-
-JEVreads their probabilities directly from a pre-
-trained causal LM’s output logits, avoiding multi-
-token structured generation. Figure 2 illustrates the
-model.
-Schema-conditioned input.For each decision
-task f∈σ , the input xf combines the search state
-s, the task’s question and output type, and its le-
+SEARCHJEVpredicts search decisions from the out-
+put logits of a pretrained causal LM (Qwen Team,
+2026), as illustrated in Figure 2.
+Schema-conditioned input.For each task f∈σ ,
+the input xf contains the search state s, the task
+question, output type, and legal optionsV(f) . Each
+option is assigned a distinct single-token label (e.g.,
+A or B), although its description may span multi-
+ple tokens. The input ends with a label-selection
+instruction and the assistant generation prefix.
+Token-logit decision readout.Let zθ(xf) de-
+note the LM logits at the first output position, and
+αf(v) the token index assigned to option v. The
+option score and uncalibrated probability are
+ℓf(v) = [zθ(xf)]αf (v),
+pf(v) = expℓ f(v)P
+u∈V(f) expℓ f(u) , (1)
+where v∈ V(f) and pf(v) =p θ(v|x f). Nor-
+malizing over legal labels yields distributions for
+Choice, Score, and Noul decisions using the exist-
+ing LM head without task-specific parameters. This
+supports batched inference without autoregressive
+decoding or JSON parsing.
+4
 
-Agentic Search Loop
-User Question
-System 2
-Planning &
-Query Generation
-Search State
-Question · History
-Evidence
+Dual-System Search Agent
+User Question System 2
+Planning & Query Generation
 Decision Schema
-Questions · Options
+Question · Output Type · Legal Options
+System 2
+Resolve Uncertain Decisions
+Search State
+Question · History · Evidence
 System 1: SEARCHJEV
 Search Decisions
 Routing Rewriting Relevance
 Sufficiency Navigation Verification
-Search Controller
-Search · Open
-Rerank · Stop
 Confidence
 Gate
-Confident?
-System 2
-Resolve Uncertain
-Decisions
+Search Controller
+Search · Open · Rerank · Stop
 Search Environment
 Retriever · Corpus · Web Pages
 System 2
 Final Answer Synthesis
 Final Answer
-Initialize Plan / Queries
-Context
-Decisions +
-Confidence Yes
-No
+Plan / Queries
+Context Decisions +
+Confidence
+Low confidence
+High confidence
 Decision
-Search / Open / Rerank
+Search / Open / RerankNew evidence
 Stop
-New Evidence
-System 1 System 2 Code & Environment
+SEARCHJEV
+ 
+Schema-conditioned input Pretrained causal LM First-position logits Legal-label readout Calibrated option distribution
+Search State
+Question · History · Evidence
+Decision Schema
+Question · Type · Legal Options
+Input
+Tokens
+Decoder Blocks
+× N
+LM
+Head
+Single forward pass
+Vocabulary logits
+… A B C …
+First output position
+Select legal-option logits
+A −0.19
+B +1.20
+C −0.78
+Temperature-scaled Softmax
+A 0.21
+B 0.65
+C 0.14
+T fitted per output typeChoice · Score · Noul
 Figure 3: Architecture of the Dual-System Search Agent. System 2 handles planning, query generation, and final
 answer synthesis, while SEARCHJEV(System 1) makes search decisions specified by the schema at each step.
 Confident decisions are accepted; uncertain ones are delegated to System 2. The search controller uses the resolved
 decisions to select actions and update the search state with retrieved evidence.
-gal options V(f) . The schema specifies a finite
-option set for each task. Each option is paired
-with a distinct single-token label from the existing
-vocabulary, such as A or B. The input ends with
-an instruction to select one label and the assistant
-generation prefix. Option descriptions can span
-multiple tokens; only their labels must be single
-tokens.
-Token-logit decision readout.We use the LM’s
-existing vocabulary projection to score the legal
-labels. Let zθ(xf) be the vocabulary-logit vector at
-the first output position, where θ denotes the model
-parameters. The token index αf(v) identifies the
-label assigned to option v. The option score and
-decision probability are
-ℓf(v) = [zθ(xf)]αf (v),
-pf(v) = expℓ f(v)P
-u∈V(f) expℓ f(u) , (1)
-where v∈ V(f) and pf(v) abbreviates the model’s
-uncalibrated probability pθ(v|x f). Normaliz-
-ing only over legal labels gives a distribution for
-Choice, Score, or Noul decisions and removes the
-need for output parsing. The readout uses the ex-
-isting LM head without adding decision-specific
-parameters.
-Direct decision inference.Reading legal-label
-logits produces decision distributions without gen-
-erating structured responses token by token. De-
-cision inputs can be processed in batches, and the
-label-to-option mapping supplies structured out-
-puts without JSON parsing. This avoids the se-
-quential decoding overhead of autoregressive de-
-cision models while retaining the Qwen3.5 back-
-bone (Qwen Team, 2026).
 3.2 Soft-Label Learning for Calibrated
 Decisions
-Search decisions require informative confidence es-
-timates, but their supervision comes from sources
-with different reliability. We proposeSoft-Label
-Learning for Calibrated Decisions(SLCD) to learn
-decision probabilities from soft targets and cali-
-brate them by output type.
-Soft-label supervision.SLCD uses a target dis-
-tribution tf over V(f) to represent uncertainty in
-its supervision. It uses the soft targets supplied
-by the data construction process, with one-hot tar-
-gets for labels without a probability distribution.
-We paraphrase field descriptions in Chinese or En-
-glish to encourage learning from schema text, and
-permute the options of unordered fields to reduce
-position bias (Zheng et al., 2024; Pezeshkpour and
-Hruschka, 2024).
-Decision probability learning.We fit each target
-distribution with a weighted combination of cross-
-
-entropy and Brier losses:
+We proposeSoft-Label Learning for Calibrated De-
+cisions(SLCD) to learn decision probabilities from
+heterogeneous supervision and calibrate confidence
+by output type.
+Soft-label supervision.Each field uses a target
+distribution tf over V(f) , defaulting to one-hot
+labels when soft targets are unavailable. Retaining
+label uncertainty improves held-out accuracy over
+one-hot labels (Section 5). We paraphrase field
+descriptions in Chinese or English and permute
+unordered options to reduce position bias (Zheng
+et al., 2024; Pezeshkpour and Hruschka, 2024).
+Decision probability learning.We combine
+cross-entropy and Brier losses:
 Lf =w f
 h
 −
@@ -469,75 +454,57 @@ pf(v)−t f(v)
 (2)
 where λB ≥0 balances the losses and wf >0
 downweights LLM-assigned labels, demonstra-
-tions, or constructed rewrites. Training averages
-Lf over the individual field examples in each mini-
-batch. Both losses are strictly proper scoring rules:
-for each field, their combination is uniquely min-
-imized at its soft target distribution (Brier, 1950;
-Gneiting and Raftery, 2007).
-Output-type temperature calibration.After
-training, we fit positive temperatures on held-out
-validation decisions by minimizing the negative
-log-likelihood of their target labels (Guo et al.,
-2017). For fieldf, the calibrated distribution is
+tions, and constructed rewrites. We average the
+loss over fields in each minibatch. Both losses
+are strictly proper scoring rules, whose combina-
+tion is minimized at tf (Brier, 1950; Gneiting and
+Raftery, 2007).
+Output-type temperature calibration.We fit a
+positive temperature for each output type by min-
+imizing validation negative log-likelihood (Guo
+et al., 2017):
 ˜pf(v) = exp(ℓf(v)/Tκ(f))P
 u∈V(f) exp(ℓf(u)/Tκ(f)) ,(3)
-where κ(f) is the output type (Choice, Score, or
-Noul) and Tκ(f) >0 is its fitted temperature. Types
-with insufficient validation examples use a temper-
-ature fitted across all types. Scaling preserves the
-probability ranking of legal options and provides
-the probabilities used by the search agent.
+where κ(f)∈ {Choice,Score,Noul} . Types with
+insufficient validation data share a pooled tempera-
+ture. Calibration preserves option rankings, and ˜pf
+provides confidence estimates for the search agent.
 3.3 Dual-System Search Agent
-We integrate SEARCHJEVinto the agentic search
-loop shown in Figure 3. System 2 plans, writes
-search queries, and composes the final answer,
-while SEARCHJEV(System 1) handles schema-
-defined search decisions. A confidence gate dele-
-gates uncertain judgments to System 2, and a search
-controller converts the resolved decisions into ac-
-tions.
-Schema-conditioned decisions.The decision
-schema specifies the judgments needed at each
-search step. Given search state st and schema σ,
-SEARCHJEVprocesses the schema-conditioned in-
-puts {xf }f∈σ and returns a calibrated distribution
-˜pf over each field’s legal options. Changing the
-schema and the controller’s action rules adapts the
-agent to different search tasks while retaining the
-same division of labor.
-Confidence-gated delegation.For each field f,
-the confidence gate accepts SEARCHJEV’s deci-
-sion when its confidence maxv∈V(f) ˜pf(v) is at
-least δ∈[0,1] ; otherwise, System 2 resolves the
-same decision question using its legal options. Both
-paths pass their decisions to the same search con-
-troller. The threshold δ controls how many judg-
-ments are delegated to System 2 (Geifman and
-El-Yaniv, 2017).
-Search execution and state update.The search
-controller applies task-specific rules to map the re-
-solved judgments to actions such as search, open,
-rerank, or stop. Search and page-opening actions
-access the search environment, and the retrieved
-evidence updates the search state for subsequent
-decisions. When the controller stops searching,
-System 2 synthesizes the final answer from the ac-
-cumulated evidence. Accepting confident SEARCH-
-JEVoutputs avoids extra System-2 judgment calls
-while retaining System 2 for planning and genera-
-tion.
+Figure 3 illustrates the dual-system search loop.
+SEARCHJEV(System 1) handles short, schema-
+defined search decisions, while System 2 performs
+planning, query generation, and answer synthesis,
+and resolves uncertain judgments. A shared search
+controller translates the decisions into actions.
+Schema-conditioned decisions.Given search
+state st and schema σ, SEARCHJEVprocesses
+{xf }f∈σ and returns calibrated distributions
+{˜pf }f∈σ over legal options. Adapting the schema
+and controller rules supports different search tasks
+while preserving the same division of labor.
+Confidence-gated delegation.For each field
+f, the gate accepts the System-1 decision if
+maxv∈V(f) ˜pf(v)≥δ ; otherwise, System 2 se-
+lects from the same legal options. The threshold
+5
+
+δ∈[0,1] controls delegation (Geifman and El-
+Yaniv, 2017), with both paths feeding the search
+controller.
+Search execution and state update.The con-
+troller maps decisions to search, open, rerank, or
+stop actions. Retrieved evidence updates st+1 for
+subsequent decisions. Upon stopping, System 2
+synthesizes the final answer.
 4 Experiments
-4.1 Research Questions
-We aim to answer the following research questions
-in our experiments:RQ1: How does SEARCHJEV
-perform in terms of decision effectiveness and ef-
-ficiency?RQ2: How does SEARCHJEVaffect the
-answer quality and efficiency of end-to-end agentic
-search?RQ3: How well does SEARCHJEVgener-
-alize to held-out datasets across different decision
-families?
-4.2 Baselines
+We investigate three research questions:
+RQ1: How does SEARCHJEVperform in terms of
+decision effectiveness and efficiency?
+RQ2: How does SEARCHJEVaffect the answer
+quality and efficiency of end-to-end agentic search?
+RQ3: How well does SEARCHJEVgeneralize to
+held-out datasets across different decision families?
+4.1 Baselines
 To evaluate the effectiveness of SEARCHJEVat the
 decision and agent levels, we compare it with the
 following baselines:
@@ -546,28 +513,22 @@ following baselines:
 with constrained JSON decoding on the same
 prompts. Confidence scores are derived from
 option log-probabilities.
+• SEARCHJEV(one-hot)trains the same
+Qwen3.5-0.8B/4B backbones with the same
+data, prompts, objective (Eq. 2), and output-type
+temperature calibration as SEARCHJEV, but
+replaces every soft target with the one-hot label
+of its reference option.
 • Jev 1.13(Almeida, 2026) is a closed System-1
 model, which we query through its API on the
 same test items. We also use Jev in place of
 SEARCHJEVin the dual-system agent for end-to-
 end comparison.
-• System-2 onlyuses Qwen3.5-27B for both short
-decisions and search reasoning. We compare it
-with dual-system agents that delegate the short
-
-Relevance Sufficiency Routing Navigation Rewriting Verification Latency
-Model NDCG↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓ms↓
-Jev 1.13 (closed) 98.5 7.6 79.8 5.6 73.5 5.5 72.1 1.579.5 2.8 79.81.6265.4
-Qwen3.5-0.8B AR (JSON) 85.7 15.7 49.9 24.2 24.7 24.0 42.0 19.7 40.6 32.1 56.8 9.5 144.2
-Qwen3.5-4B AR (JSON) 96.74.257.7 15.0 53.3 6.7 37.8 26.3 66.1 5.5 55.1 4.7 195.2
-SEARCHJEV-0.8B98.6 5.8 89.4 5.183.2 5.056.8 4.6 84.0 2.3 91.7 9.327.6
-SEARCHJEV-4B 99.06.596.05.6 86.65.7 57.2 8.485.9 2.0 93.28.8 37.1
-Table 3: Main results on the in-distribution test sets of SearchDecision-Bench, covering decision quality, calibration,
-and latency. NDCG@10, accuracy, and ECE are scaled by 100; latency is the median per-decision time in
-milliseconds at batch size 1.Boldhighlights the best performance, underlined indicates the second-best.
-decisions to SEARCHJEV-0.8B or SEARCHJEV-
-4B.
-4.3 Evaluation Metrics
+• System-2 onlyuses Qwen3.5-27B for short deci-
+sions and search reasoning. We compare it with
+dual-system agents that delegate the short deci-
+sions to SEARCHJEV-0.8B or SEARCHJEV-4B.
+4.2 Evaluation Metrics
 To evaluate decision effectiveness on
 SearchDecision-Bench, we report accuracy
 for the five classification-based families and
@@ -578,13 +539,13 @@ efficiency using median latency per decision.
 For end-to-end agentic search, we follow
 the answer-evaluation protocol of BrowseComp-
 Plus (Chen et al., 2026): an LLM judge compares
-the final answer with the reference answer, and ac-
-curacy is the percentage of questions judged correct.
-We also report System-2 calls, output and reasoning
-tokens, and median active time per question, includ-
-ing System-2 calls, decision-model inference, and
-retrieval.
-4.4 Implementation Details
+the answer with the reference answer, and accuracy
+is the percentage of questions judged correct. We
+also report System-2 calls, output and reasoning
+tokens, and median active time per question, in-
+cluding System-2 calls, decision-model inference,
+and retrieval.
+4.3 Implementation Details
 We initialize SEARCHJEV-0.8B and SEARCHJEV-
 4B from Qwen3.5-0.8B/4B (Qwen Team, 2026)
 and train them with LoRA (Hu et al., 2022) using
@@ -594,7 +555,7 @@ structed rewrites, and wf = 1 otherwise. Output-
 type temperatures are fitted on 5,000 validation
 decisions. Decision latency is measured at batch
 size 1 using the same inference code for the open
-models.
+models. See Appendix I for detail.
 For end-to-end evaluation, we randomly sam-
 ple 100 BrowseComp-Plus questions and run each
 agent once per question, using Qwen3.5-27B as
@@ -609,193 +570,219 @@ whether the retained evidence supports the final
 answer, using the calibrated support probability as
 an answer-support score.
 5 Experimental Results and Analysis
-To answer our research questions, we eval-
-uate decision effectiveness and efficiency on
-SearchDecision-Bench, assess end-to-end answer
-quality and efficiency on BrowseComp-Plus, and
-examine generalization to held-out datasets.
-5.1 Decision Effectiveness and Efficiency
-(RQ1)
-Table 3 reports decision quality, calibration, and
-latency across the six in-distribution decision
-families of SearchDecision-Bench. We compare
-SEARCHJEV-0.8B and SEARCHJEV-4B with same-
-size Qwen3.5 AR (JSON) models and Jev 1.13.
-Based on these results, we make three observa-
-tions:
-• SEARCHJEVimproves decision quality at
-both model sizes.Both variants outperform
-same-size Qwen3.5 AR (JSON) across all six
-decision families, with the 4B model leading five
-of them. Compared with Jev 1.13, both improve
-sufficiency, routing, rewriting, and verification
-and achieve comparable relevance, while Jev re-
-mains stronger on navigation. These gains sup-
-port our System-1 search decision design: the
-schema-conditioned model reads logits for legal
-option labels from each decision prompt, while
-decision-specific supervision teaches the back-
-bone to distinguish the choices required by each
-schema. This aligns prediction and training with
-the judgments made during search.
-• SEARCHJEVimproves average calibration
-over Qwen3.5 AR (JSON).Across the six fami-
-lies, mean ECE falls by 74.4% and 40.7% relative
+We evaluate SEARCHJEVon decision effectiveness,
+end-to-end agentic search, and generalization to
+held-out datasets.
+RQ1: Decision Effectiveness and Efficiency
+Table 3 compares decision quality, calibration, and
+latency across six in-distribution decision families.
+We make four observations:
+• SEARCHJEVimproves decision quality across
+all six families.Both model sizes outperform
+same-size Qwen3.5 AR (JSON), with SEARCH-
+JEV-4B or its one-hot variant leading five fam-
+ilies. Compared with Jev 1.13, both achieve
+higher accuracy on sufficiency, routing, rewrit-
+ing, and verification, comparable relevance, but
+6
 
-Agent Acc↑System-2 Calls↓Output Tokens (k)↓Time (s)↓
-System-2 only (Qwen3.5-27B) 45.0 90.3 73.7 4080
-Dual-system Search Agent (Jev 1.13) 46.0 76.0 18.3 1018
-Dual-system Search Agent (SEARCHJEV-0.8B)46.0 62.1 15.5 868
-Dual-system Search Agent (SEARCHJEV-4B) 54.084.6 22.1 1102
-Table 4: End-to-end agentic search results on BrowseComp-Plus, covering answer quality and efficiency with
-System 2 fixed at 27B. Dual-system agent sizes refer to SEARCHJEV; the Jev 1.13 agent uses Jev in its place. Acc is
-answer accuracy (%). Calls and output tokens are for System 2 and are reported per question; k denotes thousands.
-Time is the median active time per question, including System-2 calls, decision-model inference, and retrieval.Bold
-highlights the best performance, underlined indicates the second-best.
-Routing Rewriting Relevance Verification Latency
-Model Acc↑ECE↓Acc↑ECE↓NDCG↑ECE↓Acc↑ECE↓ms↓
-Jev 1.13 (closed)62.320.0 97.7 5.698.7 3.4 84.5 3.7273.3
-Qwen3.5-0.8B AR (JSON) 29.2 13.4 47.3 38.4 82.2 32.0 53.9 22.6 153.2
-Qwen3.5-4B AR (JSON) 43.7 30.3 95.8 24.1 93.8 10.6 78.0 3.7195.8
-SEARCHJEV-0.8B41.1 15.599.628.1 95.5 31.4 55.7 23.627.7
-SEARCHJEV-4B55.8 3.0 99.626.999.011.4 65.0 15.4 37.1
-Table 5: Results on the out-of-distribution test sets of SearchDecision-Bench, covering decision quality, calibration,
-and latency across four decision families. NDCG@10, accuracy, and ECE are scaled by 100; latency is the median
-per-decision time in milliseconds at batch size 1. NDCG@10 is computed over the candidates of each FRAMES
-question.Boldhighlights the best performance, underlined indicates the second-best. Ties receive the same marking.
-to the same-size Qwen3.5 AR (JSON) models
+Relevance Sufficiency Routing Navigation Rewriting Verification Latency
+Model NDCG↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓Acc↑ECE↓ms↓
+Jev 1.13 (closed) 98.5 7.6 79.8 5.6 73.5 5.572.1 1.579.5 2.8 79.81.6265.4
+Qwen3.5-0.8B AR (JSON) 85.7 15.7 49.9 24.2 24.7 24.0 42.0 19.7 40.6 32.1 56.8 9.5 144.2
+Qwen3.5-4B AR (JSON) 96.7 4.2 57.7 15.0 53.3 6.7 37.8 26.3 66.1 5.5 55.1 4.7 195.2
+SEARCHJEV-0.8B (one-hot) 98.7 3.9 89.9 4.2 83.2 4.3 56.6 5.7 84.0 5.2 91.9 4.527.6
+SEARCHJEV-4B (one-hot)99.0 3.295.5 3.486.5 3.555.3 10.886.05.093.64.2 37.1
+SEARCHJEV-0.8B98.6 5.8 89.4 5.1 83.2 5.0 56.8 4.6 84.0 2.3 91.7 9.327.6
+SEARCHJEV-4B 99.06.596.05.686.65.7 57.2 8.4 85.9 2.093.2 8.8 37.1
+Table 3: Main results on the in-distribution test sets of SearchDecision-Bench, covering decision quality, calibration,
+and latency. SEARCHJEV(one-hot) is trained identically to SEARCHJEVbut with one-hot labels in place of soft
+targets (Section 4.1); its latency equals that of SEARCHJEV, which has the same architecture and inference code.
+NDCG@10, accuracy, and ECE are scaled by 100; latency is the median per-decision time in milliseconds at batch
+size 1.Boldhighlights the best performance, underlined indicates the second-best.
+Agent Acc↑∆Acc System-2 Calls↓Output Tokens (k)↓Time (s)↓
+System-2 only (Qwen3.5-27B) 45.0 – 90.3 73.7 4080
+Dual-system Search Agent (Jev 1.13) 46.0 – 76.0 18.3 1018
+Dual-system Search Agent (SEARCHJEV-0.8B)46.0 –62.1 15.5 868
+Relevance by Qwen3.5-0.8B AR (JSON) 41.0−5.0 52.5 15.7 718
+Sufficiency by Qwen3.5-0.8B AR (JSON) 16.0−30.0 6.6 2.5 72
+Verification by Qwen3.5-0.8B AR (JSON) 44.0−2.0 69.9 17.2 711
+Dual-system Search Agent (SEARCHJEV-4B) 54.0– 84.6 22.1 1102
+Relevance by Qwen3.5-4B AR (JSON) 53.0−1.0 88.8 21.6 1042
+Sufficiency by Qwen3.5-4B AR (JSON) 44.0−10.0 61.0 15.3 808
+Verification by Qwen3.5-4B AR (JSON) 45.0−9.0 86.6 19.6 913
+Table 4: End-to-end agentic search results on BrowseComp-Plus with System 2 fixed at Qwen3.5-27B. Indented
+rows replace one SEARCHJEVdecision type with same-size Qwen3.5 AR (JSON). ∆Acc denotes the accuracy
+change (percentage points) relative to the corresponding SEARCHJEVagent. Relevance and sufficiency affect search
+control, while verification is post-hoc; its accuracy differences reflect run-to-run variation. System-2 calls and
+output tokens (k: thousands) are per question; time is median active time including inference and retrieval. Bold and
+underline indicate the best and second-best non-ablation results.
+lower navigation accuracy.
+• SEARCHJEVimproves average decision cal-
+ibration.Mean ECE decreases by 74.4% and
+40.7% relative to same-size Qwen3.5 AR (JSON)
 at 0.8B and 4B, respectively. Compared with
 Jev 1.13, SEARCHJEV-0.8B achieves lower ECE
-on relevance, sufficiency, routing, and rewriting.
-SEARCHJEV-4B improves relevance and rewrit-
-ing and matches Jev on sufficiency. Jev retains
-the lowest mean ECE and is best calibrated on
-navigation and verification. This pattern is con-
-sistent with the probability-learning objective of
-SLCD: soft targets retain uncertainty in the su-
-pervision, cross-entropy and Brier losses train
-the predicted distributions, and output-type tem-
-perature calibration adjusts their confidence on
-held-out data. The combination targets reliable
-confidence alongside decision accuracy.
-• SEARCHJEVspeeds up decisions by avoiding
-autoregressive generation.Both model sizes
-are 5.2-5.3× faster than same-size Qwen3.5 AR
-(JSON). Compared with Jev 1.13, both variants
-achieve a 7.2-9.6× speedup in median decision
-latency. SEARCHJEVdirectly reads the logits
-of legal option labels, eliminating the token-by-
-token JSON decoding required by Qwen3.5 AR
-(JSON). Directly normalizing these logits re-
-duces the generation overhead of producing a
-structured decision.
-5.2 End-to-End Agentic Search (RQ2)
-Table 4 compares the SEARCHJEV-0.8B and
-SEARCHJEV-4B agents with the System-2-only
-(27B) agent and a dual-system agent using Jev 1.13
-on BrowseComp-Plus. Based on these results, we
-make two observations:
-• SEARCHJEVimproves answer accuracy at
-both model sizes.Both variants outperform the
-System-2-only (27B) agent. Compared with the
-Jev 1.13 agent, SEARCHJEV-4B improves accu-
-racy by 8.0 percentage points, while SEARCH-
-JEV-0.8B matches its accuracy. These gains
-support the division of labor in the dual-system
-agent: SEARCHJEVuses relevance predictions
-to select evidence and sufficiency predictions to
-decide whether to continue searching, while Sys-
-tem 2 retains planning, query generation, and
-answer composition. The results indicate that a
-specialized search decision model can improve
-final answers while keeping the same System-2
-reasoner.
-• SEARCHJEVreduces System-2 calls, output
-tokens, and search time.Compared with the
-System-2-only agent, both variants use fewer
-System-2 calls, reduce output tokens by a fac-
-tor of 3.3-4.8, and achieve a 3.7-4.7× speedup in
-median active time. Compared with the Jev 1.13
-agent, SEARCHJEV-0.8B also uses fewer calls
+on four families, while SEARCHJEV-4B im-
+proves relevance and rewriting and matches suf-
+ficiency. Jev retains the lowest mean ECE, par-
+ticularly on navigation and verification.
+• Soft targets match one-hot accuracy with
+better-behaved confidence.SEARCHJEVand
+SEARCHJEV(one-hot) differ by at most 1.9
+points in accuracy. One-hot labels slightly lower
+mean ECE but worsen navigation and rewriting
+calibration, and require temperatures of 1.10-
+1.56 to soften overconfident outputs, whereas
+soft targets keep temperatures at 0.82-1.11.
+• SEARCHJEVsubstantially reduces decision
+latency.Both variants are 5.2-5.3 × faster than
+same-size Qwen3.5 AR (JSON) and 7.2-9.6 ×
+faster than Jev 1.13, eliminating autoregressive
+decoding through direct option-logit scoring.
+RQ2: End-to-End Agentic Search
+Table 4 compares dual-system agents with System-
+2 only (27B) and Jev 1.13 on BrowseComp-Plus.
+Three findings emerge:
+• SEARCHJEVimproves end-to-end answer
+quality.SEARCHJEV-4B achieves 54% accuracy,
+exceeding System-2 only (45%) and Jev 1.13
+(46%) by 9.0 and 8.0 percentage points, respec-
+tively. SEARCHJEV-0.8B matches Jev at 46%.
+These results show that specialized search deci-
+sions can improve answer quality with the same
+System-2 reasoner.
+• SEARCHJEVimproves search efficiency.Both
+variants reduce System-2 calls and output tokens,
+7
 
-and output tokens and takes less time at the same
-accuracy. SEARCHJEV-4B uses more resources
-than Jev but achieves higher accuracy, offering a
-different accuracy-efficiency trade-off. SEARCH-
-JEVdirectly predicts short decisions, replacing
-the explicit System-2 decision calls. Output
-tokens decrease proportionally more than call
-counts, showing that the savings extend beyond
-the number of calls to the amount of generation
-performed by System 2.
-5.3 Decision Generalization (RQ3)
+Routing Rewriting Relevance Verification Latency
+Model Acc↑ECE↓Acc↑ECE↓NDCG↑ECE↓Acc↑ECE↓ms↓
+Jev 1.13 (closed)62.320.0 97.7 5.6 98.73.4 84.5 3.7273.3
+Qwen3.5-0.8B AR (JSON) 29.2 13.4 47.3 38.4 82.2 32.0 53.9 22.6 153.2
+Qwen3.5-4B AR (JSON) 43.7 30.3 95.8 24.1 93.8 10.6 78.0 3.7195.8
+SEARCHJEV-0.8B (one-hot) 40.5 12.299.91.4 96.9 33.4 55.3 26.127.7
+SEARCHJEV-4B (one-hot) 51.2 7.8 99.9 1.198.9 11.3 62.0 16.5 37.1
+SEARCHJEV-0.8B41.1 15.5 99.6 28.1 95.5 31.4 55.7 23.627.7
+SEARCHJEV-4B55.8 3.099.6 26.999.011.4 65.0 15.4 37.1
+Table 5: Results on the out-of-distribution test sets of SearchDecision-Bench, covering decision quality, calibration,
+and latency across four decision families. SEARCHJEV(one-hot) is trained identically to SEARCHJEVbut with
+one-hot labels in place of soft targets (Section 4.1); its latency equals that of SEARCHJEV, which has the same
+architecture and inference code. NDCG@10, accuracy, and ECE are scaled by 100; latency is the median per-
+decision time in milliseconds at batch size 1. NDCG@10 is computed over the candidates of each FRAMES
+question.Boldhighlights the best performance, underlined indicates the second-best. Ties receive the same marking.
+achieving 3.3-4.8× fewer output tokens and 3.7-
+4.7× faster median active search than System-2
+only. Compared with Jev 1.13, SEARCHJEV-
+0.8B is faster with fewer calls and tokens at equal
+accuracy, while SEARCHJEV-4B achieves higher
+accuracy at greater cost. This demonstrates dis-
+tinct accuracy-efficiency trade-offs.
+• Sufficiency decisions have the largest observed
+impact.Replacing SEARCHJEVwith same-size
+Qwen3.5 AR (JSON) for sufficiency reduces ac-
+curacy by 30.0 and 10.0 points at 0.8B and 4B,
+respectively. At 0.8B, AR prematurely judges
+evidence sufficient after two searches in every
+question. For relevance, AR retains three times
+as many documents and exhausts the context bud-
+get in 67/100 questions, reducing accuracy by 5.0
+points; the 4B drop is only 1.0 point. Verification
+replacements yield changes of −2.0 and −9.0
+points, reflecting run-to-run variation. Overall,
+the results highlight the importance of trained
+sufficiency decisions, particularly at 0.8B.
+RQ3: Decision Generalization
 Table 5 evaluates decision quality, calibration, and
-latency on held-out datasets. We compare SEARCH-
-JEV-0.8B and SEARCHJEV-4B with same-size
-Qwen3.5 AR (JSON) models and Jev 1.13. Based
-on these results, we make three observations:
-• SEARCHJEVtransfers decision capabilities
-to held-out datasets.Both variants outper-
-form same-size Qwen3.5 AR (JSON) on rout-
-ing, rewriting, and relevance, with routing gains
-of 11.9-12.1 percentage points. Both exceed
-Jev 1.13 on rewriting, and SEARCHJEV-4B also
-leads on relevance, while Jev remains stronger
-on routing and verification. Relative to same-size
-Qwen3.5 AR (JSON), verification improves for
-SEARCHJEV-0.8B but declines for SEARCHJEV-
-4B. The broader gains are consistent with our
-schema-conditioned design: the model scores
-option-label tokens conditioned on the search
-state and textual options, while paraphrased
-schema supervision encourages learning from
-field meaning. This supports applying learned
-search decisions across data sources.
-• SEARCHJEVshows task-dependent calibra-
-tion on held-out data.Relative to same-size
-Qwen3.5 AR (JSON), SEARCHJEV-0.8B low-
-ers ECE on rewriting and relevance, whereas
-SEARCHJEV-4B improves routing calibration.
-Both outperform Jev 1.13 on routing calibration,
-but Jev remains better calibrated on the other
-three families. SLCD learns probability distribu-
-tions with soft targets and proper scoring losses,
-then adjusts their scale on validation data. These
-results show that learned decision preferences
-transfer more consistently than their calibration
-across the evaluated families.
-• SEARCHJEVretains its decision-efficiency ad-
-vantage on held-out datasets.Both model sizes
-remain 5.3-5.5× faster than same-size Qwen3.5
-AR (JSON) and 7.4-9.9 × faster than Jev 1.13.
-SEARCHJEVretains the same direct decision
-readout on these datasets, avoiding the sequen-
-tial JSON generation required by Qwen3.5 AR
-(JSON). This keeps decision overhead low as the
-data source changes.
+latency on held-out datasets. We observe:
+• SEARCHJEVgeneralizes across decision fam-
+ilies.Both variants outperform same-size
+Qwen3.5 AR (JSON) on routing, rewriting, and
+relevance, with routing gains of 11.9-12.1 per-
+centage points. Both exceed Jev 1.13 on rewrit-
+ing, while SEARCHJEV-4B also leads on rele-
+vance. Jev remains stronger on routing and ver-
+ification, where SEARCHJEV-4B also underper-
+forms its AR counterpart.
+• Calibration generalization remains task-
+dependent.Relative to same-size AR models,
+SEARCHJEV-0.8B lowers ECE on rewriting and
+relevance, while SEARCHJEV-4B improves rout-
+ing calibration. Both outperform Jev 1.13 on
+routing ECE, but Jev remains better calibrated
+on the other three families. Thus, decision qual-
+ity transfers more consistently than calibration
+across datasets.
+• Soft targets generalize better.SEARCHJEV-
+4B outperforms its one-hot variant on held-out
+routing (55.8 vs. 51.2) and verification (65.0 vs.
+62.0) with comparable relevance and rewriting;
+at 0.8B, the two differ by at most 1.4 points.
+• SEARCHJEVmaintains its efficiency advan-
+tage.Both variants remain 5.3-5.5 × faster than
+same-size Qwen3.5 AR (JSON) and 7.4-9.9 ×
+faster than Jev 1.13 on held-out datasets.
 6 Conclusion
-In this paper, we have proposed SEARCHJEV, a fast
-and calibrated System-1 model for search agents.
-SEARCHJEVmakes direct schema-conditioned pre-
-dictions without autoregressive output generation
-and uses SLCD to learn and calibrate decision prob-
-abilities. We integrate it into a dual-system agent
-that delegates uncertain judgments to System 2
-while retaining System 2 for planning, query gen-
-eration, and answer composition. We have also
-introduced SearchDecision-Bench to unify train-
-ing and evaluation across six types of search de-
-cisions. Experiments on SearchDecision-Bench
-show that SEARCHJEVimproves decision quality
-and average calibration while reducing latency rel-
-ative to same-size Qwen3.5 AR (JSON) models.
-On BrowseComp-Plus, the dual-system agents im-
-prove answer accuracy while reducing System-2
-calls, output tokens, and active search time com-
-pared with the System-2-only agent. These findings
-support separating short search decisions from gen-
-erative reasoning as an effective way to build more
-accurate and efficient search agents.
+We introduced SEARCHJEV, a schema-conditioned
+System-1 model for fast, calibrated search deci-
+sions, and SearchDecision-Bench, covering six
+decision families. Integrated into a dual-system
+search agent, SEARCHJEVimproves decision qual-
+ity and average calibration while achieving 5.2-
+5.3× faster decisions than same-size autoregressive
+models. On BrowseComp-Plus, the dual-system
+agents achieve 3.7-4.7× faster active search and
+up to 54% answer accuracy. These results sup-
+port a dual-system design in which fast, calibrated
+decisions complement deeper reasoning in search
+agents.
+8
+
+7 Limitations
+In this study, we evaluate SEARCHJEVon text-
+based search decisions in Chinese and English,
+with end-to-end agent evaluation on BrowseComp-
+Plus. Our end-to-end evaluation uses 100
+BrowseComp-Plus questions with one run per ques-
+tion. Larger samples and repeated runs would
+provide more robust estimates under stochastic
+System-2 generation. The decision interface as-
+sumes that legal options can be enumerated in the
+schema; open-ended query and answer generation
+remains with System 2. Its performance in other
+languages, modalities, and application domains re-
+quires further evaluation.
+Our training data combine original annota-
+tions, derived labels, and LLM-assisted supervi-
+sion. LLMs participate in labelling about a third
+of our training rows, and derived labels depend
+on the filtering models and agents that produce
+demonstrations. Soft targets and source-dependent
+weights account for differences in label reliability,
+but training-data biases can still affect generaliza-
+tion (McCoy et al., 2019; Lyu et al., 2023).
+8 Ethics Statement
+In this work, all experiments were conducted us-
+ing established public benchmarks and synthesized
+environments, which do not involve any sensitive
+personal information or data privacy concerns. All
+scientific artifacts and datasets used in this study
+are properly cited, with license information pro-
+vided in Appendix H. We confirm that this research
+is conducted strictly for scientific research purposes
+and does not involve any dual-use items. Finally,
+we used LLMs as writing assistants to refine the
+language of this manuscript. Specifically, their use
+was strictly limited to grammar correction, style
+improvement, and wording adjustments for clarity
+and conciseness.
+Our evaluation focuses on decision quality, cali-
+bration, and efficiency. Cognitive-bias audits (Binz
+and Schulz, 2023) and mitigation (Lyu et al.,
+2024, 2025) should complement confidence cal-
+ibration. Deployment should also account for user
+needs, fairness (Pitoura et al., 2017), and trans-
+parency (Zhang et al., 2025).
 References
 Diogo Almeida. 2026. Introducing sys-
 tem one models and Jev. TypeSafe
@@ -818,7 +805,6 @@ Payal Bajaj, Daniel Campos, Nick Craswell, Li Deng,
 Jianfeng Gao, Xiaodong Liu, Rangan Majumder, An-
 drew McNamara, Bhaskar Mitra, Tri Nguyen, Mir
 Rosenberg, Xia Song, Alina Stoica, Saurabh Tiwary,
-
 and Tong Wang. 2016. MS MARCO: A human
 generated MAchine reading COmprehension dataset.
 arXiv preprint arXiv:1611.09268.
@@ -857,6 +843,8 @@ tion benchmark for deep search agents. InProceed-
 ings of the 64th Annual Meeting of the Association
 for Computational Linguistics, pages 22349–22370.
 ArXiv:2508.06600.
+9
+
 Christopher Clark, Kenton Lee, Ming-Wei Chang,
 Tom Kwiatkowski, Michael Collins, and Kristina
 Toutanova. 2019. BoolQ: Exploring the surprising
@@ -900,11 +888,6 @@ and Yong Hu. 2025. CANDY: Benchmarking LLMs’
 limitations and assistive potential in Chinese misin-
 formation fact-checking. InFindings of the Associa-
 tion for Computational Linguistics: EMNLP 2025.
-Shuyu Guo, Wenxiang Hu, Yuyue Zhao, Yougang
-Lyu, and Xiaohui Yan. 2026. RubricReviewer:
-From direct critique to objective and comprehen-
-sive rubric-driven peer review.arXiv preprint
-arXiv:2608.00005.
 Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan
 Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and
 Weizhu Chen. 2022. LoRA: Low-rank adaptation of
@@ -931,7 +914,6 @@ guage Processing.
 Bowen Jin, Hansi Zeng, Zhenrui Yue, Jinsung Yoon,
 Sercan Arik, Dong Wang, Hamed Zamani, and Jiawei
 Han. 2025. Search-R1: Training LLMs to reason and
-
 leverage search engines with reinforcement learning.
 InSecond Conference on Language Modeling.
 Saurav Kadavath, Tom Conerly, Amanda Askell, Tom
@@ -944,11 +926,6 @@ Chen, Yuntao Bai, Sam Bowman, Stanislav Fort, and
 what they know.arXiv preprint arXiv:2207.05221.
 Daniel Kahneman. 2011.Thinking, Fast and Slow. Far-
 rar, Straus and Giroux, New York.
-Evangelos Kanoulas, Panagiotis Eustratiadis, Yongkang
-Li, Yougang Lyu, Vaishali Pal, Gabrielle Poer-
-wawinata, Jingfen Qiao, and Zihan Wang. 2025.
-Agent-centric information access.arXiv preprint
-arXiv:2502.19298.
 Phillip Keung, Yichao Lu, György Szarvas, and Noah A.
 Smith. 2020. The multilingual Amazon reviews cor-
 pus. InProceedings of the 2020 Conference on
@@ -979,6 +956,8 @@ Dou. 2025. Search-o1: Agentic search-enhanced
 large reasoning models. InProceedings of the 2025
 Conference on Empirical Methods in Natural Lan-
 guage Processing, pages 5420–5438.
+10
+
 Ying-Jia Lin, Chun-Yi Lin, Chia-Jen Yeh, Yi-Ting Li,
 Yun-Yu Hu, Chih-Hao Hsu, Mei-Feng Lee, and Hung-
 Yu Kao. 2024. CFEVER: A Chinese fact extrac-
@@ -1009,67 +988,27 @@ ternational Conference on Learning Representations.
 Ilya Loshchilov and Frank Hutter. 2019. Decoupled
 weight decay regularization. InInternational Confer-
 ence on Learning Representations.
-Chris Lu, Cong Lu, Robert Tjarko Lange, Jakob Foer-
-ster, Jeff Clune, and David Ha. 2024. The AI Scien-
-tist: Towards fully automated open-ended scientific
-discovery.arXiv preprint arXiv:2408.06292.
 Xing Han Lù, Amirhossein Kazemnejad, Nicholas
 Meade, Arkil Patel, Dongchan Shin, Alejandra Zam-
 brano, Karolina Sta´nczak, Peter Shaw, Christopher J.
 Pal, and Siva Reddy. 2025. AgentRewardBench:
 Evaluating automatic evaluations of web agent trajec-
 tories.arXiv preprint arXiv:2504.08942.
-Yougang Lyu, Jitai Hao, Zihan Wang, Kai Zhao, Shen
-Gao, Pengjie Ren, Zhumin Chen, Fang Wang, and
-Zhaochun Ren. 2023a. Multi-defendant legal judg-
-ment prediction via hierarchical reasoning. InFind-
-ings of the Association for Computational Linguistics:
-EMNLP 2023, pages 2198–2209.
 Yougang Lyu, Piji Li, Yechang Yang, Maarten de Rijke,
 Pengjie Ren, Yukun Zhao, Dawei Yin, and Zhaochun
-Ren. 2023b. Feature-level debiased natural language
+Ren. 2023. Feature-level debiased natural language
 understanding. InProceedings of the AAAI Con-
 ference on Artificial Intelligence, volume 37, pages
 13353–13361.
 Yougang Lyu, Shijie Ren, Yue Feng, Zihan Wang,
-Zhumin Chen, Zhaochun Ren, and Maarten de Rijke.
-2025a. Self-adaptive cognitive debiasing for large
+Zhumin Chen, Zhaochun Ren, and Maarten de Ri-
+jke. 2025. Self-adaptive cognitive debiasing for large
 language models in decision-making.arXiv preprint
 arXiv:2504.04141.
-Yougang Lyu, Zihan Wang, Zhaochun Ren, Pengjie Ren,
-Zhumin Chen, Xiaozhong Liu, Yujun Li, Hongsong
-Li, and Hongye Song. 2022. Improving legal judg-
-ment prediction through reinforced criminal element
-extraction.Information Processing & Management,
-59(1):102780.
-Yougang Lyu, Lingyong Yan, Shuaiqiang Wang, Haibo
-Shi, Dawei Yin, Pengjie Ren, Zhumin Chen, Maarten
-de Rijke, and Zhaochun Ren. 2024a. KnowTun-
-ing: Knowledge-aware fine-tuning for large language
-
-models. InProceedings of the 2024 Conference on
-Empirical Methods in Natural Language Processing,
-pages 14535–14556.
-Yougang Lyu, Lingyong Yan, Zihan Wang, Dawei
-Yin, Pengjie Ren, Maarten de Rijke, and Zhaochun
-Ren. 2025b. MACPO: weak-to-strong alignment via
-multi-agent contrastive preference optimization. In
-International Conference on Learning Representa-
-tions, volume 2025, pages 63022–63048.
-Yougang Lyu, Xi Zhang, Xinhao Yi, Yuyue Zhao, Shuyu
-Guo, Wenxiang Hu, Jan Piotrowski, Jakub Kaliski,
-Jacopo Urbani, Zaiqiao Meng, et al. 2026. EvoSci-
-entist: Towards multi-agent evolving AI scientists
-for end-to-end scientific discovery.arXiv preprint
-arXiv:2603.08127.
 Yougang Lyu, Xiaoyu Zhang, Zhaochun Ren, and
-Maarten de Rijke. 2024b. Cognitive biases in large
+Maarten de Rijke. 2024. Cognitive biases in large
 language models for news recommendation.arXiv
 preprint arXiv:2410.02897.
-Yougang Lyu, Xiaoyu Zhang, Lingyong Yan, Maarten
-de Rijke, Zhaochun Ren, and Xiuying Chen. 2025c.
-DeepShop: A benchmark for deep research shopping
-agents.arXiv preprint arXiv:2506.02839.
 R. Thomas McCoy, Ellie Pavlick, and Tal Linzen. 2019.
 Right for the wrong reasons: Diagnosing syntactic
 heuristics in natural language inference. InProceed-
@@ -1124,11 +1063,6 @@ cal Methods in Natural Language Processing, pages
 5326–5338.
 Qwen Team. 2026. Qwen3.5: Towards native multi-
 modal agents.
-Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano
-Ermon, Christopher D. Manning, and Chelsea Finn.
-2023. Direct preference optimization: Your language
-model is secretly a reward model. InAdvances in
-Neural Information Processing Systems, volume 36.
 Pranav Rajpurkar, Robin Jia, and Percy Liang. 2018.
 Know what you don’t know: Unanswerable ques-
 tions for SQuAD. InProceedings of the 56th Annual
@@ -1137,6 +1071,8 @@ guistics (Volume 2: Short Papers), pages 784–789.
 Stephen Robertson and Hugo Zaragoza. 2009. The prob-
 abilistic relevance framework: BM25 and beyond.
 Foundations and Trends in Information Retrieval.
+11
+
 Hayley Ross, Ameya Sunil Mahabaleshwarkar, and
 Yoshi Suhara. 2025. When2Call: When (not) to call
 tools. InProceedings of the 2025 Conference of the
@@ -1144,18 +1080,12 @@ Nations of the Americas Chapter of the Association
 for Computational Linguistics: Human Language
 Technologies (Volume 1: Long Papers), pages 3391–
 3409.
-Andreas Sauter, Yuyue Zhao, Jacopo Urbani, Wenxi-
-ang Hu, Zaiqiao Meng, Lun Zhou, Xiaohui Yan, and
-Yougang Lyu. 2026. EvoIdeator: Evolving scien-
-tific ideas through checklist-grounded reinforcement
-learning.arXiv preprint arXiv:2603.21728.
 Tal Schuster, Adam Fisch, and Regina Barzilay. 2021.
 Get your vitamin C! robust fact verification with
 contrastive evidence. InProceedings of the 2021
 Conference of the North American Chapter of the
 Association for Computational Linguistics: Human
 Language Technologies, pages 624–643.
-
 Zhengliang Shi, Yiqun Chen, Haitao Li, Weiwei Sun,
 Shiyu Ni, Yougang Lyu, Run-Ze Fan, Bowen Jin, Yix-
 uan Weng, Minjun Zhu, et al. 2025. Deep research: A
@@ -1203,15 +1133,10 @@ Gerald Shen, Daniel Egert, et al. 2024. HelpSteer2:
 Open-source dataset for training top-performing re-
 ward models.arXiv preprint arXiv:2406.08673.
 Zhilin Wang, Jiaqi Zeng, Olivier Delalleau, Hoo-Chang
-Shin, Felipe Soares, Alexander Bukharin, et al. 2025a.
+Shin, Felipe Soares, Alexander Bukharin, et al. 2025.
 HelpSteer3-Preference: Open human-annotated pref-
 erence data across diverse tasks and languages.arXiv
 preprint arXiv:2505.11475.
-Zihan Wang, Ziqi Zhao, Yougang Lyu, Zhumin Chen,
-Maarten de Rijke, and Zhaochun Ren. 2025b. A co-
-operative multi-agent framework for zero-shot named
-entity recognition. InProceedings of the ACM on
-Web Conference 2025, pages 4183–4195.
 Adina Williams, Nikita Nangia, and Samuel R. Bow-
 man. 2018. A broad-coverage challenge corpus for
 sentence understanding through inference. InPro-
@@ -1219,10 +1144,6 @@ ceedings of the 2018 Conference of the North Amer-
 ican Chapter of the Association for Computational
 Linguistics: Human Language Technologies, Volume
 1 (Long Papers), pages 1112–1122.
-Shiguang Wu, Zhongkun Liu, Zhen Zhang, Zheng
-Chen, Wentao Deng, Wenhao Zhang, Jiyuan Yang,
-Zhitao Yao, Yougang Lyu, Xin Xin, et al. 2023.
-fuzi.mingcha.
 Siwei Wu, JinCheng Ren, Xeron Du, Shuyue Guo, Xing-
 wei Qu, Yiming Liang, et al. 2026. COIG-P: A high-
 quality and large-scale Chinese preference dataset
@@ -1264,15 +1185,11 @@ Yinfei Yang, Yuan Zhang, Chris Tar, and Jason
 Baldridge. 2019. PAWS-X: A cross-lingual adversar-
 ial dataset for paraphrase identification. InProceed-
 ings of the 2019 Conference on Empirical Methods
+12
+
 in Natural Language Processing and the 9th Inter-
 national Joint Conference on Natural Language Pro-
 cessing (EMNLP-IJCNLP), pages 3687–3692.
-
-Shunyu Yao, Howard Chen, John Yang, and Karthik
-Narasimhan. 2022. WebShop: Towards scalable real-
-world web interaction with grounded language agents.
-InAdvances in Neural Information Processing Sys-
-tems, volume 35.
 Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak
 Shafran, Karthik Narasimhan, and Yuan Cao. 2023.
 ReAct: Synergizing reasoning and acting in language
@@ -1307,12 +1224,6 @@ hotspot perception in automatic fact-checking. In
 Proceedings of the 64th Annual Meeting of the As-
 sociation for Computational Linguistics (Volume 1:
 Long Papers), pages 26494–26513.
-Xiaoyu Zhang, Ruobing Xie, Yougang Lyu, Xin Xin,
-Pengjie Ren, Mingfei Liang, Bo Zhang, Zhanhui
-Kang, Maarten de Rijke, and Zhaochun Ren. 2024.
-Towards empathetic conversational recommender sys-
-tems. InProceedings of the 18th ACM Conference
-on Recommender Systems, pages 84–93.
 Yuan Zhang, Jason Baldridge, and Luheng He. 2019.
 PAWS: Paraphrase adversaries from word scrambling.
 InProceedings of the 2019 Conference of the North
@@ -1323,21 +1234,17 @@ Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou, and
 Minlie Huang. 2024. Large language models are not
 robust multiple choice selectors. InThe Twelfth Inter-
 national Conference on Learning Representations.
-Haoxi Zhong, Chaojun Xiao, Cunchao Tu, Tianyang
-Zhang, Zhiyuan Liu, and Maosong Sun. 2020. JEC-
-QA: A legal-domain question answering dataset. In
-Proceedings of the AAAI Conference on Artificial
-Intelligence, volume 34, pages 9701–9708.
+Appendix organization.The appendix opens
+with an extended discussion of related work (Sec-
+tion A). Section B specifies the executable dual-
+system search procedure. Sections C and D docu-
+ment the benchmark and implementation, followed
+by additional decision and agent results in Sec-
+tion E and the peer comparison in Section F. Sec-
+tion G states the calibration-utility guarantee. The
+appendix concludes with data and model licenses
+(Section H).
 A Related Work
-Appendix organization.Section B specifies the
-executable dual-system search procedure. Sec-
-tions C and D document the benchmark and im-
-plementation, followed by additional decision and
-agent results in Section E and the peer comparison
-in Section F. Section G states the calibration-utility
-guarantee. The appendix concludes with limita-
-tions, ethical considerations, future directions, and
-data and model licenses.
 Fast and slow computation.The dual-process
 view of cognition (Kahneman, 2011) has motivated
 LLM systems that allocate more computation to
@@ -1373,7 +1280,6 @@ tive trajectory. SEARCHJEVinstead factors short,
 schema-defined judgments into a shared, fast, cal-
 ibrated model that an agent can call alongside its
 generator.
-
 Calibration and selective prediction.Modern
 neural networks are often miscalibrated (Guo et al.,
 2017); LLM confidence can be read from token
@@ -1384,6 +1290,8 @@ rules (Brier, 1950; Gneiting and Raftery, 2007) are
 minimized in expectation only by the true condi-
 tional distribution and underpin our training objec-
 tive. Selective prediction (Geifman and El-Yaniv,
+13
+
 2017) abstains on low-confidence inputs; our es-
 calation rule applies this principle to switching be-
 tween System-1 and System-2 inside an agent.
@@ -1414,7 +1322,7 @@ Require: state st, decision schema σ, thresholds δ and τkeep
 2: Obtain calibrated distributions {˜pf }f∈σ with SEARCH-
 JEV
 3:foreach fieldf∈σdo
-4:ifmax v∈V(f) ˜pf (v)≥δthen
+4:ifmax v∈V(f) ˜pf(v)≥δthen
 5: Accept˜p f for the judgment
 6:else
 7: Markffor System-2 judgment
@@ -1475,7 +1383,6 @@ tions and constructed rewrites. LLMs participate
 in labelling 33.7% of the training rows.
 Cleaning and split isolation.We isolate splits
 by identity keys and query text, assigning test be-
-
 fore validation and validation before train. We
 deduplicate identical inputs, remove all inputs with
 conflicting labels (56 rows), mask questions that
@@ -1484,6 +1391,8 @@ timeliness without a document or query date), and
 drop synthetic variants whose source occurs in an
 evaluation split. Designated held-out datasets and
 splits are used only for evaluation.
+14
+
 Counting units and evaluation subsets.Ta-
 ble 2 reports state-schema pairs for the six search-
 decision families and excludes auxiliary general-
@@ -1594,7 +1503,6 @@ Answer with exactly one option label.<|im_end|>
 <|im_start|>assistant
 <think>
 </think>
-
 A held-out schema.FRAMES (Krishna et al.,
 2025) contributes no training data; its field asks
 whether a Wikipedia page belongs to the gold
@@ -1602,6 +1510,8 @@ sources of the question (“Judge whether this
 Wikipedia page is a member of the gold source
 set of the question”), which the page below is not
 (soft label 0.03).
+15
+
 <|im_start|>user
 ### State
 <<<STATE
@@ -1699,6 +1609,12 @@ from one search share a System-2 call, while each
 uncertain sufficiency judgment requires one call.
 These delegated judgments disable thinking and
 use constrained JSON outputs, while System 2’s
+planning and answer generation use thinking. Veri-
+fication follows answer generation and uses the cal-
+ibrated probability ofsupport=true as the answer-
+support score; it does not revise the answer or trig-
+ger further search.
+16
 
 AR (JSON) SEARCHJEV
 Family Datasetn0.8B 4B 0.8B 4B
@@ -1728,17 +1644,6 @@ Verification VitaminC 10,000 57.6 55.1 92.4 93.7
 TrendFact 334 33.2 55.1 73.1 77.2
 Table 7: Accuracy (%) on each in-distribution test set; n: test decisions. Table 3 instead uses NDCG@10 for the
 aggregate relevance result, so its relevance value is not an average of the relevance rows reported here.
-planning and answer generation use thinking. Veri-
-fication follows answer generation and uses the cal-
-ibrated probability ofsupport=true as the answer-
-support score; it does not revise the answer or trig-
-ger further search.
-The aggregate logs underlying the reported ta-
-bles do not uniquely recover the numerical value
-of δ, so we do not infer one from the observed call
-counts. In particular, zero explicit short-decision
-calls in Table 8 does not by itself establish that the
-confidence gate was disabled.
 E Additional Results and Diagnostics
 E.1 Per-Dataset Decision Results (RQ1)
 Table 7 reports classification accuracy on each in-
@@ -1760,8 +1665,9 @@ System-2 short-decision calls for either SEARCH-
 JEVagent, while still making the total System-
 2 calls reported in Table 4. They also use fewer
 System-2 reasoning tokens overall and less deci-
-sion time per search step than the System-2-only
+sion time per search step than the System-2 only
 agent.
+17
 
 Agent
 System-2
@@ -1837,10 +1743,10 @@ BANKING77 and CLINC150, reaching 89.0 and
 and 92.6 for Jev 1.13. On When2Call, its 72.1 is
 within 1.1 points of Jev 1.13 and JevK5 v0.3 (73.1
 and 73.2, the latter trained on that dataset). It ranks
-second on MASSIVE (87.2 vs. 89.4 for metask-
-jev-4b), and its PAWS and MNLI scores are both
-within 0.4 points of that model (92.0 vs. 92.4 and
-89.9 vs. 90.3).
+second among peers on MASSIVE (87.2 vs. 89.4
+for metask-jev-4b), and its PAWS and MNLI scores
+are both within 0.4 points of that model (92.0 vs.
+92.4 and 89.9 vs. 90.3).
 SEARCHJEV-4B is weaker on typed-decisions
 (66.0 vs. 69.2-75.9 for the reported peers), on
 SQuAD 2.0 (71.1 vs. 80.0-90.3), on the held-out
@@ -1856,18 +1762,27 @@ within their reported range (79.2 vs. 78.0-80.6), but
 it remains below Jev 1.13 on both datasets (77.1
 and 86.0). On the hard tier of JevBench, it scores
 62.2, below its own zero-shot backbone (65.8).
+Compared with its one-hot variant, SEARCH-
+JEV-4B is stronger on JevBench (JB-Hard 62.2 vs.
+52.3; JB-All 80.5 vs. 75.8) and When2Call (72.1
+vs. 69.3), and holds the only best results among
+our models (BANKING77 and CLINC150); the
+18
 
 Routing Rewriting Relevance Sufficiency Navigation Verification General JEV benchmarks
 System When2Call B77 CLINC MASSIVE Typed PAWS MS MARCO SQuAD2 OJ-OOD MNLI BoolQ RAGTruth JB-Hard JB-All Kev-T4 SemIf Bev
-Qwen3.5-4B backboneJevK5 v0.373.265.2 70.0 73.8 – – – – – – –71.278.4 87.9– – 66.3Plumb-4B – – – – – – – – – – – –80.2 89.6– – –decider-4b v2 – – – – – – – – – – – – 67.6 84.0 – – –Decision 4B v1.2 – – – – – – – – – – – – 78.4 88.3 – – –Imajev-4B – – – – 69.2 – – – – – – – 72.1 86.2 – – –spark-s1-4b-v6 – – – – – – – – – – – – 59.5 80.5 78.7 – –metask-jev-4b – – –89.4–92.4–90.3–90.387.3 – 59.5 80.1 – – –Hopper 62.2 67.3 – – – – – – – – – 72.5 68.5 83.1 – – –Malkuth-4B – –89.8–75.9– – – – – – – – – –86.8–reflex 4B – – – – – – – – – – – – 60.4 79.2 – – –JevK5 v0.2 – 69.0 66.6 75.4 – – – – – – – – 73.9 86.1 – –66.5typecastlm – – – – – – – – – –88.3– – – – – –
-Qwen3.5-9B backbonedata-mix v2 – – – – – – – – – – – – 61.3 79.7 – – –Nimble 9B – – –86.9– 82.8 – 80.6 – 85.3 86.0 – – – – – –Open-Jev 9B – – – – – – – –92.0– – – 59.5 77.5 – – –JEV-9B NVFP4 – – – – – – – – – – – – 55.0 76.6 – – –
-Other backbonesCygnet (Gemma-4-12B, frozen) – – – – – – – – – – – –76.6 87.9– – –Winnow-12B (Gemma-4-12B) – – – – 70.0 – – – – – – – – 85.7 – – –Standard One 8B (Ministral-3) – – – –71.1– – – – – – – 54.9 76.2 – – –kev 4B (Qwen3-4B) – – – – – – – – – – – – – – 80.6 – –kev 8B (Qwen3-8B) – – – – – – – – – – – – – – 78.0 90.3 –openjev-sglang (Qwen3.6-35B) – – – – – – – – – – 89.5 – – – – – –Jev 1.13 (closed) 73.1 79.7 92.6 86.2 73.8 86.464.880.079.9 86.991.0 81.073.0 86.686.0 97.2 77.1
-Ours (Qwen3.5-4B backbone)Qwen3.5-4B (zero-shot) 42.569.777.4 72.7 58.2 80.662.371.3 39.2 82.6 83.6 64.8 65.8 78.4 73.8 81.9 58.2SEARCHJEV-4B72.189.0 94.687.2 66.0 92.0 63.6 71.157.089.9 88.0 26.5 62.2 80.579.284.7 69.5
+Qwen3.5-4B backboneJevK5 v0.373.265.2 70.0 73.8 – – – – – – –71.278.4 87.9– – 66.3Plumb-4B – – – – – – – – – – – –80.2 89.6– – –decider-4b v2 – – – – – – – – – – – – 67.6 84.0 – – –Decision 4B v1.2 – – – – – – – – – – – – 78.4 88.3 – – –Imajev-4B – – – – 69.2 – – – – – – – 72.1 86.2 – – –spark-s1-4b-v6 – – – – – – – – – – – – 59.5 80.5 78.7 – –metask-jev-4b – – –89.4–92.4–90.3–90.387.3 – 59.5 80.1 – – –Hopper 62.2 67.3 – – – – – – – – – 72.5 68.5 83.1 – – –Malkuth-4B – – 89.8 –75.9– – – – – – – – – –86.8–reflex 4B – – – – – – – – – – – – 60.4 79.2 – – –JevK5 v0.2 – 69.0 66.6 75.4 – – – – – – – – 73.9 86.1 – –66.5typecastlm – – – – – – – – – – 88.3 – – – – – –
+Qwen3.5-9B backbonedata-mix v2 – – – – – – – – – – – – 61.3 79.7 – – –Nimble 9B – – – 86.9 – 82.8 – 80.6 – 85.3 86.0 – – – – – –Open-Jev 9B – – – – – – – –92.0– – – 59.5 77.5 – – –JEV-9B NVFP4 – – – – – – – – – – – – 55.0 76.6 – – –
+Other backbonesCygnet (Gemma-4-12B, frozen) – – – – – – – – – – – –76.6 87.9– – –Winnow-12B (Gemma-4-12B) – – – – 70.0 – – – – – – – – 85.7 – – –Standard One 8B (Ministral-3) – – – –71.1– – – – – – – 54.9 76.2 – – –kev 4B (Qwen3-4B) – – – – – – – – – – – – – – 80.6 – –kev 8B (Qwen3-8B) – – – – – – – – – – – – – – 78.0 90.3 –openjev-sglang (Qwen3.6-35B) – – – – – – – – – –89.5– – – – – –Jev 1.13 (closed) 73.1 79.7 92.686.2 73.8 86.464.880.079.9 86.991.0 81.073.0 86.686.0 97.2 77.1
+Ours (Qwen3.5-4B backbone)Qwen3.5-4B (zero-shot) 42.5 69.7 77.4 72.7 58.2 80.6 62.3 71.3 39.2 82.6 83.6 64.8 65.8 78.4 73.8 81.9 58.2SEARCHJEV-4B (one-hot) 69.3 88.993.3 87.6 67.0 92.1 62.871.264.5 89.390.9 25.4 52.3 75.879.685.4 69.5SEARCHJEV-4B72.189.0 94.687.266.092.063.6 71.1 57.0 89.9 88.0 26.5 62.2 80.5 79.2 84.7 69.5
 Table 9: Comparison with System-1 peers from the JevBench leaderboard on the datasets they report, with the
 closed Jev 1.13 API included as an external reference. Results are grouped by decision family. Accuracy ×100;
-RAGTruth: F1 of the hallucinated class. The best, second-best, and third-best results on each dataset are in bold,
-underlined, and italic; ties share a style. Peer results are self-reported, except for Jev 1.13, which we measure
+RAGTruth: F1 of the hallucinated class. SEARCHJEV-4B (one-hot) is trained identically to SEARCHJEV-4B but
+with one-hot labels in place of soft targets. The best, second-best, and third-best results on each dataset are in
+bold, underlined, and italic; ties share a style. Peer results are self-reported, except for Jev 1.13, which we measure
 through its API on the same items as SEARCHJEV.
+one-hot variant is higher on the Open-Jev control
+tasks (64.5 vs. 57.0) and BoolQ (90.9 vs. 88.0).
 G Calibration and Decision Utility
 The following result relates calibration to expected
 utility for a binary decision. The comparison is
@@ -1908,76 +1823,28 @@ At this score, ap maximizes ¯Uz, so ¯Uz(ag)≤
 ≤2U max|g(z)−z|.
 Taking the expectation over the random score ρ
 gives the claim.
-H Limitations
-In this study, we evaluate SEARCHJEVon text-
-based search decisions in Chinese and English,
-with end-to-end agent evaluation on BrowseComp-
-Plus. The decision interface assumes that legal op-
-tions can be enumerated in the schema; open-ended
-query and answer generation remains with Sys-
-tem 2. Its performance in other languages, modali-
-ties, and application domains requires further eval-
-uation.
-Our training data combine original annota-
-tions, derived labels, and LLM-assisted supervi-
-sion. LLMs participate in labelling about a third
-of our training rows, and derived labels depend
-on the filtering models and agents that produce
-demonstrations. Soft targets and source-dependent
-weights account for differences in label reliability,
+19
 
-but training-data biases can still affect generaliza-
-tion (McCoy et al., 2019; Lyu et al., 2023b).
-I Ethics Statement
-In this work, all experiments were conducted us-
-ing established public benchmarks and synthesized
-environments, which do not involve any sensitive
-personal information or data privacy concerns. All
-scientific artifacts and datasets utilized are properly
-cited. For transparency and to foster continuous im-
-provement, we will open-source code. We confirm
-that this research is conducted strictly for scien-
-tific research purposes and does not involve any
-dual-use items. Finally, we used LLMs as writing
-assistants to refine the language of this manuscript.
-Specifically, their use was strictly limited to gram-
-mar correction, style improvement, and wording
-adjustments for clarity and conciseness.
-Our evaluation focuses on decision quality, cali-
-bration, and efficiency. Cognitive-bias audits (Binz
-and Schulz, 2023) and mitigation (Lyu et al., 2024b,
-2025a) should complement confidence calibra-
-tion. Deployment should also account for user
-needs, fairness (Pitoura et al., 2017), and trans-
-parency (Zhang et al., 2025).
-J Future Work
-We plan to expand the evaluation of SEARCH-
-JEVand investigate its use in agent-centric infor-
-mation access (Kanoulas et al., 2025), shopping
-agents (Yao et al., 2022; Lyu et al., 2025c), conver-
-sational recommendation (Zhang et al., 2024), and
-multi-agent information extraction (Wang et al.,
-2025b). Potential applications also include scien-
-tific discovery (Lu et al., 2024; Lyu et al., 2026),
-rubric-based research assessment (Guo et al., 2026),
-checklist-guided idea refinement (Sauter et al.,
-2026), legal question answering (Zhong et al.,
-2020), legal assistance (Wu et al., 2023), and judg-
-ment prediction (Lyu et al., 2023a, 2022).
-We also plan to explore whether knowledge-
-aware fine-tuning (Lyu et al., 2024a) and prefer-
-ence alignment (Rafailov et al., 2023; Lyu et al.,
-2025b) can improve the decisions used by these
-agents.
-K Data and Model Licenses
-Table 10 records official-release licenses checked
-on 1 October 2026. Datasets without a stated li-
-cense are used only for non-commercial research.
-Our query-assessment and query-document qual-
-ity sets are constructed for SearchDecision-Bench;
-source web pages remain subject to their sites’
-terms.
-
+SEARCHJEVtraining (SLCD) Dual-system agent (BrowseComp-Plus)
+Backbone Qwen3.5-0.8B / 4B (instruct) System 2 Qwen3.5-27B, thinking on
+Tuning LoRA,r= 16,α= 32, dropout 0.05 Sampling temperature 0.7, top-p0.8
+Optimizer AdamW, lr5×10 −5, wd 0.01 Output budget 10,000 tokens per call
+Schedule cosine, 5% warm-up Iterations at most 100 per question
+Gradient clipping 1.0 Context budget 128k tokens, then answer
+Precision bf16 Retriever BM25,n= 50candidates
+Effective batch 132 Snippet length 512 tokens
+Training steps 5,176 (1 epoch) Relevance retentionτ keep = 0.2, 1–5 per search
+Max input length 2,048 tokens Sufficiency more probable option
+Brier weightλ B 0.5 Forced actions≤3 answers,≤2 continues
+Label weightw f 0.5 for LLM-assigned labels, demonstrations,
+and rewrites; 1 otherwise
+Sufficiency input 6 documents, 200 tokens each
+Option permutation Choice and Noul fields Verification input 3 documents, 200 tokens each
+Temperature fitting per output type, 5,000 validation decisions Confidence gateδ= 0.8
+Test cap 10,000 decisions per dataset Answer judge Qwen3-32B, temperature 0
+Latency batch size 1, merged LoRA, one H200 Questions / seed 100 / 42
+Table 10: Core hyperparameters. SEARCHJEV(one-hot) uses the same training settings with one-hot labels in place
+of soft targets; the AR (JSON) ablations in Table 4 use the same agent settings.
 License Datasets and models
 Apache-2.0 T2Ranking (Xie et al., 2023), DuReader-Retrieval (Qiu et al., 2022) and CBLUE (Zhang et al., 2022)
 (repository licenses), CFEVER (Lin et al., 2024), FRAMES (Krishna et al., 2025), XYZ-Aquila SFT,
@@ -1986,8 +1853,8 @@ Qwen3.5-0.8B/4B/27B (Qwen Team, 2026) and Qwen3-32B (Yang et al., 2025a)
 MIT RAGTruth (Niu et al., 2024), TrendFact (Zhang et al., 2026), BrowseComp-Plus (Chen et al., 2026),
 JevBench, Chinese Multi-Emotion Dialogue, SemIf-OpenJev (code)
 CC BY 4.0 MuSiQue (Trivedi et al., 2022), BANKING77 (Casanueva et al., 2020), MASSIVE (FitzGerald et al.,
-2023), HelpSteer2 (Wang et al., 2024), HelpSteer3 (Wang et al., 2025a), When2Call (Ross et al.,
-2025); Search Arena (Miroyan et al., 2026) prompts (model outputs follow the providers’ terms)
+2023), HelpSteer2 (Wang et al., 2024), HelpSteer3 (Wang et al., 2025), When2Call (Ross et al., 2025);
+Search Arena (Miroyan et al., 2026) prompts (model outputs follow the providers’ terms)
 CC BY 3.0 CLINC150 (Larson et al., 2019)
 CC BY-SA 3.0 QReCC (Anantha et al., 2021), VitaminC (Schuster et al., 2021) (code: MIT), BoolQ (Clark et al.,
 2019)
@@ -2003,4 +1870,16 @@ AFQMC (Xu et al., 2020), ATEC, the Rewrite corpus (Su et al., 2019), CANDY (Guo 
 CLUE tasks (Xu et al., 2020) (CMNLI, OCNLI, TNEWS, CSL, CLUEWSC, C3), ChnSentiCorp (Tan
 and Zhang, 2008), online_shopping_10cats and weibo_senti_100k, LogiQA (Liu et al., 2020),
 COIG-P (Wu et al., 2026), Douban and JD reviews, kev-suites, bev-decision (declared “unknown”)
-Table 10: Licenses declared by the official releases of the datasets and models we use.
+Table 11: Licenses declared by the official releases of the datasets and models we use.
+H Data and Model Licenses
+Table 11 records official-release licenses checked
+on 1 October 2026. Datasets without a stated li-
+cense are used only for non-commercial research.
+Our query-assessment and query-document qual-
+ity sets are constructed for SearchDecision-Bench;
+source web pages remain subject to their sites’
+terms.
+I Experimental Settings
+Table 10 lists the full training and agent hyperpa-
+rameters.
+20
