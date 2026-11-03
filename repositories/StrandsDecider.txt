@@ -2,13 +2,13 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/strands-labs/strands-decider",
-  "revision": "13c05149265dc404c09d2469636f71b1320e1713",
-  "revision_date": "2026-10-26T14:55:38-04:00",
+  "revision": "5ebe4fa4d16b6991c6979973de952a673b3ac87b",
+  "revision_date": "2026-11-03T09:35:40-05:00",
   "slug": "strands-labs/strands-decider",
-  "retrieved_utc": "2026-10-27T08:18:04+00:00",
+  "retrieved_utc": "2026-11-03T15:52:37+00:00",
   "identity_source": "https://strandsagents.com/blog/introducing-strands-decider/",
-  "included_files": 206,
-  "excluded_files": 91,
+  "included_files": 209,
+  "excluded_files": 92,
   "file_sha256": [
     {
       "path": ".context/todos.md",
@@ -322,8 +322,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "deploy/sagemaker/README.md",
-      "bytes": 10030,
-      "sha256": "fb795b9e78c0e10a5b7993f658488145077e76cc941e691998a6688309f33a6b"
+      "bytes": 10242,
+      "sha256": "36a10658bf5d12272417ca55ba954b6add5a34c6c147850e6295cc5005934121"
     },
     {
       "path": "deploy/sagemaker/bin/cdk-app.ts",
@@ -367,8 +367,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "docs/inference.md",
-      "bytes": 22470,
-      "sha256": "30d4883df11a3660369de09a3e97588270502aaf06d1dc5f62c846e5dfbfdcf0"
+      "bytes": 22303,
+      "sha256": "1c61fe376430fcc704552e028ca2c6552b0e0ba7535ef9d147cb945c58c30d33"
     },
     {
       "path": "docs/naming.md",
@@ -377,8 +377,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "docs/vision.md",
-      "bytes": 9517,
-      "sha256": "e52254b8c9611de86ec91799283af59771d00ee969478bc91bf81061032e4f6c"
+      "bytes": 9387,
+      "sha256": "adbdabe3a3c4878aa671c7b1afaf4915d7c2ba1819fceb928632e15875193ef9"
     },
     {
       "path": "evaluation/README.md",
@@ -462,8 +462,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "evaluation/vision/run.py",
-      "bytes": 19776,
-      "sha256": "5d5664b90de88753ef37295005f6fba6aeb8e606ade41e82efd521b3d2d839c5"
+      "bytes": 19741,
+      "sha256": "af6b8205f5226ba6174e3f55251bf36feac9552f72121320f5b0b0562800ed9e"
     },
     {
       "path": "examples/strands/README.md",
@@ -482,8 +482,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "pyproject.toml",
-      "bytes": 7110,
-      "sha256": "f56cbe2e4f86ae8f47e465b25fe17ee442a5846fbb05765b3d487fdc4e223c04"
+      "bytes": 7137,
+      "sha256": "f3bf756d199cfa2e3f9aa1d5fe089eb1f064b88502cbcac59db8ef30dda20463"
     },
     {
       "path": "research/README.md",
@@ -617,8 +617,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/cli.py",
-      "bytes": 8870,
-      "sha256": "758eae3f6f62482c549040b1242ab2fcf0dfcc6ebc1c33395c9f465bc592876d"
+      "bytes": 8644,
+      "sha256": "0469c892612d8bdcdd294c42bb25d3a0db4e8b70a2b1309f0a4fa06fff3169fd"
     },
     {
       "path": "src/strands_decider/cpu_kernels.py",
@@ -626,14 +626,19 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "e0ce9fff05865dc5cea775a3ea6d5ccf0cab833fa1f906be5f6b74fefa874267"
     },
     {
+      "path": "src/strands_decider/hidden_engine.py",
+      "bytes": 9710,
+      "sha256": "3ef7d116ea7645c55498ba5c6ef12f7edac9060bd407034044dd2a01ba7c9e74"
+    },
+    {
       "path": "src/strands_decider/infer.py",
-      "bytes": 25158,
-      "sha256": "98145fe55586aaf3c867d6fe313d26399547403e812877d6e907b975728bf30b"
+      "bytes": 20169,
+      "sha256": "9ea1272fe0faa5ba7c443b5e15285de5d2bf3e7de8758bd5b600ec8acc0b611b"
     },
     {
       "path": "src/strands_decider/mlx_engine.py",
-      "bytes": 14364,
-      "sha256": "88735fa711d75737faf8f6e786fc141a4fb564750083cdc55b21376e700d5a94"
+      "bytes": 15752,
+      "sha256": "dda848de6889fa1ff3e27ec1e7379bc497b485f47790ca1a9daa34335c518558"
     },
     {
       "path": "src/strands_decider/modeling.py",
@@ -647,8 +652,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/prompting.py",
-      "bytes": 7636,
-      "sha256": "bdbb69c0cb8704df49c3a0e31327f2f319274d19a4f3ba89ca59429cdf9fa6ee"
+      "bytes": 11043,
+      "sha256": "1f4edc30e0d6ade28cc8473454a14d9c18d023a9604d8520688a413ea704330e"
     },
     {
       "path": "src/strands_decider/schema.py",
@@ -657,13 +662,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "src/strands_decider/server.py",
-      "bytes": 5014,
-      "sha256": "e513b5e907385ab83daf2ab27a534f236476798ad5af25e75f44d3af2b73e735"
+      "bytes": 5340,
+      "sha256": "6922d4eb487366d68078480e4f00cfcbfbf7240579b469f3b9c55a66007739dc"
     },
     {
       "path": "src/strands_decider/vision.py",
-      "bytes": 24347,
-      "sha256": "705238d4f294b9724bee9026d3365594cd075ce1bf3b4fd0aa97dc49a80cbdd5"
+      "bytes": 23476,
+      "sha256": "44d800df702e08daf58b8f7287d1f967a6e0c9659549a54681037c9d488aa3db"
     },
     {
       "path": "tests/fixtures/v19-p5-run1/hobson_config.json",
@@ -677,8 +682,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_batch_tokens.py",
-      "bytes": 4984,
-      "sha256": "4c4e90b7c28387c794367eb12634c12d2056fdd88789c021380dee2eb6c0ef9f"
+      "bytes": 4942,
+      "sha256": "725d66ee4b018fb8c521fa05cc8df3a74acd482d549608ba5a141de0e0bbd66a"
     },
     {
       "path": "tests/test_checkpoint_load.py",
@@ -702,8 +707,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_devices.py",
-      "bytes": 3677,
-      "sha256": "5d77f5dab32fda71cce9d44f49d42726e6f91cdd4c7f1a7201a056a0b2df6935"
+      "bytes": 3625,
+      "sha256": "5c73682bfc3bfa943fe58aed00f102e0fcdcd1d5fd3bc05823b512fa9d3cf5c5"
     },
     {
       "path": "tests/test_engine_concurrency.py",
@@ -726,6 +731,16 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "2773b54843e72dcf5a26e99776dfad41069510b4cbaeff5f1f76703ac0b0639a"
     },
     {
+      "path": "tests/test_hidden_engine.py",
+      "bytes": 14084,
+      "sha256": "922d96d811b1b74665c891082ce817ed8180e7c73d91e927122c434828f44dfc"
+    },
+    {
+      "path": "tests/test_hidden_engine_imports.py",
+      "bytes": 516,
+      "sha256": "27253a2c67829ed917bb33993b6c3a07f986e047bd3d7885dd7e13c407deac28"
+    },
+    {
       "path": "tests/test_hybrid.py",
       "bytes": 1599,
       "sha256": "4efcd7cb4f3be900453809d61b3b1384b1d3d76a137e6c9baf0889a227fc4812"
@@ -737,8 +752,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_mlx_engine.py",
-      "bytes": 11472,
-      "sha256": "dbe541869dca73918ec9be6826d0747beff15763eb7e221df2cd6b486f5861ea"
+      "bytes": 14345,
+      "sha256": "fe3020fec4ead44fac7ead061f9ac5fcae70b6f44be398e5e581cdf1d0213ac0"
     },
     {
       "path": "tests/test_mps_kernels.py",
@@ -757,8 +772,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_server.py",
-      "bytes": 12622,
-      "sha256": "807052590e834232e40b1560362c46efc4d2ed1d2b27d43a9ce3067aa2fe9b48"
+      "bytes": 12584,
+      "sha256": "56ce2e078619e366bc8efa2513f807017e8b0aa03942d7e04d0dc95913d56edf"
     },
     {
       "path": "tests/test_serving_attn.py",
@@ -767,8 +782,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_vision.py",
-      "bytes": 18683,
-      "sha256": "1e734a66d94a0a188ce42208d151317a93b5ec0be703b036d87e5e20871f64a2"
+      "bytes": 18165,
+      "sha256": "a30fe3b6e42f362a2f331daa60fc336f093386157d78ab81f241a8050e54cf6f"
     },
     {
       "path": "training/AGENTS.md",
@@ -892,8 +907,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/hf_export.py",
-      "bytes": 47854,
-      "sha256": "597c10639b9d0a8815f463312d066425056b0c239db484bded8d0758ba869862"
+      "bytes": 47865,
+      "sha256": "6f92d6496a16d54d6a4ed892191c9c5ac9058eb821f3fafa3519cfae7c431152"
     },
     {
       "path": "training/legacy-v7.md",
@@ -987,8 +1002,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "training/tests/test_gpu_smoke.py",
-      "bytes": 17843,
-      "sha256": "e8bdb636f3e64c89535d48c14c854f3dd7c223fdba56f38abcdda5096fc3967a"
+      "bytes": 13646,
+      "sha256": "08042a074925c104fcb14cbad103ed40818bded13d308575334cc87c03d0af1f"
     },
     {
       "path": "training/tests/test_init_from.py",
@@ -2115,7 +2130,8 @@ format = "ruff format {args:.}"
 
 # Detached lint env: skips the project install (and therefore torch) so `hatch run lint:check`
 # stays fast in CI and locally. The typed runtime deps are listed explicitly so mypy can resolve
-# their imports; keep this list in sync with [project].dependencies for pydantic/fastapi/typer/rich/uvicorn.
+# their imports; keep this list in sync with [project].dependencies for
+# pydantic/fastapi/typer/rich/uvicorn/numpy.
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
@@ -2126,6 +2142,7 @@ dependencies = [
     "uvicorn[standard]>=0.30",
     "typer>=0.12",
     "rich>=13.7",
+    "numpy>=1.24",
 ]
 
 [tool.hatch.envs.lint.scripts]
@@ -7710,7 +7727,7 @@ npx cdk deploy -c model=StrandsAgents/strands-decider-E4B-gemma4-v1-2610 -c inst
 | `instance_type` | `ml.g6.xlarge` | The SageMaker instance type ([Choosing an instance](#choosing-an-instance)) |
 | `instance_count` | `1` | Instances behind the endpoint |
 | `inference_ami_version` | empty | A SageMaker [inference AMI version](https://docs.aws.amazon.com/sagemaker/latest/dg/instance-types-ami.html) to pin the host AMI to, for GPU families outside the default AL2023 GPU AMI's compatibility list. Empty keeps the default (AL2023 on GPU, SageMaker default on CPU). |
-| `serve_args` | empty | More `strands-decider serve` options, such as `"--max-batch 8 --strict-window"` |
+| `serve_args` | empty | More `strands-decider serve` options, such as `"--max-batch 8"` |
 
 A change to a setting updates the endpoint in place: SageMaker moves traffic to the new
 endpoint config when it is ready.
@@ -7804,6 +7821,10 @@ print(json.loads(response["Body"].read())["answers"])
 
 Callers need IAM permission `sagemaker:InvokeEndpoint` on the endpoint. The container has no
 authentication of its own.
+
+The notebook [samples/ask-the-endpoint.ipynb](samples/ask-the-endpoint.ipynb) calls the endpoint
+step by step: each question type, the confidence, a check of an agent's tool call, and the error
+for a request that is not valid.
 
 ## Deleting it
 
@@ -10183,10 +10204,8 @@ The `state` may be empty when the question carries the whole task. An option des
 may be a string, structured data (rendered as JSON, like a structured `state`), or `null`
 for a bare label.
 
-By default a prompt longer than the checkpoint's window is shortened to fit: the state is
-cut, and the question keeps its options. `--strict-window` refuses such a prompt instead,
-with HTTP 422 and a message that names the context window, for an evaluation that forbids
-truncation. `--max-batch N` (default 32) sets how many questions one forward pass encodes;
+A prompt longer than the checkpoint's window is refused with HTTP 422 and a message that
+names the context window. `--max-batch N` (default 32) sets how many questions one forward pass encodes;
 lower it when a very long state with many questions does not fit in GPU memory.
 `--max-batch-tokens N` also caps the tokens of one forward, as the forward pads them: its
 questions times the longest state + question, after each is fitted to the window. A forward
@@ -10406,8 +10425,8 @@ curl -s localhost:8000/v1/systemone -H 'content-type: application/json' -d '{
 
 From the command line, `ask --image FILE` (repeatable) loads the vision tower for that call.
 A server started without `--vision` answers a request with `images` with HTTP 422 rather
-than ignore them. `/health` reports `"vision": true|false`. `--strict-window` and
-`--max-batch` apply to image requests as they do to text ones.
+than ignore them. `/health` reports `"vision": true|false`. `--max-batch` applies to image
+requests as it does to text ones.
 
 Limits, fixed per server:
 
@@ -10416,9 +10435,8 @@ Limits, fixed per server:
 - An image over 4096 x 4096 pixels is refused from its header, before it is decoded.
   Other formats are refused before they are parsed. EXIF rotation is applied, and
   transparent areas are read as white.
-- Images count against the same 4,096-token window as the state. Without
-  `--strict-window`, the questions keep their reserve, the images are kept whole, and the
-  state text loses its end, as text requests do. With it, an over-long prompt gets 422.
+- Images count against the same 4,096-token window as the state. An over-long prompt
+  (state + images + question) is refused with HTTP 422.
 - The vision tower adds about 331M parameters (0.66 GB in bf16).
 
 ## How it works
@@ -13180,9 +13198,8 @@ import torch
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from metrics import image_dependence, naturalbench_paired, summarise
 
-from strands_decider.infer import _option_token_index
 from strands_decider.modeling import StrandsDeciderConfig, masked_log_softmax
-from strands_decider.prompting import render_question
+from strands_decider.prompting import option_token_index, render_question
 from strands_decider.schema import ChoiceQuestion, NoulQuestion, Question
 from strands_decider.vision import (
     VisionDeciderModel,
@@ -13365,7 +13382,7 @@ class _DeciderSystem:
             mm = {"pixel_values": out["pixel_values"], "image_grid_thw": out["image_grid_thw"]}
         text = expand_image_tokens(render_image_state("", n_img), counts) + rq.text
         enc = self.model.tokenizer(text, return_offsets_mapping=True)
-        opt = _option_token_index(enc["offset_mapping"], rq.option_spans, len(text) - len(rq.text))
+        opt = option_token_index(enc["offset_mapping"], rq.option_spans, len(text) - len(rq.text))
         ids = torch.tensor([enc["input_ids"]], device=self.device)
         mm = {k: v.to(self.device) for k, v in mm.items()}
         return rq, ids, torch.tensor([opt], device=self.device), mm
@@ -20719,11 +20736,6 @@ def serve_cmd(
         "--model-name",
         help="Value returned as `model` in responses. Defaults to the checkpoint basename.",
     ),
-    strict_window: bool = typer.Option(
-        False,
-        "--strict-window",
-        help="Reject (HTTP 422) a prompt longer than the context window instead of truncating it.",
-    ),
     vision: bool = typer.Option(
         False,
         "--vision",
@@ -20752,7 +20764,6 @@ def serve_cmd(
         device=selected_device,
         use_prefix_cache=not no_prefix_cache,
         model_name=model_name,
-        strict_window=strict_window,
         max_batch=max_batch,
         vision=vision,
         max_batch_tokens=max_batch_tokens,
@@ -20993,6 +21004,224 @@ def install() -> bool:
 
 
 ================================================
+FILE: src/strands_decider/hidden_engine.py
+================================================
+"""A System One engine that runs without torch: a backend runs the torso, numpy the head.
+
+`SystemOneEngine` runs the whole model in torch. `HiddenStateEngine` gets the torso's final
+hidden states from a backend, such as llama.cpp on AWS Lambda, and does everything else
+itself, with the same code as `SystemOneEngine`: it renders the prompts, fits them to the
+window and reads the answers with the functions in prompting.py, and runs the same pointer
+head, with the same weights, in numpy. It imports neither torch nor transformers.
+tests/test_hidden_engine.py checks that the two engines give the same answers.
+
+The engine asks the backend only for the hidden states the head reads: at each option's
+last token, and at the question's last token, `<answer>`.
+
+The answers are the same; `usage.input_tokens` can differ: this engine counts the state
+once, then every question. `SystemOneEngine` counts the state once per question on its
+batched path (with `use_prefix_cache=False`, or when its cache cannot be forked), and
+once per chunk of up to `max_batch` questions on its shared-prefix path. For a request
+with one question, all three counts agree.
+"""
+
+from __future__ import annotations
+
+import dataclasses
+import json
+import os
+import threading
+import warnings
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, Protocol, cast
+
+import numpy as np
+from tokenizers import Tokenizer
+
+from .prompting import fit_window, option_token_index, render_question, render_state, to_answer
+from .schema import Answer, SystemOneRequest, SystemOneResponse, Usage
+
+if TYPE_CHECKING:
+    from torch import nn
+
+    from .modeling import StrandsDeciderModel
+
+# The layout of save_assets' head_config.json. A newer layout adds keys, which an older
+# engine ignores.
+ASSETS_FORMAT = 1
+
+
+class Backend(Protocol):
+    def forward(
+        self, state: list[int], questions: list[list[int]], rows: list[list[int]]
+    ) -> list[np.ndarray]:
+        """Run each question as a continuation of the state, seeing no other question.
+        For question i, return its final (post-norm) hidden states at the positions in
+        rows[i], counted from the question's first token, in the order of rows[i] (each
+        option's last token, then `<answer>`): an array [len(rows[i]), hidden].
+
+        The engine may call forward from several threads at once; a backend that cannot
+        run calls concurrently serializes them itself. A backend whose answers can depend
+        on what it batches together should say so. Later backends may declare
+        capabilities such as these, and media support, through an optional attribute."""
+        ...
+
+
+class NumpyPointerHead:
+    """modeling.PointerHead in numpy, from its state dict."""
+
+    def __init__(self, weights: Mapping[str, np.ndarray], pointer_dim: int, eps: float):
+        self.w = {k: np.asarray(v, dtype=np.float64) for k, v in weights.items()}
+        self.scale = pointer_dim**-0.5
+        self.eps = eps
+
+    def _norm(self, x: np.ndarray) -> np.ndarray:
+        mu = x.mean(-1, keepdims=True)
+        var = x.var(-1, keepdims=True)
+        return (x - mu) / np.sqrt(var + self.eps) * self.w["norm.weight"] + self.w["norm.bias"]
+
+    def logits(self, decide: np.ndarray, options: np.ndarray) -> np.ndarray:
+        """decide [hidden], options [K, hidden] -> logits [K]."""
+        q = self._norm(decide) @ self.w["q.weight"].T + self.w["q.bias"]
+        k = self._norm(options) @ self.w["k.weight"].T + self.w["k.bias"]
+        out: np.ndarray = (k @ q) * self.scale
+        return out
+
+
+@dataclass
+class HiddenEngineConfig:
+    max_length: int
+    temperature: float = 1.0
+    temperature_by_kind: dict[str, float] = field(default_factory=dict)
+    ordinal_smoothing: float = 0.0
+    model_name: str = "strands-decider"
+    # The most tokens one request may run through the backend, the state once plus every
+    # question; a larger request is refused before the backend runs. None: no limit.
+    max_request_tokens: int | None = None
+
+
+class HiddenStateEngine:
+    def __init__(
+        self,
+        tokenizer: Tokenizer,
+        head: NumpyPointerHead,
+        config: HiddenEngineConfig,
+        backend: Backend,
+    ):
+        self.tok = tokenizer
+        # fit_window turns the tokenizer's padding and truncation off, so two threads must
+        # not run it on the same tokenizer at once.
+        self._tok_lock = threading.Lock()
+        self.head = head
+        self.cfg = config
+        self.backend = backend
+
+    @classmethod
+    def from_assets(cls, path: str, backend: Backend, **config: Any) -> HiddenStateEngine:
+        """The engine from a save_assets directory. `config` sets HiddenEngineConfig
+        fields, over the saved ones."""
+        from safetensors.numpy import load_file
+
+        with open(os.path.join(path, "head_config.json"), encoding="utf-8") as f:
+            saved = json.load(f)
+        if saved.pop("readout", "pointer") != "pointer":
+            raise ValueError(f"{path}: the assets are not for a pointer head")
+        if saved.pop("format", ASSETS_FORMAT) > ASSETS_FORMAT:
+            warnings.warn(
+                f"{path}: assets from a newer strands-decider; settings this version does "
+                "not know are ignored",
+                stacklevel=2,
+            )
+        weights = load_file(os.path.join(path, "head.safetensors"))
+        head = NumpyPointerHead(weights, saved.pop("pointer_dim"), saved.pop("eps", 1e-5))
+        known = {f.name for f in dataclasses.fields(HiddenEngineConfig)}
+        settings = {k: v for k, v in saved.items() if k in known}
+        tok = Tokenizer.from_file(os.path.join(path, "tokenizer.json"))
+        return cls(tok, head, HiddenEngineConfig(**{**settings, **config}), backend)
+
+    def fit(
+        self, state_text: str, question_texts: list[str]
+    ) -> tuple[list[int], list[list[int]], list[list[tuple[int, int]]]]:
+        """prompting.fit_window on this engine's tokenizer: state ids, question ids and
+        each question's character offsets."""
+        with self._tok_lock:
+            return fit_window(self.tok, state_text, question_texts, self.cfg.max_length)
+
+    def evaluate(self, request: SystemOneRequest | Mapping[str, Any]) -> SystemOneResponse:
+        req = (
+            request
+            if isinstance(request, SystemOneRequest)
+            else SystemOneRequest.model_validate(request)
+        )
+        if req.images:
+            raise ValueError("this engine has no vision tower; images are not supported")
+        names = list(req.questions)
+        rendered = [render_question(req.questions[n]) for n in names]
+        s, q, offs = self.fit(render_state(req.state), [rq.text for rq in rendered])
+        n_input = len(s) + sum(len(x) for x in q)
+        if self.cfg.max_request_tokens and n_input > self.cfg.max_request_tokens:
+            raise ValueError(
+                f"request of {n_input} tokens (the state's {len(s)} once, then its questions) "
+                f"exceeds the limit of {self.cfg.max_request_tokens} tokens per request"
+            )
+        # Found before the backend runs, so a question whose options were trimmed away is
+        # refused without the work.
+        options = [
+            option_token_index(o, rq.option_spans, 0) for rq, o in zip(rendered, offs, strict=True)
+        ]
+        rows = [[*opts, len(x) - 1] for opts, x in zip(options, q, strict=True)]
+        hidden = self.backend.forward(s, q, rows)
+        if len(hidden) != len(names):
+            raise ValueError(f"backend returned {len(hidden)} arrays for {len(names)} questions")
+        answers: dict[str, Answer] = {}
+        for name, rq, h, r in zip(names, rendered, hidden, rows, strict=True):
+            h = np.asarray(h, dtype=np.float64)
+            if h.ndim != 2 or h.shape[0] != len(r):
+                raise ValueError(
+                    f"backend returned shape {h.shape} for question {name!r}; expected "
+                    f"({len(r)}, hidden): one row per option, then <answer>"
+                )
+            t = float(self.cfg.temperature_by_kind.get(rq.kind, self.cfg.temperature))
+            logits = self.head.logits(h[-1], h[:-1]) / max(t, 1e-6)
+            p = np.exp(logits - np.max(logits))
+            answers[name] = to_answer(
+                rq, (p / p.sum()).tolist(), ordinal_smoothing=self.cfg.ordinal_smoothing
+            )
+        return SystemOneResponse(
+            model=self.cfg.model_name,
+            answers=answers,
+            usage=Usage(input_tokens=n_input, output_tokens=len(names)),
+        )
+
+
+def save_assets(model: StrandsDeciderModel, path: str, model_name: str) -> None:
+    """Write what from_assets reads: the tokenizer, the pointer head and its settings
+    (tokenizer.json, head.safetensors, head_config.json). The torso is the backend's."""
+    from safetensors.numpy import save_file
+
+    cfg = model.config
+    os.makedirs(path, exist_ok=True)
+    model.tokenizer.backend_tokenizer.save(os.path.join(path, "tokenizer.json"))
+    weights = {k: v.detach().float().cpu().numpy() for k, v in model.head.state_dict().items()}
+    save_file(weights, os.path.join(path, "head.safetensors"))
+    saved = {
+        "format": ASSETS_FORMAT,
+        "readout": "pointer",
+        "model_name": model_name,
+        "pointer_dim": cfg.pointer_dim,
+        "eps": cast("nn.LayerNorm", model.head.norm).eps,
+        "max_length": cfg.max_length,
+        "temperature": cfg.temperature,
+        "temperature_by_kind": cfg.temperature_by_kind,
+        "ordinal_smoothing": cfg.ordinal_smoothing,
+    }
+    with open(os.path.join(path, "head_config.json"), "w", encoding="utf-8") as f:
+        json.dump(saved, f, indent=2)
+
+
+
+================================================
 FILE: src/strands_decider/infer.py
 ================================================
 """Serving one request: N questions against one state.
@@ -21019,7 +21248,6 @@ from __future__ import annotations
 
 import copy
 import threading
-from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -21029,25 +21257,19 @@ from . import __version__
 from .modeling import StrandsDeciderModel, apply_temperature, masked_log_softmax, pool_last_token
 from .prompting import (
     RenderedQuestion,
-    read_choice,
-    read_noul,
-    read_score,
+    fit_window,
+    option_token_index,
     render_question,
     render_state,
-    score_legend,
+    to_answer,
 )
 from .schema import (
     Answer,
-    ChoiceAnswer,
     Content,
-    NoulAnswer,
     Question,
-    ScoreAnswer,
     SystemOneRequest,
     SystemOneResponse,
     Usage,
-    derive_confidence,
-    derive_score_confidence,
 )
 
 
@@ -21057,12 +21279,6 @@ class EngineConfig:
     use_prefix_cache: bool = True
     max_batch: int = 32
     model_name: str = f"strands-decider-{__version__}"
-    # Largest share of the context window the question may claim before the state
-    # starts being squeezed. Questions are normally short, so this rarely binds.
-    max_question_fraction: float = 0.75
-    # Refuse a prompt that does not fit the window instead of shortening it, for
-    # benchmarks that forbid truncation. The message names the "context window".
-    strict_window: bool = False
     # Also cap the tokens of one forward: a chunk of up to max_batch questions is cut
     # where its rows, fitted to the window and padded to the longest (state + question),
     # would pass this many tokens (one question at least). Questions are fitted before the
@@ -21205,54 +21421,19 @@ class SystemOneEngine:
     def _fit(
         self, state_text: str, question_texts: list[str]
     ) -> tuple[list[int], list[list[int]], list[list[tuple[int, int]]]]:
-        """Tokenise state and questions, giving the QUESTION first claim on the window.
+        """prompting.fit_window on this engine's tokenizer: state ids, question ids and
+        each question's character offsets.
 
-        The question and its options are what make a task answerable; the state is the
-        part that can be sampled. Letting the state take the window first meant a long
-        state consumed all of it and left the question a floor of 8 tokens -- far too
-        few to hold the option list, so the model was choosing among options it could
-        not see. Measured on JevBench, all 19 `long_policy` states hit the cap exactly,
-        and accuracy there (0.316) sat on top of the 0.301 chance rate for those option
-        counts.
-
-        A question longer than its reserve is truncated from the FRONT, keeping the
-        tail. The options and the trailing `<answer>` marker are structurally required
-        -- `<answer>` is the pooling position, so losing it makes the head read an
-        arbitrary token -- whereas losing some instruction text only costs meaning.
-
-        Returns state ids, question ids, and each question's character offsets. The
-        offsets are returned, not kept on the engine: the server runs requests
+        The offsets are returned, not kept on the engine: the server runs requests
         concurrently on one engine, so engine state would be shared across requests.
         """
-        max_len = self.model.config.max_length
         with self._tok_lock:
-            enc = self.tok(question_texts, add_special_tokens=False, return_offsets_mapping=True)
-            q = enc["input_ids"]
-            offs = enc["offset_mapping"]
-            longest = max(len(x) for x in q)
-            if self.cfg.strict_window:
-                s = self.tok(state_text, add_special_tokens=True)["input_ids"]
-                if len(s) + longest > max_len:
-                    raise ValueError(
-                        f"prompt of {len(s) + longest} tokens exceeds the context window "
-                        f"of {max_len} tokens"
-                    )
-                return s, q, list(offs)
-            # Cap the reserve so a pathological question cannot starve the state entirely.
-            reserve = min(longest, max(1, int(max_len * self.cfg.max_question_fraction)))
-            # Front truncation shifts every token index, so the offsets move with the ids
-            # and a pointer readout keeps pointing at the right option.
-            cut = [max(0, len(x) - reserve) for x in q]
-            kept = [o[c:] for o, c in zip(offs, cut, strict=True)]
-            q = [x[c:] for x, c in zip(q, cut, strict=True)]
-            state_budget = max(1, max_len - reserve)
-            s = self.tok(
+            return fit_window(
+                self.tok.backend_tokenizer,
                 state_text,
-                add_special_tokens=True,
-                truncation=True,
-                max_length=state_budget,
-            )["input_ids"]
-        return s, q, kept
+                question_texts,
+                self.model.config.max_length,
+            )
 
     def _option_idx(
         self,
@@ -21264,10 +21445,10 @@ class SystemOneEngine:
 
         `base` is 0 when the caller forwards only the question (the shared-prefix path,
         where `hidden` is the suffix) and the state's token count when it forwards the
-        whole prompt. `offsets` are `_fit`'s, so front truncation is accounted for.
+        whole prompt. `offsets` come from `_fit`'s tokenisation of the question.
         """
         rows = [
-            _option_token_index(offs, rq.option_spans, 0)
+            option_token_index(offs, rq.option_spans, 0)
             for rq, offs in zip(rendered, offsets, strict=True)
         ]
         width = max(len(r) for r in rows)
@@ -21300,12 +21481,8 @@ class SystemOneEngine:
         rendered: list[RenderedQuestion] | None = None,
     ) -> tuple[torch.Tensor, int]:
         """Fallback: encode each full prompt independently, from `_fit`'s state `s` and
-        questions `q`.
-
-        Previously this concatenated state and question into one string and let the
-        tokeniser truncate, which cuts from the right -- removing the options and the
-        `<answer>` marker the head pools at. Now it shares `_fit` with the cached path,
-        so both truncate the same thing in the same direction.
+        questions `q`. Sharing `_fit` with the cached path keeps the two paths' token
+        sequences identical.
         """
         ids, mask = self._pad([s + qi for qi in q])
         # This path forwards the whole prompt, so option positions sit after the state.
@@ -21434,7 +21611,7 @@ class SystemOneEngine:
             for i, name in enumerate(names[chunk]):
                 rq = chunk_rendered[i]
                 row = probs[i, : rq.n_slots].tolist()
-                answers[name] = _to_answer(
+                answers[name] = to_answer(
                     rq, row, ordinal_smoothing=self.model.config.ordinal_smoothing
                 )
 
@@ -21467,65 +21644,6 @@ class SystemOneEngine:
 
     def ask(self, state: Content, questions: dict[str, Question]) -> SystemOneResponse:
         return self.evaluate(SystemOneRequest(state=state, questions=questions))
-
-
-def _option_token_index(
-    offsets: Sequence[Sequence[int]],
-    spans: Sequence[Sequence[int]],
-    base: int,
-) -> list[int]:
-    """Last token index of each option's line, for a pointer readout.
-
-    The last token of the span is the one that has just read the whole option under
-    causal attention. Raises when an option has no surviving token: truncation has
-    removed it, and scoring it from a neighbour's representation would be silently
-    wrong.
-    """
-    out: list[int] = []
-    for s, e in spans:
-        a, b = base + s, base + e
-        last = -1
-        for j, (lo, hi) in enumerate(offsets):
-            if hi <= lo:
-                continue
-            if lo >= a and hi <= b:
-                last = j
-        if last < 0:
-            raise ValueError(
-                f"option span ({a},{b}) has no tokens left; the prompt was "
-                "truncated through its option list"
-            )
-        out.append(last)
-    return out
-
-
-def _to_answer(
-    rq: RenderedQuestion, probs: list[float], *, ordinal_smoothing: float = 0.0
-) -> Answer:
-    if rq.kind == "noul":
-        return NoulAnswer(noul=round(read_noul(probs, rq), 4))
-
-    if rq.kind == "choice":
-        by_name = read_choice(probs, rq)
-        best = max(by_name, key=lambda k: by_name[k])
-        return ChoiceAnswer(
-            choice=best,
-            probabilities={k: round(v, 4) for k, v in by_name.items()},
-            confidence=round(derive_confidence(list(by_name.values())), 4),
-        )
-
-    score, ordered = read_score(probs, rq)
-    return ScoreAnswer(
-        score=round(score, 4),
-        # Report the rubric in canonical ascending order, not the order rendered.
-        legend=score_legend(rq),
-        probabilities={k: round(v, 4) for k, v in ordered.items()},
-        # Ordinal confidence, not max-probability: see derive_score_confidence.
-        confidence=round(
-            derive_score_confidence(list(ordered.values()), ordinal_smoothing=ordinal_smoothing),
-            4,
-        ),
-    )
 
 
 @torch.inference_mode()  # type: ignore[untyped-decorator]
@@ -21589,7 +21707,7 @@ with v19 on an M4 Pro (`evaluation/bench_local.py`, median): one question at 222
 input tokens takes 162 / 682 / 2,685 ms on MPS and 113 / 486 / 1,764 ms here.
 
 Only the torso forward moves. `MLXEngine` subclasses `SystemOneEngine`, so rendering,
-tokenisation, the question-first truncation, option positions, batching, temperatures and the
+tokenisation, the context-window check, option positions, batching, temperatures and the
 masked softmax are the torch engine's own code, and the head is the checkpoint's own fp32
 module, run by torch on the CPU. Both of `evaluate`'s paths are kept: one question forwards the
 whole prompt; several encode the state once into an mlx-lm prompt cache, which is copied
@@ -21608,6 +21726,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -21715,7 +21834,12 @@ class MLXEngine(SystemOneEngine):
     """`SystemOneEngine` with the torso forward on MLX. Build one with `load_mlx_engine`."""
 
     def __init__(
-        self, decoder: Any, cache_owner: Any, readout: _Readout, config: EngineConfig
+        self,
+        decoder: Any,
+        cache_owner: Any,
+        readout: _Readout,
+        config: EngineConfig,
+        executor: ThreadPoolExecutor,
     ) -> None:
         # Not super().__init__(): that moves a torch torso to a torch device. These are the
         # attributes the inherited helpers read; `device` is where their small index and
@@ -21726,15 +21850,20 @@ class MLXEngine(SystemOneEngine):
         self.device = "cpu"
         self._decoder = decoder
         self._cache_owner = cache_owner
-        # One evaluation at a time: mlx-lm's lazy arrays belong to the thread that
-        # produced them, and the server runs requests on its thread pool.
-        self._lock = threading.Lock()
+        # One evaluation at a time, pinned to the loading thread: mlx-lm's lazy arrays and
+        # Metal streams belong to the thread that produced them, and FastAPI runs sync
+        # handlers on its thread pool. A single-worker executor guarantees affinity and
+        # replaces the explicit lock.
+        self._executor = executor
         self._prefix_cache_unforkable = False
         self._tok_lock = threading.Lock()
 
     def evaluate(self, request: SystemOneRequest) -> SystemOneResponse:
-        with self._lock:
-            return super().evaluate(request)
+        return self._executor.submit(super().evaluate, request).result()
+
+    def close(self) -> None:
+        """Shut down the MLX worker thread. After this the engine cannot evaluate."""
+        self._executor.shutdown(wait=True)
 
     def _hidden(self, rows: list[list[int]], cache: list[Any] | None = None) -> Any:
         """Last hidden states [N, L, d] of right-padded rows. Both layer kinds are causal, so
@@ -21852,8 +21981,7 @@ def _load_torso(base: Path, dtype: str) -> tuple[Any, Any, Any, str]:
     ]
     if cast:
         lm.load_weights(cast, strict=False)
-    # Evaluate the casts now: a lazy array belongs to this thread's stream, and the server
-    # evaluates requests on its thread pool.
+    # Evaluate the casts now so the loaded weights aren't left as pending computations.
     mx.eval(lm.parameters())
     return lm, owner.model, owner, prefix
 
@@ -21868,7 +21996,30 @@ def load_mlx_engine(
 
     `config` is the torch engine's `EngineConfig`, with its device set to "mlx".
     `cache_limit_bytes` sets MLX's process-wide buffer cache limit; None leaves it as it is.
+
+    The MLX torso is loaded on, and every evaluation runs on, a dedicated worker thread the
+    returned engine owns. mlx-lm's lazy arrays and Metal streams are thread-local, and
+    Gemma4 keeps state tied to the loading thread's GPU stream; FastAPI serves sync handlers
+    from its thread pool, so without this pinning the first request from a worker thread
+    fails with "no Stream(gpu, 1) in current thread". Ctrl+C during load does not interrupt
+    the worker; the call returns once the load finishes.
     """
+    executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mlx-engine")
+    try:
+        return executor.submit(
+            _load_mlx_engine_on_worker, checkpoint, config, cache_limit_bytes, executor
+        ).result()
+    except BaseException:
+        executor.shutdown(wait=True)
+        raise
+
+
+def _load_mlx_engine_on_worker(
+    checkpoint: str,
+    config: EngineConfig | None,
+    cache_limit_bytes: int | None,
+    executor: ThreadPoolExecutor,
+) -> MLXEngine:
     path = checkpoint_dir(checkpoint)
     decider_config = StrandsDeciderConfig.from_json(config_path(path))
     decider_config.base_revision = base_revision(path, decider_config)
@@ -21895,7 +22046,9 @@ def load_mlx_engine(
     head.load_state_dict(head_state)
     head.to(torch.float32).eval()
     engine_config = replace(config or EngineConfig(), device="mlx")
-    return MLXEngine(decoder, owner, _Readout(decider_config, tokenizer, head), engine_config)
+    return MLXEngine(
+        decoder, owner, _Readout(decider_config, tokenizer, head), engine_config, executor
+    )
 
 
 
@@ -22764,9 +22917,24 @@ from __future__ import annotations
 import json
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from .schema import ChoiceQuestion, Content, NoulQuestion, Question, ScoreQuestion
+from .schema import (
+    Answer,
+    ChoiceAnswer,
+    ChoiceQuestion,
+    Content,
+    NoulAnswer,
+    NoulQuestion,
+    Question,
+    ScoreAnswer,
+    ScoreQuestion,
+    derive_confidence,
+    derive_score_confidence,
+)
+
+if TYPE_CHECKING:
+    from tokenizers import Tokenizer
 
 # Rendered on both sides of a noul so the two slots read like any other option list.
 NOUL_SLOT_LABELS = ("false", "true")
@@ -22925,6 +23093,94 @@ def read_score(probs: Sequence[float], rq: RenderedQuestion) -> tuple[float, dic
     expected = sum(int(level) * p for level, p in by_level.items())
     ordered = {str(i): by_level[str(i)] for i in range(len(by_level))}
     return float(expected), ordered
+
+
+def fit_window(
+    tok: Tokenizer,
+    state_text: str,
+    question_texts: list[str],
+    max_length: int,
+) -> tuple[list[int], list[list[int]], list[list[tuple[int, int]]]]:
+    """Tokenize a state and its questions, refusing a prompt that does not fit a window of
+    `max_length` tokens.
+
+    Returns the state's ids, each question's ids, and each question's character offsets.
+    `tok` is a `tokenizers.Tokenizer`, such as a Hugging Face fast tokenizer's
+    `backend_tokenizer`. This function turns its padding and truncation off, so callers
+    must not run it on one tokenizer from two threads at once.
+    """
+    tok.no_padding()
+    tok.no_truncation()
+    encodings = tok.encode_batch(question_texts, add_special_tokens=False)
+    q = [e.ids for e in encodings]
+    offsets = [list(e.offsets) for e in encodings]
+    longest = max(len(x) for x in q)
+    s = tok.encode(state_text, add_special_tokens=True).ids
+    if len(s) + longest > max_length:
+        raise ValueError(
+            f"prompt of {len(s) + longest} tokens ({len(s)} state + {longest} question) "
+            f"exceeds the context window of {max_length} tokens"
+        )
+    return s, q, offsets
+
+
+def option_token_index(
+    offsets: Sequence[Sequence[int]],
+    spans: Sequence[Sequence[int]],
+    base: int,
+) -> list[int]:
+    """Last token index of each option's line, for a pointer readout.
+
+    The last token of the span is the one that has just read the whole option under
+    causal attention. Raises when an option has no surviving token: truncation has
+    removed it, and scoring it from a neighbour's representation would be silently
+    wrong.
+    """
+    out: list[int] = []
+    for s, e in spans:
+        a, b = base + s, base + e
+        last = -1
+        for j, (lo, hi) in enumerate(offsets):
+            if hi <= lo:
+                continue
+            if lo >= a and hi <= b:
+                last = j
+        if last < 0:
+            raise ValueError(
+                f"option span ({a},{b}) has no tokens left; the prompt was "
+                "truncated through its option list"
+            )
+        out.append(last)
+    return out
+
+
+def to_answer(
+    rq: RenderedQuestion, probs: list[float], *, ordinal_smoothing: float = 0.0
+) -> Answer:
+    if rq.kind == "noul":
+        return NoulAnswer(noul=round(read_noul(probs, rq), 4))
+
+    if rq.kind == "choice":
+        by_name = read_choice(probs, rq)
+        best = max(by_name, key=lambda k: by_name[k])
+        return ChoiceAnswer(
+            choice=best,
+            probabilities={k: round(v, 4) for k, v in by_name.items()},
+            confidence=round(derive_confidence(list(by_name.values())), 4),
+        )
+
+    score, ordered = read_score(probs, rq)
+    return ScoreAnswer(
+        score=round(score, 4),
+        # Report the rubric in canonical ascending order, not the order rendered.
+        legend=score_legend(rq),
+        probabilities={k: round(v, 4) for k, v in ordered.items()},
+        # Ordinal confidence, not max-probability: see derive_score_confidence.
+        confidence=round(
+            derive_score_confidence(list(ordered.values()), ordinal_smoothing=ordinal_smoothing),
+            4,
+        ),
+    )
 
 
 
@@ -23146,6 +23402,7 @@ import contextlib
 import os
 import threading
 import time
+from collections.abc import AsyncIterator
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
@@ -23160,9 +23417,9 @@ _engine_lock = threading.Lock()
 
 
 def _needs_serialisation(device: str) -> bool:
-    """MPS aborts the process with a Metal command-buffer assertion (issue #9) when
-    two overlapping threads hit the same device. CUDA and CPU are thread-safe for
-    inference, and MLX serialises on its own scheduler."""
+    """MPS aborts the process with a Metal command-buffer assertion when two overlapping
+    threads hit the same device. CUDA and CPU are thread-safe for inference, and the MLX
+    engine runs every evaluation on a single worker thread."""
     return str(device).startswith("mps")
 
 
@@ -23179,17 +23436,28 @@ def create_app(
     use_prefix_cache: bool = True,
     model_name: str | None = None,
     attn_implementation: str | None = None,
-    strict_window: bool = False,
     max_batch: int = 32,
     vision: bool = False,
     max_batch_tokens: int | None = None,
 ) -> FastAPI:
     global _engine
 
+    @contextlib.asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        try:
+            yield
+        finally:
+            # The MLX engine owns a worker thread (see mlx_engine.MLXEngine); other engines
+            # have nothing to close.
+            close = getattr(_engine, "close", None)
+            if callable(close):
+                close()
+
     app = FastAPI(
         title="strands-decider System One",
         version=__version__,
         description="Typed, calibrated answers. Choice, Score and Noul over one state.",
+        lifespan=lifespan,
     )
 
     # Identify the response's `model` by the checkpoint served, so multiple servers
@@ -23200,7 +23468,6 @@ def create_app(
         device=device,
         use_prefix_cache=use_prefix_cache,
         model_name=resolved_name,
-        strict_window=strict_window,
         max_batch=max_batch,
         max_batch_tokens=max_batch_tokens,
     )
@@ -23264,7 +23531,6 @@ def serve(
     device: str = "cuda",
     use_prefix_cache: bool = True,
     model_name: str | None = None,
-    strict_window: bool = False,
     max_batch: int = 32,
     vision: bool = False,
     max_batch_tokens: int | None = None,
@@ -23276,7 +23542,6 @@ def serve(
         device=device,
         use_prefix_cache=use_prefix_cache,
         model_name=model_name,
-        strict_window=strict_window,
         max_batch=max_batch,
         vision=vision,
         max_batch_tokens=max_batch_tokens,
@@ -23322,7 +23587,7 @@ from typing import TYPE_CHECKING, Any, cast
 import torch
 from torch import nn
 
-from .infer import EngineConfig, SystemOneEngine, UnforkableCache, _expand_cache, _to_answer
+from .infer import EngineConfig, SystemOneEngine, UnforkableCache, _expand_cache
 from .modeling import (
     StrandsDeciderConfig,
     StrandsDeciderModel,
@@ -23335,7 +23600,7 @@ from .modeling import (
     masked_log_softmax,
     pool_last_token,
 )
-from .prompting import RenderedQuestion, render_question, render_state
+from .prompting import RenderedQuestion, render_question, render_state, to_answer
 from .schema import Answer, Content, Question, SystemOneRequest, SystemOneResponse, Usage
 
 if TYPE_CHECKING:
@@ -23739,7 +24004,7 @@ class VisionEngine(SystemOneEngine):
             total += ntok
             for i, name in enumerate(names[start : start + self.cfg.max_batch]):
                 rq = chunk[i]
-                answers[name] = _to_answer(
+                answers[name] = to_answer(
                     rq,
                     probs[i, : rq.n_slots].tolist(),
                     ordinal_smoothing=self.model.config.ordinal_smoothing,
@@ -23760,13 +24025,10 @@ class VisionEngine(SystemOneEngine):
     def _fit_images(
         self, state: Content, images: list[Image.Image], question_texts: list[str]
     ) -> tuple[list[int], list[list[int]], dict[str, torch.Tensor], list[list[tuple[int, int]]]]:
-        """Question reserve first, then the image block whole, then state text.
+        """Tokenise state, images and questions, refusing a prompt that does not fit the window.
 
-        As in `_fit`: with `strict_window` an over-long prompt is refused (HTTP 422);
-        otherwise the questions keep their reserve and the state text loses its end, the
-        same side `_fit` and training cut. The images are never cut. Returns the state ids,
-        question ids, multimodal tensors, and per-question option offsets (as a local, not
-        on the engine -- see `_fit` for the reason).
+        Returns the state ids, question ids, multimodal tensors, and per-question option
+        offsets (as a local, not on the engine -- see `_fit` for the reason).
         """
         max_len = self.model.config.max_length
         with self._tok_lock:
@@ -23787,28 +24049,15 @@ class VisionEngine(SystemOneEngine):
                 expand_image_tokens(render_image_state(state, len(images)), counts),
                 add_special_tokens=True,
             )["input_ids"]
-        vend = self.tok.convert_tokens_to_ids(VISION_END)
-        keep = max(i for i, t in enumerate(s) if t == vend) + 1  # through the last image
 
-        if self.cfg.strict_window:
-            if len(s) + longest > max_len:
-                raise ValueError(
-                    f"prompt of {len(s) + longest} tokens exceeds the context window "
-                    f"of {max_len} tokens"
-                )
-            return s, q, mm, list(offs)
-        reserve = min(longest, max(1, int(max_len * self.cfg.max_question_fraction)))
-        cut = [max(0, len(x) - reserve) for x in q]
-        kept = [o[c:] for o, c in zip(offs, cut, strict=True)]
-        q = [x[c:] for x, c in zip(q, cut, strict=True)]
-        budget = max_len - reserve
-        if keep > budget:
+        if len(s) + longest > max_len:
+            image_toks = sum(counts)
             raise ValueError(
-                f"the images take {keep} tokens of a {budget}-token state budget; "
-                "send fewer or smaller images"
+                f"prompt of {len(s) + longest} tokens ({len(s) - image_toks} state + "
+                f"{image_toks} image + {longest} question) exceeds the context window "
+                f"of {max_len} tokens"
             )
-        s = s[:budget]
-        return s, q, mm, kept
+        return s, q, mm, list(offs)
 
     @torch.inference_mode()  # type: ignore[untyped-decorator]
     def _image_probs(
@@ -23872,7 +24121,7 @@ def load_vision_engine(
     image_long_side: int = 448,
 ) -> VisionEngine:
     """A vision engine configured as `create_app` configures a text one (device, prefix
-    cache, `strict_window`, `max_batch`, model name), plus the image settings."""
+    cache, `max_batch`, model name), plus the image settings."""
     base = config or EngineConfig()
     names = {f.name for f in fields(EngineConfig)}
     cfg = VisionEngineConfig(
@@ -24001,14 +24250,14 @@ def test_the_cap_bounds_the_padded_forward(prefix):
 
 @pytest.mark.parametrize("prefix", [False, True])
 def test_the_cap_keeps_every_input(prefix):
-    # At a 256-token window the long question decides how much of the state is kept; a cap
-    # that puts the short question in a forward of its own must not refit it.
+    # Two questions of very different lengths: a cap that puts the short one in a forward of
+    # its own must not refit it.
     long = ChoiceQuestion(
         instructions=" ".join(["Consider"] * 155), criteria={"yes": None, "no": None}
     )
     state = " ".join(["ordinary"] * 100 + ["important", "evidence"] * 150)
     req = SystemOneRequest(state=state, questions={"short": SHORT, "long": long})
-    model = _model(_texts(req), 256)
+    model = _model(_texts(req), 1024)
     a = SystemOneEngine(model, EngineConfig(device="cpu", use_prefix_cache=prefix)).evaluate(req)
     capped = SystemOneEngine(
         model, EngineConfig(device="cpu", use_prefix_cache=prefix, max_batch_tokens=256)
@@ -24877,12 +25126,12 @@ def test_the_server_builds_the_mlx_engine_for_device_mlx(monkeypatch):
     monkeypatch.setattr(
         server.StrandsDeciderModel, "load", lambda *a, **k: pytest.fail("torch load")
     )
-    app = server.create_app("org/hobson", device="mlx", strict_window=True, max_batch=7)
+    app = server.create_app("org/hobson", device="mlx", max_batch=7)
     assert TestClient(app).get("/health").json()["device"] == "mlx"
     [(checkpoint, config)] = calls
     assert checkpoint == "org/hobson"
     assert (config.device, config.use_prefix_cache, config.model_name) == ("mlx", True, "hobson")
-    assert (config.strict_window, config.max_batch) == (True, 7)  # the shared config reaches MLX
+    assert config.max_batch == 7  # the shared config reaches MLX
 
 
 
@@ -25958,6 +26207,397 @@ def test_an_unknown_base_is_refused(tmp_path):
 
 
 ================================================
+FILE: tests/test_hidden_engine.py
+================================================
+"""HiddenStateEngine must answer as SystemOneEngine does, given the same hidden states.
+
+The backend here is the torch engine's own torso, run one full forward per question, so
+any difference is the hidden-state engine's: the window fitting, the offsets, the rows it
+asks for, the numpy pointer head, the readouts or the saved assets. A tiny random-weight
+Qwen3.5 checkpoint is built in a temp dir; nothing is downloaded.
+"""
+
+from __future__ import annotations
+
+import json
+from concurrent.futures import ThreadPoolExecutor
+
+import numpy as np
+import pytest
+
+torch = pytest.importorskip("torch")
+transformers = pytest.importorskip("transformers")
+if not hasattr(transformers, "Qwen3_5TextConfig"):
+    pytest.skip("this transformers has no Qwen3.5", allow_module_level=True)
+
+from tokenizers import Tokenizer  # noqa: E402
+
+from strands_decider.hidden_engine import (  # noqa: E402
+    HiddenStateEngine,
+    NumpyPointerHead,
+    save_assets,
+)
+from strands_decider.infer import SystemOneEngine, load_engine  # noqa: E402
+from strands_decider.modeling import (  # noqa: E402
+    PointerHead,
+    StrandsDeciderConfig,
+    StrandsDeciderModel,
+    ensure_bos,
+)
+from strands_decider.prompting import render_question, render_state  # noqa: E402
+from strands_decider.schema import (  # noqa: E402
+    ChoiceQuestion,
+    NoulQuestion,
+    ScoreQuestion,
+    SystemOneRequest,
+)
+
+POLICY = (
+    "Loans run 21 days and renew twice online unless another patron holds the item. "
+    "Accounts with fines above ten dollars cannot renew until the fine is paid. "
+)
+QUESTIONS = {
+    "team": ChoiceQuestion(
+        instructions="Which team should handle this?",
+        criteria={
+            "circulation": "renewals and holds",
+            "billing": "fines",
+            "reference": "research help",
+        },
+    ),
+    "urgent": NoulQuestion(instructions="Does the patron convey urgency?"),
+    "mood": ScoreQuestion(
+        instructions="How frustrated is the patron?", criteria=["calm", "annoyed", "angry"]
+    ),
+}
+# About 1,100 tokens against a 512-token window: both engines refuse it.
+OVERSIZE_REQUEST = SystemOneRequest(state=POLICY * 30 + "Help!", questions=QUESTIONS)
+REQUESTS = {
+    "one question": SystemOneRequest(
+        state=POLICY + "Can I renew the cookbook?", questions={"team": QUESTIONS["team"]}
+    ),
+    "three questions": SystemOneRequest(
+        state=POLICY * 6 + "My renewal failed and I leave Friday!", questions=QUESTIONS
+    ),
+}
+
+
+def _tokenizer(bos: bool):
+    """A word-level tokenizer covering every rendered prompt, optionally adding a BOS."""
+    from tokenizers import models, pre_tokenizers
+    from transformers import PreTrainedTokenizerFast
+
+    texts = [render_state(r.state) for r in REQUESTS.values()]
+    texts.append(render_state(OVERSIZE_REQUEST.state))
+    texts += [render_question(q).text for q in QUESTIONS.values()]
+    words = {w for text in texts for w, _ in pre_tokenizers.Whitespace().pre_tokenize_str(text)}
+    vocab = {w: i for i, w in enumerate(["<pad>", "<eos>", "<unk>", "<bos>", *sorted(words)])}
+    tok = Tokenizer(models.WordLevel(vocab, unk_token="<unk>"))
+    tok.pre_tokenizer = pre_tokenizers.Whitespace()
+    hf = PreTrainedTokenizerFast(
+        tokenizer_object=tok,
+        pad_token="<pad>",
+        eos_token="<eos>",
+        unk_token="<unk>",
+        bos_token="<bos>" if bos else None,
+    )
+    return ensure_bos(hf) if bos else hf
+
+
+def _checkpoint(tmp_path, bos: bool):
+    tok = _tokenizer(bos)
+    torch.manual_seed(0)
+    base_cfg = transformers.Qwen3_5TextConfig(
+        vocab_size=len(tok),
+        hidden_size=64,
+        intermediate_size=128,
+        num_hidden_layers=4,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        head_dim=16,
+        linear_num_key_heads=2,
+        linear_num_value_heads=4,
+        linear_key_head_dim=32,
+        linear_value_head_dim=16,
+        layer_types=["linear_attention"] * 3 + ["full_attention"],
+    )
+    base = tmp_path / "base"
+    transformers.Qwen3_5ForCausalLM(base_cfg).save_pretrained(base)
+    cfg = StrandsDeciderConfig(
+        base_model=str(base),
+        head_type="pointer",
+        pointer_dim=16,
+        max_length=512,
+        torch_dtype="float32",
+        lora_r=4,
+        lora_alpha=8,
+        temperature=0.8,
+        temperature_by_kind={"choice": 0.6, "score": 1.5},
+        ordinal_smoothing=0.1,
+        force_bos=bos,
+    )
+    model = StrandsDeciderModel(
+        cfg, transformers.Qwen3_5ForCausalLM.from_pretrained(base).model, tok
+    )
+    model.attach_lora()
+    with torch.no_grad():  # lora_B starts at zero: make the adapter change the torso
+        for name, p in model.torso.named_parameters():
+            if "lora_B" in name:
+                p.normal_(std=0.1)
+    path = tmp_path / "ckpt"
+    model.save_pretrained(str(path))
+    return path
+
+
+class TorsoBackend:
+    """The torch engine's torso as a Backend: one full forward of state + question each."""
+
+    def __init__(self, model: StrandsDeciderModel):
+        self.model = model
+        self.calls: list[tuple[list[int], list[list[int]], list[list[int]]]] = []
+
+    @torch.inference_mode()
+    def forward(self, state, questions, rows):
+        self.calls.append((state, questions, rows))
+        out = []
+        for q, r in zip(questions, rows, strict=True):
+            ids = torch.tensor([state + q])
+            hidden = self.model.encode(ids, torch.ones_like(ids))[0, len(state) :]
+            out.append(hidden[r].float().numpy())
+        return out
+
+
+def _hidden_engine(torch_engine: SystemOneEngine, assets, **config) -> HiddenStateEngine:
+    return HiddenStateEngine.from_assets(
+        str(assets),
+        TorsoBackend(torch_engine.model),
+        model_name=torch_engine.cfg.model_name,
+        **config,
+    )
+
+
+def _probabilities(response):
+    return {
+        name: [a.noul] if a.type == "noul" else list(a.probabilities.values())
+        for name, a in response.answers.items()
+    }
+
+
+@pytest.fixture(scope="module", params=[False, True], ids=["no-bos", "bos"])
+def engines(request, tmp_path_factory):
+    tmp = tmp_path_factory.mktemp("bos" if request.param else "nobos")
+    torch_engine = load_engine(str(_checkpoint(tmp, request.param)), device="cpu")
+    assets = tmp / "assets"
+    save_assets(torch_engine.model, str(assets), "tiny")
+    # Saved tokenizers can carry padding and truncation (Qwen3.5's pads a batch to its
+    # longest): the engine must count every token of every question regardless.
+    tok = Tokenizer.from_file(str(assets / "tokenizer.json"))
+    tok.enable_padding(pad_id=0, pad_token="<pad>")
+    tok.enable_truncation(max_length=8)
+    tok.save(str(assets / "tokenizer.json"))
+    return torch_engine, assets
+
+
+@pytest.mark.parametrize("eps", [1e-5, 1e-2])
+def test_numpy_head_matches_pointer_head(eps):
+    torch.manual_seed(1)
+    head = PointerHead(hidden_size=32, dim=8).eval()
+    head.norm.eps = eps
+    with torch.no_grad():
+        head.norm.weight.normal_()
+        head.norm.bias.normal_()
+        decide, options = torch.randn(32) * 0.01, torch.randn(5, 32) * 0.01
+        want = head(decide[None], options[None])[0].numpy()
+    got = NumpyPointerHead({k: v.numpy() for k, v in head.state_dict().items()}, 8, eps)
+    np.testing.assert_allclose(
+        got.logits(decide.numpy(), options.numpy()), want, rtol=1e-5, atol=1e-5
+    )
+
+
+def test_assets_hold_the_head_and_settings(engines):
+    torch_engine, assets = engines
+    cfg = torch_engine.model.config
+    saved = json.loads((assets / "head_config.json").read_text())
+    assert saved == {
+        "format": 1,
+        "readout": "pointer",
+        "model_name": "tiny",
+        "pointer_dim": cfg.pointer_dim,
+        "eps": torch_engine.model.head.norm.eps,
+        "max_length": cfg.max_length,
+        "temperature": cfg.temperature,
+        "temperature_by_kind": cfg.temperature_by_kind,
+        "ordinal_smoothing": cfg.ordinal_smoothing,
+    }
+    assert _hidden_engine(torch_engine, assets).cfg.model_name == torch_engine.cfg.model_name
+
+
+@pytest.mark.parametrize("name", list(REQUESTS))
+def test_answers_as_torch_does(engines, name):
+    torch_engine, assets = engines
+    expected = torch_engine.evaluate(REQUESTS[name])
+    got = _hidden_engine(torch_engine, assets).evaluate(REQUESTS[name].model_dump())
+    assert (got.model, got.usage) == (expected.model, expected.usage)
+    want, have = _probabilities(expected), _probabilities(got)
+    assert have.keys() == want.keys()
+    for q in want:
+        assert have[q] == pytest.approx(want[q], abs=1.5e-4), q  # both round to 4 places
+    for q, answer in expected.answers.items():
+        if answer.type == "choice":
+            assert got.answers[q].choice == answer.choice
+
+
+def test_fit_matches_system_one_engine(engines):
+    torch_engine, assets = engines
+    state = render_state(REQUESTS["three questions"].state)
+    texts = [render_question(q).text for q in REQUESTS["three questions"].questions.values()]
+    s, q, offs = _hidden_engine(torch_engine, assets).fit(state, texts)
+    want_s, want_q, want_offs = torch_engine._fit(state, texts)
+    assert (s, q) == (want_s, want_q)
+    assert offs == [[tuple(o) for o in x] for x in want_offs]
+    if torch_engine.tok.bos_token_id is not None:
+        assert s[0] == torch_engine.tok.bos_token_id
+
+
+def test_backend_is_asked_for_the_option_ends_then_the_last_token(engines):
+    torch_engine, assets = engines
+    engine = _hidden_engine(torch_engine, assets)
+    engine.evaluate(REQUESTS["three questions"])
+    ((_, questions, rows),) = engine.backend.calls
+    for q, r, question in zip(questions, rows, QUESTIONS.values(), strict=True):
+        assert len(r) == render_question(question).n_slots + 1
+        assert r[-1] == len(q) - 1 and r[:-1] == sorted(r[:-1])
+
+
+def test_oversize_request_is_refused_as_torch_does(engines):
+    torch_engine, assets = engines
+    engine = _hidden_engine(torch_engine, assets)
+    for e in (torch_engine, engine):
+        with pytest.raises(ValueError, match="exceeds the context window of 512 tokens"):
+            e.evaluate(OVERSIZE_REQUEST)
+    assert not engine.backend.calls
+
+
+def test_request_limit_and_images_are_refused(engines):
+    torch_engine, assets = engines
+    engine = _hidden_engine(torch_engine, assets, max_request_tokens=100)
+    with pytest.raises(ValueError, match="exceeds the limit of 100 tokens"):
+        engine.evaluate(REQUESTS["three questions"])
+    with pytest.raises(ValueError, match="images"):
+        engine.evaluate(REQUESTS["one question"].model_copy(update={"images": ["aGk="]}))
+    assert not engine.backend.calls
+
+
+def test_concurrent_requests_answer_as_sequential_ones(engines):
+    torch_engine, assets = engines
+    engine = _hidden_engine(torch_engine, assets)
+    requests = list(REQUESTS.values()) * 3
+    sequential = [engine.evaluate(r).answers for r in requests]
+    with ThreadPoolExecutor(6) as pool:
+        assert list(pool.map(lambda r: engine.evaluate(r).answers, requests)) == sequential
+
+
+class _WrongRows:
+    """A backend that returns the wrong rows: every position of each question, one row
+    too few, or one array too few."""
+
+    def __init__(self, inner: TorsoBackend, mistake: str):
+        self.inner, self.mistake = inner, mistake
+
+    def forward(self, state, questions, rows):
+        if self.mistake == "every position":
+            rows = [list(range(len(q))) for q in questions]
+        out = self.inner.forward(state, questions, rows)
+        if self.mistake == "a row too few":
+            return [h[:-1] for h in out]
+        if self.mistake == "an array too few":
+            return out[:-1]
+        return out
+
+
+@pytest.mark.parametrize(
+    ("mistake", "message"),
+    [
+        ("every position", r"backend returned shape \(\d+, 64\) for question 'team'; expected"),
+        (
+            "a row too few",
+            r"backend returned shape \(3, 64\) for question 'team'; expected \(4, hidden\)",
+        ),
+        ("an array too few", "backend returned 2 arrays for 3 questions"),
+    ],
+)
+def test_a_backend_returning_the_wrong_rows_is_named(engines, mistake, message):
+    torch_engine, assets = engines
+    engine = HiddenStateEngine.from_assets(
+        str(assets), _WrongRows(TorsoBackend(torch_engine.model), mistake)
+    )
+    with pytest.raises(ValueError, match=message):
+        engine.evaluate(REQUESTS["three questions"])
+
+
+def _resave(assets, tmp_path, **changes):
+    """A copy of the assets with head_config.json's keys changed (None removes one)."""
+    import shutil
+
+    copy = tmp_path / "assets"
+    shutil.copytree(assets, copy)
+    config = json.loads((copy / "head_config.json").read_text())
+    config.update(changes)
+    config = {k: v for k, v in config.items() if v is not None}
+    (copy / "head_config.json").write_text(json.dumps(config))
+    return copy
+
+
+def test_assets_from_a_newer_release_load_with_a_warning(engines, tmp_path):
+    torch_engine, assets = engines
+    newer = _resave(assets, tmp_path, format=2, a_later_setting=True)
+    with pytest.warns(UserWarning, match="newer strands-decider"):
+        engine = _hidden_engine(torch_engine, newer)
+    expected = _hidden_engine(torch_engine, assets).evaluate(REQUESTS["one question"])
+    assert engine.evaluate(REQUESTS["one question"]) == expected
+
+
+def test_assets_from_before_the_format_key_load(engines, tmp_path):
+    torch_engine, assets = engines
+    older = _resave(assets, tmp_path, format=None, readout=None, eps=None, truncation_side=None)
+    expected = _hidden_engine(torch_engine, assets).evaluate(REQUESTS["one question"])
+    assert _hidden_engine(torch_engine, older).evaluate(REQUESTS["one question"]) == expected
+
+
+def test_assets_for_another_readout_are_refused(engines, tmp_path):
+    torch_engine, assets = engines
+    with pytest.raises(ValueError, match="not for a pointer head"):
+        _hidden_engine(torch_engine, _resave(assets, tmp_path, readout="slot"))
+
+
+def test_the_head_uses_the_saved_eps(engines, tmp_path):
+    torch_engine, assets = engines
+    assert _hidden_engine(torch_engine, _resave(assets, tmp_path, eps=0.01)).head.eps == 0.01
+
+
+
+================================================
+FILE: tests/test_hidden_engine_imports.py
+================================================
+"""hidden_engine must import without torch or transformers: it exists to serve where they
+do not fit. Run in a fresh interpreter, so modules other tests imported do not count."""
+
+from __future__ import annotations
+
+import subprocess
+import sys
+
+
+def test_hidden_engine_imports_without_torch():
+    code = (
+        "import sys, strands_decider.hidden_engine; "
+        "assert not {'torch', 'transformers'} & set(sys.modules), sorted(sys.modules)"
+    )
+    subprocess.run([sys.executable, "-c", code], check=True)
+
+
+
+================================================
 FILE: tests/test_hybrid.py
 ================================================
 """Hybrid (recurrent + attention) torsos use the shared-prefix cache like any other.
@@ -26643,7 +27283,7 @@ def test_the_prefix_path_matches_whole_prompts_and_leaves_no_state(engines):
         assert whole[name] == pytest.approx(shared[name], abs=1e-4), name
 
 
-def test_max_batch_and_strict_window_apply_on_mlx(engines):
+def test_max_batch_chunking_and_window_refusal_on_mlx(engines):
     _, mlx_engine, _ = engines
     original = mlx_engine.cfg
     try:
@@ -26653,7 +27293,6 @@ def test_max_batch_and_strict_window_apply_on_mlx(engines):
         whole = _probabilities(mlx_engine.evaluate(REQUESTS[1]))
         for name in whole:
             assert chunked[name] == pytest.approx(whole[name], abs=1e-4), name
-        mlx_engine.cfg = dataclasses.replace(original, strict_window=True)
         too_long = SystemOneRequest(state=POLICY * 100, questions={"team": QUESTIONS["team"]})
         with pytest.raises(ValueError, match="context window"):
             mlx_engine.evaluate(too_long)
@@ -26739,6 +27378,86 @@ def test_a_bf16_checkpoint_answers_from_another_thread(tmp_path):
     with ThreadPoolExecutor(1) as pool:
         response = pool.submit(engine.evaluate, REQUESTS[1]).result()
     assert set(response.answers) == set(QUESTIONS)
+
+
+def test_every_mlx_evaluation_runs_on_the_loading_thread(engines):
+    # Gemma4 (and MLX in general) binds Metal streams to the loading thread. The engine
+    # owns a single-worker executor so cross-thread submissions all land on that one
+    # worker, regardless of which caller thread invoked evaluate().
+    import threading as _threading
+
+    _, mlx_engine, _ = engines
+    seen: list[int] = []
+    original = mlx_engine._decoder
+
+    class _Spy:
+        def __call__(self, *args, **kwargs):
+            seen.append(_threading.get_ident())
+            return original(*args, **kwargs)
+
+        def __getattr__(self, name):
+            return getattr(original, name)
+
+    mlx_engine._decoder = _Spy()
+    try:
+        with ThreadPoolExecutor(3) as pool:
+            futures = [pool.submit(mlx_engine.evaluate, REQUESTS[0]) for _ in range(3)]
+            for future in futures:
+                future.result()
+    finally:
+        mlx_engine._decoder = original
+    assert seen, "the decoder was never called"
+    assert len(set(seen)) == 1, f"evaluations ran on {len(set(seen))} threads: {seen}"
+    assert _threading.get_ident() not in seen, "evaluate ran on the calling thread"
+
+
+def test_mlx_evaluations_run_on_the_thread_that_loaded_the_torso(tmp_path, monkeypatch):
+    # Stronger than test_every_mlx_evaluation_runs_on_the_loading_thread: records which
+    # thread actually ran _load_torso and asserts evaluations land on that same thread.
+    import threading as _threading
+
+    import strands_decider.mlx_engine as mlx_engine
+
+    loaded_on: list[int] = []
+    original_load = mlx_engine._load_torso
+
+    def spy(*args, **kwargs):
+        loaded_on.append(_threading.get_ident())
+        return original_load(*args, **kwargs)
+
+    monkeypatch.setattr(mlx_engine, "_load_torso", spy)
+    engine = load_engine(str(_checkpoint(tmp_path)), device="mlx")
+
+    seen: list[int] = []
+    original_decoder = engine._decoder
+
+    class _Spy:
+        def __call__(self, *args, **kwargs):
+            seen.append(_threading.get_ident())
+            return original_decoder(*args, **kwargs)
+
+        def __getattr__(self, name):
+            return getattr(original_decoder, name)
+
+    engine._decoder = _Spy()
+    with ThreadPoolExecutor(3) as pool:
+        for future in [pool.submit(engine.evaluate, REQUESTS[0]) for _ in range(3)]:
+            future.result()
+    assert seen, "the decoder was never called"
+    assert set(seen) == set(loaded_on), f"evaluations ran on {seen}, loaded on {loaded_on}"
+
+
+def test_closing_the_engine_shuts_down_its_worker(tmp_path):
+    engine = load_engine(str(_checkpoint(tmp_path)), device="mlx")
+    engine.close()
+    with pytest.raises(RuntimeError):
+        engine.evaluate(REQUESTS[0])
+
+
+def test_torch_engines_do_not_grow_an_mlx_executor(tmp_path):
+    engine = load_engine(str(_checkpoint(tmp_path)), device="cpu")
+    assert not hasattr(engine, "_executor")
+    assert not hasattr(engine, "close")
 
 
 def test_mlx_loads_the_base_at_the_revision_in_provenance(tmp_path, monkeypatch):
@@ -27079,8 +27798,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from strands_decider import server
-from strands_decider.infer import _to_answer
-from strands_decider.prompting import render_question
+from strands_decider.prompting import render_question, to_answer
 from strands_decider.schema import (
     ChoiceQuestion,
     NoulQuestion,
@@ -27120,7 +27838,7 @@ class _StubEngine:
             n = rq.n_slots
             # Concentrated on slot 0, so answers are deterministic and non-uniform.
             probs = [0.7] + [0.3 / (n - 1)] * (n - 1)
-            answers[name] = _to_answer(rq, probs)
+            answers[name] = to_answer(rq, probs)
         return SystemOneResponse(
             model=self.cfg.model_name,
             answers=answers,
@@ -27260,13 +27978,13 @@ def test_score_answer_is_expected_value_not_argmax():
     """The API returns a continuous score, so a split belief must land between levels."""
     q = ScoreQuestion(instructions="x", criteria=["low", "mid", "high"])
     rq = render_question(q)
-    ans = _to_answer(rq, [0.0, 0.5, 0.5])
+    ans = to_answer(rq, [0.0, 0.5, 0.5])
     assert ans.score == pytest.approx(1.5)
 
 
 def test_noul_answer_carries_no_confidence_field():
     rq = render_question(NoulQuestion(instructions="is it?"))
-    ans = _to_answer(rq, [0.1, 0.9])
+    ans = to_answer(rq, [0.1, 0.9])
     assert ans.noul == pytest.approx(0.9)
     assert not hasattr(ans, "confidence")
 
@@ -27274,7 +27992,7 @@ def test_noul_answer_carries_no_confidence_field():
 def test_choice_answer_picks_argmax():
     q = ChoiceQuestion(instructions="x", criteria={"a": "", "b": "", "c": ""})
     rq = render_question(q)
-    ans = _to_answer(rq, [0.2, 0.5, 0.3])
+    ans = to_answer(rq, [0.2, 0.5, 0.3])
     assert ans.choice == "b"
     assert ans.confidence == pytest.approx((3 * 0.5 - 1) / 2)
 
@@ -27454,8 +28172,7 @@ The tests pin what the feature promises:
 * answers over images through the shared-prefix path equal a plain full forward, which
   fails without the explicit M-RoPE positions;
 * no position state leaks from an image forward into the next text request;
-* the window rules match the text path: `strict_window` refuses, otherwise the state text
-  loses its end and the images are never cut;
+* the window rules match the text path: a prompt that does not fit the window is refused;
 * only the promised image formats are opened, sizes are checked before decoding, and
   rotation and transparency are handled;
 * a text-only engine refuses images instead of ignoring them, at the engine and the API.
@@ -27478,13 +28195,13 @@ if tuple(int(x) for x in re.findall(r"\d+", transformers.__version__)[:2]) < (5,
 import torch  # noqa: E402
 from PIL import Image  # noqa: E402
 
-from strands_decider.infer import EngineConfig, SystemOneEngine, _option_token_index  # noqa: E402
+from strands_decider.infer import EngineConfig, SystemOneEngine  # noqa: E402
 from strands_decider.modeling import (  # noqa: E402
     StrandsDeciderConfig,
     StrandsDeciderModel,
     masked_log_softmax,
 )
-from strands_decider.prompting import render_question  # noqa: E402
+from strands_decider.prompting import option_token_index, render_question  # noqa: E402
 from strands_decider.schema import (  # noqa: E402
     ChoiceQuestion,
     NoulQuestion,
@@ -27737,7 +28454,7 @@ def _reference(vision: VisionEngine, state: str, images: list[str], q) -> list[f
     )
     text = expand_image_tokens(render_image_state(state, len(images)), counts) + rq.text
     enc = vision.tok(text, return_offsets_mapping=True)
-    opt = _option_token_index(enc["offset_mapping"], rq.option_spans, len(text) - len(rq.text))
+    opt = option_token_index(enc["offset_mapping"], rq.option_spans, len(text) - len(rq.text))
     ids = torch.tensor([enc["input_ids"]])
     with torch.no_grad():
         out = vision.model(
@@ -27783,29 +28500,24 @@ def test_image_forward_leaves_no_position_state(engines):
 # ---- the window ----------------------------------------------------------------------------
 
 
-def _small_window(vision: VisionEngine, max_length: int, strict: bool) -> VisionEngine:
+def _small_window(vision: VisionEngine, max_length: int) -> VisionEngine:
     model = vision.model
     eng = VisionEngine.__new__(VisionEngine)
     eng.__dict__.update(vision.__dict__)
-    eng.cfg = eng.vcfg = replace(vision.vcfg, strict_window=strict)
+    eng.cfg = eng.vcfg = replace(vision.vcfg)
     eng.model = model
     model.config.max_length = max_length
     return eng
 
 
-def test_long_state_keeps_its_head_and_the_images(engines):
+def test_long_prompt_with_images_is_refused(engines):
     _, vision = engines
     original = vision.model.config.max_length
     try:
-        eng = _small_window(vision, 700, strict=False)
         state = "First words stay. " + "filler " * 200 + "Last words go."
         img = [fit_image(decode_image(_b64(320, 320, 4)), 448)]
-        s, _, _, _ = eng._fit_images(state, img, [render_question(QUESTIONS["signed"]).text])
-        assert s.count(eng.tok.convert_tokens_to_ids(IMAGE_PAD)) == 100  # the image is whole
-        kept = eng.tok.decode(s)
-        assert "First words stay." in kept and "Last words go." not in kept
         with pytest.raises(ValueError, match="context window"):
-            _small_window(vision, 700, strict=True)._fit_images(
+            _small_window(vision, 700)._fit_images(
                 state, img, [render_question(QUESTIONS["signed"]).text]
             )
     finally:
@@ -27906,10 +28618,8 @@ def test_image_only_request_and_refusals(engines):
 
 
 def test_load_vision_engine_keeps_the_server_settings(ckpt):
-    eng = load_vision_engine(
-        ckpt, EngineConfig(device="cpu", strict_window=True, max_batch=3, model_name="vd-test")
-    )
-    assert (eng.cfg.strict_window, eng.cfg.max_batch, eng.cfg.model_name) == (True, 3, "vd-test")
+    eng = load_vision_engine(ckpt, EngineConfig(device="cpu", max_batch=3, model_name="vd-test"))
+    assert (eng.cfg.max_batch, eng.cfg.model_name) == (3, "vd-test")
 
 
 def test_server_routes_images(ckpt):
@@ -30273,7 +30983,7 @@ def card(
     data = ModelCardData(
         base_model=base.model,
         base_model_relation="adapter",
-        library_name="peft",
+        library_name="strands-decider",
         pipeline_tag="text-classification",
         tags=base.tags,
         license="apache-2.0",
@@ -40926,66 +41636,12 @@ def _long_state(n_chars: int = 12000) -> str:
     return "".join(out)
 
 
-def test_long_state_does_not_starve_the_question(model):
-    """The regression this guards: a state longer than the window used to consume all
-    of it, leaving the question a floor of 8 tokens -- too few to hold the option list,
-    so the model chose among options it could not see. Every JevBench long_policy task
-    hit that path."""
+def test_long_prompt_is_refused(model):
+    """A prompt that does not fit the window is refused; one that fits is kept whole."""
     from strands_decider.infer import EngineConfig, SystemOneEngine
-    from strands_decider.prompting import render_question, render_state
-    from strands_decider.schema import ChoiceQuestion
+    from strands_decider.prompting import render_state
 
     eng = SystemOneEngine(model, EngineConfig())
-    q = ChoiceQuestion(
-        instructions="Under the stated policy, what is the correct outcome?",
-        criteria={
-            "full_refund": "money back in full",
-            "store_credit": "credit only, no cash",
-            "reject": "no remedy available",
-            "partial": "refund minus a restocking fee",
-        },
-    )
-    rq = render_question(q)
-    wanted = len(eng.tok(rq.text, add_special_tokens=False)["input_ids"])
-
-    s, kept, _ = eng._fit(render_state(_long_state()), [rq.text])
-
-    assert len(kept[0]) == wanted, "the whole question should survive a long state"
-    assert len(s) > 0, "the state must not be squeezed to nothing"
-    assert len(s) + len(kept[0]) <= model.config.max_length
-
-    # The option names are what the slots bind to; losing them makes the task blind.
-    decoded = eng.tok.decode(kept[0])
-    for name in q.criteria:
-        assert name in decoded
-
-
-def test_question_reserve_is_capped_so_state_survives(model):
-    """A pathological question must not take the entire window.
-
-    Both inputs are oversized here on purpose. With a short state the cap is
-    untestable, because the state simply does not fill the budget it is given.
-    """
-    from strands_decider.infer import EngineConfig, SystemOneEngine
-    from strands_decider.prompting import render_state
-
-    eng = SystemOneEngine(model, EngineConfig(max_question_fraction=0.75))
-    huge = "Is this permitted under the policy? " * 2000
-    s, kept, _ = eng._fit(render_state(_long_state()), [huge])
-
-    cap = int(model.config.max_length * 0.75)
-    assert len(kept[0]) == cap, "an oversized question should be trimmed to the cap"
-    # The state gets everything the cap leaves, and it is long enough to use it.
-    assert len(s) == model.config.max_length - cap
-    assert len(s) + len(kept[0]) <= model.config.max_length
-
-
-def test_strict_window_refuses_instead_of_truncating(model):
-    """--strict-window: a prompt over the window is refused, one that fits is kept whole."""
-    from strands_decider.infer import EngineConfig, SystemOneEngine
-    from strands_decider.prompting import render_state
-
-    eng = SystemOneEngine(model, EngineConfig(strict_window=True))
     with pytest.raises(ValueError, match="context window"):
         eng._fit(render_state(_long_state()), ["Is this permitted?"])
 
@@ -40994,46 +41650,6 @@ def test_strict_window_refuses_instead_of_truncating(model):
     s, kept, _ = eng._fit(short, [question])
     assert len(kept[0]) == len(eng.tok(question, add_special_tokens=False)["input_ids"])
     assert s == eng.tok(short, add_special_tokens=True)["input_ids"]
-
-
-def test_long_state_answer_is_still_well_formed(model):
-    """End to end: a long state must still yield a valid distribution over the options."""
-    from strands_decider.infer import EngineConfig, SystemOneEngine
-    from strands_decider.schema import ChoiceQuestion, SystemOneRequest
-
-    eng = SystemOneEngine(model, EngineConfig())
-    req = SystemOneRequest(
-        state=_long_state(),
-        questions={
-            "outcome": ChoiceQuestion(
-                instructions="What is the correct outcome?",
-                criteria={"refund": "money back", "credit": "store credit", "reject": "none"},
-            )
-        },
-    )
-    ans = eng.evaluate(req).answers["outcome"]
-    assert set(ans.probabilities) == {"refund", "credit", "reject"}
-    assert sum(ans.probabilities.values()) == pytest.approx(1.0, abs=1e-3)
-
-
-def test_both_paths_agree_on_a_long_state(model):
-    """_fit changed tokenisation on both paths; they must still match."""
-    from strands_decider.infer import EngineConfig, SystemOneEngine
-    from strands_decider.schema import ChoiceQuestion, SystemOneRequest
-
-    req = SystemOneRequest(
-        state=_long_state(),
-        questions={
-            "outcome": ChoiceQuestion(
-                instructions="What is the correct outcome?",
-                criteria={"refund": "money back", "credit": "store credit", "reject": "none"},
-            )
-        },
-    )
-    cached = SystemOneEngine(model, EngineConfig(use_prefix_cache=True)).evaluate(req)
-    naive = SystemOneEngine(model, EngineConfig(use_prefix_cache=False)).evaluate(req)
-    for k, v in cached.answers["outcome"].probabilities.items():
-        assert v == pytest.approx(naive.answers["outcome"].probabilities[k], abs=1e-2)
 
 
 

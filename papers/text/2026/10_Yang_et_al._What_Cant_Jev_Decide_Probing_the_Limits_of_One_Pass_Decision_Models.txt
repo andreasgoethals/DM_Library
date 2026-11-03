@@ -1,0 +1,1293 @@
+What Can’t Jev Decide? Probing the Limits of One-Pass Decision Models
+Wang Yang1, Xinpeng Li1, Yanyan Zhang1, Chuang Ma2, Shouren Wang1, Jianzhe Wei3,
+Liqin Ye3,Xiaoran Cai 4,Mohsen Hariri 1,Vipin Chaudhary 1,Xiaotian Han 1
+1Case Western Reserve University,2NII LLMC (Japan),
+3Georgia Institute of Technology, 4Columbia University
+Abstract
+Jev and its open replicas choose among the
+options a caller supplies with a single forward
+pass, fast enough to decide inside an agent loop.
+We ask what such a model cannot decide, and
+find a simple limit: Jev cannot make a decision
+that an LLM makes only by writing out inter-
+mediate steps. On a benchmark that varies one
+factor at a time, Jev finds and selects records
+without error up to 20k tokens and 64 options,
+but once the answer depends on two or more
+updates of one user, accuracy falls, to 53–80%
+at sixteen updates, because similar records in-
+terfere. Given a stale summary of the state, Jev
+follows it. On real decision items graded by
+how many thinking tokens a reference LLM
+needs, Jev answers 97.5% of the items that one
+forward pass of that LLM solves, but only 74%
+of the others. Jev also does not know its limit:
+its confidence flags the errors it makes itself
+but not those it inherits from a stale input, and
+neither an explicit nor a trained hand-off option
+catches the latter. The open models we evalu-
+ate share these limits. Checking the state such
+models rely on requires a model that reasons.
+1 Introduction
+Jev (TypeSafe AI, 2026) reads a state, a question
+and a list of options supplied by the caller, and re-
+turns a probability for each option from a single
+forward pass, in about 0.2 s. It is meant to make the
+decisions in agent loops (Yao et al., 2023) while
+an LLM does the writing. Open replicas followed
+within weeks (Palmer, 2026; alibiserikbay, 2026;
+Mapika, 2026; Zefan-Cai, 2026; OpenJev, 2026;
+ZhengxuYu, 2026; tic-top, 2026), and public bench-
+marks report high accuracy and calibrated proba-
+bilities (Benchmark Heaven, 2026; Jevals, 2026).
+Aggregate accuracy, however, leaves the question
+that matters to a system built on Jev unanswered:
+what can a single forward pass not decide?
+The limit we find is simple to state:Jev cannot
+make a decision that an LLM makes only by writing
+one record:
+what does it say?
+100% 100%
+several records:
+what do they imply?
+64%
+100%
+a given state:
+is it correct?
+70%
+95%
+summary
+one forward pass suffices an LLM writes intermediate steps
+Jev (one pass) Qwen3.8-27B, thinking
+Does Jev know?Its confidence flags its own errors (AUROC 0.83) but
+not errors that come from a stale input (0.53).
+Figure 1: Where Jev’s limit lies. Jev decides what one
+record says, but not what several records imply together
+or whether a state it is given is correct; an LLM that
+writes intermediate steps decides all three. Accuracy
+on the controlled benchmark up to 8k tokens: event
+lookup, final state after 16 updates, and rejection of a
+stale summary (Table 2).
+out intermediate steps. It decides what one record
+says, but not what several records imply together,
+nor whether the state it is given is correct, and it
+does not know when it has crossed this limit. We
+show this for Jev 1.13.0 and 23 open configurations
+of Jev-style models in three steps.
+Locating the limit (Section 3).On a benchmark
+that varies one factor at a time, Jev finds and se-
+lects records without error, up to 20k tokens and
+64 options. Once the answer depends on two or
+more updates of one user, accuracy drops, to 53–
+80% at sixteen updates, because records of other
+users interfere; neither length nor the wording of
+the question is the cause. Given a precomputed
+summary of the state, Jev follows it even when it
+is stale. An LLM that writes its steps does both
+tasks: with thinking, Qwen3.8-27B answers 96%
+of the multi-update items and rejects 95% of the
+stale summaries up to 8k tokens, against 77% and
+74% in one pass.
+The same limit on real tasks (Section 4).We
+grade 1,131 real decision items by how many think-
+1
+arXiv:2610.24929v1  [cs.CL]  18 Oct 2026
+
+ing tokens Qwen3.8-27B needs to solve them, and
+keep the 738 with reliable labels. Jev’s accuracy
+falls from 99% on items that need fewer than 250
+tokens to 50% on items that need more than 4k;
+overall it answers 97.5% of the items one forward
+pass of Qwen3.8-27B solves, but only 74% of the
+others. Every open model shows the same gap, and
+a backbone trained to reason does not close it.
+Jev does not know its limit (Section 5).Its
+confidence flags the errors it makes itself (AUROC
+0.83) but not those it inherits from a stale input
+(0.53), and it almost never takes an offered hand-
+off option. A hand-off option trained in without
+new data catches more of its own errors, and is the
+steadier routing signal where no labelled data can
+tune a threshold, but it does not reach the inherited
+errors either.
+Current Jev-style models are therefore selectors
+over a state computed elsewhere: decisions that
+need intermediate steps, including checking that
+state, belong to a model that reasons. We contribute
+a controlled benchmark that locates where one-
+pass decision models fail, a measure of reasoning
+demand for real decision items, and an analysis
+of whether these models notice and hand off their
+errors.
+2 Jev and Jev-Style Decision Models
+Decision models.A decision model reads a state
+s, a question q and a set of options O supplied
+by the caller, and returns a probability distribu-
+tion p(· |s, q,O) over O from a single for-
+ward pass, without generating text. Its answer
+is ˆo= arg max o∈O p(o) and its confidence is
+pmax =p(ˆo).
+Jev.We evaluate Jev 1.13.0 (TypeSafe AI, 2026)
+through its API, which accepts up to 32k tokens;
+its weights and training data are not public.
+Jev-style models.To tell whether a failure be-
+longs to Jev or to the model class, we also eval-
+uate 23 open configurations that serve the same
+interface (listed in Table 5, Appendix A): 18 from
+nine released projects and five plain Qwen mod-
+els read through their option-letter logits. Most
+fine-tune a Qwen backbone (Qwen Team, 2025,
+2026a,b,c) on decision data (Palmer, 2026; alibis-
+erikbay, 2026; Mapika, 2026; Zefan-Cai, 2026;
+OpenJev, 2026); the others wrap an unmodified
+LLM (ZhengxuYu, 2026; tic-top, 2026; ekzhang,
+2026), read the option-letter logits of the base
+(a) Retrieval and selection
+10% 50% 90%
+The access code of user_28195 is code_31340.
+Q: access code of user_28195?
+code_20709 code_31340 code_59847 . . . 2–64 options
+(b) State tracking:kupdates of one user (k= 4shown)
+day
++H +A −H +C
+day 38 day 95 day 120 day 188
+gray: entries of other users
+Event lookup: which project did user_17824 join on day 188? C
+Final state: which projects does user_17824 belong to now? {A, C}
+(allkentries must be combined)
+(c) With a precomputed summary
+log (as in b)
+Summary: user_17824
+belongs to: . . .
+correct: project_A, project_C; stale: project_A (last update omitted)
+Final state, with the summary appended; or
+Verify: is the summary correct? Correct / Incorrect
+Figure 2: The three task families. Thin marks are log
+entries or records; blue marks belong to the target. Op-
+tions are drawn from the context, so every wrong option
+also occurs in it.
+LLM (Octalab-Inc, 2026; TheoLeeCJ, 2026), or
+score options contrastively (Kwok et al., 2026).
+Protocol.Every model sees the same state, ques-
+tion, options and option order. Inputs beyond a
+model’s context limit are recorded as unsupported
+rather than truncated, and cross-model comparisons
+use only the items every compared model supports.
+3 Where Jev Breaks: A Controlled
+Diagnosis
+3.1 A benchmark that varies one factor at a
+time
+Design.Each item consists of a context, a ques-
+tion and 2–64 options, and its answer is computed
+by a program rather than labelled by a model (Fig-
+ure 2). Contexts range from 1k to 20k tokens.
+For each scenario, shorter contexts are prefixes
+of longer ones and the target records keep their rel-
+ative position, so neighbouring cells differ only in
+the factor under test. Every wrong option also ap-
+pears in the context, so no option can be ruled out
+without reading it. Each cell contains 10 scenarios,
+each with 3 option orders.
+Tasks.Retrievalasks for the access code of one
+user, hidden among other users’ records or among
+2
+
+the essay paragraphs of the needle-in-a-haystack
+test (Kamradt, 2023), at 10%, 50% or 90% depth.
+Selectionasks the same question with 2–64 can-
+didate codes, all of which occur in the context.
+State trackinggives a day-ordered log in which
+the target user joins and leaves projects k times
+(k∈ {1,2,4,8,16} ), interleaved with other users’
+logs. Each log is asked two questions:event lookup
+asks what happened on one day, andfinal stateasks
+which projects the user belongs to after the last en-
+try. The two questions share the context and differ
+only in whether thekupdates must be combined.
+3.2 Length and the number of options are not
+the bottleneck
+We first test whether finding and selecting a record
+degrade with length, depth or the number of op-
+tions. They do not: Jev answers all 105 retrieval,
+selection and event-lookup cells correctly, up to
+20k tokens and 64 options, with the target at any
+depth and in either haystack, and puts a probability
+close to 1 on the correct option. Long contexts,
+buried targets and many options, the usual explana-
+tions for failures of long-context models (Kamradt,
+2023; Liu et al., 2024; Hsieh et al., 2024), therefore
+do not explain the failures below.
+3.3 State tracking fails from two updates on
+We next ask for the user’s current state, which de-
+pends on all k updates in the same log. Accuracy
+drops as soon as k= 2 and falls to 53–80% at
+k= 16 (Figure 3b), although Jev answers every
+event lookup on these logs correctly. It finds each
+update when asked about it, but does not use all of
+them when the answer depends on all of them.
+The errors show which updates are lost: the
+later ones. Of 145 wrong answers, 134 are an
+earlier state of the same user and 137 contain fewer
+projects than the correct set; only 3 confuse users.
+The probability on the correct option falls before
+the accuracy does: it averages 0.93 in the multi-
+update cells that are still answered perfectly, and
+about 0.5 atk= 16.
+3.4 Prompting does not help; similar records
+are the cause
+We first ask whether a better question fixes the
+failure. It does not (Table 1, rows P1–P3): ask-
+ing for step-by-step thinking (P1), spelling out the
+procedure of going through the user’s entries in
+order (P2), or naming the failure observed above
+k≥2k= 16
+VariantJev K-27B K-4B Jev K-27B K-4B
+P0 original 80 90 66 61 86 41
+P1 step by step 81 90 67 61 88 39
+P2 procedure 79 92 65 54 87 38
+P3 name failure 78 88 62 64 86 38
+R1 target only 100 100 85 100 100 67
+R2 newest first 72 88 20 61 80 4
+R3 target at end 89 97 61 64 100 29
+R4 R3 + essays 100 99 78 99 99 67
+Table 1: Final-state accuracy in % when the question
+(P1–P3) or the log (R1–R4) is changed. R3 and R4
+have the same length and target positions as P0; R4
+replaces the other users’ entries by essay text. Jev: 1k–
+20k tokens; Kev-27B (K-27B) and Kev-4B (K-4B): up
+to 4k. Kev-9B is in Appendix B.
+(P3) leaves Jev between 54% and 64% at k= 16 ,
+against 61% for the original item.
+We then change the log, keeping the question
+and options, to find which of its properties causes
+the failure (rows R1–R4). With only the target
+user’s entries left (R1), Jev answers every item
+correctly, so it can combine 16 updates. Moving
+these entries, in order, into one block at the end of
+the log while keeping every other entry (R3) leaves
+the length and the other users’ records unchanged,
+and accuracy at k= 16 stays at 64%. Replacing
+the other users’ entries of R3 by essay text of the
+same length (R4) raises it to 99%. The failure is
+caused neither by scattered entries nor by length,
+but by the similar records around them, a sharper
+form of the distraction by irrelevant context known
+from LLMs (Shi et al., 2023). Position does not
+explain it either: listing the log newest first (R2)
+lowers accuracy atk≥2from 80% to 72%.
+This interference differs from the one reported
+for LLMs, where earlier values of the same key
+displace the latest one (Wang and Sun, 2025): R1
+contains all of the target’s earlier updates and is
+answered perfectly. What Jev fails at is keeping one
+user’s updates apart from other users’ records. Kev-
+27B behaves alike, except that R3 already suffices;
+Kev-4B reaches only 67% at k= 16 even in R1
+and R4, so at this scale the combination itself is
+limited as well.
+In practice the target’s history cannot be pulled
+out of a real log by hand; the usual way to spare the
+model the search is to state the result in advance,
+which we test next.
+3
+
+1k 2k 4k 8k 16k 20k
+10%
+50%
+90%target depth
+100 100 100 100 100 100
+100 100 100 100 100 100
+100 100 100 100 100 100
+(a) Retrieval: accuracy
+1k 2k 4k 8k 16k20k
+1
+2
+4
+8
+16
+updates k
+100 100 100 100 100 100
+100 100 93 80 60 93
+100 100 100 90 80 73
+100 73 77 73 77 70
+80 63 60 53 63 57
+(b) Final state: accuracy
+1k 2k 4k 8k 16k20k
+1
+2
+4
+updates k
+100 100 100 100 100 100
+37 47 50 70 80 83
+57 48 52 81 90 100
+(c) Stale summary followed ( ↑  worse)
+context length (tokens)
+Figure 3: Jev 1.13.0 on the controlled benchmark. (a) Retrieval is perfect at every depth and length. (b) Final state
+fails from two updates on, although event lookup on the same logs is perfect. (c) With a stale summary appended,
+the share of answers that repeat the stale state; only items whose options include the stale state, which is rare for
+k≥8 . At k= 1 the stale state is the empty set. Blue panels show accuracy (higher is better); the orange panel
+shows a failure rate (higher is worse). Each cell: 10 scenarios × 3 option orders. All panels in %; colour scales start
+at 25%, chance with four options.
+3.5 A state summary is used, trusted, and not
+checked
+We next test the obvious remedy: compute the state
+in advance and append it to the log as a one-line
+summary. Jev uses the summary, but also trusts
+it. With acorrectsummary, it answers the final-
+state question correctly in all 30 cells. With astale
+summary, which omits the last update, Jev picks
+the stale state in 61–100% of the items that offer
+it as an option, even though the log contradicts it,
+and more often in longer logs (68% at 1k, 93% at
+20k; Figure 3c).
+Asked directly, Jev cannot tell a correct summary
+from a stale one. It accepts 91% of correct sum-
+maries but rejects only 62% of stale ones over all
+context lengths (92% and 70% up to 8k, Table 2),
+and almost none (0–7%) when the summary omits
+one of two updates in a 16k–20k log. The remedy
+is therefore only as good as the summary.
+3.6 The failures are shared by the model class
+We finally ask whether these failures are specific to
+Jev. They are not: on contexts up to 8k tokens, ev-
+ery open model in Table 2 shows the same pattern:
+retrieval and selection are close to perfect, final
+state drops once updates must be combined, and
+a stale summary is followed. No decision model
+verifies summaries reliably: averaged over correct
+and stale summaries, none exceeds 85% (chance
+50%), and the models that reject the most stale sum-
+maries reject most correct ones as well (Qwen3.5-
+4B-Base rejects 98% of stale and accepts 2% of
+correct ones). Neither scale (0.8B to 35B), train-
+ing on questions written by a reasoning teacher
+(JevK5), nor reading the logits of an untuned LLM
+changes this pattern. Two models in Appendix B
+fail earlier, at retrieval itself: Kev-0.8B and the
+contrastive CLM-8B.
+Jev thus decides what one record says, but not
+what several records imply together once similar
+records surround them, nor whether a state it is
+given is correct. Both are decisions that an LLM
+makes by writing intermediate steps: with thinking,
+Qwen3.8-27B answers 96% of the multi-update
+items and rejects 95% of the stale summaries (Ta-
+ble 2). Section 4 asks whether the same limit ap-
+pears on real decision tasks.
+4 Where Jev Breaks on Real Tasks
+Real tasks offer no factor to vary, so we measure
+how much reasoning each item demands and relate
+Jev’s accuracy to it.
+4.1 Items and reasoning demand
+Items.We test on 1,131 real decision items with
+a fixed option list: the public JevBench tiers (easy,
+original and hard; 231 items; Benchmark Heaven,
+2026) and 300 items each from PubMedQA (Jin
+et al., 2019), Banking77 (Casanueva et al., 2020)
+and HelpSteer2 (Wang et al., 2024) as packaged
+by Jevals (Jevals, 2026). Questions are yes/no, a
+choice among 2–77 labels, or a score level.
+Reasoning demand.To measure how much rea-
+soning an item needs, we run Qwen3.8-27B on it
+in three ways: reading the option probabilities after
+one forward pass without generating (direct read-
+out), answering after generation without thinking,
+and answering after thinking, the latter two with 10
+samples each. An item isone-pass solvableif the
+direct readout is correct, andneeds reasoningother-
+wise. Itsdemandis the median number of thinking
+4
+
+Find and select Final state With summary Verify
+ModelRetr. Select Eventk=1k≥2k=16correct stale reject stale
+Jev 1.13.0 100 100 100 100 84 64 100 58 70
+Open-Jev-27B 100 100 100 100 89 78 100 72 74
+OpenJev-27B 100 100 100 100 95 93 100 66 56
+Kev-27B† 100 100 100 100 91 88 100 60 62
+Kev-4B† 100 100 100 98 66 41 100 53 38
+JevK5-4B 100 100 99 98 53 56 100 47 52
+Decider-35B-A3B 100 100 99 83 65 60 100 39 31
+Decider-4B 100 100 98 100 67 80 100 39 0
+LitJev-27B 100 100 100 98 79 76 100 41 7
+llm2jev-27B 100 100 100 100 86 81 100 43 73
+Qwen3.8-27B, letter logits 100 100 100 100 77 77 100 42 74
+Qwen3.8-27B, thinking‡ – – 100 100 96 100 100 83 95
+Table 2: Accuracy in % of Jev and representative open models on contexts up to 8k tokens. “Select” pools 2–64
+options. “With summary” is final-state accuracy when a correct or a stale summary is appended; “reject stale” is the
+share of stale summaries judged incorrect (chance 50%). †Kev-4B and Kev-27B accept at most 4k tokens and are
+evaluated up to 4k. ‡Not a decision model: the same LLM generates its reasoning before answering; shown for
+reference and run on the state-tracking items only. All models are in Appendix B.
+tokens in the correct thinking samples. Qwen3.8-
+27B is only a reference for how much reasoning an
+item requires, not a model of Jev, whose backbone
+is not public.
+Excluded items.We set aside items whose la-
+bels cannot separate the models. HelpSteer2 asks
+for one of five helpfulness levels, and no model
+clearly beats always choosing the most frequent
+level (42%): the decision models reach 31–49%
+and Qwen3.8-27B with thinking 33%, so we re-
+port it only in Appendix B. We further exclude the
+93 items that Qwen3.8-27B with thinking answers
+correctly in at most 5 of 10 samples: 65 from Bank-
+ing77, 25 from PubMedQA and 3 from JevBench-
+hard. Their gold labels are disputed rather than
+hard: Jev answers 76 of them incorrectly, and in
+68 of these it picks the same wrong answer as the
+majority of the thinking samples (example in Fig-
+ure 4b). The remaining 738 items comprise 646
+one-pass solvable items and 92 that need reasoning.
+Results on all items are in Appendix B.
+4.2 Jev loses the items that need reasoning
+Jev loses accuracy where an item needs reasoning,
+by every measure we use. Its accuracy falls with
+the demand of the item (Figure 5), from 99% on
+items that need fewer than 250 thinking tokens
+to 50% on items that need more than 4k, while
+Qwen3.8-27B with thinking stays above 94%. Jev
+answers 97.5% of the one-pass solvable items but
+only 74% of those that need reasoning. The gap
+sits in one source (Table 3): on JevBench-hard,
+(a) Needs reasoning JevBench-hard; demand 363 tokens
+A chemical batch may contain at most 0.080 percent impurity by mass;
+a reading exactly at the limit passes. A 2.50 kg sample contains 1.65
+grams of impurity. Uncertainty is handled by adding 0.20 gram to the
+impurity mass before comparing; the total mass stays 2.50 kg.
+Q: classify the adjusted result.
+pass (≤0.080%) narrow fail (≤0.085%) clear fail
+Jev 1.13.0 narrow fail,p= 0.46wrong
+Qwen3.8-27B, thinking pass, 10/10 samples (1.85/2500 = 0.074%)
+(b) Disputed label Banking77; excluded
+how many transactions can i make with a disposable card
+gold label get_disposable_virtual_card
+Jev; thinking (10/10) disposable_card_limits
+Figure 4: Two real-task items, with the state abbreviated.
+(a) An item that needs a short calculation, which Jev gets
+wrong in one pass. (b) One of the 93 items excluded
+because their gold label is disputed: both models give
+the same other label.
+whose items apply policies, dates and multi-step
+rules, Jev reaches 73% against 99% for the thinking
+model, and comes within about one point of it on
+the other four sources. Of Jev’s 40 errors, 24 are
+on items that need reasoning; of the other 16, 8
+are JevBench-hard items that the direct readout
+happens to answer correctly.
+4.3 The model class shares it
+We next ask whether the open models show the
+same gap. They do (Table 3): every model is close
+to its best on the one-pass solvable items and makes
+most of its errors on the items that need reasoning:
+the 27B models answer 62–70% of them, and the
+5
+
+<250 250–500 500–1k 1k–2k 2k–4k >4k
+Reasoning demand (thinking tokens of Qwen3.8-27B)
+25
+50
+75
+100Accuracy (%)
+n=504 n=95 n=52 n=35 n=34 n=18
+Qwen3.8-27B, thinking
+Jev 1.13.0 (one pass)
+Qwen3.8-27B, direct readout (one pass)
+Figure 5: Accuracy on the 738 real-task items against
+the number of thinking tokens Qwen3.8-27B needs to
+answer them. Jev and the direct readout answer in one
+forward pass; the thinking model is averaged over 10
+samples. Items are selected by the thinking model (Sec-
+tion 4), so its curve is an upper reference, not a competi-
+tor. Error bars: 95% Wilson intervals.
+4B and 9B models 53–60%. For every model the
+gap between the two kinds of items lies between
+21 and 38 points, and Jev has one of the smallest.
+4.4 A reasoning backbone does not help
+We finally test whether a backbone trained to rea-
+son closes the gap. It does not. We train Kev
+with its released recipe twice, once from Qwen3.5-
+Base, as released, and once from the post-trained
+Qwen3.5 that thinks before answering, three seeds
+each (Table 9 in Appendix B). On the real-task
+items the two backbones are indistinguishable:
+Kev-4B reaches 87.2% and 87.4%, Kev-9B 90.1%
+and 90.1%, and on the items that need reasoning
+the difference is comparable to the spread across
+seeds. On the final-state items of Section 3 up to
+4k tokens, the reasoning backbone is worse: 70%
+vs. 50% at 4B and 76% vs. 71% at 9B for k≥2 .
+Whatever reasoning the backbone has learned is
+exercised when it generates tokens; a model that
+answers in one forward pass does not draw on it.
+On real tasks as on synthetic logs, then, Jev loses
+exactly the decisions that an LLM makes by writing
+intermediate steps; a backbone trained to reason
+does not recover them. Section 5 asks whether Jev
+can tell when it meets such a decision.
+5 Does It Know, and Can It Hand Off?
+A system built on Jev must send the items Jev
+would get wrong to a stronger model, either by
+reading Jev’s confidencepmax or by offering it an
+option to hand the question off.
+5.1 Confidence flags Jev’s own errors, not
+inherited ones
+We first ask whether pmax separates Jev’s wrong
+answers from its right ones. It does when Jev makes
+the error itself: AUROC is 0.83 on the final-state
+items, with an expected calibration error of 0.03,
+and 0.94 on the real tasks. When the error comes
+from a stale summary, however, the signal is gone:
+AUROC is 0.53, and at k= 2 it is 0.26, so Jev is
+more confident when it follows the stale summary
+than when it does not. Every model shows the same
+split (Figure 6a): on the synthetic logs its AUROC
+is 0.68–0.93 for its own errors and 0.18–0.66 after
+a stale summary, below chance for 7 of 11 models.
+5.2 Jev does not hand off
+We next offer an explicit way out, and Jev almost
+never takes it. We add one option, “Cannot be de-
+termined reliably from the state; hand this question
+to a stronger model”, and one sentence asking the
+model to choose it when unsure. Jev chooses it for
+1.6% of the real-task items and 3 of its 40 errors,
+none of them among its 29 errors on JevBench-
+hard; on the synthetic logs it hands off 3 of 145
+wrong answers. The open models hand off more,
+but for every model except Open-Jev-27B a confi-
+dence threshold that routes the same share of items
+leaves a more accurate remainder (Table 4, top).
+The models carry the signal but do not act on it.
+5.3 Hand-off training helps where a threshold
+cannot be tuned
+We then ask whether the option can be trained in
+without new data, keeping the training data and
+number of steps of the original recipes. The train-
+ing set is split in two halves; a model trained on
+one half answers the other, and every question it
+answers wrongly is marked as unlearnable. In the
+final run each question carries the hand-off option
+with probability 0.5, worded with paraphrases dis-
+joint from the evaluation wording, and its target
+is the hand-off option if the question is unlearn-
+able and the answer otherwise. We train Kev-4B,
+Kev-9B and JevK5-4B, three seeds each.
+On the task the threshold was tuned for, training
+makes the option useful but not better than the
+threshold (Table 4, bottom). Accuracy without
+the option is unchanged, and the share of errors
+handed off doubles, from 23% to 47% for Kev-4B
+and from 22% to 44% for Kev-9B. A threshold on
+the untrained model that routes the same share of
+6
+
+By demand By source
+ModelOne pass Reasoning J-easy J-original J-hard PubMedQA Banking77All
+646 92 48 72 108 275 235 738
+Jev 1.13.0 97.5 73.9 100.0 98.6 73.1 98.5 97.4 94.6
+Kev-27B 97.4 69.6 100.0 100.0 72.2 96.7 97.4 93.9
+llm2jev-27B 95.4 68.5 100.0 95.8 74.1 94.5 94.5 92.0
+LitJev-27B 95.4 63.0 100.0 98.6 75.9 93.5 91.9 91.3
+Open-Jev-27B 83.4 62.0 100.0 95.8 74.1 75.6 81.3 80.8
+JevK5-9B 94.6 59.8 100.0 95.8 77.8 94.2 87.7 90.2
+Kev-4B 91.2 53.3 100.0 93.1 52.8 88.4 94.9 86.4
+Reference: Qwen3.8-27B
+Direct readout 100.0 0.0 97.9 94.4 68.5 96.4 81.7 87.5
+Thinking 99.3 97.3 100.0 99.7 99.2 98.9 98.6 99.0
+Table 3: Accuracy in % on the 738 real-task items; the second header row gives the number of items after the
+exclusions above. “One pass”: items Qwen3.8-27B’s direct readout answers correctly; “Reasoning”: items it does
+not. J-: JevBench tiers. The reference rows define the split and the item selection, so their first two columns and the
+thinking row hold by construction. All models and all items are in Appendix B.
+0.5 1.0
+AUROC of 1 − pmax
+Decider-35B-A3B
+Decider-4B
+JevK5-4B
+Kev-4B
+Jev 1.13.0
+Qwen3.8-27B, logits
+LitJev-27B
+Open-Jev-27B
+Kev-27B
+OpenJev-27B
+llm2jev-27B
+its own error error after a stale summary
+Kev-4B Kev-9BJevK5-4B
+0
+10
+20
+30Share of items routed (%)
+J
+P
+B
+J
+P
+B
+J
+P
+B
+J
+P
+B
+ J
+P
+B
+J
+P
+B
+threshold from other sources
+trained hand-off option
+untrained trained
+0
+10
+20
+30
+40
+50Share of errors handed off (%)
+own errors
+after a stale summary
+Kev-4B
+Kev-9B
+JevK5-4B
+(a) Confidence flags own errors only (b) Threshold drifts on an unseen source (c) Training misses inherited errors
+Figure 6: What confidence and a hand-off option catch. (a) AUROC of 1−p max for a model’s own final-state errors
+and for errors after a stale summary; synthetic logs up to 4k tokens; dashed line: chance. (b) Share of real-task items
+routed on a held-out source (J: JevBench, P: PubMedQA, B: Banking77) by a threshold on the untrained model’s
+confidence, chosen on the other two sources to match the trained option’s rate there, and by the trained hand-off
+option. Banking77 is part of the Kev training data. (c) Share of errors handed off on the synthetic logs before and
+after hand-off training. (b) and (c): mean over three seeds.
+items is still more accurate, by 1.3–1.7 points.
+Without labelled data from the target task, how-
+ever, the threshold cannot be set, and the trained
+option is the steadier signal (Figure 6b). Choosing
+the threshold on two sources so that it routes the
+same share as the trained model and applying it
+to the third routes 9–32% of the items for Kev-4B
+and Kev-9B instead of about 15%; for JevK5-4B
+on PubMedQA, whose yes/no questions never give
+pmax <0.5 , it routes none and catches 2% of the
+errors, where the trained option catches 71%. The
+trained option routes 6–25% on every source and
+needs no tuning.
+Neither mechanism reaches the inherited errors
+(Figure 6c). On the synthetic logs up to 4k tokens,
+training raises the share of final-state errors that
+the models hand off from 0–14% to 30–40%, but
+the share of errors caused by a stale summary only
+from 0% to 3–9%: the training labels mark ques-
+tions the model cannot answer, not inputs that are
+wrong. In our experiments only generated reason-
+ing checks the input: with thinking, Qwen3.8-27B
+rejects 95% of the stale summaries (Table 2).
+Jev therefore does not recognise its limit reliably,
+and least of all when the error comes from its input.
+The division of labour for a system built on Jev
+follows: where labelled data from the task exist,
+a threshold on pmax routes Jev’s own errors best;
+where they do not, the trained hand-off option is
+more robust; and decisions that need intermediate
+7
+
+Hand-off Acc. of the rest
+ModelAcc. Rate Errors Option Threshold
+Jev 1.13.0 94.6 1.6 8 94.5 95.5
+Kev-27B 93.9 9.6 20 93.9 97.0
+LitJev-27B 91.3 3.1 16 92.3 93.6
+llm2jev-27B 92.0 3.8 14 93.5 94.1
+JevK5-9B 90.2 3.1 10 90.8 92.6
+Open-Jev-27B 80.8 9.6 25 88.8 82.6
+Kev-4B (ours) 87.1 10.1 23 89.0 91.5
++ hand-off 87.2 17.0 47 92.1 93.6
+Kev-9B (ours) 90.1 9.3 22 91.5 93.8
++ hand-off 90.0 14.6 44 93.8 95.1
+JevK5-4B (ours) 88.5 7.2 22 89.9 92.3
++ hand-off 88.6 9.9 35 91.5 93.2
+Table 4: Hand-off on the 738 real-task items; all
+columns in %. Acc.: accuracy without the hand-off
+option. Rate: share of items handed off when the option
+is offered; Errors: share of the model’s errors (without
+the option) that it hands off. Acc. of the rest: accu-
+racy on the items not handed off, by the option or by a
+threshold on the confidence of the untrained model that
+routes the same share. Bottom: our training runs, mean
+over three seeds; “(ours)” reproduces the released recipe
+and “+ hand-off” adds hand-off training. Kev-0.8B is in
+Appendix B.
+steps, above all checking an input Jev did not com-
+pute itself, have to be made by a model that writes
+them.
+6 Related Work
+Decision models.Jev (TypeSafe AI, 2026) intro-
+duced the interface we study; its replicas fine-tune
+an LLM, wrap one, or read its option logits (Sec-
+tion 2). Reading option scores from an LLM is also
+how multiple-choice benchmarks are commonly
+evaluated, and such scores depend on the prompt,
+the option labels and their order (Zhao et al., 2021;
+Zheng et al., 2024). Public evaluations of decision
+models report accuracy and calibration over mixed
+tasks (Benchmark Heaven, 2026; Jevals, 2026); we
+instead isolate the inputs on which they fail.
+Long contexts and state tracking.Retrieval
+from long contexts degrades with length, the posi-
+tion of the target and the difficulty of the task (Kam-
+radt, 2023; Liu et al., 2024; Hsieh et al., 2024), and
+reasoning over facts spread through them degrades
+further (Kuratov et al., 2024). Language models
+track entity states only partly (Kim and Schuster,
+2023), and recalling the latest value of a key suffers
+from interference by its earlier values (Wang and
+Sun, 2025). Decision models retrieve without error
+up to their limit, and in our logs the target’s own
+earlier updates are harmless (R1); the failure comes
+from similar records of other users.
+What one forward pass can compute.Writing
+intermediate steps improves LLM reasoning (Wei
+et al., 2022), and theory shows why: bounded-
+depth transformers provably cannot solve some
+problems without them (Feng et al., 2023; Mer-
+rill and Sabharwal, 2024), state tracking among
+them (Merrill et al., 2024); LLMs also com-
+plete multi-hop inferences only partly within one
+pass (Yang et al., 2024). Decision models give
+these steps up by design; we measure what this
+costs on practical decisions, on synthetic logs as
+well as on real tasks.
+Knowing when to abstain.Large LLMs are well
+calibrated on multiple-choice questions in a suit-
+able format (Kadavath et al., 2022), and a threshold
+on the maximum probability is the standard way
+to abstain (Geifman and El-Yaniv, 2017). Learn-
+ing to defer trains a model to pass cases to an ex-
+pert (Mozannar and Sontag, 2020), and refusal tun-
+ing labels questions beyond the model’s knowledge
+as ones to decline (Zhang et al., 2024), much as our
+hand-off training labels questions a held-out model
+answers wrongly. In our experiments both catch
+only the errors a model makes itself: like LLMs
+that adopt coherent but conflicting context (Xie
+et al., 2024), Jev adopts a stale summary, although
+it contradicts the log rather than the model’s mem-
+ory, and neither mechanism detects it.
+7 Conclusion
+We asked what Jev cannot decide, and found a
+single limit: Jev, like the open Jev-style mod-
+els we evaluated, cannot make a decision that an
+LLM makes only by writing out intermediate steps.
+These models find and select records reliably, but
+they fail to track a state among similar records,
+follow a precomputed state without checking it,
+and lose the real decision items that need reason-
+ing, the more so the more reasoning an item needs.
+Their confidence flags the errors they make them-
+selves but not those they inherit from a wrong input,
+and neither an explicit nor a trained hand-off op-
+tion closes this gap. One-pass decision models are
+therefore best used as fast selectors over a state
+that a reasoning model has computed and checked.
+Whether training on such decisions, or a few in-
+ternal steps before the readout, can move the limit
+remains open.
+8
+
+Limitations
+Our items are isolated decisions: each is posed
+once, answered once, and scored once. In a de-
+ployed agent loop a decision model is called many
+times along a trajectory, its errors compound, and
+they interact with the surrounding system, with re-
+tries, with memory, and with the state summaries
+that earlier steps wrote, the very inputs Section 5
+shows it does not check. Measuring these effects re-
+quires an end-to-end evaluation of a full agent sys-
+tem, which no single-model benchmark provides.
+Our results give the per-decision error rates and the
+routing signals that such an evaluation would build
+on.
+References
+alibiserikbay. 2026. JevK5: an open-source alterna-
+tive to TypeSafe’s Jev for typed decisions. https:
+//huggingface.co/alibiserikbay/JevK5. Run-
+time athttps://github.com/allebee/jevk5.
+Benchmark Heaven. 2026. JevBench: Benchmark
+for AI decision models. https://github.com/
+fstandhartinger/jevbench.
+Iñigo Casanueva, Tadas Tem ˇcinas, Daniela Gerz,
+Matthew Henderson, and Ivan Vuli´c. 2020. Efficient
+intent detection with dual sentence encoders. InPro-
+ceedings of the 2nd Workshop on Natural Language
+Processing for Conversational AI, pages 38–45.
+ekzhang. 2026. openjev-sglang: Jev-compatible API
+endpoint based on open models (prefill-only).https:
+//github.com/ekzhang/openjev-sglang.
+Guhao Feng, Bohang Zhang, Yuntian Gu, Haotian Ye,
+Di He, and Liwei Wang. 2023. Towards revealing
+the mystery behind chain of thought: A theoretical
+perspective. InAdvances in Neural Information Pro-
+cessing Systems, volume 36.
+Yonatan Geifman and Ran El-Yaniv. 2017. Selec-
+tive classification for deep neural networks. InAd-
+vances in Neural Information Processing Systems,
+volume 30, pages 4878–4887.
+Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shan-
+tanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang,
+and Boris Ginsburg. 2024. RULER: What’s the real
+context size of your long-context language models?
+InFirst Conference on Language Modeling (COLM).
+Jevals. 2026. Jevals: independent benchmark data for
+Jev and Jev-type models. https://github.com/
+Jevals/jevals-data. Release 2026-09-18, suite
+0.1.0, CC-BY-4.0;https://jevals.com.
+Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William Co-
+hen, and Xinghua Lu. 2019. PubMedQA: A dataset
+for biomedical research question answering. InPro-
+ceedings of the 2019 Conference on Empirical Meth-
+ods in Natural Language Processing and the 9th In-
+ternational Joint Conference on Natural Language
+Processing (EMNLP-IJCNLP), pages 2567–2577.
+Saurav Kadavath, Tom Conerly, Amanda Askell, Tom
+Henighan, Dawn Drain, Ethan Perez, Nicholas
+Schiefer, Zac Hatfield-Dodds, Nova DasSarma, Eli
+Tran-Johnson, Scott Johnston, Sheer El-Showk,
+Andy Jones, Nelson Elhage, Tristan Hume, Anna
+Chen, Yuntao Bai, Sam Bowman, Stanislav Fort, and
+17 others. 2022. Language models (mostly) know
+what they know.arXiv preprint arXiv:2207.05221.
+Gregory Kamradt. 2023. Needle in a haystack –
+pressure testing LLMs. https://github.com/
+gkamradt/LLMTest_NeedleInAHaystack.
+Najoung Kim and Sebastian Schuster. 2023. Entity
+tracking in language models. InProceedings of the
+61st Annual Meeting of the Association for Compu-
+tational Linguistics (Volume 1: Long Papers), pages
+3835–3855.
+Yuri Kuratov, Aydar Bulatov, Petr Anokhin, Ivan Rod-
+kin, Dmitry Sorokin, Artyom Sorokin, and Mikhail
+Burtsev. 2024. BABILong: Testing the limits of
+LLMs with long context reasoning-in-a-haystack. In
+Advances in Neural Information Processing Systems,
+volume 37.
+Jacky Kwok, Hangoo Kang, Tarun Suresh, Jon Saad-
+Falcon, Marco Pavone, Christopher Ré, and Azalia
+Mirhoseini. 2026. Contrastive language models: A
+system one model for fast and generalizable decision-
+making. Notion Blog.
+Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paran-
+jape, Michele Bevilacqua, Fabio Petroni, and Percy
+Liang. 2024. Lost in the middle: How language mod-
+els use long contexts.Transactions of the Association
+for Computational Linguistics, 12:157–173.
+Mapika. 2026. decider: typed decisions with cali-
+brated probabilities in one forward pass. https:
+//huggingface.co/Mapika/decider-4b. Code at
+https://github.com/Mapika/decider.
+William Merrill, Jackson Petty, and Ashish Sabharwal.
+2024. The illusion of state in state-space models. In
+Proceedings of the 41st International Conference on
+Machine Learning (ICML), volume 235 ofProceed-
+ings of Machine Learning Research, pages 35492–
+35506.
+William Merrill and Ashish Sabharwal. 2024. The ex-
+pressive power of transformers with chain of thought.
+InThe Twelfth International Conference on Learning
+Representations (ICLR).
+Hussein Mozannar and David Sontag. 2020. Consistent
+estimators for learning to defer to an expert. InPro-
+ceedings of the 37th International Conference on Ma-
+chine Learning (ICML), volume 119 ofProceedings
+of Machine Learning Research, pages 7076–7087.
+9
+
+Octalab-Inc. 2026. jqv: Decision API on stock Qwen3.
+https://github.com/Octalab-Inc/jqv.
+OpenJev. 2026. OpenJev. https://huggingface.co/
+openjev/openjev.
+Jared Palmer. 2026. Kev-4B: a calibrated decision
+model on Qwen3.5-4B. https://huggingface.
+co/jaredpalmer/kev-4b. Kev 1.0; code at https:
+//github.com/jaredpalmer/kev.
+Qwen Team. 2025. Qwen3 technical report.arXiv
+preprint arXiv:2505.09388.
+Qwen Team. 2026a. Qwen3.5: Towards native multi-
+modal agents.
+Qwen Team. 2026b. Qwen3.6-35B-A3B: Agentic cod-
+ing power, now open to all.
+Qwen Team. 2026c. Qwen3.8-Max: A new bar for
+coding and cowork.
+Freda Shi, Xinyun Chen, Kanishka Misra, Nathan
+Scales, David Dohan, Ed H. Chi, Nathanael Schärli,
+and Denny Zhou. 2023. Large language models can
+be easily distracted by irrelevant context. InProceed-
+ings of the 40th International Conference on Machine
+Learning (ICML), volume 202 ofProceedings of Ma-
+chine Learning Research, pages 31210–31227.
+TheoLeeCJ. 2026. SemIf: semantic if-decisions from
+open models. https://github.com/TheoLeeCJ/
+SemIf. Formerly OpenJev.
+tic-top. 2026. llm2jev: any chat model, any engine as a
+Jev-compatible probability decision service. https:
+//github.com/tic-top/llm2jev.
+TypeSafe AI. 2026. Jev: typed decisions in one forward
+pass (API model jev-1.13.0).
+Chupei Wang and Jiaqiu Vince Sun. 2025. Unable to
+forget: Proactive interference reveals working mem-
+ory limits in LLMs beyond context length. InICML
+2025 Workshop on Long Context Foundation Models.
+ArXiv:2506.08184.
+Zhilin Wang, Yi Dong, Olivier Delalleau, Jiaqi
+Zeng, Gerald Shen, Daniel Egert, Jimmy J. Zhang,
+Makesh Narsimhan Sreedhar, and Oleksii Kuchaiev.
+2024. HelpSteer2: Open-source dataset for train-
+ing top-performing reward models.arXiv preprint
+arXiv:2406.08673.
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten
+Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc V . Le,
+and Denny Zhou. 2022. Chain-of-thought prompt-
+ing elicits reasoning in large language models. In
+Advances in Neural Information Processing Systems,
+volume 35.
+Jian Xie, Kai Zhang, Jiangjie Chen, Renze Lou, and
+Yu Su. 2024. Adaptive chameleon or stubborn sloth:
+Revealing the behavior of large language models in
+knowledge conflicts. InThe Twelfth International
+Conference on Learning Representations (ICLR).
+Sohee Yang, Elena Gribovskaya, Nora Kassner, Mor
+Geva, and Sebastian Riedel. 2024. Do large language
+models latently perform multi-hop reasoning? In
+Proceedings of the 62nd Annual Meeting of the As-
+sociation for Computational Linguistics (Volume 1:
+Long Papers), pages 10210–10229.
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak
+Shafran, Karthik Narasimhan, and Yuan Cao. 2023.
+ReAct: Synergizing reasoning and acting in language
+models. InThe Eleventh International Conference
+on Learning Representations (ICLR).
+Zefan-Cai. 2026. Open-Jev. https:
+//github.com/Zefan-Cai/Open-Jev. Check-
+point https://huggingface.co/ZefanCai/
+Open-Jev-27B-v1.1.
+Hanning Zhang, Shizhe Diao, Yong Lin, Yi Fung, Qing
+Lian, Xingyao Wang, Yangyi Chen, Heng Ji, and
+Tong Zhang. 2024. R-Tuning: Instructing large lan-
+guage models to say ‘I don’t know’. InProceedings
+of the 2024 Conference of the North American Chap-
+ter of the Association for Computational Linguistics:
+Human Language Technologies (Volume 1: Long Pa-
+pers), pages 7113–7139.
+Zihao Zhao, Eric Wallace, Shi Feng, Dan Klein, and
+Sameer Singh. 2021. Calibrate before use: Improv-
+ing few-shot performance of language models. In
+Proceedings of the 38th International Conference on
+Machine Learning (ICML), volume 139 ofProceed-
+ings of Machine Learning Research, pages 12697–
+12706.
+Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou, and
+Minlie Huang. 2024. Large language models are not
+robust multiple choice selectors. InThe Twelfth In-
+ternational Conference on Learning Representations
+(ICLR).
+ZhengxuYu. 2026. LitJev: A JEV-like decision layer
+for off-the-shelf LLMs. https://github.com/
+zhengxuyu/litjev. Version 0.1.0.
+10
+
+A Models and Serving Details
+A.1 Decision models
+Table 5 lists every model we evaluate. Each model
+is served by the code its authors released, behind
+an endpoint that accepts a state, a question and an
+option list and returns a probability per option; the
+two exceptions are the letter-logit readout of plain
+Qwen models, which we implement ourselves, and
+CLM, which scores options by embedding simi-
+larity. All models receive the same items with the
+same option order. An input that exceeds a model’s
+limit is recorded as unsupported and never trun-
+cated: Decider is started with a state limit above
+its 32,768-token row limit so that it refuses instead
+of cutting, and CLM is run with its truncation dis-
+abled (–max-tokens 0). Requests that fail with
+HTTP 429, 503 or 529 are retried with exponential
+backoff; any other failure is recorded as an error
+and excluded from accuracy.
+For the open checkpoints we pin the Hugging
+Face revision. The revisions behind our num-
+bers are 139fdd94 (Kev-4B),2629c06a (Kev-9B),
+01b81998 (Kev-27B, the snapshot with a separate
+adapter) and27d2d6b8 (JevK5-4B v0.2). Themain
+branch of the Kev repositories was replaced on
+2026-10-10; the new Kev-9B weights differ from
+the ones we report (the same answer on 82% of the
+final-state items up to 4k tokens), whereas the new
+Kev-4B weights are identical to ours.
+Letter-logit readout.For plain Qwen mod-
+els (Qwen3.5-4B and 9B, each with its Base
+model, and Qwen3.8-27B) we follow the recipe
+of jqv (Octalab-Inc, 2026) and SemIf (TheoLeeCJ,
+2026). The prompt, in the Qwen chat format with
+thinking disabled, contains the document, the ques-
+tion and the options labelled A, B, . . . , asks for the
+letter only, and ends withAnswer:. The next-token
+probabilities of the offered letters, renormalised,
+are the answer distribution; nothing is generated
+and no temperature is fitted. Items with more than
+26 options are unsupported, which removes the
+32–64-option selection cells.
+Thinking reference.Qwen3.8-27B with think-
+ing is served with SGLang and queried through the
+OpenAI-compatible chat API with the sampling set-
+tings of its model card (temperature 1.0, top-p 0.95,
+top-k 20) and at most 24,000 new tokens; a reply
+cut off at that limit counts as wrong. The answer
+is parsed from the reply, so it has no probabilities
+and no AUROC.
+A.2 Real-task items and reasoning demand
+JevBench items are the public easy, original and
+hard splits of the repository (Benchmark Heaven,
+2026). Jevals items are rebuilt from the pinned
+Hugging Face rows of suite 0.1.0 (Jevals, 2026)
+exactly as the Jevals harness builds them, and each
+state is checked against the SHA-256 hash in the
+suite. Every item is reduced to a closed option
+list: yes/no questions get the options yes and no,
+with the criteria as their descriptions, and score
+questions their levels.
+Reasoning demand is measured with Qwen3.8-
+27B served by SGLang. The direct readout disables
+thinking, forces the reply to begin with Answer:,
+and scores each option label by the log-probability
+of its tokens followed by the end of the label, nor-
+malised over the options; nothing is generated. The
+no-thinking and thinking modes draw 10 samples
+each with the sampling settings of the model card
+(no thinking: temperature 0.7, top-p 0.8, top-k 20,
+presence penalty 1.5; thinking: temperature 1.0,
+top-p 0.95, top-k 20) and at most 4,096 and 32,768
+new tokens; a truncated sample counts as wrong.
+The demand of an item is the median number of
+thinking tokens over the thinking samples that an-
+swer it correctly.
+A.3 Training runs
+Kev.All Kev runs use the decision-v7 configu-
+ration released with Kev: the decision-v7 train-
+ing suite with at most 1,000 records per source,
+two epochs, learning rate 5×10 −5 (10−4 at 0.8B),
+LoRA rank 16, an effective batch of 8, and a pinned
+base revision; seeds 2, 3 and 4. The backbone
+comparison of Section 4 changes only the base
+model, from Qwen3.5-4B-Base and Qwen3.5-9B-
+Base to the post-trained Qwen3.5-4B and Qwen3.5-
+9B (Qwen Team, 2026a).
+JevK5.The JevK5 runs reproduce the v0.2
+recipe. Its teacher-written questions are not re-
+leased, so we regenerate them with the released
+teacher script and settings and add the same pub-
+lic training splits; we then train with LoRA rank
+16, learning rate 3×10 −5, two epochs, inputs up
+to 2,048 tokens, 20 warm-up steps, and a softmax
+temperature fitted after training; seeds 0, 1 and 2.
+Hand-off training.The training records are split
+into two halves (6,334 and 6,242 records for Kev;
+3,272 each for JevK5). A model trained with the
+unchanged recipe on one half answers every ques-
+11
+
+Model Backbone How the answer is read Input limit
+Jev 1.13.0 (TypeSafe AI, 2026) undisclosed undisclosed (hosted API) 32k, state + longest
+question
+Kev 0.8B, 4B, 9B, 27B (Palmer,
+2026)
+Qwen3.5-Base;
+Qwen3.8-27B
+LoRA and a pointer head over the
+options
+4B, 27B:<8k
+JevK5 4B v0.2, v0.3; 9B
+v0.3.3 (alibiserikbay, 2026)
+Qwen3.5-4B, 9B merged LoRA, option-letter logits –
+Decider 0.8B–35B-A3B (Mapika,
+2026)
+Qwen3.5-Base fine-tuned, one forward pass 32,768 per row
+Open-Jev-27B v1.1 (Zefan-Cai,
+2026)
+Qwen3.8-27B fine-tuned, one forward pass 16,384
+OpenJev-27B (OpenJev, 2026) Qwen3.8-27B fine-tuned, one forward pass 16,384;≤52 options
+LitJev-27B (ZhengxuYu, 2026) Qwen3.8-27B training-free decision layer 16,384
+llm2jev 4B, 27B (tic-top, 2026) Qwen3.5-4B;
+Qwen3.8-27B
+label-token log-probabilities after one
+prefill
+–
+OpenJev-SGLang (ekzhang, 2026) Qwen3.6-35B-A3B
+(bf16)
+label-token log-probabilities after one
+prefill
+32,768
+Qwen, letter logits (ours) Qwen3.5-4B, 9B;
+Qwen3.8-27B
+option-letter logits after one forward
+pass
+32,768;≤26 options
+CLM-v0.1-8B (Kwok et al., 2026) Qwen3-8B (frozen) similarity of contrastive state and
+option embeddings
+40,960
+Table 5: Models and how they are served; repositories are given in the references. Input limit: the largest input the
+model accepts in our runs, in tokens of its own tokenizer; “–”: no input in our benchmarks exceeded it. OpenJev-
+SGLang is run with the unquantised Qwen3.6-35B-A3B (Qwen Team, 2026b) rather than the NVFP4 default of its
+repository.
+tion of the other half, and a question it answers
+wrongly is marked unlearnable. A separate pair of
+models is trained for each backbone, so the labels
+are the backbone’s own: 2,220 Kev records contain
+an unlearnable question for the 4B labels, 2,069
+for 9B and 2,939 for 0.8B, and 1,331 of the 6,544
+JevK5 training items are marked unlearnable. The
+final run sees each question once per epoch; with
+probability 0.5 it is rewritten as a choice with an
+added hand-off option at a random position and a
+sentence asking the model to choose it when un-
+sure. Option text and sentence are drawn from six
+and four paraphrases that exclude the evaluation
+wording. The target is the hand-off option for an
+unlearnable question and the gold answer other-
+wise. Everything else, including the number of
+steps, follows the recipe above.
+B Full Benchmark Results
+B.1 Controlled benchmark
+Table 6 extends Table 2 to every model. Jev
+answers every retrieval item correctly in both
+haystacks, at every depth and up to 28k tokens
+of essay text, and every selection item with 2 to 64
+options; its final-state accuracy by context length
+is shown in Figure 3. Two models fail before the
+final-state question. Kev-0.8B already loses event
+lookup (66%). CLM-v0.1-8B, which scores op-
+tions by embedding similarity, is at chance on re-
+trieval with four options (25%) and answers no
+single-update final-state item; it accepts every sum-
+mary, correct or stale, and its 80% at k= 16 next
+to 0% at k= 1 points to a preference for particu-
+lar options rather than to reading the log. Several
+models reach a high rejection rate for stale sum-
+maries only by rejecting nearly every summary:
+Qwen3.5-4B-Base rejects 98% of stale summaries
+and accepts 2% of correct ones.
+B.2 Prompt and log variants
+The variants of Table 1 are built from each final-
+state item without changing its options or their
+order. P1–P3 append one sentence to the question.
+R1 keeps only the log lines that mention the target
+user. R2 reverses the log and replaces “After the
+last log entry” in the question by “The log is listed
+from the newest entry to the oldest. After the most
+recent log entry”. R3 moves the target user’s lines,
+in order, to the end of the log and keeps every other
+line. R4 replaces the other users’ lines of R3 by
+paragraphs of the essay corpus with the same total
+length in tokens. R3 and R4 therefore have the
+length of the original item, and the last k lines of
+both are exactly the target user’s updates. Table 7
+gives Kev-9B, which follows Kev-4B.
+12
+
+Find and select Final state With summary Verify AUROC
+ModelRetr. Sel.≤26 Sel. 32–64 Eventk=1k≥2k=16correct stale accept reject own stale
+Jev 1.13.0 100 100 100 100 100 84 64 100 58 92 70 0.83 0.57
+Kev-27B† 100 100 100 100 100 91 88 100 60 100 62 0.90 0.62
+Kev-9B 100 100 100 100 100 70 54 100 55 81 26 0.70 0.38
+Kev-4B† 100 100 100 100 98 66 41 100 53 88 38 0.76 0.29
+Kev-0.8B 86 99 97 66 18 32 18 91 25 66 41 0.56 0.46
+JevK5-4B v0.2 100 100 100 99 98 53 56 100 47 73 52 0.69 0.38
+JevK5-4B v0.3 100 100 99 99 100 61 65 99 55 84 32 0.75 0.49
+JevK5-9B v0.3.3 100 100 100 100 100 68 86 98 64 92 26 0.79 0.50
+Decider-35B-A3B 100 100 100 99 83 65 60 100 39 85 31 0.70 0.27
+Decider-4B 100 100 100 98 100 67 80 100 39 100 0 0.71 0.21
+Decider-2B 100 100 100 98 95 69 95 100 42 85 21 0.67 0.63
+Decider-0.8B 97 100 100 82 67 54 68 100 37 89 17 0.63 0.59
+Open-Jev-27B v1.1 100 100 100 100 100 89 78 100 72 96 74 0.87 0.58
+OpenJev-27B 100 100 100 100 100 95 93 100 66 98 56 0.87 0.62
+LitJev-27B 100 100 100 100 98 79 76 100 41 100 7 0.86 0.16
+llm2jev-27B 100 100 100 100 100 86 81 100 43 51 73 0.90 0.20
+llm2jev-4B 100 100 77 99 83 37 25 100 38 10 89 0.70 0.23
+OpenJev-SGLang-35B-A3B 100 100 98 100 87 50 61 100 38 59 54 0.74 0.24
+Qwen3.8-27B 100 100 – 100 100 77 77 100 42 51 74 0.82 0.28
+Qwen3.5-9B 100 100 – 100 98 58 79 99 40 98 5 0.74 0.26
+Qwen3.5-9B-Base 100 100 – 100 95 69 83 100 48 53 52 0.77 0.39
+Qwen3.5-4B 100 100 – 100 88 39 30 100 41 10 88 0.68 0.22
+Qwen3.5-4B-Base 100 100 – 99 83 63 79 100 49 2 98 0.76 0.39
+CLM-v0.1-8B 25 36 10 26 0 50 80 24 24 100 0 0.62 0.42
+Qwen3.8-27B, thinking‡ – – – 100 100 96 100 100 83 99 95 – –
+Table 6: Controlled benchmark, all models, contexts up to 8k tokens; accuracies and shares in %, AUROC in [0,1] .
+Groups: Jev; fine-tuned; training-free; plain Qwen with the letter-logit readout (no items with more than 26 options);
+contrastive. Verify: share of correct summaries accepted and of stale summaries rejected. AUROC of 1−p max for
+the model’s own final-state errors and for errors after a stale summary.†Up to 4k tokens. ‡Generates its reasoning;
+state-tracking items only, no probabilities.
+Variantk≥2k= 16
+P0 original 69 48
+P1 step by step 69 56
+P2 procedure 69 56
+P3 name failure 67 48
+R1 target only 71 50
+R2 newest first 20 7
+R3 target at end 66 44
+R4 R3 + essays 90 83
+Table 7: Final-state accuracy in % of Kev-9B under the
+variants of Table 1, up to 4k tokens.
+B.3 Real tasks
+Table 8 gives every model on every source before
+any exclusion, the 831 items without HelpSteer2,
+and the 738 items of Section 4. On HelpSteer2
+every item asks for one of five helpfulness levels,
+and always answering the most frequent level (4)
+is correct for 42% of the items; no model, with or
+without thinking, is clearly above that. The 93 ex-
+cluded items are those Qwen3.8-27B with thinking
+answers correctly in at most 5 of 10 samples: 65
+from Banking77, 25 from PubMedQA and 3 from
+JevBench-hard.
+B.4 Reasoning backbone
+Table 9 gives the backbone comparison of Sec-
+tion 4.
+B.5 Hand-off
+Kev-0.8B, trained and evaluated like the larger Kev
+models in Table 4, follows the same pattern with
+larger effects. Hand-off training lowers accuracy
+without the option from 79.3% to 77.9%, raises
+the share of items handed off from 7.7% to 32.8%
+and the share of errors handed off from 15% to
+58%. The items it answers are then correct 86.5%
+of the time, against 91.8% for a threshold on the
+untrained model that routes the same share.
+13
+
+JevBench Pooled
+Modeleasy original hard PubMedQA Banking77 HelpSteer2 831 items 738 items
+48 72 111 300 300 300
+Jev 1.13.0 100.0 98.6 71.2 92.0 80.3 41.7 86.0 94.6
+Kev-27B 100.0 100.0 70.3 89.7 83.3 44.3 86.3 93.9
+Kev-4B 100.0 93.1 51.4 83.7 82.7 44.0 80.7 86.4
+JevK5-4B v0.2 100.0 94.4 73.9 85.0 69.7 35.7 79.7 87.7
+JevK5-4B v0.3 100.0 94.4 74.8 83.7 71.7 46.3 80.0 88.1
+JevK5-9B v0.3.3 100.0 95.8 76.6 88.3 72.7 47.0 82.4 90.2
+Decider-4B 100.0 98.6 64.0 87.0 85.0 49.0 85.0 90.4
+Open-Jev-27B v1.1 100.0 95.8 73.0 71.7 65.3 39.3 73.3 80.8
+LitJev-27B 100.0 98.6 73.9 88.0 74.3 36.0 82.8 91.3
+llm2jev-27B 100.0 95.8 72.1 88.7 75.7 30.7 83.0 92.0
+llm2jev-4B 100.0 76.4 59.5 84.7 67.7 32.3 75.3 82.0
+Qwen3.8-27B, direct 97.9 94.4 66.7 90.3 67.7 36.3 79.8 87.5
+Qwen3.8-27B, no thinking 100.0 98.6 97.6 89.0 78.0 34.0 87.6 96.9
+Qwen3.8-27B, thinking 100.0 99.7 97.3 91.6 78.6 32.7 88.9 99.0
+Table 8: Real-task accuracy in % before exclusion; the second header row gives the number of items. 831 items: all
+sources except HelpSteer2. 738 items: additionally without the 93 disputed items (Section 4). The sampled modes
+are averaged over 10 samples.
+Real tasks Final state
+BackboneAll One pass Reasoningk≥2
+4B Base 87.2±0.591.8±0.454±370±5
+Reasoning 87.4±0.491.4±0.358±150±3
+9B Base 90.1±0.294.1±0.260±376±0
+Reasoning 90.1±0.594.2±0.559±271±2
+Table 9: Kev trained with the same recipe from
+Qwen3.5-Base or from the post-trained, thinking
+Qwen3.5; accuracy in %, mean ± standard deviation
+over three seeds. Real tasks: the 738 items, restricted
+to those every seed of a size answers (717 at 4B, 712 at
+9B). Final state: Section 3, up to 4k tokens.
+14

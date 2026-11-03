@@ -63,7 +63,7 @@ Cost is only half of the problem. A judge
 used at scale must also tell routine decisions from
 those that need scrutiny, yet LLMs asked for their
 1
-arXiv:2609.26550v5  [cs.AI]  9 Oct 2026
+arXiv:2609.26550v6  [cs.AI]  29 Oct 2026
 
 own confidence are often overconfident, assigning
 high probabilities to wrong answers (Xiong et al.,
@@ -539,8 +539,8 @@ HaluEval QA judgment, 9,350 items from Reward-
 Bench, JudgeBench, HaluEval, and RM-Bench (the
 prospective workloads of Section 9 stay unseen un-
 til then), and compare JEV with GPT-6 on the same
-single calls, sliced by the skill an item tests, its dif-
-ficulty, how its answers are presented, which way
+single calls, sliced by an item’s difficulty, how its
+answers are presented, the skill it tests, which way
 the judgment goes, and its length (Figure 4; every
 slice with its interval is in Appendix Table 12). The
 section closes with answer format, natural prose,
@@ -642,37 +642,36 @@ pendix Table 13). Reward models find the same
 items hard: Skywork, near the top on Reward-
 Bench (94.0%), reaches 71.1% on JudgeBench,
 and PairRM reaches 65.5% and 54.3%.
-Reading versus deriving.These benchmark-
-level gaps come from particular skills. Grouped
-by skill across benchmarks (Figure 4a), JEV is
-on par with GPT-6, within about two points either
-way, wherever the verdict can be read off the text:
-chat quality (86.1% versus 83.9% on supplied la-
-bels), refusals of harmful requests (96.5% versus
-94.5%), requests that should be answered rather
-than refused (88.3% versus 89.9%), and evidence-
-grounded factuality (87.3% versus 88.4%). None
-of these pooled differences favors JEV beyond sam-
-pling error. JEV is clearly ahead, with a 95%
-interval that excludes zero, only on a few easy
-slices: RewardBench chat (+6.9 points, [3.2,10.6] )
-and RM-Bench’s easy pairs, whose preferred an-
-swer is also the more elaborately written, for chat
-(+10.1, [5.7,15.1] ) and refusals (+4.4, [0.6,8.4] ;
-Appendix Table 12). Its advantage is cost and la-
-tency, not accuracy. It falls behind wherever the
-judge must derive or check a result: expert knowl-
-edge (−7.0 points), code (−12.9), math (−14.3),
-and above all logic puzzles (−27.6; 68.4% versus
-95.9%). A skill splits the same way across bench-
-marks. Both judges reach 99–100% on Reward-
-Bench’s code-repair pairs, whose bugs are visible
-in the text, but JEV trails by 21.4 points on Live-
-CodeBench and 16.7 on RM-Bench code, where
-correctness must be traced; on math it trails by 6.0
-points on RewardBench’s step-level MATH pairs,
-7.5 on JudgeBench, and 16.1 on RM-Bench. In-
-struction following (−7.6 points pooled) splits by
+The gap sits at middle difficulty.Difficulty can
+be measured without either judge: count how many
+of the other 13 LLM judges get an item wrong (Fig-
+ure 4b; RewardBench, JudgeBench, and HaluEval).
+On the 3,286 items that all 13 get right, JEV and
+GPT-6 score 99.8% and 99.7%; on the 311 that at
+least 10 get wrong, both score 9.6%, and many of
+those labels are questionable (Appendix D). The
+whole gap lies between. JEV trails by 13.1 points
+where 3–5 of the judges err and by 15.3 where 6–9
+err, and on JudgeBench by 28.9 and 42.2. Errors
+that are JEV’s alone are rare: of the 3,741 items
+that at least 12 of the 13 judges get right, JEV
+misses 19 and GPT-6 25. JEV is not erratic: it fails
+on moderately hard items, the ones that reasoning
+models still solve.
+Misleading style and harder selection.In
+follow-up samples judged by JEV , GPT-6, and Sky-
+work (Appendix F), RM-Bench pairs each prompt’s
+preferred and rejected answers across three writing
+styles; our sample covers 500 prompts and 9,000
+judgments per judge, pooling both presentation or-
+ders. JEV scores 85.4% when the two answers
+share a style but 76.6% when the rejected answer is
+the more elaborately written one, a within-prompt
+change of −8.8 points ([ −10.6, −7.1]). GPT-6
+barely moves, from 91.8% to 90.1% (−1.7 points,
+[−3.2,−0.3] ), so on these hard pairs JEV minus
+GPT-6 is −13.5 points ([ −16.2, −10.9]). Even
+style-matched pairs, which hinge on subtle content
 7
 
 100 101
@@ -784,42 +783,6 @@ difficulty, measured as the number of the other 13 LLM judges (JEV and GPT-6 exc
 on RewardBench, JudgeBench, and HaluEval; item counts under the bins. (c) RM-Bench, JEV minus GPT-6 by
 domain (chat, safety: should refuse, safety: should comply, math, code) and style condition. Supplied benchmark
 labels throughout.
-subset: JEV matches GPT-6 on natural LLMBar
-pairs (Zeng et al., 2024) but trails by 18.2 points on
-adversarial neighbor pairs, whose rejected output
-answers a similar instruction.
-The gap sits at middle difficulty.Difficulty can
-be measured without either judge: count how many
-of the other 13 LLM judges get an item wrong (Fig-
-ure 4b; RewardBench, JudgeBench, and HaluEval).
-On the 3,286 items that all 13 get right, JEV and
-GPT-6 score 99.8% and 99.7%; on the 311 that at
-least 10 get wrong, both score 9.6%, and many of
-those labels are questionable (Appendix D). The
-whole gap lies between. JEV trails by 13.1 points
-where 3–5 of the judges err and by 15.3 where 6–9
-err, and on JudgeBench by 28.9 and 42.2. Errors
-that are JEV’s alone are rare: of the 3,741 items
-that at least 12 of the 13 judges get right, JEV
-8
-
-misses 19 and GPT-6 25. JEV is not erratic: it fails
-on moderately hard items, the ones that reasoning
-models still solve.
-Misleading style and harder selection.In
-follow-up samples judged by JEV , GPT-6, and Sky-
-work (Appendix F), RM-Bench pairs each prompt’s
-preferred and rejected answers across three writing
-styles; our sample covers 500 prompts and 9,000
-judgments per judge, pooling both presentation or-
-ders. JEV scores 85.4% when the two answers
-share a style but 76.6% when the rejected answer is
-the more elaborately written one, a within-prompt
-change of −8.8 points ([ −10.6, −7.1]). GPT-6
-barely moves, from 91.8% to 90.1% (−1.7 points,
-[−3.2,−0.3] ), so on these hard pairs JEV minus
-GPT-6 is −13.5 points ([ −16.2, −10.9]). Even
-style-matched pairs, which hinge on subtle content
 errors, leave a 6.4-point gap. On four-way Reward-
 Bench 2 selection the three judges are closer (JEV
 73.0%, GPT-6 75.0%, Skywork 79.0%; JEV mi-
@@ -837,6 +800,46 @@ on requests that should be answered, 21.8 on code,
 and 23.4 on math. Only on refusals does JEV keep
 pace with GPT-6 when the wrong answer is the
 more elaborate one (−0.3points).
+8
+
+Reading versus deriving.These gaps come from
+particular skills. Grouped by skill across bench-
+marks (Figure 4a), JEV is on par with GPT-6,
+within about two points either way, wherever the
+verdict can be read off the text: chat quality (86.1%
+versus 83.9% on supplied labels), refusals of harm-
+ful requests (96.5% versus 94.5%), requests that
+should be answered rather than refused (88.3%
+versus 89.9%), and evidence-grounded factuality
+(87.3% versus 88.4%). None of these pooled dif-
+ferences favors JEV beyond sampling error. JEV
+is clearly ahead, with a 95% interval that excludes
+zero, only on a few easy slices: RewardBench chat
+(+6.9 points, [3.2,10.6] ) and RM-Bench’s easy
+pairs, whose preferred answer is also the more elab-
+orately written, for chat ( +10.1, [5.7,15.1] ) and
+refusals (+4.4, [0.6,8.4] ; Appendix Table 12). Its
+advantage is cost and latency, not accuracy. It falls
+behind wherever the judge must derive or check
+a result: expert knowledge ( −7.0 points), code
+(−12.9), math ( −14.3), and above all logic puz-
+zles (−27.6; 68.4% versus 95.9%). A skill splits
+the same way across benchmarks. Both judges
+reach 99–100% on RewardBench’s code-repair
+pairs, whose bugs are visible in the text, but JEV
+trails by 21.4 points on LiveCodeBench and 16.7 on
+RM-Bench code, where correctness must be traced;
+on math it trails by 6.0 points on RewardBench’s
+step-level MATH pairs, 7.5 on JudgeBench, and
+16.1 on RM-Bench. Instruction following ( −7.6
+points pooled) splits by subset: JEV matches GPT-
+6 on natural LLMBar pairs (Zeng et al., 2024) but
+trails by 18.2 points on adversarial neighbor pairs,
+whose rejected output answers a similar instruction.
+JEV thus has two boundaries: judgments whose
+verdict must be derived rather than read off the
+text, and pairs whose wrong answer is the more
+elaborately written.
 Which way JEV errs.On HaluEval, JEV
 catches hallucinated answers as often as GPT-6
 (80.1% versus 79.6%); its whole deficit comes from
@@ -901,10 +904,10 @@ Brier score is 0.821 with error-detection AUROC
 pendix H). The two samples differ in content and
 label provenance, so they show workload depen-
 dence rather than a pure effect of evidence; either
-way, no tested judge is usable on reference-free
-prose.
 9
 
+way, no tested judge is usable on reference-free
+prose.
 Output validity.JEV satisfies the output con-
 tract on every base item, as do several constrained
 generative judges, so validity is not unique to a
@@ -939,25 +942,13 @@ structed; a stronger judge earns its fee on the third,
 which is where the cascade of Section 8 escalates;
 and no tested judge is usable on the last.
 7 Does confidence track correctness?
-We evaluate one escalation rule, which we call the
-cascade (Figure 2). JEV judges every item, either
-once or once per ordering of the choices, with the
-probabilities averaged. If its confidence q reaches
-a threshold τ, its verdict is final; otherwise the
-item goes to a stronger judge, which judges it inde-
-pendently, without seeing JEV’s output, and whose
-verdict replaces JEV’s. The stronger judge is called,
-and paid, only for escalated items. Other rules are
-possible: the second judge could be shown JEV’s
-verdict, or both judges could judge every item and
-their probabilities be averaged, at the cost of call-
-ing both judges on every item (Section 8). Our
-rule works only if JEV’s confidence separates its
-correct verdicts from its errors. This section tests
-whether it does: how well confidence tracks cor-
-rectness, which errors JEV makes while confident,
-how good its probabilities are, whether the signal
-is stable, and where it weakens.
+A first pass is useful only if it knows which of its
+verdicts to trust. This section asks whether JEV’s
+confidence q, its largest label probability, separates
+its correct verdicts from its errors: how well it
+tracks correctness, which errors JEV makes while
+confident, how good its probabilities are, whether
+the signal is stable, and where it weakens.
 7.1 Confidence locates JEV’s errors
 Figure 5 bins the 4,850 base public items (the 1,850
 preference pairs judged in both orders and the 3,000
@@ -968,12 +959,12 @@ the three tasks, JEV is right on 55.1% of the 214
 items with q <0.6 and on 97.8% of the 2,332 at
 q= 1 . GPT-6’s accuracy on the same items rises
 as well, from 69.6% to 97.8%, so the two judges
-find the same items hard: at q= 1 they are right
-or wrong together on all but 2 of the 2,332 items.
-GPT-6’s advantage is confined to the items where
-JEV is unsure; below q= 0.6 , it is right on 63 of
-the 96 items JEV gets wrong. With a threshold of
-τ= 0.9 , the cascade would accept JEV’s verdict on
+find the same items hard: at q= 1 they are right or
+wrong together on all but 2 of the 2,332 items. GPT-
+6’s advantage is confined to the items where JEV
+is unsure; below q= 0.6 , it is right on 63 of the 96
+items JEV gets wrong. With a threshold ofτ= 0.9 ,
+a gate at τ= 0.9 would accept JEV’s verdict on
 the 3,744 items with q≥0.9 and escalate the 1,106
 items with q <0.9 . On the accepted items the two
 judges are nearly tied (94.7% versus 94.4%); on
@@ -1005,6 +996,14 @@ HaluEval is harder to read: at q≥0.9 JEV makes
 2,883, but on the 240 adjudicated answers most
 supplied-label errors are label noise, and human
 correction there leaves 10 of JEV’s 30 errors on
+those answers (at any confidence) and 4 of GPT-6’s
+32 (Appendix D; Appendix Figure 21 compares
+full risk–coverage curves). Most of JEV’s prefer-
+ence mistakes are therefore ones a confidence gate
+escalates. The exception is misleading style: on
+RM-Bench, JEV’s two-order error rate atq≥0.9
+rises from 1.5% on easy pairs to 7.9% on hard pairs
+(§7.4).
 10
 
 Workload Sample JEV Comparator∆(pp) [95% CI] Guidance
@@ -1124,14 +1123,6 @@ Figure 5: Confidence locates JEV’s errors. JEV judges every preference pair in
 confidence; HaluEval answers have no candidate order and use JEV’s single judgment. Bars give the accuracy of
 JEV’s decision and of GPT-6’s base-order decision on the same items, binned byq (item counts under the bins;
 AUROC ofqagainst JEV’s correctness in each panel).
-those answers (at any confidence) and 4 of GPT-6’s
-32 (Appendix D; Appendix Figure 21 compares
-full risk–coverage curves). Most of JEV’s prefer-
-ence mistakes are therefore ones a confidence gate
-escalates. The exception is misleading style: on
-RM-Bench, JEV’s two-order error rate atq≥0.9
-rises from 1.5% on easy pairs to 7.9% on hard pairs
-(§7.4).
 7.2 Probability quality
 Scores depend on the labels.JEV’s Brier scores
 are 0.113, 0.297, and 0.196 on RewardBench,
@@ -1161,6 +1152,14 @@ ted temperatures point in different directions: 0.65
 sharpens RewardBench, while 2.15 and 4.45 soften
 JudgeBench and HaluEval (Appendix Table 28).
 Small selection sets give workload-dependent fits
+rather than a universal temperature, so every fit
+needs held-out validation.
+7.3 Is the signal stable?
+Repetition and paraphrase.We probe stabil-
+ity with repeated requests and paraphrased rubrics
+(Bagaria et al., 2026). JEV changes no deci-
+sion across 96 repeated requests but four of 48
+paraphrases, as many as any judge (Appendix J).
 11
 
 0.6 0.8 1.0
@@ -1231,14 +1230,6 @@ Figure 6: Top: JEV’s maximum-probability distributions for correct and incorre
 benchmark labels. Bottom: reliability curves using the same statistic for selected main-round judges (bins with at
 least five valid examples; full counts retained). Sparse bins, differing coverage, and label errors limit visual ranking;
 Table 11 gives the HaluEval label sensitivity.
-rather than a universal temperature, so every fit
-needs held-out validation.
-7.3 Is the signal stable?
-Repetition and paraphrase.We probe stabil-
-ity with repeated requests and paraphrased rubrics
-(Bagaria et al., 2026). JEV changes no deci-
-sion across 96 repeated requests but four of 48
-paraphrases, as many as any judge (Appendix J).
 Between collection rounds, seven of JEV’s 350
 JudgeBench decisions changed, moving its accu-
 racy by one item.
@@ -1280,6 +1271,15 @@ judged each of the 100 RewardBench 2 prompts
 in four rotations of its four candidates, so that ev-
 ery candidate appeared once in every position (400
 calls under a protocol written before any call).
+How much the signal moves.Reversing a pair
+changes JEV’s verdict on 3.7% of RewardBench
+pairs, the fifth-lowest rate of the sixteen main-
+comparison judges with reversal data, and on 11.1%
+of JudgeBench pairs, the sixth-lowest (GPT-6:
+1.5% and 0.9%; invalid pairs count as flips, Ap-
+pendix Table 25). JEV’s confidence moves by
+0.045 on average (median 0.01), and JEV is cor-
+rect in both orders on 90.8% and 74.0% of the
 12
 
 <.6
@@ -1364,15 +1364,6 @@ candidates are reversed, by JEV’s base-order confidenceq (pairs per bin below 
 τ= 0.9 . (b) For each judge, its reversal flips made at q≥0.9 , among flips on pairs with two valid outputs. (c)
 RewardBench 2, four candidates in four rotations: for each of the 100 prompts, the range of JEV’s confidence across
 rotations against its mean; crosses mark prompts whose chosen candidate changes between rotations.
-How much the signal moves.Reversing a pair
-changes JEV’s verdict on 3.7% of RewardBench
-pairs, the fifth-lowest rate of the sixteen main-
-comparison judges with reversal data, and on 11.1%
-of JudgeBench pairs, the sixth-lowest (GPT-6:
-1.5% and 0.9%; invalid pairs count as flips, Ap-
-pendix Table 25). JEV’s confidence moves by
-0.045 on average (median 0.01), and JEV is cor-
-rect in both orders on 90.8% and 74.0% of the
 pairs. It has no overall position preference (first-
 position rates 49.2% and 48.4%), unlike GPT-4.1
 mini, which picks the first-shown response in both
@@ -1430,8 +1421,6 @@ reads both orders; on JudgeBench, where JEV flips
 most, both orders buy 0.9 points (98.2% to 99.1%
 retained) for 4 more points of fee. For JEV , the
 confidence gate already absorbs most order sensi-
-13
-
 tivity, and averaging is an inexpensive robustness
 step that matters more for judges that flip while
 confident. The pairwise analyses below average
@@ -1440,6 +1429,8 @@ before any held-out outcome was seen.
 7.4 Where the signal weakens
 A confidence cascade can work only where JEV
 is unsure when it is wrong, and that holds only
+13
+
 inside the envelope of Table 2. On the 500 RM-
 Bench prompts, with both orders of each pair av-
 eraged, the AUROC of q against correctness is
@@ -1467,16 +1458,29 @@ first stage is competent but uncertain, and poorly
 where it is confidently misled.
 8 Accept when confident, escalate when
 unsure
+Because JEV’s confidence locates its errors, we
+evaluate one escalation rule, which we call the cas-
+cade (Figure 2). JEV judges every item, either
+once or once per ordering of the choices, with the
+probabilities averaged. If its confidence q reaches
+a threshold τ, its verdict is final; otherwise the
+item goes to a stronger judge, which judges it inde-
+pendently, without seeing JEV’s output, and whose
+verdict replaces JEV’s. The stronger judge is called,
+and paid, only for escalated items. Other rules are
+possible: the second judge could be shown JEV’s
+verdict, or both judges could judge every item and
+their probabilities be averaged, at the cost of calling
+both judges on every item.
 A stronger judge earns its fee only on the first
 stage’s errors, and the two judges err on different
 items. On JudgeBench, GPT-6 corrects 60 of JEV’s
 75 errors while JEV corrects 9 of GPT-6’s 24, so
 an oracle that always picked the right judge would
 reach 95.7% (Appendix Figure 22). A deployable
-gate must find JEV’s errors from a signal available
-at decision time. Section 7 shows that JEV’s con-
-fidence is such a signal on most workloads, so we
-now test the cascade defined there.
+gate must find JEV’s errors from a signal avail-
+able at decision time. Section 7 shows that JEV’s
+confidence is such a signal on most workloads.
 Escalation is one design among several.How
 two judges are combined is itself a decision. They
 can be combined serially, with one judge’s verdict
@@ -1528,12 +1532,12 @@ for example, τ= 0.9 loses exactly two points and
 passes the point rule, but its lower bound is −4.3
 points, so the lower-bound rule moves to τ= 0.95 ,
 which loses none (Appendix Table 34). The rule
+14
+
 does not weigh quality against cost: it minimizes
 cost subject to an accuracy constraint, so it fixes a
 tolerance rather than a price for each error. If error
 costs were known, the threshold would instead fol-
-14
-
 low from the cost of a wrong verdict relative to the
 cost of escalating (Chow, 1970; Elkan, 2001).
 Threshold sweep.Figure 8 evaluates the cascade
@@ -1571,7 +1575,13 @@ On four-way RewardBench 2 selection, the task
 closest to reranking and one with no pair of orders
 to average, the cascade matches GPT-6 (75%) at
 τ= 0.5 while escalating 20% of the 100 prompts;
-atτ= 0.9it reaches 74% while escalating 71%.
+at τ= 0.9 it reaches 74% while escalating 71%.
+The same target thus needs very different gates on
+different data: staying within half a point of GPT-
+6 takes no escalation on RewardBench, τ= 0.8
+(11% escalated) on HaluEval, and τ= 0.99 (90%)
+on JudgeBench, so the threshold must be set on the
+target workload.
 A cheaper fallback.The fallback need not be
 the most expensive judge. GPT-5.6 Sol is more
 accurate than GPT-6 on these items (91.1% versus
@@ -1625,16 +1635,6 @@ only a third of the fee there. The rule does not al-
 ways transfer, and its failure is again a JudgeBench
 failure. For GPT-5.6, the selected τ= 0.7 gains
 0.82 points on RewardBench ( [−0.15,1.83] ) but
-loses 4.81 on JudgeBench ([−8.52,−1.48] ), where
-it escalates only 28.5% of pairs; the 96 selection
-pairs hold only 32 JudgeBench pairs. When the
-fallback is no more accurate than order-averaged
-JEV on the selection pairs (GPT-4.1 mini, GPT-4.1,
-GPT-OSS, Qwen3.6, Qwen3.8), the rule selects
-τ= 0.5and never escalates (Appendix Table 30).
-Why JEV as the first stage.A retrospective con-
-trol keeps GPT-6 as the fallback and applies the
-same averaging, selection set, grid, and rule to
 15
 
 0 .25 .5 .75 1
@@ -1700,6 +1700,16 @@ upper bound (GPT-5.4’s upper ratio exceeds one because missing usage is charge
 panel applies the same rule to other first stages after the held-out results were known (retrospective). Table 4 splits
 the JEV→GPT-6 policy by benchmark. Appendix Table 30 lists all twelve JEV policies. All results are offline
 simulations.
+loses 4.81 on JudgeBench ([−8.52,−1.48] ), where
+it escalates only 28.5% of pairs; the 96 selection
+pairs hold only 32 JudgeBench pairs. When the
+fallback is no more accurate than order-averaged
+JEV on the selection pairs (GPT-4.1 mini, GPT-4.1,
+GPT-OSS, Qwen3.6, Qwen3.8), the rule selects
+τ= 0.5and never escalates (Appendix Table 30).
+Why JEV as the first stage.A retrospective con-
+trol keeps GPT-6 as the fallback and applies the
+same averaging, selection set, grid, and rule to
 seven other inexpensive or open-weight first stages
 (lower panel of Table 3). GPT-4.1 mini stays within
 a point of GPT-6 on both benchmarks but costs
@@ -1721,16 +1731,6 @@ and 19.6% of pairs, saving 55% and 19% of the
 API fee before any GPU cost; Qwen3-32B saves
 21% and 4%; and PairRM meets the tolerance only
 by escalating every pair. JEV’s value as a first stage
-lies in its confidence as much as in its price. The
-comparison is retrospective, so it supports JEV’s
-operating point among the tested first stages with-
-out establishing a global cost–accuracy frontier.
-Live replication.The policy above was assem-
-bled offline from separately collected outputs, so
-it could not measure cascade latency. We there-
-fore reran the JEV →GPT-6 policy live on 510
-of the held-out pairs (all 270 JudgeBench pairs
-and 240 RewardBench pairs; Appendix B), under
 16
 
 Held-out pairs
@@ -1782,6 +1782,16 @@ were escalated. Fee ratio: both JEV calls plus GPT-6 on escalated pairs, relativ
 usage). Latency per pair: the slower JEV order plus, if escalated, the GPT-6 call; the deployed rows are the live
 sequence, and the counterfactual and GPT-6 alone use each pair’s single GPT-6 call. Appendix Tables 35 and 36
 give every threshold and every source.
+lies in its confidence as much as in its price. The
+comparison is retrospective, so it supports JEV’s
+operating point among the tested first stages with-
+out establishing a global cost–accuracy frontier.
+Live replication.The policy above was assem-
+bled offline from separately collected outputs, so
+it could not measure cascade latency. We there-
+fore reran the JEV →GPT-6 policy live on 510
+of the held-out pairs (all 270 JudgeBench pairs
+and 240 RewardBench pairs; Appendix B), under
 a protocol written before any call (Appendix O):
 JEV judged both orders at once, and GPT-6 was
 called only when the gate escalated. The live run
@@ -1818,15 +1828,6 @@ cuts that rate to about 5% with 96 or 192 labels, and
 choosing separate thresholds for RewardBench and
 JudgeBench cuts it to 0.6% with 96 labels and 0.1%
 with 192, at a median fee ratio of 0.34. The simu-
-lation reuses one pool of items, so it is optimistic
-about distribution shift.
-9 A prospective live test
-The analyses above choose or score thresholds on
-benchmarks the study had already analyzed; even
-the held-out pairs come from them. To test the
-whole recommended procedure on new workloads,
-we froze a protocol before any model call (Ap-
-pendix N). It takes two correctness workloads on
 17
 
 0.0 0.2 0.4 0.6 0.8 1.0
@@ -1894,6 +1895,15 @@ fee relative to GPT-6 alone (a, c) and mean latency per pair (b, d), at every th
 deployed two-order gate and for a gate that reads JEV’s base order alone. The ring marks the threshold frozen on
 the selection pairs; the star and the dashed line mark GPT-6 alone. All points come from the same held-out outputs;
 only the ringed ones ran live.
+lation reuses one pool of items, so it is optimistic
+about distribution shift.
+9 A prospective live test
+The analyses above choose or score thresholds on
+benchmarks the study had already analyzed; even
+the held-out pairs come from them. To test the
+whole recommended procedure on new workloads,
+we froze a protocol before any model call (Ap-
+pendix N). It takes two correctness workloads on
 which JEV is weak, so that the test asks whether
 the procedure escalates enough. The first is 500
 PPE correctness pairs (Frick et al., 2025), 100 each
@@ -1933,6 +1943,8 @@ ones. The saving is far smaller than on Reward-
 Bench, as it should be: JEV alone scored 76.1%
 here against GPT-6’s 90.2%, and a gate can keep
 only what the first stage gets right.
+18
+
 Figure 9 traces the whole trade-off (Appendix
 Table 35). Each step down the grid trades accuracy
 for lower fee and latency. At τ= 0.9 , the frozen
@@ -1944,8 +1956,6 @@ loses 0.5 points overall and 1.2 on JudgeBench
 through. Reading JEV’s base order alone halves its
 calls and traces nearly the same curve, matching
 GPT-6 at τ= 0.99 (+0.2 points) at 84% of its fee.
-18
-
 The gate helps least where the ranking is weakest:
 on IFEval pairs, which test explicit formatting con-
 straints, the AUROC of JEV’s confidence is 0.57,
@@ -1957,28 +1967,28 @@ achieve GPT-6’s accuracy, and the saving shrank
 accordingly.
 10 Conclusion
 Reasoning judges are accurate but slow and costly.
-We asked whether a decision-only judge can take
-the first pass and know when to hand over, and
-tested JEV against sixteen generative and reward-
-model judges, with blinded human adjudication
-and a pre-specified live test. The answer is yes,
-within a boundary that JEV’s own confidence
-draws. Where the verdict can be read off the text,
-as in ordinary preference, safety, and evidence-
-grounded factuality, JEV comes within three points
-of GPT-6 at 0.36% of its fee and a 0.15-second me-
-dian latency. Where the verdict must be derived, as
-in expert knowledge, math, code, and logic, it trails
-by 7–28 points, and a more elaborate wrong an-
-swer can mislead it. These misses fall mostly in its
-low-confidence decisions, so accepting when confi-
-dent and escalating when unsure recovers GPT-6’s
-accuracy: 0.9 points above it at 41% of its fee on
-1,610 held-out pairs, and exact parity on two new
-workloads where JEV alone trails by 14 points.
-The boundary is not universal. Confidence rout-
-ing weakens on style-adversarial pairs and fails on
-reference-free prose.
+We asked whether a decision-only judge can re-
+place an LLM judge, and tested JEV against sixteen
+generative and reward-model judges, with blinded
+human adjudication and a pre-specified live test.
+As a first pass that hands its uncertain decisions to
+a stronger LLM, it can; on its own, only where the
+verdict can be read off the text. There, as in ordi-
+nary preference, safety, and evidence-grounded fac-
+tuality, JEV comes within three points of GPT-6 at
+0.36% of its fee and a 0.15-second median latency.
+It has two boundaries: where the verdict must be
+derived, as in expert knowledge, math, code, and
+logic, it trails by 7–28 points, and a more elabo-
+rate wrong answer can mislead it. These misses
+fall mostly in its low-confidence decisions, so ac-
+cepting when confident and escalating when unsure
+recovers GPT-6’s accuracy: 0.9 points above it at
+41% of its fee on 1,610 held-out pairs, and exact
+parity on two new workloads where JEV alone
+trails by 14 points. The boundary is not universal.
+Confidence routing weakens on style-adversarial
+pairs and fails on reference-free prose.
 In practice, average the verdict over both presen-
 tation orders, set the threshold on about 100 local
 labels using the lower confidence bound of the ac-
@@ -2035,6 +2045,8 @@ and errors that both judges share cannot be fixed
 by any serial cascade. Only the frozen two-order
 policies, the primary human-adjudication outcome,
 and the prospective test were specified before their
+19
+
 data were seen; the threshold sweeps and slice anal-
 yses are retrospective, cascade fees outside the live
 runs are simulated offline, and the prospective test
@@ -2044,8 +2056,6 @@ Ethical considerations
 This study reuses benchmark responses and exist-
 ing annotations. The only new human judgments
 are the 183 blinded adjudications of Appendix D,
-19
-
 made by members of the research team on public
 benchmark items, without crowd workers or exter-
 nal annotators. The Laya checkpoints and SDK
@@ -2142,6 +2152,8 @@ Rambatla, Rob Friel, Shuai Shao, and Yash Sheth.
 2026. Luna-2: Scalable single-token evalua-
 tion with small language models.arXiv preprint
 arXiv:2602.18583.
+20
+
 Google. 2026. Gemini API pricing. Accessed 21
 September 2026 (UTC).
 Groq. 2026a. GPT-OSS 120B model documentation.
@@ -2150,8 +2162,6 @@ Groq. 2026b. Qwen3.6-27B model documentation. Ac-
 cessed 21 September 2026 (UTC).
 Groq. 2026c. Qwen3.8-27B model documentation. Ac-
 cessed 21 September 2026 (UTC).
-20
-
 Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Wein-
 berger. 2017. On calibration of modern neural net-
 works. InProceedings of the 34th International Con-
@@ -2255,6 +2265,8 @@ snapshot accessed 20 September 2026 (US Eastern
 time).
 OpenAI. 2026d. GPT-5.4 model documentation. Ac-
 cessed 21 September 2026 (UTC).
+21
+
 OpenAI. 2026e. GPT-5.6 Sol model documentation.
 Accessed 21 September 2026 (UTC).
 OpenAI. 2026f. GPT-6 Astra model documentation.
@@ -2265,8 +2277,6 @@ uation of machine translation. InProceedings of the
 40th Annual Meeting of the Association for Compu-
 tational Linguistics, pages 311–318. Association for
 Computational Linguistics.
-21
-
 Qwen Team. 2026a. Qwen3-32B model card. Accessed
 21 September 2026 (UTC).
 Qwen Team. 2026b. Qwen3.5-27B model card. Ac-

@@ -1,0 +1,107 @@
+---
+license: apache-2.0
+base_model: Qwen/Qwen3.8-27B
+library_name: transformers
+pipeline_tag: text-generation
+tags:
+  - sii_decision
+  - decision-making
+  - self-distillation
+datasets:
+  - jylin001206/SII-Decision-27B-Training-Data
+---
+
+# SII-Decision-27B-Full
+
+SII-Decision-27B-Full belongs to the **SII-Decision-27B** family of decision models.
+It returns a probability distribution over user-supplied options with thinking disabled.
+Choice, binary/probabilistic Noul, and ordered Score tasks share the same answer-slot interface.
+This training optimizes decision distributions; it does not provide general chat SFT supervision.
+
+## Model and training
+
+| Item | Setting |
+|---|---|
+| Original model | [Qwen/Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) |
+| Adaptation | Full-rank updates of the same language linear layers covered by LoRA |
+| Training questions | 39,279 |
+| Validation questions | 7,506 |
+| Teacher | Original same-size model, two reasoning readouts averaged |
+| Student | Thinking disabled; original tokenizer and ordered option labels |
+| Learning rate | 2e-06 |
+| Global batch | 64 |
+| Seed | 42 |
+| Exported step / one-epoch schedule | 492 / 614 |
+| Updated parameters during training | 22,817,013,760 |
+| Weight format | Complete BF16 safetensors; no adapter required for inference |
+
+Only the listed language linear layers are adapted. Embeddings, the output head, normalization,
+and vision parameters remain frozen. Full-rank adaptation and LoRA use the same layer coverage.
+The architecture retains the original vision components, but SII-Decision decision training and
+the supplied inference interface use text inputs.
+
+The per-question loss is:
+
+`w * CE(q, p) + 0.5 * w * I(Score) * ((E[p]-E[q])/(K-1))² + kappa * KL(p0 || p)`.
+
+Choice/Noul/Score weights are 1 / 1.1666667 / 0.8. Kappa is 0.2 for hard binary Noul,
+and 0.05 otherwise. Gold labels are used for validation and identifying hard binary tasks;
+they do not replace teacher targets. See `training_recipe.json` for the exact settings.
+
+## Evaluation
+
+The associated BF16 checkpoint scores **80.1734 / 100** on the fixed 58-benchmark
+decision suite, with equal weight per benchmark. This is one checkpoint's score, not a
+multi-seed mean or a confidence bound. Validation metrics determine the checkpoint within its run.
+The released full-rank weights are copied without changing their tensor values.
+NF4/INT8 results may differ from the BF16 evaluation and have not been assigned this score.
+
+## Load with Transformers
+
+The complete merged weights can be loaded without PEFT or a separate base model.
+Install `torch`, `accelerate`, and `transformers==5.14.1`.
+
+```python
+import torch
+from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration
+
+repo = "jylin001206/SII-Decision-27B-Full"
+tokenizer = AutoTokenizer.from_pretrained(repo)
+model = Qwen3_5ForConditionalGeneration.from_pretrained(
+    repo, dtype=torch.bfloat16, device_map="auto"
+)
+```
+
+Loading in BF16 requires sufficient RAM or GPU memory. This example loads the
+original precision; the RTX 4090 launchers below use the stated deployment precision.
+Training code and training data are publicly available at the repository links below.
+
+## Inference
+
+Use the decision scripts from [https://github.com/amazingljy1206/SII-Decision](https://github.com/amazingljy1206/SII-Decision); generic free-form generation
+does not implement the decision scoring interface.
+
+```bash
+git clone https://github.com/amazingljy1206/SII-Decision.git
+cd SII-Decision
+pip install -e '.[quantization]'
+bash scripts/infer_27b_single_4090.sh \
+  jylin001206/SII-Decision-27B-Full examples/decisions.jsonl predictions.jsonl
+```
+
+The scripts work with either a Hugging Face repository ID or a local model directory.
+4B uses BF16 on one RTX 4090; its two-GPU script runs two independent replicas.
+27B uses NF4 on one RTX 4090 and INT8 by default on two RTX 4090 GPUs. Two 24-GB cards cannot hold the complete 27B
+BF16 model; the two-GPU script uses model sharding with quantized weights.
+Inputs are rejected rather than truncated when they exceed the configured token limit.
+
+## Data and reproduction
+
+Training data: [jylin001206/SII-Decision-27B-Training-Data](https://huggingface.co/datasets/jylin001206/SII-Decision-27B-Training-Data).
+Training code, exact layer lists, four method configs, and merge code: [https://github.com/amazingljy1206/SII-Decision](https://github.com/amazingljy1206/SII-Decision).
+The tokenizer, chat template, configuration, license, and safetensors shards are included here.
+
+## License
+
+The model retains the Apache-2.0 license of the original Qwen weights. See `LICENSE` and `NOTICE`.
+Training-data source materials retain their upstream terms, as described in the dataset card.

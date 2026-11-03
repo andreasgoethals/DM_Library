@@ -2,13 +2,13 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://huggingface.co/h2oai/h2o-lightning-4b",
-  "revision": "ace085af80436e822f0b3d190431308b7f9f755b",
-  "revision_date": "2026-10-27T07:39:17.000Z",
+  "revision": "659fc412de8486dbc2477b0d1cb4121e97e72471",
+  "revision_date": "2026-11-01T17:25:12.000Z",
   "slug": "h2oai/h2o-lightning-4b",
-  "retrieved_utc": "2026-10-27T08:16:47+00:00",
+  "retrieved_utc": "2026-11-03T15:51:15+00:00",
   "identity_source": "https://huggingface.co/h2oai/h2o-lightning-4b",
-  "included_files": 26,
-  "excluded_files": 15,
+  "included_files": 27,
+  "excluded_files": 17,
   "file_sha256": [
     {
       "path": "LICENSE",
@@ -17,8 +17,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 60125,
-      "sha256": "55044942033045a45043c49679c29d3232757aefe03093c572620aa5684544a7"
+      "bytes": 77979,
+      "sha256": "cd1382b2475731866df744d0d6bc3f3d6c4ece1e1724eb02f100b676a7dd7b79"
     },
     {
       "path": "assets.py",
@@ -52,8 +52,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "h2o_lightning_shim.py",
-      "bytes": 130333,
-      "sha256": "bc386d26f4669a7d1d8b87507378c6156d0f4e8b451a3be4ac7c4ef5ded59bb7"
+      "bytes": 147820,
+      "sha256": "287434ee8e1df2b6b2fe52b86f503c33cc536e14ad822ee36855f81645572870"
     },
     {
       "path": "pooled_readout.py",
@@ -71,24 +71,29 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "2dcdc37f61a2abad9c1a138adcd6299a4db0d71c3783cf2b2f3af1606d827711"
     },
     {
+      "path": "selector_v2.py",
+      "bytes": 13497,
+      "sha256": "bd518a2c3bea9167803b6c21e480b37386fa212cf35101093b84e75c5307b7e3"
+    },
+    {
       "path": "serve.sh",
-      "bytes": 17613,
-      "sha256": "378e5c056f62956a1736fc6eb15ab7934201442ac7691058b2543af3ae9067ce"
+      "bytes": 18334,
+      "sha256": "3fe82f5a3cf5f7a98fd0213c7124b4acba9dcc3b7821c1c7dacdfde970608a5c"
     },
     {
       "path": "serve_config.json",
-      "bytes": 3720,
-      "sha256": "e13a8fb464067ecd1b22e5e19bda9eb00e4e89a7ff269aca8e615b83ceb7f28b"
+      "bytes": 3710,
+      "sha256": "f4fa2806a0c4d332c7dc271244c292a29ab94bd844bf5e68c3dcf29690e5828e"
     },
     {
       "path": "test_card.py",
-      "bytes": 37752,
-      "sha256": "2c03b0cbe064eba837b7a573efd12c1921b0a9e25b23bee905d7b11bbe57f633"
+      "bytes": 55878,
+      "sha256": "ff8e4dfe0d84b965737f53b5ad97dfc48bcff98d12f1a602af782aeb27cac918"
     },
     {
       "path": "test_card_controls.py",
       "bytes": 5307,
-      "sha256": "b9f1da450da17e0d2334f822359ef90f7e8a31c004f3444a6b009fb6d28cc5b9"
+      "sha256": "78b00456804072125dd285d351fa5b239ae42da97f4a8915177625c1678630c1"
     },
     {
       "path": "test_security.py",
@@ -97,8 +102,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "test_shim.py",
-      "bytes": 97406,
-      "sha256": "14653a181a2c9367167a1e3189227008aaf000c442483b0b7ef0f92a116262b2"
+      "bytes": 135602,
+      "sha256": "d8e3d24be6fb74b6e7d9b5499fc1a5344612a7bea16c2f9a2dc947e6112fb0dd"
     },
     {
       "path": "tokenizer/chat_template.jinja",
@@ -173,6 +178,44 @@ screenshots, scanned documents, charts). It returns a probability for every opti
 - **yes/no** (`noul`): gives the probability that a statement is true;
 - **score**: gives an ordinal level on a stated scale, with its probability distribution.
 
+## Leading on Benchmarks
+
+![Leading on Benchmarks: #1 of 46, Composite (open-weight Jev-class models; #2 of 55 Jev-class models, open or API), ImageJevBench edition v0.3.0; #2 of 46, Intelligence (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench edition v0.3.0; #2 of 46, Capability (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench edition v0.3.0; #2 of 170, Composite (open-weight Jev-class models; #12 of 201 Jev-class models, open or API), JevBench board of 2026-10-28; #1 of 4, Box Capability (open-weight Jev-class models; #1 of 5 Jev-class systems, open or API), ImageJevBench Box track (PREVIEW); #1 of 46, Composite (open-weight Jev-class models; #3 of 55 Jev-class systems, open or API), ImageJevBench computer-use track](assets/leading_on_benchmarks_4b.png)
+
+- **#1 of 46 — Composite** (open-weight Jev-class models; #2 of 55 Jev-class models, open or API), ImageJevBench
+  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature
+  1.0; ahead of
+  Drex Max (Nace AI, 44.65),
+  Jev 1.13.0 + images (TypeSafe, 26.43),
+  Clef-Flash (Cloudflare, 20.41) and
+  Liquid d1-3B (4.10) ([details](#imagejevbench))
+- **#2 of 46 — Intelligence** (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench
+  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature
+  1.0; ahead of
+  Clef (Cloudflare, 47.40) and
+  Liquid d1-3B (16.31) ([details](#imagejevbench))
+- **#2 of 46 — Capability** (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench
+  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature
+  1.0; ahead of
+  Clef (Cloudflare, 58.08) and
+  Liquid d1-3B (47.78) ([details](#imagejevbench))
+- **#2 of 170 — Composite** (open-weight Jev-class models; #12 of 201 Jev-class models, open or API), JevBench board
+  of 2026-10-28, its row for release v1.1, measured 2026-10-04; ahead of
+  d1 (Liquid AI, 72.82),
+  Microsoft-Decision-1 (69.08),
+  OpenAI Decisions (62.37) and
+  pplx-decider-flash (Perplexity, 54.01) ([details](#leading-on-benchmarks))
+- **#1 of 4 — Box Capability** (open-weight Jev-class systems; #1 of 5 Jev-class systems, open or API; Jev-class on this
+  track: within 2x the latency and cost of Jev 1.14.0), ImageJevBench Box track (PREVIEW), edition v0.3.0, page read
+  2026-10-29, its row for release v1.4.1 through the H2O serving package, measured 2026-10-29; ahead of
+  Jev 1.14.0 (TypeSafe, 75.71) ([details](#for-benchmark-maintainers-imagejevbench-box-track))
+- **#1 of 46 — Computer-use Composite** (open-weight Jev-class systems; #3 of 55 Jev-class systems, open or API,
+  behind two API systems scored on the board's smaller hosted-API item set), ImageJevBench computer-use track, edition
+  v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature 1.0;
+  ahead of
+  Liquid d1-3B (Liquid AI, 66.22) and
+  Clef-Flash (Cloudflare, 55.29) ([details](#imagejevbench))
+
 **How to run it** (recommended setup first):
 
 - **Recommended: our vLLM build, two-way reading.** Our per-request attention build of vLLM 0.30.0, with the
@@ -180,7 +223,8 @@ screenshots, scanned documents, charts). It returns a probability for every opti
   `bash h2o-lightning-4b/serve.sh` (the default). It scores 206 of JevBench's 231 public items this way; see
   [Measured](#measured) and [Two-way reading](#two-way-reading-recommended).
 - **For benchmark maintainers:** one command each for
-  [JevBench](#for-benchmark-maintainers-jevbench) and [the Decision Index](#for-benchmark-maintainers-decision-index).
+  [JevBench](#for-benchmark-maintainers-jevbench), [the Decision Index](#for-benchmark-maintainers-decision-index) and
+  [ImageJevBench's Box track](#for-benchmark-maintainers-imagejevbench-box-track).
 - Fallback: stock vLLM 0.30.0, one-way reading, when you cannot install the build:
   `TWO_WAY=0 bash h2o-lightning-4b/serve.sh`. It uses the prefix cache and serves more requests per second under
   load; it scores 202 of the 231 items. See [Run it](#run-it).
@@ -190,82 +234,30 @@ screenshots, scanned documents, charts). It returns a probability for every opti
 
 **Try it in your browser:** [live demo on Hugging Face Spaces](https://huggingface.co/spaces/h2oai/h2o-lightning-4b) (text and images; built by the Hugging Face team and running on ZeroGPU).
 
-**Other formats:** GGUF for llama.cpp: [h2oai/h2o-lightning-4b-gguf](https://huggingface.co/h2oai/h2o-lightning-4b-gguf). An MLX build of this release is not published yet. A variant on a different base:
+**Other formats:** GGUF for llama.cpp: [h2oai/h2o-lightning-4b-gguf](https://huggingface.co/h2oai/h2o-lightning-4b-gguf). MLX for Apple silicon, built by NetProjects:
+[netprojects/h2o-lightning-4b-mlx-q8](https://huggingface.co/netprojects/h2o-lightning-4b-mlx-q8) (8-bit; two-way and
+one-way) and [netprojects/h2o-lightning-4b-mlx-q4](https://huggingface.co/netprojects/h2o-lightning-4b-mlx-q4) (4-bit;
+one-way only). They carry this release's weights and serving files; NetProjects reports 205 / 231 on JevBench's public items two-way and 201
+one-way for the 8-bit build. A variant on a different base:
 [h2oai/h2o-lightning-4b-nemotron-nano](https://huggingface.co/h2oai/h2o-lightning-4b-nemotron-nano), built on NVIDIA
 Nemotron 3 Nano 4B; text only; NVIDIA Nemotron Open Model License.
 
-## See it in action
+On JevBench (board v1.7.15, read 2026-10-28) the board lists v1.4.1's row, composite 75.98, without a rank: its
+draw is not yet equated to the board's reference scale. This release is not yet on the board.
 
-Three demos recorded with an earlier version of the model: an operations inbox deciding claims against a written
-policy, a web agent choosing vendors in real browsers, and DOOM played to the exit. Companies, people and amounts are
-fictional.
+### ImageJevBench
 
-<video src="https://huggingface.co/h2oai/h2o-lightning-4b/resolve/main/assets/demos/demos_reel.mp4" poster="https://huggingface.co/h2oai/h2o-lightning-4b/resolve/main/assets/demos/demos_reel_poster.jpg" controls autoplay muted loop playsinline width="100%"></video>
+On the board's [ImageJevBench page](https://benchmarkheaven.com/image-jev-bench) (edition v0.3.0, read 2026-10-31), the board's run
+of v1.4.1 @d7f1b05a (the same weights), measured on 2026-10-28 with images at temperature 1.0 and v1.4.1's image cap, scores:
 
-[![H2O-Lightning-4B: full-length demo runs on YouTube](https://img.youtube.com/vi/2Qp04Wu0A14/maxresdefault.jpg)](https://youtu.be/2Qp04Wu0A14)
+| Intelligence | Calibration | Speed | Cost | Capability | Composite |
+|---|---|---|---|---|---|
+| 55.48 | 88.19 | 88.72 | 56.34 | 71.84 | **68.51** |
 
-## Measured
-
-**This card describes v1.4.1** (`main`; pin `--revision v1.4.1`): new weights, the fine-tune of Qwen3.5-4B behind
-v1.4.0 continued on more training data (see [What it was trained on](#what-it-was-trained-on)), for both attention
-patterns (see [Two-way reading](#two-way-reading-recommended)), served two-way on one engine of our vLLM build, with Box
-questions always on. The calibration constants in `serve_config.json` are unchanged from v1.4.0. The vLLM build is
-the newer one (it fixes a crash in the Gated DeltaNet prefill graphs with 16 or fewer sequences in flight), and
-`serve.sh` stops with the shim's reason when vLLM's tokenizer is not the one the model was trained with (see
-[Tokenizer](#tokenizer)). Older versions: see the repo's tags.
-
-**Results**, against the previous release (v1.4.0), with vLLM 0.30.0 on NVIDIA L40S (48 GB) GPUs, each release through
-its own `serve.sh` with no flags (two-way, one engine of the vLLM build) unless a row says otherwise, every question
-answered. v1.4.1 was read on 2026-10-26, v1.4.0 on 2026-10-24.
-
-| | **v1.4.1** (`main`) | v1.4.0 |
-|---|---|---|
-| JevBench's 231 public items, JevBench's own CLI: correct | **206 / 231 (89.2 %)** · 48/48 · 72/72 · 86/111 | 206 / 231 |
-| held-out decisions on the Decision Index's skills (2,351 questions, 15 task families): skill (difference not significant) | 81.54 | 81.45 |
-| the new-domain set (3,724 questions, 13 task families): skill (difference not significant) | 59.86 | 59.44 |
-| six task families that the added training data covers (2,891 questions): skill | **67.99** | 50.08 |
-| Decision Index 0.3 public suite, the kit's own scorer: text index (140,178 rows) / vision index (12,210 rows) | **63.16 / 69.42** | 62.38 / 69.03 |
-| calibration error on the Decision Index text rows (274,729 questions; lower is better) | 0.0705 | **0.0640** |
-| one-way reading (`TWO_WAY=0`): JevBench 231 correct · Decision Index text / vision index · calibration error | 202 / 231 · 60.89 / 67.56 · 0.0806 | not measured |
-| mean input tokens per decision on JevBench's 231 items | 654 | 654 |
-
-The held-out set on the Decision Index's skills is dev slices of the public training data behind the Decision Index's
-tasks, plus our own authored dev set. These tasks' training splits are in our mix, so every question was removed that
-is an exact twin of a training row, shares a word 9-gram with one, or shares at least 80 % of its word 13-grams with
-one (at least 50 % against the rows added in this release): of 4,789 questions, 1,233 were removed against the earlier
-training data and 1,205 more against the added rows, leaving 2,351 in 15 task families. A stricter cut (at least 50 %
-of 13-grams shared throughout) leaves 2,067 questions; there v1.4.1 is +0.02 [−0.68, +0.69] against v1.4.0. Most of the
-9-grams behind the second removal are instruction and option wording that the added rows share with whole dev tasks;
-counting only matches of each question itself (9-grams that occur in five or more dev questions set aside) keeps 3,130
-questions, where v1.4.1 is −0.78 [−1.74, +0.26] against v1.4.0, and lower on schema-guided dialogue (−12.3
-[−19.9, −6.1] on that task), a task whose dev questions the main cut removes.
-
-The new-domain set is 13 task families whose datasets do not occur in the training data, checked against every
-training row by word 13-gram overlap. The six families in the row below it (argument quality, choosing a function to
-call, table fact checks with one and with several claims, multi-intent detection, vulnerability severity) come from
-datasets the earlier training data did not include; this release's added training data covers them, so they are
-reported on their own. Skill: per
-task family, accuracy rescaled so that chance is 0 and every answer right is 100; averaged within each area, then
-combined with fixed area weights (knowledge 0.258, language 0.258, retrieval 0.200, tools 0.183, arts 0.100,
-renormalised over the areas a set has: the new-domain set has no arts tasks).
-
-v1.4.1 against v1.4.0 (paired bootstrap over requests within each task family, 2,000 draws, 95 % intervals):
-+0.09 [−0.50, +0.68] on the held-out set and +0.42 [−0.70, +1.49] on the new-domain set, both within noise; +17.90
-[+14.74, +21.01] on the six covered families; on JevBench's public items the same count, one item gained and one lost.
-v1.4.1 is stronger on retrieval in both sets (product-search relevance in the held-out set +2.0 [+0.5, +3.9]; lobbying
-relevance +6.9 [+2.1, +12.4] and legal definitions +4.8 [+1.6, +8.9] in the new-domain set) and weaker on language in
-the held-out set as a whole (−1.49 [−3.08, −0.14]); no task in either set is significantly worse. One-way reading of the
-same weights scores lower than two-way: −2.17 [−3.72, −0.70] on the held-out set against v1.4.0 two-way, +0.45
-[−1.74, +2.62] on the new-domain set.
-
-The Decision Index rows are our own runs of the public 0.3 kit (not a leaderboard result), read on the files
-published here as [the maintainers' section below](#for-benchmark-maintainers-decision-index) describes. Text: served
-with `max_state_tokens` raised to 1,000,000 (so no record was cut), `MAX_LEN` 131072 and `GPU_UTIL` 0.70, the kit's rows
-read in 16 round-robin shards on three L40S GPUs. Vision: the shipped `serve_config.json` at `MAX_LEN` 40960, on one
-L40S. The score is the kit's index (0-100), not percent correct. The calibration error is over every question of the
-text rows with a gold answer, the top option's probability in 15 equal-width bins; it is slightly higher than
-v1.4.0's with the same calibration constants. A screening against the training rows other than those this release adds
-(word 9-grams) found 1,444 of the 140,178 text rows sharing text with them; the text index without them is 63.09 (−0.07).
+On Composite it is the first of 46 open-weight Jev-class models and second of 55 Jev-class models, open or API; the one ahead
+of it is an API system (75.38). On Capability it is the second of 46 open-weight Jev-class models, behind H2O-Lightning-31B,
+and sixth of 55 Jev-class models, open or API. It is ahead of Drex Max (Nace AI, 44.65) and
+Jev 1.13.0 + images (TypeSafe, 26.43). Image temperature: see [Image calibration](#image-calibration).
 
 ## Run it
 
@@ -281,8 +273,8 @@ hf download h2oai/h2o-lightning-4b --local-dir h2o-lightning-4b
 
 (The default build needs a CUDA 13 driver, R580 or later; on an older driver, install the CUDA 12.9 build instead: `pip install "vllm==0.30.0+cu129"
 "torchcodec==0.16.0+cu129" "transformers==5.20.2" --extra-index-url https://wheels.vllm.ai/0.30.0/cu129 --extra-index-url
-https://download.pytorch.org/whl/cu129`.) `transformers==5.20.2` is the version v1.4.1's benchmark results were read
-with; without the pin pip takes the newest. That is stock vLLM: enough for one-way reading. **Two-way reading
+https://download.pytorch.org/whl/cu129`.) `transformers==5.20.2` is the tested version; without the pin pip
+takes the newest. That is stock vLLM: enough for one-way reading. **Two-way reading
 (recommended) needs our vLLM build** with per-request attention, [h2oai/vllm](https://github.com/h2oai/vllm) at commit
 `b05cc29ab813895947954c268c4ec41ca0da1306`: vLLM 0.30.0 plus 30 changed Python files under `vllm/` (no compiled
 code). Copy them over the vLLM installed above; `engine/vllm_per_request_attention.SHA256SUMS` lists each file with
@@ -301,14 +293,14 @@ change every environment linked to it. `serve.sh` checks the build before it sta
 with a message on a stock vLLM, or when a listed file does not match its sha256 (one-way, `TWO_WAY=0`, needs no
 build). The shim needs Python 3.8 or later and nothing else.
 
-That is `main`: the v1.4.1 weights, both reading modes, the Box question and image references.
+That is `main`: the weights, both reading modes, the Box question and image references.
 
 **Checking this card against the files.** `test_card.py` (with `card_common.py`, shipped here) runs what the card
 says and compares it with what the card says: `CARD_REV=<commit> python3 -m pytest test_card.py -m static` checks
 files, pins, tags, layout, links and the registered claims in seconds; `CARD_LIVE=1` adds the launch commands and
 example requests above on a GPU (the two-way launches need
 `CARD_ONE_ENGINE_VLLM`, a `vllm` command of the build above); `-m slow` with `CARD_BENCH231_DIR` recomputes
-the benchmark numbers above. Every release is gated on it.
+the benchmark numbers in [Measured](#measured). Every release is gated on it.
 
 **Recommended: two-way reading, one command** (one GPU; the vLLM build above):
 
@@ -334,8 +326,8 @@ which: [Two-way reading](#two-way-reading-recommended). The two steps behind the
 **1. Serve the model.** Keep `config.json` as shipped: its `"head_dtype": "float32"` makes vLLM compute the logits in
 fp32. `--tokenizer ./h2o-lightning-4b/tokenizer` keeps the tokenizer the model was trained with (`Qwen2Tokenizer`;
 without it, recent transformers versions load a tokenizer that splits some Devanagari and Arabic text differently, and
-the shim refuses to start). Inputs over the context limit get HTTP 422. The `--limit-mm-per-prompt` / `--mm-processor-kwargs` options set
-the image limits (up to 4 images per request, each scaled to at most 1,048,576 pixels inside vLLM, the cap the shim
+the shim refuses to start). Inputs longer than the context are shortened to fit (see [Long inputs](#long-inputs)); they never get an error. The `--limit-mm-per-prompt` / `--mm-processor-kwargs` options set
+the image limits (up to 4 images per request, each scaled to at most 1,638,400 pixels inside vLLM, the cap the shim
 sends with every request); `--mm-processor-cache-gb 0`, `--allowed-media-domains` and the one-way server's
 `--max-cudagraph-capture-size 2048` are explained under [Serving at scale](#serving-at-scale).
 
@@ -347,7 +339,7 @@ vllm serve ./h2o-lightning-4b --served-model-name h2oai/h2o-lightning-4b --host 
   --tokenizer ./h2o-lightning-4b/tokenizer \
   --max-model-len 40960 --gpu-memory-utilization 0.90 \
   --attention-backend TRITON_ATTN --max-num-batched-tokens 40960 \
-  --limit-mm-per-prompt '{"image": 4, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1048576}' \
+  --limit-mm-per-prompt '{"image": 4, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1638400}' \
   --mm-processor-cache-gb 0 --allowed-media-domains media.invalid
 ```
 
@@ -357,7 +349,7 @@ One-way (a stock generate-mode server):
 vllm serve ./h2o-lightning-4b --served-model-name h2oai/h2o-lightning-4b --host 127.0.0.1 --port 8000 \
   --tokenizer ./h2o-lightning-4b/tokenizer \
   --max-model-len 40960 --gpu-memory-utilization 0.90 \
-  --limit-mm-per-prompt '{"image": 4, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1048576}' \
+  --limit-mm-per-prompt '{"image": 4, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1638400}' \
   --mm-processor-cache-gb 0 --allowed-media-domains media.invalid --max-cudagraph-capture-size 2048
 ```
 
@@ -374,7 +366,7 @@ python3 h2o-lightning-4b/h2o_lightning_shim.py --config h2o-lightning-4b/serve_c
 ```
 
 Run the shim as shipped for evaluations and benchmarks (including JevBench): `serve_config.json` is the evaluated
-configuration. For production routing, see [Optional: routing mode](#optional-routing-mode).
+configuration. Yes/no answers carry their calibrated probability; see [Yes/no floor](#yesno-floor).
 
 Before answering, the shim checks that vLLM serves `h2oai/h2o-lightning-4b` and that every label is one token at the
 answer slot; a two-way deployment also checks the engine's flagged answers to three fixed probes against the
@@ -420,7 +412,7 @@ r = requests.post("http://127.0.0.1:8741/v1/systemone", json={
         "urgency": {"type": "score", "instructions": "How urgent is it?", "criteria": ["Low", "Medium", "High"]}}})
 answers = r.json()["answers"]
 print(answers["outage"]["noul"], answers["team"]["choice"], answers["urgency"]["score"])
-# 0.801 payments 1.90...  (team: payments 0.905, web 0.051, support 0.044; urgency: High 0.913)
+# 0.690... payments 1.90...  (team: payments 0.918, web 0.043, support 0.038; urgency: High 0.911)
 ```
 
 OpenAI's Decisions API (`POST /v1/decisions`) with OpenAI's Python client (`pip install "openai>=3.26"`), pointed at
@@ -445,23 +437,23 @@ decision = client.decisions.create(
 print(decision.model_dump_json(indent=1))
 ```
 
-Each answer comes back in OpenAI's shape (rounded): `{"type": "predicate", "name": "outage", "probability": 0.801}`,
-`{"type": "choice", "name": "team", "choice": "payments", "confidence": 0.843, "probabilities": [{"value": "payments",
-"probability": 0.896}, ...]}`, `{"type": "score", "name": "urgency", "score": 1.895, "confidence": 0.907,
-"probabilities": [{"label": "Low", "value": 0, "probability": 0.012}, ...]}`. The OpenAI route asks the model through the same
+Each answer comes back in OpenAI's shape (rounded): `{"type": "predicate", "name": "outage", "probability": 0.659}`,
+`{"type": "choice", "name": "team", "choice": "payments", "confidence": 0.861, "probabilities": [{"value": "payments",
+"probability": 0.907}, ...]}`, `{"type": "score", "name": "urgency", "score": 1.893, "confidence": 0.904,
+"probabilities": [{"label": "Low", "value": 0, "probability": 0.011}, ...]}`. The OpenAI route asks the model through the same
 decision as `/v1/systemone`, in the same option format: a choice's value is the option and its description the
 option's text, a score level is its label, and a predicate is a yes/no question with the default wording ("the
 statement holds" / "it does not"). Its numbers differ from the call above because the input is a sentence rather than
 the same record and the predicate has no yes/no descriptions.
-The outage probability is 0.801 on both routes because yes/no answers are reported at no
-less than 0.801 on their chosen side. A choice's `confidence` is the normalized maximum (0 for
+Yes/no answers are reported as read (see [Yes/no floor](#yesno-floor)). A choice's `confidence` is the normalized maximum (0 for
 a uniform answer, 1 for a certain one); a score's is the probability of its most likely level. An image goes in an
 `input` message as `{"type": "input_image", "image_url": "data:image/png;base64,..."}` next to
 `{"type": "input_text", "text": ...}`.
 
-**4. Benchmarks.** To run JevBench or the Decision Index the way our numbers were measured, follow
-[For benchmark maintainers: JevBench](#for-benchmark-maintainers-jevbench) or
-[For benchmark maintainers: Decision Index](#for-benchmark-maintainers-decision-index) below, literally.
+**4. Benchmarks.** To run JevBench, the Decision Index or ImageJevBench's Box track the way our numbers were measured,
+follow [For benchmark maintainers: JevBench](#for-benchmark-maintainers-jevbench),
+[For benchmark maintainers: Decision Index](#for-benchmark-maintainers-decision-index) or
+[For benchmark maintainers: ImageJevBench Box track](#for-benchmark-maintainers-imagejevbench-box-track) below, literally.
 
 **The API.** Send requests to `POST /v1/systemone`. One request can carry several questions about the same state:
 
@@ -489,8 +481,8 @@ The response (rounded here):
 ```
 
 `usage.input_tokens` counts the prompt head that the questions share once; `usage.output_tokens` is one label
-token read per answered question. A record over the state limit (`max_state_tokens`) is cut for reading, but
-`usage.input_tokens` still counts it whole; `usage.processed_input_tokens` is what vLLM read.
+token read per answered question. A record shortened to fit the context (see [Long inputs](#long-inputs)) is still counted whole in
+`usage.input_tokens`; `usage.processed_input_tokens` is what vLLM read.
 
 **Images.** Put each image in the request as a `data:image/...;base64,...` URI. It can go anywhere inside `state` (as a
 string, an object value or a list item), or in a top-level `images` list next to `state` and `questions`. The `images`
@@ -502,8 +494,8 @@ cannot fetch gets HTTP 422). Chat-style parts (`{"type": "image_url", "image_url
   top-level list are numbered first.
 - Up to 4 images per request and 20 MB per image.
 - Image links: `https` on port 443 (plain `http` needs `LIGHTNING_IMAGE_URL_ALLOW_HTTP=true`), an `image/*` answer with HTTP 200 after at most 3 redirects, 5 s and 20 MB per link (`LIGHTNING_IMAGE_FETCH_SECONDS`, `LIGHTNING_IMAGE_FETCH_MAX_BYTES`); `LIGHTNING_IMAGE_URLS=off` refuses links.
-- Each image is scaled to at most 1,048,576 pixels, and image answers use their own temperature, 0.65 (`serve_config.json`,
-  `"image"`); text answers use per-type temperatures (`serve_config.json`).
+- Each image is scaled to at most 1,638,400 pixels, and image answers use their own temperature, 1.0 (`serve_config.json`,
+  `"image"`; see [Image calibration](#image-calibration)); text answers use per-type temperatures (`serve_config.json`).
 - A request without an image takes exactly the text path above.
 
 This example uses `example_receipt.png` from this repository:
@@ -530,9 +522,9 @@ The response (rounded here):
 ```json
 {"model": "h2oai/h2o-lightning-4b",
  "answers": {
-   "items": {"type": "choice", "choice": "six", "confidence": 0.921, "probabilities": {"five": 0.045, "four": 0.009, "six": 0.941, "three": 0.006}},
-   "legible": {"type": "score", "legend": {"0": "Unreadable", "1": "Partly readable", "2": "Fully readable"}, "score": 1.951, "confidence": 0.962, "probabilities": {"0": 0.011, "1": 0.027, "2": 0.962}},
-   "matches": {"type": "noul", "noul": 0.964}},
+   "items": {"type": "choice", "choice": "six", "confidence": 0.730, "probabilities": {"five": 0.130, "four": 0.043, "six": 0.798, "three": 0.029}},
+   "legible": {"type": "score", "legend": {"0": "Unreadable", "1": "Partly readable", "2": "Fully readable"}, "score": 1.818, "confidence": 0.866, "probabilities": {"0": 0.048, "1": 0.086, "2": 0.866}},
+   "matches": {"type": "noul", "noul": 0.894}},
  "probability_source": "native", "effort_used": {"passes_per_decision": 1, "tier": "fast"},
  "usage": {"images": 1, "input_tokens": 585, "latency_ms": 141.0, "output_tokens": 3, "processed_input_tokens": 1489},
  "attention_mode": "bidirectional"}
@@ -541,7 +533,6 @@ The response (rounded here):
 `usage.input_tokens` includes the image tokens; `usage.images` counts the images read.
 
 **Status codes.** An input the shim cannot take gets HTTP 422, which the runner scores as one wrong answer. That covers:
-- over the context limit;
 - more than 255 options;
 - an unknown question type or a malformed question;
 - more than 4 images, or an image that is not valid base64 image data.
@@ -550,6 +541,39 @@ An empty request gets 400. vLLM's 401, 403 and 429 pass through. Any other vLLM 
 runner's three-consecutive-failures stop.
 
 **Tests** (no GPU): `python3 h2o-lightning-4b/test_shim.py` and `python3 h2o-lightning-4b/test_security.py`.
+
+### Long inputs
+
+A request whose prompt fits the server's context (`MAX_LEN`, 40,960 tokens by default) is read whole.
+When a question's prompt would not fit, the shim shortens the record for that question only. It uses BM25 to keep the
+parts of the record most relevant to the question and its options, with their headings, until the prompt fits. If no
+part of the record matches, it keeps the record's head and tail around a `...` line. The question and its options are
+never shortened in this step. Each question in a request is fitted separately, and image tokens are counted. In the
+rare case where a question does not fit even without its record, the shim answers it without the record and shortens
+its instructions, then the option descriptions, until it fits. The option names, their order and the answer keys stay
+as sent. A long input never gets an error. `effort_used.state_selection` reports what was shortened, and
+`usage.input_tokens` still counts the full input. To keep more of a long record, start the server with a larger
+`MAX_LEN`. `SHIM_SELECTOR=headtail` uses a head-and-tail cut at 32,000 record tokens instead, for comparison
+only. Under it, a question whose prompt would not fit with that cut gets the record cut further, to the room its own
+prompt leaves, so it also never gets an error.
+
+**Measured (our padded test, not a benchmark).** We padded 331 Decision Index and JevBench public items to 60,000
+tokens each, with the original record placed at the start, the middle or the end (993 requests), and read them on one
+GPU at the default 40,960-token context. Read unpadded, the same items score 61.3 % correct.
+
+| over-long record handling | correct | start | middle | end |
+|---|---|---|---|---|
+| BM25 selection (default) | **46.0 %** | 45.9 % | 38.7 % | 53.5 % |
+| head and tail, 32,000 tokens (`SHIM_SELECTOR=headtail`) | 41.9 % | 46.8 % | 27.5 % | 51.4 % |
+| head and tail at the context (39,000 tokens) | 40.9 % | 46.5 % | 26.4 % | 49.8 % |
+
+The last row was read without the per-question fit: 6 of its 993 requests were refused for length, and its
+percentages are over the 987 that were answered.
+
+BM25 selection is ahead mostly where the relevant text sits in the middle of the record. On the same requests it is
+right where the 32,000-token head-and-tail cut is wrong 60 times, and wrong where that cut is right 19 times (paired
+exact test, p = 4 × 10⁻⁶). It reads more of the record than the 32,000-token cut: a median of 38,495 tokens processed
+per request against 32,133.
 
 ### Tokenizer
 
@@ -566,11 +590,11 @@ Every result above was read with `Qwen2Tokenizer`, as `serve.sh` serves it.
 
 ### For benchmark maintainers: JevBench
 
-**For benchmark maintainers: run it this way for our measured score.** This is the configuration behind v1.4.1's 206 / 231 (`main`): two-way reading on one
+**For benchmark maintainers: run it this way for our measured score.** This is the configuration behind the 206 / 231 in [Measured](#measured): two-way reading on one
 engine, one read per question, the shipped calibration, with images and Box questions on as in normal serving (there
 is no setting to turn them off). Use it as written; there is nothing to choose.
 
-**GPU.** v1.4.1's 206 / 231 below was read with this harness on one NVIDIA L40S (48 GB).
+**GPU.** The 206 / 231 was read with this harness on one NVIDIA L40S (48 GB).
 
 **1. Install** vLLM 0.30.0 and our per-request attention build, and download the model, exactly as in
 [Run it](#run-it) (the pip block, then the 30-file block checked against
@@ -610,7 +634,7 @@ is prefilled whole); any request option that reads a question more than once.
 
 ### For benchmark maintainers: Decision Index
 
-**For benchmark maintainers: run it this way for our measured score.** This is the configuration behind our Decision Index 0.3 results above (text 63.16, vision 69.42): two-way reading
+**For benchmark maintainers: run it this way for our measured score.** This is the configuration behind our Decision Index 0.3 results in [Measured](#measured) (text 63.21, vision 69.87): two-way reading
 on one engine, one read per question, every record read whole, with images and Box questions on as in normal serving
 (there is no setting to turn them off). Use it as written.
 
@@ -638,6 +662,8 @@ MAX_LEN=131072 GPU_UTIL=0.70 bash h2o-lightning-4b/serve.sh
 mv h2o-lightning-4b/serve_config.json.shipped h2o-lightning-4b/serve_config.json
 GPU_UTIL=0.70 bash h2o-lightning-4b/serve.sh
 ```
+
+The `max_state_tokens` edit is optional: a record that fits `MAX_LEN` is never cut.
 
 **3. Run the kit** (edition 0.3, the official scorer; Python 3.11 or later), in its own environment, against the server:
 
@@ -690,11 +716,211 @@ kit/bin/decision-index vision score --dir WORK/vision --results runs/vision/resu
   Mind2Web was rebuilt with this font by the kit's own builder (the other ten sets come from an earlier build of the
   same kit), and the suite passed `vision verify` on all 11.
 
-**Expected result:** text index 63.16 (140,178 scored rows) and public vision index 69.42 (12,210 rows); run-to-run
+**Expected result:** text index 63.21 (140,178 scored rows) and public vision index 69.87 (12,210 rows); run-to-run
 differences of up to about 0.3 are normal.
 
 **Do not change:** the engine (no `TWO_WAY=0`); the temperatures and yes/no floor in `serve_config.json` (as shipped);
 `VLLM_PATCHES`; the batch budget; `--no-verify` for vision; the font for the vision suite (Arial Bold, as above).
+
+### For benchmark maintainers: ImageJevBench Box track
+
+Ask a Box question through the package, not a chat prompt. On a stock vLLM chat endpoint the weights answer a box but
+usually without a stated confidence: in this model the box's confidence is not a number it writes, it is computed by
+the shim from the box generation's own token probabilities and calibrated (the `confidence` field below). A chat
+harness that reads a self-stated `"confidence"` key will find it missing on most answers.
+
+Run it like this, one request at a time on one GPU:
+
+```bash
+hf download h2oai/h2o-lightning-4b --revision v1.4.2 --local-dir h2o-lightning-4b
+bash h2o-lightning-4b/serve.sh          # no flags; serves http://127.0.0.1:8741
+```
+
+One request per item, the image in the record and one `box` question that names it:
+
+```bash
+curl -s http://127.0.0.1:8741/v1/systemone -H 'Content-Type: application/json' -d '{
+  "state": {"photo": "data:image/jpeg;base64,<the image, unchanged>"},
+  "questions": {"where": {"type": "box", "instructions": "the leftmost dog in `photo`"}}}'
+```
+
+Read `answers.where.box` (`left`, `top`, `right`, `bottom`, fractions of the image from the top-left corner) and
+`answers.where.confidence` (the calibrated probability that the box overlaps the target with IoU >= 0.5). If
+`answers.where.found` is false, the box is the whole image and the confidence is 0. `present` is the probability that the named
+object is visible, a probability from 0 to 1; it is not the box's score. This is the same request our hosted service answers.
+
+Measured on our own out-of-distribution box set (RefCOCOg val, 600 referring expressions, no board images), through
+exactly this request on this package: mean IoU 79.8, Acc@0.5 85.7 %, confidence ECE 0.0695 against IoU >= 0.5
+(100 x (1 - ECE/0.5) = 86.1).
+
+### Decision Index profile (`PROFILE=di`)
+
+`PROFILE=di bash h2o-lightning-4b/serve.sh` serves the same weights with one extra step, for the Decision Index. It is
+off unless you set it; the default serving, JevBench and the examples on this card do not use it.
+
+**What it does.** A choice or score question whose top answer probability is under 0.8 is read a second time, in the
+same reading mode, with the request written twice in the prompt (the second copy follows the line "Read the same input
+again before answering:"). Its answer is 2/3 of the first reading's probabilities plus 1/3 of the second's. Yes/no
+questions are read once (their served probability is never under 0.8). Image requests are read once. A second reading
+that would not fit the context window (for example a record that was already shortened to fit) is skipped, and the
+first answer stands; a request never fails because of the profile. With the profile on, each response carries
+`effort_used.reread`, an object with `below` (0.8), `first_weight` (0.6667) and `questions` (how many of the request's
+questions were read again).
+
+**Measured** on one NVIDIA RTX PRO 6000 (96 GB) per arm, the same build and weights, the profile against the default
+serving at the profile's yes/no floor (0.801; the shipped default has it off):
+
+| | `PROFILE=di` | default |
+|---|---|---|
+| Decision Index 0.3 public text index (the kit's own scorer; the whole text run, 140,620 rows) | **63.64** | 63.19 |
+| calibration error, all 140,620 text rows (274,729 questions with a gold answer; lower is better) | **0.0686** | 0.0706 |
+| input tokens per request, mean, all 140,620 text rows | 1,819 | **956** |
+| questions read a second time, all 140,620 text rows | 21.9 % (70,814 of 323,259) | — |
+| latency, one request at a time, a 500-row sample of the text rows: median / mean / 80th / 95th percentile (nearest rank), ms | 44 / 121 / 142 / 453 | **25 / 80 / 122 / 349** |
+| input tokens per request, mean, the same 500-row sample (333 of its 2,270 questions read a second time) | 2,360 | **1,296** |
+
+The default column reproduces the L40S text run at the same floor (63.16 and 0.0705) within 0.03 and 0.0001. Paired over the same rows, the text index gain is +0.45 [+0.29, +0.63] (the kit's scorer; bootstrap over
+request groups within each benchmark, 200 draws, 95 % interval), and every area's point estimate is up (arts +0.32
+[−0.10, +0.78]). Benchmark by benchmark, the profile is lower on MuSR (−1.2 points; within run-to-run noise, paired
+exact test p = 0.11), ACOS (−1.1) and, outside the index, schema-guided dialogue (SGD, −2.1), the last two beyond
+noise (p < 10⁻⁶); every other benchmark is within 0.2 points of the default or higher, the largest gains on CRUXEval
+(+1.8), GPQA Diamond (+1.5), NLI4CT (+1.2) and HoVer (+1.0). Latency stays far under the Decision Index's 1,000 ms
+single-request rule; the cost is 1.9× the input tokens over the whole text run (1.8× on the 500-row sample, which is
+every 249th row of the suite's selected rows, both arms reading the same rows on one engine).
+
+**Held-out new-domain proxy (ours, not the Decision Index).** On a second held-out new-domain set of ours (7,107
+questions in 12 task families: ten LegalBench tasks, medical abstracts and TREC-COVID retrieval; not the
+3,724-question, 13-family set in Measured), re-reading below 0.8 with this 2:1 weighting scored +1.18 [+0.55, +1.82]
+on the skill composite (paired bootstrap, 95 % interval), and +1.31 [+0.53, +2.14] with the plain mean of the two
+readings. The gain is concentrated in the LegalBench tasks: medical abstracts +0.4 [−0.5, +1.2] and TREC-COVID −0.4
+[−1.3, +0.6], neither significant. The 2:1 weighting was selected on held-out Decision Index slices after the
+plain-mean rule passed. The Decision Index numbers in [Measured](#measured) are the package as shipped.
+
+**How to run it for the Decision Index text half:** exactly the recipe above, with `PROFILE=di` added to the text
+server's command: `MAX_LEN=131072 GPU_UTIL=0.70 PROFILE=di bash h2o-lightning-4b/serve.sh`. The vision half is
+unchanged (images are read once), so serve it without the profile.
+
+## See it in action
+
+Three demos recorded with an earlier version of the model: an operations inbox deciding claims against a written
+policy, a web agent choosing vendors in real browsers, and DOOM played to the exit. Companies, people and amounts are
+fictional.
+
+<video src="https://huggingface.co/h2oai/h2o-lightning-4b/resolve/main/assets/demos/demos_reel.mp4" poster="https://huggingface.co/h2oai/h2o-lightning-4b/resolve/main/assets/demos/demos_reel_poster.jpg" controls autoplay muted loop playsinline width="100%"></video>
+
+[![H2O-Lightning-4B: full-length demo runs on YouTube](https://img.youtube.com/vi/2Qp04Wu0A14/maxresdefault.jpg)](https://youtu.be/2Qp04Wu0A14)
+
+## Measured
+
+**This card describes v1.4.2** (`main`; pin `--revision v1.4.2`). Each image is scaled to at most 1,638,400 pixels (see
+[Image calibration](#image-calibration)); the Decision Index profile is opt-in (see
+[Decision Index profile](#decision-index-profile-profiledi)); under the non-default `SHIM_SELECTOR=headtail` the record
+is fitted to the context per question (see [Long inputs](#long-inputs)); and a request's `kwargs.attention_mode` sets its
+attention mode (see [One engine, both modes](#one-engine-both-modes)). How each number was read is under Results.
+
+The weights are a fine-tune of Qwen3.5-4B (see
+[What it was trained on](#what-it-was-trained-on)), for both attention patterns (see
+[Two-way reading](#two-way-reading-recommended)), served two-way on one engine of our vLLM build, with Box questions
+always on. Text answers use the per-type temperatures in `serve_config.json`; image answers use their own temperature,
+1.0 (see [Image calibration](#image-calibration)). The vLLM build includes a fix for a crash in the Gated DeltaNet
+prefill graphs with 16 or fewer sequences in flight, and `serve.sh` stops with the shim's reason when vLLM's tokenizer is
+not the one the model was trained with (see [Tokenizer](#tokenizer)). Over-long records are BM25-selected to fit and a
+request never fails for length; inputs that fit are read whole (0 Decision Index 0.3 public text rows and 0 JevBench
+public items exceed the limit; see [Long inputs](#long-inputs)). Older versions: see the repo's tags.
+
+**Results**, against the previous release (v1.4.0), with vLLM 0.30.0 on NVIDIA L40S (48 GB) GPUs, each release through
+its own `serve.sh` with no flags (two-way, one engine of the vLLM build) unless a row says otherwise, every question
+answered. v1.4.2's default was read on 2026-10-26 on v1.4.1's serving (the same answers for text), the Decision Index text
+rows on 2026-10-28 with the yes/no floor off as shipped, the vision index on 2026-10-28 at v1.4.2's image cap; v1.4.0 on
+2026-10-24.
+
+| | **v1.4.2 default** | v1.4.0 |
+|---|---|---|
+| JevBench's 231 public items, JevBench's own CLI: correct | **206 / 231 (89.2 %)** · 48/48 · 72/72 · 86/111 | 206 / 231 |
+| held-out decisions on the Decision Index's skills (2,351 questions, 15 task families): skill (difference not significant) | 81.54 | 81.45 |
+| the new-domain set (3,724 questions, 13 task families): skill (difference not significant) | 59.86 | 59.44 |
+| six task families that the added training data covers (2,891 questions): skill | **67.99** | 50.08 |
+| Decision Index 0.3 public suite, the kit's own scorer: text index (140,178 rows) / vision index (12,210 rows) | **63.21 / 69.87** | 62.38 / 69.03 |
+| calibration error on the Decision Index text rows (274,729 questions; lower is better) | 0.0701 | **0.0640** |
+| one-way reading (`TWO_WAY=0`): JevBench 231 correct · Decision Index text / vision index · calibration error | 202 / 231 · 60.86 / 67.56 · 0.0801 | not measured |
+| mean input tokens per decision on JevBench's 231 items | 654 | 654 |
+
+The held-out set on the Decision Index's skills is dev slices of the public training data behind the Decision Index's
+tasks, plus our own authored dev set. These tasks' training splits are in our mix, so every question was removed that
+is an exact twin of a training row, shares a word 9-gram with one, or shares at least 80 % of its word 13-grams with
+one (at least 50 % against the rows added in this release): of 4,789 questions, 1,233 were removed against the earlier
+training data and 1,205 more against the added rows, leaving 2,351 in 15 task families. A stricter cut (at least 50 %
+of 13-grams shared throughout) leaves 2,067 questions; there v1.4.1 is +0.02 [−0.68, +0.69] against v1.4.0. Most of the
+9-grams behind the second removal are instruction and option wording that the added rows share with whole dev tasks;
+counting only matches of each question itself (9-grams that occur in five or more dev questions set aside) keeps 3,130
+questions, where v1.4.1 is −0.78 [−1.74, +0.26] against v1.4.0, and lower on schema-guided dialogue (−12.3
+[−19.9, −6.1] on that task), a task whose dev questions the main cut removes.
+
+The new-domain set is 13 task families whose datasets do not occur in the training data, checked against every
+training row by word 13-gram overlap. The six families in the row below it (argument quality, choosing a function to
+call, table fact checks with one and with several claims, multi-intent detection, vulnerability severity) come from
+datasets the earlier training data did not include; this release's added training data covers them, so they are
+reported on their own. Skill: per
+task family, accuracy rescaled so that chance is 0 and every answer right is 100; averaged within each area, then
+combined with fixed area weights (knowledge 0.258, language 0.258, retrieval 0.200, tools 0.183, arts 0.100,
+renormalised over the areas a set has: the new-domain set has no arts tasks).
+
+v1.4.1 against v1.4.0 (paired bootstrap over requests within each task family, 2,000 draws, 95 % intervals):
++0.09 [−0.50, +0.68] on the held-out set and +0.42 [−0.70, +1.49] on the new-domain set, both within noise; +17.90
+[+14.74, +21.01] on the six covered families; on JevBench's public items the same count, one item gained and one lost.
+v1.4.1 is stronger on retrieval in both sets (product-search relevance in the held-out set +2.0 [+0.5, +3.9]; lobbying
+relevance +6.9 [+2.1, +12.4] and legal definitions +4.8 [+1.6, +8.9] in the new-domain set) and weaker on language in
+the held-out set as a whole (−1.49 [−3.08, −0.14]); no task in either set is significantly worse. One-way reading of the
+same weights scores lower than two-way: −2.17 [−3.72, −0.70] on the held-out set against v1.4.0 two-way, +0.45
+[−1.74, +2.62] on the new-domain set.
+
+The Decision Index rows are our own runs of the public 0.3 kit (not a leaderboard result), read on the files
+published here as [the maintainers' section above](#for-benchmark-maintainers-decision-index) describes. Text: the shipped
+`serve_config.json` (yes/no floor off) with `max_state_tokens` raised to 1,000,000 (so no record was cut) and `MAX_LEN`
+131072, the kit's rows read in 16 round-robin shards, one L40S per reading mode; the kit scores 140,178 of the 140,620
+answered rows. Vision: the shipped package (`serve.sh`, no flags; image cap 1,638,400
+pixels) at `MAX_LEN` 40960, on one NVIDIA RTX PRO 6000. The score is the kit's index (0-100), not percent correct. The calibration error is over every question of the
+text rows with a gold answer, the top option's probability in 15 equal-width bins; v1.4.0's value was read with the
+yes/no floor of 0.801. A screening against the training rows other than those this release adds (word 9-grams) found
+1,444 of the 140,178 text rows sharing text with them; on the text run at the floor of 0.801 (text index 63.16) the index
+without them was 63.09 (−0.07).
+
+Per-row results and the Decision Index toolkit's score files are public for v1.4.1's text run (63.16, yes/no floor 0.801)
+and vision run at v1.4.1's image cap (69.42), and for v1.4.2's text run with the Decision Index profile (63.64) and
+vision run at the 1,638,400-pixel cap (69.87):
+[h2oai/h2o-lightning-4b-decision-index](https://huggingface.co/datasets/h2oai/h2o-lightning-4b-decision-index).
+
+### Image calibration
+
+Image answers use their own temperature, 1.0, fitted out of distribution (`serve_config.json`, `"image"`
+and `two_way.image_temperature`; text answers keep their per-type temperatures). A temperature
+rescales the option scores, so every image answer keeps its choice; only the probabilities move. At 0.65 the top
+option's probability ran ahead of how often it was right on unfamiliar images. Calibration error of the top option
+(10 equal-width bins; lower is better), 0.65 → 1.0, the same answers re-scored:
+
+| image questions | questions | correct | 0.65 | 1.0 |
+|---|---|---|---|---|
+| Decision Index 0.3 public vision rows (the run above, at the 1,638,400-pixel cap) | 12,210 | 76.2 % | 0.112 | **0.059** |
+| MMStar, four-option questions | 1,493 | 68.3 % | 0.175 | **0.081** |
+| image questions of the kinds it was trained on | 3,961 | 91.6 % | **0.018** | 0.078 |
+
+On images like those it was trained on, where it is right more than 90 % of the time, 1.0 leaves the probabilities
+somewhat below the accuracy; on the rest they track it. The temperature cannot move the Decision Index vision index,
+which counts answers only; the larger image cap below does. The MMStar and trained-kinds rows were read with images scaled to at most 1,048,576 pixels.
+
+**Image cap.** Each image is scaled to at most 1,638,400 pixels, so an image costs up to about 1,600 prompt tokens (about
+1,000 at a cap of 1,048,576 pixels); 5,742 of the 12,210 Decision Index vision rows have a larger image than 1,048,576
+pixels. The Decision Index 0.3 public vision index is
+69.87 at this cap against 69.42 at 1,048,576 pixels; in two paired runs of the same weights at the two caps the difference
+was +0.67 [+0.08, +1.34] and +0.62 [+0.04, +1.31] (95 % intervals), with no benchmark of the suite worse beyond noise, and
+image requests used about 25 % more input tokens. On MMStar (1,493 four-option questions, two-way) accuracy is 68.65 % at
+both caps and the calibration error 0.0788 at this cap and 0.0769 at 1,048,576 pixels (+0.002 [−0.004, +0.008]). Only 41 MMStar
+images are larger than 1,048,576 pixels; on those, five answers changed over the two reading modes (two two-way, three
+one-way), all five from right to wrong.
+
+ImageJevBench v0.3.0 ran v1.4.1's 2026-10-28 files (these weights at image temperature 1.0, with v1.4.1's image cap of
+1,048,576 pixels) on 2026-10-28 ([results](https://benchmarkheaven.com/api/decision-results/imagejevbench/v0.3.0/json)): capability 71.84, intelligence 55.48, calibration 88.19, composite
+68.51. This release is not yet on the board.
 
 ## Two-way reading (recommended)
 
@@ -729,7 +955,8 @@ reusable; unflagged requests keep the cache), and allows one output token (`max_
 requests are untouched: the engine is stock vLLM for them. The build runs the Triton attention backend
 (`--attention-backend TRITON_ATTN`; the FlashAttention backend needs FA4 for a per-sequence causal flag); `serve.sh`
 sets it. The two-way calibration (`serve_config.json` `two_way.temperature`, `two_way.noul_floor`,
-`two_way.image_temperature`) ships with the one-way values, the ones every number above was measured with.
+`two_way.image_temperature`) ships with the one-way values, the ones every number above was measured with (the image
+temperature is 1.0 in both modes; one-way and two-way reads of the same images fit the same value).
 
 **Launching each mode.**
 
@@ -740,7 +967,9 @@ TWO_WAY=0 bash h2o-lightning-4b/serve.sh                    # one-way only: one 
 
 Every response states the mode it was read in (`"attention_mode"`). On the one-way fallback (`TWO_WAY=0`) a request
 asking for `"attention_mode": "bidirectional"` gets HTTP 400 (there is no two-way engine), never a silent one-way
-answer. The `/v1/decisions` route takes the same `attention_mode` field. By hand: step 1's two-way command under
+answer. The mode can also be given as `"kwargs": {"attention_mode": ...}` (the form the hosted service takes); a
+request that gives both with different values gets HTTP 400. The `/v1/decisions` route takes the same `attention_mode`
+field. By hand: step 1's two-way command under
 [Run it](#run-it) and the shim with `SHIM_TWO_WAY_FLAG=1` (step 2).
 
 ```bash
@@ -770,7 +999,7 @@ every asset referenced at least once, no URL fetching; a malformed asset map is 
 A `box` question, ``{"type": "box", "instructions": "the coffee mug in `photo`"}``, answers with a bounding box
 `{"left", "top", "right", "bottom"}` in fractions of the image, `confidence` (calibrated from the box generation's own token
 probabilities), `present` (whether the named object is visible) and `found` (whether a box was
-located; if not, the box is the whole image with confidence 0). `present` answers whether the named object is visible; it is not a score of the box. `confidence` is the score of the box. Box questions are on by default, in normal serving and in both benchmark runbooks above (there is no on/off setting since v1.4.0): the box comes from one guided (JSON-schema)
+located; if not, the box is the whole image with confidence 0). `present` answers whether the named object is visible; it is not a score of the box. `confidence` is the score of the box. Box questions are on by default, in normal serving and in both benchmark runbooks above (there is no on/off setting): the box comes from one guided (JSON-schema)
 generation, so the engine needs structured outputs (vLLM has them on by default); an engine without them refuses a
 request with a box question with HTTP 422, and requests without one are unaffected. `box.mode` chooses how the box is found: `"generate"` (the default: one constrained generation of the box),
 `"edges"` (each edge read as a distribution over positions, the coordinate its expected value) or `"hybrid"` (both,
@@ -815,7 +1044,7 @@ turns the graphs off.
 
 **Step graphs.** vLLM replays CUDA graphs for whole steps up to `--max-cudagraph-capture-size` tokens (512 by
 default); `serve.sh` sets it from `CUDA_GRAPH_MAX_TOKENS`: 512 when two-way is the default reading, 2048 with
-`TWO_WAY=0`, the setting our hosted one-way engines have run since 2026-10-13. Measured on one L40S with 800-1,200-token
+`TWO_WAY=0`, the setting our hosted one-way engines use. Measured on one L40S with 800-1,200-token
 prompts, 2048 instead of 512 on the one-way server: one request at a time 71.1 -> 69.3 ms, and 14.8 / 54.8 / 65.8 ->
 15.1 / 53.2 / 66.4 requests/s at 1 / 8 / 32 in flight, within run-to-run noise; at 100-300-token prompts and 8 in
 flight, 73.2 -> 57.7 requests/s (one run). On the two-way default 2048 reads no faster (59.7 -> 59.8 ms for one
@@ -863,7 +1092,7 @@ before; only our build runs the one-step read. Both return each prompt's token i
 against plain stock vLLM 0.30.0 (`TWO_WAY=0`): JevBench's 231 items, 202 correct one-way, with no failed request.
 
 **Images.** `MAX_IMAGES` above 4 costs no KV cache (vLLM reserves the same encoder budget for 4, 8 or 16 images per
-prompt, measured), only prompt tokens: about 1,000 per image at the 1,048,576-pixel cap the shim sends. `serve.sh` passes the same count to the
+prompt, measured), only prompt tokens: up to about 1,600 per image at the 1,638,400-pixel cap the shim sends. `serve.sh` passes the same count to the
 shim (`SHIM_MAX_IMAGES`, at most 16), which refuses a request with more images.
 
 These notes are for the one-way (generate-mode) engine on stock vLLM; the one-engine two-way default reads each
@@ -881,7 +1110,7 @@ the GPU in each linear-attention layer in every step that starts new sequences.
 (scheduling only), and `vllm030_gdn_initial_state_no_sync.patch` zeroes those states with `torch.where` (no GPU sync,
 identical values). Patch A changes only which requests share a step, so under load results can differ by ordinary
 BF16 batching noise, as they do on stock vLLM. Our vLLM build (`serve.sh`'s default engine) has both built in, so the
-one engine needs no patches: patch B since the build's prefill-graph work and patch A since commit `c45f47de63`.
+one engine needs no patches.
 The patch files are for stock vLLM: `VLLM_PATCHES=1 bash h2o-lightning-4b/serve.sh` applies them to a stock vLLM 0.30.0 in the active
 environment before starting it; it edits that install, so use a dedicated virtual environment. `serve.sh` refuses
 `VLLM_PATCHES=1` on the one engine (the build's sha256 check would refuse every later start); use it with `TWO_WAY=0`.
@@ -910,28 +1139,27 @@ fewer decisions per second), vLLM 0.31.0 (still one decision per step without th
 service runs a second engine on the same GPU for records above 16K tokens, so long records do not hold up the short
 decisions.
 
-## Optional: routing mode
+## Yes/no floor
 
-**Not for benchmark or leaderboard runs.** Those use the shipped `serve_config.json` unchanged.
+As shipped, each yes/no answer carries its calibrated probability (`"noul_floor": 0` in `serve_config.json`, both
+modes): an uncertain yes/no answer reads near 0.5, so a deployment that escalates uncertain answers to a larger model or
+a person can flag it directly. The Decision Index profile (`PROFILE=di`) keeps the floor of 0.801 it was measured
+with: there each yes/no answer is reported at no less than 0.801 on its chosen side. Out of distribution, on the
+Decision Index 0.3 public text rows, the floor of 0.801 raised the yes/no calibration error (0.0413 two-way, 0.0485
+one-way, against 0.0165 and 0.0197 with no floor), so it is off by default.
 
-As shipped, the shim reports each yes/no answer at no less than 0.801 on its chosen side (`"noul_floor": 0.801` in
-`serve_config.json`). That is the evaluated configuration, and it is why no shipped yes/no answer falls between 0.2 and
-0.8. If you put the model in front of a fallback, and escalate uncertain answers to a larger model or a person, you
-usually want the raw yes/no probability instead, so uncertain yes/no answers can be flagged. In that deployment only,
-start the shim with the floor off:
+To set a floor yourself (a value in (0.5, 1); 0 turns it off), for both modes:
 
 ```bash
-SHIM_NOUL_FLOOR=0 python3 h2o-lightning-4b/h2o_lightning_shim.py --config h2o-lightning-4b/serve_config.json --vllm http://127.0.0.1:8000 --port 8741
+SHIM_NOUL_FLOOR=0.801 bash h2o-lightning-4b/serve.sh
 ```
 
-The same `SHIM_NOUL_FLOOR` / `SHIM_TEMPERATURE` overrides apply to the two-way default
-(`SHIM_NOUL_FLOOR=0 bash h2o-lightning-4b/serve.sh`): they set both modes' values.
-
-The floor never changes which answer is chosen, and choice and score answers are unaffected.
+The floor never changes the yes/no choice; threshold decisions use the calibrated probability (with a floor set, the
+floored one). Choice and score answers are unaffected.
 
 ## What it was trained on
 
-The v1.4.1 weights are a fine-tune of Qwen3.5-4B in three stages: a text foundation (126,232 examples), a text
+The weights are a fine-tune of Qwen3.5-4B in three stages: a text foundation (126,232 examples), a text
 stage with some replay of the first (51,220), and a final stage that adds images, continued twice with amended mixes
 (360,217 examples before the first amendment, 992,789 between the two, 692,693 after the second). In all, 2,223,151
 training examples were read, 29,023 of them replays of earlier stages. Every example is a record (a document, ticket,
@@ -972,6 +1200,11 @@ under everyday language and images.
   image URL a request supplies).
 - Price basis for an evaluator: Qwen3.5-4B at bf16, one output token per decision; 654 mean input tokens on the
   public text set. Image tokens are counted in `usage.input_tokens`.
+
+## Credits
+
+The shim's handling of a client that hangs up before its answer arrives was contributed by mjvk in
+[PR #5](https://huggingface.co/h2oai/h2o-lightning-4b/discussions/5).
 
 ## License
 
@@ -2515,7 +2748,8 @@ FILE: generation_config.json
 FILE: h2o_lightning_shim.py
 ================================================
 #!/usr/bin/env python3
-"""H2O-Lightning-4B shim: typed decisions over a stock vLLM server, one output token per decision. Stdlib only.
+"""H2O-Lightning-4B shim: typed decisions over a stock vLLM server, one output token per decision. Stdlib only
+(selector_v2.py, shipped beside it, is too).
 
 WHAT IT DOES
     POST /v1/systemone  (the decision wire format; /api/alpha/decisions is an alias)
@@ -2568,9 +2802,19 @@ TWO-WAY READING (the recommended default; serve.sh TWO_WAY=1)
     hidden state with label_rows.lightning and pooled_readout.py) is still accepted by the shim for a manual start but
     is no longer supported by serve.sh or the model card.
 
+LONG RECORDS (selector v2, the default). A question whose prompt fits vLLM's context (--max-model-len) is read whole,
+exactly as before. One that does not has its record cut to the room its own prompt leaves (the context less the
+question, the options, the template, the images' tokens and SHIM_CONTEXT_SLACK, 16) by BM25 selection (selector_v2.py,
+the 31B's: the parts most relevant to the question and its options, with their headings); where no part matches, its
+head and tail around a "\n...\n" line. Each question of a request is fitted on its own. A question too long for the
+context even without its record is answered without it, its instructions, then its option descriptions, then its
+option names (in the prompt only) cut to fit. effort_used.state_selection says what was done; usage.input_tokens
+stays the full input. An over-context request never fails. SHIM_MAX_STATE_TOKENS caps the record lower than the
+context allows; SHIM_SELECTOR=headtail (prompt.selector) restores v1.4.1's cut (the record over prompt.max_state_tokens,
+32,000, to its head and tail), for comparison only.
+
 STATUS CODES (an evaluation runner stops after three consecutive failures unless a failure is a 422): a request this
-system cannot answer -- too many options, a malformed question, a prompt over vLLM's context -- is a 422, scored as
-one wrong answer; an empty request is a 400; an unreachable or failing vLLM is a 502, and a vLLM that does not serve
+system cannot answer -- too many options, a malformed question -- is a 422, scored as one wrong answer; an empty request is a 400; an unreachable or failing vLLM is a 502, and a vLLM that does not serve
 the configured model is a 503, so a broken backend stops a run; vLLM's own 401/403/429 pass through.
 """
 from __future__ import annotations
@@ -2599,6 +2843,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SHIM_VERSION = "h2o-lightning-shim"
 PRIMITIVES = ("choice", "noul", "score")
+# THE DI PROFILE'S CONDITIONAL RE-READ (off unless SHIM_REREAD_BELOW is set; serve.sh PROFILE=di sets 0.8). A text
+# question whose served top probability is under the threshold (a yes/no answer's max(P, 1 - P) after the floor; PROFILE=di
+# pins the floor at 0.801, so there yes/no questions are read once; with the floor off they would be eligible) is read once more in the same attention mode with the user turn written
+# twice, the second copy after REREAD_SEP, and is answered with the 2:1 first-weighted mean of the two reads'
+# probability vectors (REREAD_FIRST_WEIGHT; chosen on held-out data after the plain-mean rule passed). The re-read is
+# skipped (the first answer stands) when the question's own text was cut to fit, the doubled prompt would not fit the
+# engine's context, or the engine refuses it: a request never fails because of the re-read. Images are read once.
+REREAD_SEP = "\n\nRead the same input again before answering:\n"
+REREAD_FIRST_WEIGHT = 2.0 / 3.0
 EFFORT_TIERS = ("fast", "balanced", "thorough")
 # vLLM 0.30 accepts at most 128 `logprob_token_ids` per request; a question with more options is read in chunks
 LOGPROB_CHUNK = int(os.environ.get("SHIM_LOGPROB_CHUNK", "128"))
@@ -2624,6 +2877,13 @@ CHATML = {"system": "<|im_start|>system\n{content}<|im_end|>\n",
           "generation": "<|im_start|>assistant\n<think>\n\n</think>\n\n"}
 # what the template writes for one image part, before vLLM expands the pad into the image's tokens
 VISION_SLOT = "<|vision_start|><|image_pad|><|vision_end|>"
+# OVER-CONTEXT (BM25 down to fit, the question and options whole, never a 422, never under the model's own
+# limit): SELECTORS v2 = selector_v2's BM25 over the record when a question's prompt would not fit vLLM's context (the
+# default); headtail = v1.4.1's training cut at prompt.max_state_tokens, for comparison only
+SELECTORS = ("v2", "headtail")
+CONTEXT_SLACK = int(os.environ.get("SHIM_CONTEXT_SLACK", "16"))   # context tokens kept free: the answer token, seams
+MIN_STATE_BUDGET = 64              # under this many tokens of room the record is left out of the prompt
+PIXELS_PER_IMAGE_TOKEN = 32 * 32   # Qwen3.5's vision tower: 16-px patches merged 2x2 into one token
 MAX_IMAGE_BYTES = int(os.environ.get("SHIM_MAX_IMAGE_BYTES", str(20 * 1024 * 1024)))
 # A kept-alive connection to vLLM is reused only while the server still holds it open: vLLM (uvicorn) closes idle
 # connections after 5 s, and a reused socket the server has closed can stall a large send (an image body) until the
@@ -3263,6 +3523,13 @@ def format_answer(typ, names, descs, logprobs, temperature, noul_floor, threshol
     }
 
 
+
+def served_top(answer):
+    """An answer's top probability as served: a yes/no answer's max(P, 1 - P) (after the floor), else its top option."""
+    if answer["type"] == "noul":
+        return max(answer["noul"], 1.0 - answer["noul"])
+    return max(answer["probabilities"].values())
+
 MODES = ("causal", "bidirectional")
 MODE_ALIASES = {"causal": "causal", "one-way": "causal", "one_way": "causal", "oneway": "causal",
                 "bidirectional": "bidirectional", "two-way": "bidirectional", "two_way": "bidirectional",
@@ -3424,7 +3691,14 @@ class Contract:
         self.layout = p.get("layout", "plain")
         self.state_compact = bool(p.get("state_compact", True))
         self.prefill = p.get("prefill", "Answer:")
-        self.max_state_tokens = int(p.get("max_state_tokens", 32000))
+        # SHIM_SELECTOR / prompt.selector: v2 (default) or headtail; SHIM_MAX_STATE_TOKENS: under v2 a cap on the record
+        # below what the context allows (unset: the context is the limit), under headtail the cut (prompt.max_state_tokens)
+        self.selector = (env.get("SHIM_SELECTOR", "").strip().lower() or str(p.get("selector") or "v2").strip().lower())
+        if self.selector not in SELECTORS:
+            raise ValueError(f"selector {self.selector!r}: one of {list(SELECTORS)}")
+        ms = env.get("SHIM_MAX_STATE_TOKENS", "").strip()
+        self.state_cap = int(ms) if ms else None
+        self.max_state_tokens = int(ms) if ms else int(p.get("max_state_tokens", 32000))
         self.default_instructions = p.get("default_instructions", "Answer the question below.")
         if not isinstance(cfg.get("labels"), list):
             raise ValueError("serve_config.json: `labels` must be the list of option labels, in order")
@@ -3449,6 +3723,10 @@ class Contract:
         self.temperature_source = "SHIM_TEMPERATURE" if t_env else "serve_config.json"
         self.noul_floor = float(f_env) if f_env else float(cfg["noul_floor"])
         self.noul_floor_source = "SHIM_NOUL_FLOOR" if f_env else "serve_config.json"
+        rb = env.get("SHIM_REREAD_BELOW", "").strip()
+        self.reread_below = float(rb) if rb else None
+        if self.reread_below is not None and not 0.0 < self.reread_below <= 1.0:
+            raise ValueError(f"SHIM_REREAD_BELOW={rb!r}: a probability in (0, 1], or unset (read once)")
         if not all(0.05 <= t <= 20.0 for t in self.temperature_by_type.values()):
             raise ValueError(f"temperature {self.temperature_by_type} is outside [0.05, 20]")
         if self.noul_floor and not 0.5 < self.noul_floor < 1.0:
@@ -3513,18 +3791,20 @@ class Contract:
         tw = cfg.get("two_way")
         self.two_way = TwoWay(tw, self, cfg.get("_config_dir"), env) if isinstance(tw, dict) else None
 
-    def question_parts(self, state_text, q, qid="q"):
-        """(user text, option names, descriptions, labels) for one question."""
+    def question_parts(self, state_text, q, qid="q", twice=False):
+        """(user text, option names, descriptions, labels) for one question; `twice`: the user turn written again after
+        REREAD_SEP (the DI profile's re-read)."""
         names, descs = options_of(q, len(self.labels))
         if len(names) > len(self.labels):
             raise Unprocessable(f"question {qid}: {len(names)} options exceeds {len(self.labels)}")
         labels = self.labels[:len(names)]
         instr = render_instr(q.get("instructions", "")).lstrip() or self.default_instructions
-        return user_turn(state_text, instr, names, descs, labels, self.layout), names, descs, labels
+        user = user_turn(state_text, instr, names, descs, labels, self.layout)
+        return (user + REREAD_SEP + user if twice else user), names, descs, labels
 
-    def question_prompt(self, state_text, q, qid="q"):
+    def question_prompt(self, state_text, q, qid="q", twice=False):
         """(prompt text, option names, descriptions, labels) for one question."""
-        user, names, descs, labels = self.question_parts(state_text, q, qid)
+        user, names, descs, labels = self.question_parts(state_text, q, qid, twice)
         return render_chat(self.system, user, self.prefill, self.chat), names, descs, labels
 
     def image_prompt(self, state_text, q, image_urls, qid="q"):
@@ -3539,11 +3819,11 @@ QUICKACK = getattr(socket, "TCP_QUICKACK", None)   # Linux; reset by the kernel,
 
 
 # ------------------------------------------------------------------------------------------------- assets and Box
-# The `assets` image-reference format (assets.py), the `box` question type (box.py) and the two-way readout
-# (pooled_readout.py) are shipped beside this file (else the installed package's own are used). All are standard
+# The `assets` image-reference format (assets.py), the `box` question type (box.py), the two-way readout
+# (pooled_readout.py) and the over-context state selection (selector_v2.py, the 31B's) are shipped beside this file (else the installed package's own are used). All are standard
 # library only (box.py draws the box with Pillow, which vLLM installs; without it the shim refuses to start with images on).
 # the shipped sha256 of the modules _sibling runs (a file with other bytes is refused)
-SIBLING_SHA256 = {'box.py': 'e26ad9d8ea1ac501730d2d770c2aeebda642962bdb1d591c86f0cfb843274301', 'assets.py': 'e30ff2efd7628ade3cdc548c936751db9c433e6ad3a143f4d122b0baddcdc94c', 'pooled_readout.py': 'd59e62ccb3b5af742021e8064a5987ee27291744ea043ad94fbc8baa4eee1199'}
+SIBLING_SHA256 = {'box.py': 'e26ad9d8ea1ac501730d2d770c2aeebda642962bdb1d591c86f0cfb843274301', 'assets.py': 'e30ff2efd7628ade3cdc548c936751db9c433e6ad3a143f4d122b0baddcdc94c', 'pooled_readout.py': 'd59e62ccb3b5af742021e8064a5987ee27291744ea043ad94fbc8baa4eee1199', 'selector_v2.py': 'bd518a2c3bea9167803b6c21e480b37386fa212cf35101093b84e75c5307b7e3'}
 
 # The tokenizer the model was trained with is Qwen2Tokenizer (tokenizer_config.json). From transformers 5.18 a checkpoint
 # whose config says qwen3_5 is loaded with Qwen3_5Tokenizer instead, which splits some Devanagari and Arabic text
@@ -3891,9 +4171,16 @@ class Shim:
         return self.c.two_way.default if self.v is not None else "bidirectional"
 
     def mode(self, body):
-        """The attention mode of a request: its `attention_mode`, else the deployment's default. A mode whose engine
-        is not running is a 400 (never a silent answer in the other mode)."""
-        asked = body.get("attention_mode") if isinstance(body, dict) else None
+        """The attention mode of a request: its `attention_mode` (top level, or `kwargs.attention_mode`, the form the
+        hosted gateway and the 31B package take; given in both with different values is a 400, as the gateway does),
+        else the deployment's default. A mode whose engine is not running is a 400 (never a silent answer in the other
+        mode)."""
+        asked = None
+        if isinstance(body, dict):
+            kw = body.get("kwargs") if isinstance(body.get("kwargs"), dict) else {}
+            if "attention_mode" in body and "attention_mode" in kw and body["attention_mode"] != kw["attention_mode"]:
+                raise BadRequest("attention_mode given twice with different values (top level and kwargs)")
+            asked = body.get("attention_mode", kw.get("attention_mode"))
         m = _mode_of(asked, self.default_mode())
         if self.two_way_flag:
             return m                      # one engine serves both through the per-request flag
@@ -4135,15 +4422,111 @@ class Shim:
                              f"{n} labels verified\n")
 
     def truncate_state(self, text):
-        """A record over max_state_tokens keeps its head and its tail around a "..." line (vLLM's tokenizer)."""
-        mx = self.c.max_state_tokens
+        """Selector headtail (v1.4.1's cut, for comparison): a record over max_state_tokens keeps its head and its tail
+        around a "..." line (vLLM's tokenizer)."""
+        return self.cut_text(text, self.c.max_state_tokens)
+
+    def cut_text(self, text, mx):
+        """`text` cut to `mx` tokens by its head and tail around a "\n...\n" line (unchanged when it fits)."""
         if not mx or len(text.encode("utf-8", "ignore")) <= mx:      # a byte-level BPE never has more tokens than bytes
             return text
         ids = self.t.tokenize(text)
         if len(ids) <= mx:
             return text
-        half = mx // 2
+        half = max(1, mx // 2)
         return self.t.detokenize(ids[:half]) + "\n...\n" + self.t.detokenize(ids[-half:])
+
+    def image_tokens_bound(self):
+        """An upper bound on one image's tokens in the prompt: max_pixels (else the processor's largest image) over
+        the pixels per token, plus the vision start / end tokens."""
+        return (self.c.max_pixels or 16777216) // PIXELS_PER_IMAGE_TOKEN + 2
+
+    def fit_states(self, raw_state, full_txt, questions, n_images=0):
+        """SELECTOR v2: ([(record text, user-turn override or None) per question], notes). A question whose prompt fits
+        vLLM's context (and SHIM_MAX_STATE_TOKENS, when set) keeps the whole record, so a request that fits is read
+        as before. One that does not gets the record BM25-selected (selector_v2, the 31B's) to the room its own prompt
+        leaves: max_model_len less the prompt without the record, the images' tokens (an upper bound) and
+        CONTEXT_SLACK; where no part of the record matches the question, its head and tail around a "\n...\n" line.
+        A question that does not fit even without the record is answered without it, its instructions, then its
+        option descriptions, then (in the prompt only) its option names cut to fit; the options, their order and
+        labels never change. NEVER a refusal for length."""
+        c, C = self.c, self.max_model_len
+        img = n_images * self.image_tokens_bound()
+        limit = (C - CONTEXT_SLACK) if isinstance(C, int) and C > 0 else None
+        out, notes, n_state = [], [], None
+        for qid, q in questions.items():
+            if c.state_cap is None and (limit is None or len(c.question_prompt(full_txt, q, qid)[0].encode(
+                    "utf-8", "ignore")) + img <= limit):           # bytes bound tokens: fits, no tokenizer call
+                out.append((full_txt, None))
+                continue
+            if n_state is None:
+                n_state = len(self.t.tokenize(full_txt))
+            overhead = len(self.t.tokenize(c.question_prompt("", q, qid)[0])) + img
+            room = None if limit is None else limit - overhead
+            budget = room if c.state_cap is None else (c.state_cap if room is None else min(room, c.state_cap))
+            if budget is None or n_state <= budget:
+                out.append((full_txt, None))
+                continue
+            if room is not None and room < MIN_STATE_BUDGET:
+                notes.append("question over the context; record left out")
+                out.append(("", self.fit_question(q, qid, limit, img, notes)))
+                continue
+            st = self.select_record(raw_state, full_txt, q, budget, notes)
+            for _ in range(3):                 # the exact count (the record's seams with the prompt can add a token)
+                n = len(self.t.tokenize(c.question_prompt(st, q, qid)[0])) + img
+                if limit is None or n <= limit:
+                    break
+                budget -= (n - limit) + 8
+                if budget < MIN_STATE_BUDGET:
+                    st = ""
+                    break
+                st = self.select_record(raw_state, full_txt, q, budget, notes)
+            out.append((st, None))
+        return out, notes
+
+    def select_record(self, raw_state, full_txt, q, budget, notes):
+        """The record cut to `budget` tokens for question q: selector_v2's BM25 on the raw state (its text output is
+        the record), else (no matching part, or a record that cannot be split to fit) the head and tail."""
+        sv2 = _sibling("selector_v2")
+        try:
+            st = sv2.select_state(raw_state, render_instr(q.get("instructions", "")), q.get("criteria"), budget,
+                                  self.t.tokenize)
+        except sv2.EvidenceSelectionUnsupported:
+            notes.append("no match; head+tail")
+            return self.cut_text(full_txt, budget)
+        notes.append("bm25 (selector v2)")
+        return st
+
+    def fit_question(self, q, qid, limit, img, notes):
+        """The user turn of a question too long for the context without its record: the instructions, then each
+        option description, then each option name (in the prompt only; the answer keeps the request's names) cut by
+        head and tail until the prompt fits `limit` tokens. None when the question fits with an empty record."""
+        c = self.c
+        names, descs = options_of(q, len(c.labels))
+        labels = c.labels[:len(names)]
+        instr = render_instr(q.get("instructions", "")).lstrip() or c.default_instructions
+        parts = [instr, list(descs), list(names)]
+
+        def user():
+            return user_turn("", parts[0], parts[2], parts[1], labels, c.layout)
+
+        def over():
+            return len(self.t.tokenize(render_chat(c.system, user(), c.prefill, c.chat))) + img - limit
+        if over() <= 0:
+            return None
+        for level, what in ((0, "instructions"), (1, "option descriptions"), (2, "option names")):
+            ov = over()
+            if ov <= 0:
+                break
+            notes.append(f"{what} cut to fit the context")
+            if level == 0:
+                k = len(self.t.tokenize(parts[0]))
+                parts[0] = self.cut_text(parts[0], max(16, k - ov - 8))
+            else:
+                total = sum(len(self.t.tokenize(x)) for x in parts[level])
+                per = max(4, (total - ov - 8) // max(1, len(parts[level])))
+                parts[level] = [self.cut_text(x, per) for x in parts[level]]
+        return user()
 
     def one(self, prompt, labels, attention_mode=None, cache_write=None):
         if self.v is None:
@@ -4274,13 +4657,15 @@ class Shim:
             if images:
                 return self.decide_images(questions, state, images, asked, t0, mode)
         full_txt = render_state(body["state"], self.c.state_compact)
-        state_txt = self.truncate_state(full_txt)
+        fits, notes = self.fit_request(body["state"], full_txt, questions)
         work = []
-        for qid, q in questions.items():
+        for (qid, q), (state_txt, user) in zip(questions.items(), fits):
             text, names, descs, labels = self.c.question_prompt(state_txt, q, qid)
+            if user is not None:           # the question itself cut to fit the context (the answer keeps its names)
+                text = render_chat(self.c.system, user, self.c.prefill, self.c.chat)
             work.append((qid, q.get("type", "choice"), names, descs, text, labels, noul_threshold(q)))
         full = None
-        if state_txt != full_txt:          # a cut record is billed as if it had been read whole
+        if any(st != full_txt or u is not None for st, u in fits):   # a cut record is billed as if read whole
             full = self.full_input([self.c.question_prompt(full_txt, q, qid)[0] for qid, q in questions.items()])
         shared = 0
         writes = cache_writes(len(work)) if mode == "causal" else [None] * len(work)
@@ -4300,7 +4685,101 @@ class Shim:
             if not all(isinstance(t, list) for t in toks):
                 toks = [self.t.tokenize(w[4]) for w in work]
             shared = common_prefix_len(toks)
-        return self.respond(work, reads, shared, asked, t0, self.temperatures(mode), full_input=full, mode=mode)
+        if self.c.reread_below is None:
+            return self.respond(work, reads, shared, asked, t0, self.temperatures(mode), full_input=full, mode=mode,
+                                notes=notes)
+        rereads, extra = self.reread(work, reads, questions, fits, read, mode)
+        out = self.respond(work, reads, shared, asked, t0, self.temperatures(mode), full_input=full, mode=mode,
+                           notes=notes)
+        out["usage"]["input_tokens"] += extra
+        out["usage"]["processed_input_tokens"] += extra
+        out["effort_used"]["reread"] = {"below": self.c.reread_below, "first_weight": round(REREAD_FIRST_WEIGHT, 4), "questions": rereads}
+        return out
+
+    def reread(self, work, reads, questions, fits, read, mode):
+        """The DI profile's conditional re-read (REREAD_SEP): each text question whose SERVED first-read top
+        probability (the measured rule: a choice's or score's top option; a yes/no answer's max(P, 1 - P) after the
+        floor; PROFILE=di pins the floor at 0.801, so there yes/no questions are read once; with the floor off they
+        would be eligible) is under c.reread_below is
+        read again, in the same mode, with its user turn written twice, and is answered with the 2:1 first-weighted mean
+        of the two reads' probability vectors at the mode's temperature (REREAD_FIRST_WEIGHT). `reads` takes, in place
+        of the first read's log-probabilities, T * log(mean), whose softmax at T is that mean. Returns (questions
+        re-read, the re-reads' prompt tokens). A question whose own text was cut to fit, a doubled prompt over the
+        engine's context, or one the engine refuses keeps the first read: a request never fails because of the re-read."""
+        t_by, _it, floor = self.temperatures(mode)
+        todo = []
+        for i, ((qid, typ, names, descs, _text, labels, thr), (lp, _u), (state_txt, user)) in enumerate(zip(work, reads, fits)):
+            t = t_by[typ] if isinstance(t_by, dict) else t_by
+            if user is not None or served_top(format_answer(typ, names, descs, lp, t, floor, thr)) >= self.c.reread_below:
+                continue
+            todo.append((i, t, self.c.question_prompt(state_txt, questions[qid], qid, twice=True)[0], labels))
+        if not todo:
+            return 0, 0
+        if isinstance(self.max_model_len, int):
+            todo = [x for x in todo if len(self.t.tokenize(x[2])) + 8 <= self.max_model_len]
+
+        def again(text, labels):
+            try:
+                return read(text, labels, None)
+            except (UpstreamError, Unprocessable):
+                return None
+        futs = [(i, t, self.pool.submit(again, text, labels)) for i, t, text, labels in todo]
+        n, extra = 0, 0
+        for i, t, f in futs:
+            r = f.result()
+            if r is None:
+                continue
+            p1, p2 = probabilities(reads[i][0], t), probabilities(r[0], t)
+            reads[i] = ([t * math.log(max(REREAD_FIRST_WEIGHT * a + (1.0 - REREAD_FIRST_WEIGHT) * b, 1e-300))
+                         for a, b in zip(p1, p2)], reads[i][1])
+            extra += int(r[1].get("prompt_tokens") or 0)
+            n += 1
+        return n, extra
+
+    def fit_request(self, raw_state, full_txt, questions, n_images=0):
+        """[(record text, user-turn override) per question], notes: selector headtail cuts the record once (v1.4.1);
+        selector v2 fits each question to the context (fit_states)."""
+        if self.c.selector == "headtail":
+            st = self.truncate_state(full_txt)
+            notes = ["head+tail (selector headtail)"] if st != full_txt else []
+            return self.fit_headtail(full_txt, st, questions, n_images, notes), notes
+        return self.fit_states(raw_state, full_txt, questions, n_images)
+
+    def fit_headtail(self, full_txt, st, questions, n_images, notes):
+        """Selector headtail's per-question CONTEXT CLAMP: a question whose prompt with the head+tail record `st` fits
+        vLLM's context reads it as before; one that does not (SHIM_MAX_STATE_TOKENS near the context with a long
+        question) gets the record cut by head and tail to the room its own prompt leaves, the same per-question budget
+        selector v2 uses (max_model_len less the prompt without the record, the images' bound and CONTEXT_SLACK); a
+        question that does not fit even without the record is answered without it (fit_question). Never a 422 for
+        length."""
+        c, C = self.c, self.max_model_len
+        img = n_images * self.image_tokens_bound()
+        limit = (C - CONTEXT_SLACK) if isinstance(C, int) and C > 0 else None
+        out = []
+        for qid, q in questions.items():
+            text = c.question_prompt(st, q, qid)[0]
+            if limit is None or len(text.encode("utf-8", "ignore")) + img <= limit or len(self.t.tokenize(text)) + img <= limit:
+                out.append((st, None))
+                continue
+            room = limit - len(self.t.tokenize(c.question_prompt("", q, qid)[0])) - img
+            if room < MIN_STATE_BUDGET:
+                notes.append("question over the context; record left out")
+                out.append(("", self.fit_question(q, qid, limit, img, notes)))
+                continue
+            budget = min(room, c.max_state_tokens)
+            cut = self.cut_text(full_txt, budget)
+            for _ in range(3):                 # the exact count (the record's seams with the prompt can add a token)
+                n = len(self.t.tokenize(c.question_prompt(cut, q, qid)[0])) + img
+                if n <= limit:
+                    break
+                budget -= (n - limit) + 8
+                if budget < MIN_STATE_BUDGET:
+                    cut = ""
+                    break
+                cut = self.cut_text(full_txt, budget)
+            notes.append("head+tail cut to the context")
+            out.append((cut, None))
+        return out
 
     def full_input(self, prompts, image_tokens=0):
         """Input tokens as if the whole record had been read: the full prompts, their shared head once, plus the
@@ -4347,10 +4826,13 @@ class Shim:
             raise Unprocessable(f"{len(images)} images; this deployment reads at most {self.c.max_images} per request")
         self.check_chat()
         full_txt = render_state(state, self.c.state_compact)
-        state_txt = self.truncate_state(full_txt)
+        fits, notes = self.fit_request(state, full_txt, questions, len(images))
         work, msgs = [], []
-        for qid, q in questions.items():
+        for (qid, q), (state_txt, user) in zip(questions.items(), fits):
             m, text, names, descs, labels = self.c.image_prompt(state_txt, q, images, qid)
+            if user is not None:           # the question itself cut to fit the context (the answer keeps its names)
+                m = chat_messages(self.c.system, user, self.c.prefill, images)
+                text = render_chat(self.c.system, VISION_SLOT * len(images) + user.strip(), self.c.prefill, self.c.chat)
             msgs.append(m)
             work.append((qid, q.get("type", "choice"), names, descs, text, labels, noul_threshold(q)))
         shared = 0
@@ -4369,14 +4851,15 @@ class Shim:
             extra = max(0, int(reads[0][1].get("prompt_tokens") or 0) - len(toks[0]))
             shared = common_prefix_len(toks) + extra
         full = None
-        if state_txt != full_txt:          # a cut record is billed as if it had been read whole, images included
+        if any(st != full_txt or u is not None for st, u in fits):   # billed as if read whole, images included
             extra = max(0, int(reads[0][1].get("prompt_tokens") or 0) - len(self.t.tokenize(work[0][4])))
             full = self.full_input([self.c.image_prompt(full_txt, q, images, qid)[1] for qid, q in questions.items()],
                                    extra)
         _t, image_t, floor = self.temperatures(mode)
-        return self.respond(work, reads, shared, asked, t0, (image_t, None, floor), len(images), full, mode)
+        return self.respond(work, reads, shared, asked, t0, (image_t, None, floor), len(images), full, mode, notes)
 
-    def respond(self, work, reads, shared, asked, t0, temperature, n_images=0, full_input=None, mode="causal"):
+    def respond(self, work, reads, shared, asked, t0, temperature, n_images=0, full_input=None, mode="causal",
+                notes=None):
         """The response: each answer at `temperature` (one value, {type: T}, or the (by type, image, floor) triple of
         a mode; then the yes/no floor), and usage with the shared head once."""
         floor = self.c.noul_floor
@@ -4394,6 +4877,8 @@ class Shim:
             used["requested"] = asked
             used["note"] = (f"tier {asked!r} is accepted for API compatibility but not implemented; this response "
                             f"was produced at tier 'fast' with one forward pass per decision")
+        if notes:                          # only when a record or question was cut to fit (a request that fits: absent)
+            used["state_selection"] = "; ".join(sorted(set(notes)))
         out = {"model": self.c.model, "answers": answers, "probability_source": "native", "effort_used": used,
                # input_tokens: the full input (processed_input_tokens: what vLLM read, less when a long record was
                # cut); output_tokens: one label token read per answered question
@@ -4410,10 +4895,11 @@ class Shim:
         return {"ok": bool(self.ready), "model": c.model, "shim": SHIM_VERSION,
                 "backend": f"vllm {self.v.base}" if self.v is not None else None,
                 "layout": c.layout, "chat_template": c.chat, "state_compact": c.state_compact, "prefill": c.prefill,
-                "max_state_tokens": c.max_state_tokens,
+                "max_state_tokens": c.max_state_tokens, "selector": c.selector, "state_cap": c.state_cap,
                 "noul_floor": {"value": c.noul_floor, "source": c.noul_floor_source},
                 "temperature_by_type": dict(c.temperature_by_type),
                 "temperature_source": c.temperature_source, "max_options": len(c.labels),
+                **({"reread_below": c.reread_below} if c.reread_below is not None else {}),
                 "vllm_max_model_len": self.max_model_len,
                 **({"images": {"max_images": c.max_images, "max_pixels": c.max_pixels or None,
                                "temperature": c.image_temperature, "verified": bool(self.chat_ok)}}
@@ -4603,11 +5089,14 @@ def make_handler(shim):
 
         def _send(self, code, obj):
             payload = json.dumps(obj).encode()
-            self.send_response(code)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(payload)))
-            self.end_headers()
-            self.wfile.write(payload)
+            try:
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+            except (BrokenPipeError, ConnectionResetError):   # the client left first (its own deadline): nobody to answer
+                self.close_connection = True
 
         def do_GET(self):
             if self.path.startswith("/health"):
@@ -5199,6 +5688,343 @@ markers =
 
 
 ================================================
+FILE: selector_v2.py
+================================================
+class EvidenceSelectionUnsupported(ValueError):
+    """Relevant evidence cannot be represented within the configured token budget."""
+
+'Query-aware state selection for lightning_31b_shim (structure-aware BM25 with exact-match bonuses).'
+import collections
+import json
+import math
+import re
+UNIT_TOKENS = 400
+GAP_TOKENS = 40
+OPTION_WEIGHT = 0.5
+PRF_TERMS = 30
+PRF_WEIGHT = 0.3
+PRF_UNITS = 4
+EXACT_BONUS = 2.0
+PACK_TOKENS = 150
+SAMPLE_CHARS = 16000
+PHASE_A = 0.75
+USE_STOP = True
+_SIZE_DIV = 6
+NEIGHBOURS = True
+MARK = '\n[…]\n'
+_WORD = re.compile('[^\\W_]+', re.U)
+_CJK = re.compile('[\u3040-ヿ㐀-䶿一-鿿가-\ud7af\u0e00-\u0e7f豈-\ufaff]')
+_EXACT = re.compile('\\b(?:[A-Za-z]{1,6}-?\\d[\\w-]*|\\d{4}-\\d{2}-\\d{2}|\\d+(?:[.,]\\d+)*)\\b')
+_SENT = re.compile('(?<=[.!?。！？])\\s+(?=[A-Z0-9\\"\'(\\[\u3040-鿿])')
+_HEADING = re.compile("^\\s*(#{1,6}\\s+\\S.*|={2,}.*={2,}|[A-Z][A-Za-z0-9 ,&()/'-]{0,60}:|(?:section|part|chapter|article)\\s+\\S+.*|\\d+(?:\\.\\d+)*[.)]\\s+[A-Z].{0,80})\\s*$", re.I)
+_STOP = frozenset('a an the of to in on for and or is are be was were by with as at from that this it its what which should would will can could do does did how why when who whom whose'.split())
+
+def _terms(text):
+    out = []
+    for w in _WORD.findall(text.lower()):
+        if _CJK.search(w):
+            chars = [c for c in w]
+            run = []
+            for c in chars + [' ']:
+                if _CJK.match(c):
+                    run.append(c)
+                    continue
+                if run:
+                    out.extend((run[i] + run[i + 1] for i in range(len(run) - 1))) if len(run) > 1 else out.append(run[0])
+                    run = []
+                if c != ' ':
+                    out.append(c)
+        elif not USE_STOP or w not in _STOP:
+            out.append(w)
+    return out
+
+class _Unit:
+    __slots__ = ('text', 'head', 'terms', 'ntok', 'a', 'b', 'src')
+
+    def __init__(self, text, head, a=None, b=None, src=None):
+        self.text, self.head, self.terms, self.ntok, self.a, self.b, self.src = (text, head, None, 0, a, b, src)
+_SPLITTERS = (re.compile('\\n[ \\t]*\\n'), re.compile('\\n'), _SENT)
+
+def _spans(text, a, b, size, ntok, level=0):
+    if b - a <= 0:
+        return []
+    if ntok(text[a:b]) <= size or level >= len(_SPLITTERS):
+        if level >= len(_SPLITTERS) and ntok(text[a:b]) > size:
+            step = max(64, size * 3)
+            return [(i, min(i + step, b)) for i in range(a, b, step)]
+        return [(a, b)]
+    cuts = [m.end() for m in _SPLITTERS[level].finditer(text, a, b) if a < m.end() < b]
+    if not cuts:
+        return _spans(text, a, b, size, ntok, level + 1)
+    pieces, prev = ([], a)
+    for c in cuts + [b]:
+        pieces.append((prev, c))
+        prev = c
+    packed, cur = ([], None)
+    for pa, pb in pieces:
+        if cur and ntok(text[cur[0]:pb]) <= min(size, PACK_TOKENS):
+            cur = (cur[0], pb)
+        else:
+            if cur:
+                packed.append(cur)
+            cur = (pa, pb)
+    packed.append(cur)
+    out = []
+    for pa, pb in packed:
+        out.extend(_spans(text, pa, pb, size, ntok, level + 1) if ntok(text[pa:pb]) > size else [(pa, pb)])
+    return out
+
+def _text_units(text, ntok, head='', size=UNIT_TOKENS):
+    units, cur_head = ([], head)
+    for a, b in _spans(text, 0, len(text), size, ntok):
+        piece = text[a:b]
+        if not piece.strip():
+            continue
+        first = piece.strip().split('\n', 1)[0]
+        if len(first) < 120 and _HEADING.match(first):  # length first: the pattern backtracks cubically on long lines
+            cur_head = (head + ' > ' if head else '') + first.strip()
+        units.append(_Unit(piece, cur_head, a, b, text))
+    return units
+
+def _json_units(obj, ntok, path='', size=UNIT_TOKENS):
+
+    def render(v):
+        return v if isinstance(v, str) else json.dumps(v, ensure_ascii=False, separators=(',', ':'))
+    units = []
+    if isinstance(obj, dict):
+        items = [(f'{path}.{k}' if path else str(k), v) for k, v in obj.items()]
+    elif isinstance(obj, list):
+        items = [(f'{path}[{i}]', v) for i, v in enumerate(obj)]
+    else:
+        return _text_units(render(obj), ntok, path, size)
+    group = []
+    for p, v in items:
+        line = f'{p}: {render(v)}'
+        if ntok(line) <= size:
+            if group and ntok('\n'.join(group + [line])) > size:
+                units.append(_Unit('\n'.join(group), path))
+                group = []
+            group.append(line)
+            continue
+        if group:
+            units.append(_Unit('\n'.join(group), path))
+            group = []
+        if isinstance(v, (dict, list)):
+            units.extend(_json_units(v, ntok, p, size))
+        else:
+            units.extend(_text_units(render(v), ntok, p, size))
+    if group:
+        units.append(_Unit('\n'.join(group), path))
+    return units
+
+def _bm25(units, qw, k1=1.5, b=0.75):
+    N = len(units)
+    avg = sum((len(u.terms) for u in units)) / max(N, 1) or 1.0
+    df = collections.Counter((t for u in units for t in set(u.terms)))
+    idf = {t: math.log(1 + (N - df[t] + 0.5) / (df[t] + 0.5)) for t in qw if df.get(t)}
+    out = []
+    for u in units:
+        tf = collections.Counter(u.terms)
+        s, L = (0.0, len(u.terms))
+        for t, w in qw.items():
+            f = tf.get(t)
+            if f:
+                s += w * idf[t] * f * (k1 + 1) / (f + k1 * (1 - b + b * L / avg))
+        out.append(s)
+    return (out, df)
+
+def _query(instructions, options):
+    qw = collections.Counter()
+    for t in _terms(instructions):
+        qw[t] = 1.0
+    if isinstance(options, dict):
+        texts = [f'{k} {v}' for k, v in options.items()]
+    else:
+        texts = [str(o) for o in options or []]
+    for t in _terms(' '.join(texts)):
+        qw[t] = max(qw[t], OPTION_WEIGHT)
+    exact = {m.group(0).lower() for m in _EXACT.finditer(instructions)}
+    return (dict(qw), exact)
+
+def select_state(raw_state, instructions, options, evidence_budget, encode, decode=None):
+    text = raw_state if isinstance(raw_state, str) else None
+    if text is not None and len(text.encode('utf-8', 'ignore')) <= evidence_budget:
+        return text
+    full = text if text is not None else json.dumps(raw_state, ensure_ascii=False, separators=(',', ':'))
+    if not evidence_budget or evidence_budget <= 0:
+        return full
+    nbytes = len(full.encode('utf-8', 'ignore'))
+    sample = full[:SAMPLE_CHARS]
+    ratio = len(encode(sample)) / max(1, len(sample.encode('utf-8', 'ignore')))
+    if nbytes * ratio <= 1.25 * evidence_budget and len(encode(full)) <= evidence_budget:
+        return full
+
+    def ntok(s):
+        return int(len(s.encode('utf-8', 'ignore')) * ratio * 1.05) + 1
+    size = max(48, min(UNIT_TOKENS, evidence_budget // _SIZE_DIV))
+    units = _text_units(text, ntok, size=size) if text is not None else _json_units(raw_state, ntok, size=size)
+    if len(units) <= 2:
+        return _budget_unsupported_or_full(full, evidence_budget, encode)
+    for u in units:
+        u.terms = _terms(u.text)
+        u.ntok = ntok(u.text) + 1
+    n = len(units)
+    qw, exact = _query(instructions, options)
+    s1, df = _bm25(units, qw)
+    for i, u in enumerate(units):
+        low = u.text.lower()
+        s1[i] += EXACT_BONUS * sum((1 for e in exact if e in low))
+    top = sorted(range(n), key=lambda i: (-s1[i], i))[:PRF_UNITS]
+    cand = collections.Counter()
+    for i in top:
+        if s1[i] <= 0:
+            continue
+        for t in set(units[i].terms):
+            if t not in qw:
+                cand[t] = math.log(1 + n / (df[t] + 0.5))
+    qw2 = dict(qw)
+    for t, _ in sorted(cand.items(), key=lambda kv: (-kv[1], kv[0]))[:PRF_TERMS]:
+        qw2[t] = PRF_WEIGHT
+    s2, _ = _bm25(units, qw2)
+    score = [s2[i] + EXACT_BONUS * sum((1 for e in exact if e in units[i].text.lower())) for i in range(n)]
+    if not any(value > 0 for value in score):
+        raise EvidenceSelectionUnsupported("No query-relevant evidence can be selected within the evidence budget")
+    sep = ntok(MARK) + 2
+    keep = {0, n - 1}
+
+    def cost(sel):
+        runs, used = (_runs(sel), 0)
+        for a, b in runs:
+            used += sum((units[i].ntok for i in range(a, b + 1)))
+            h = units[a].head
+            if h and (not units[a].text.startswith(h)):
+                used += ntok(h) + 1
+        return used + sep * (len(runs) - 1)
+    if cost(keep) > evidence_budget:
+        keep = {n - 1} if cost({n - 1}) <= evidence_budget else set()
+        if not keep:
+            return _budget_unsupported_or_full(full, evidence_budget, encode)
+    order = [i for i in sorted(range(n), key=lambda i: (-score[i], i)) if score[i] > 0]
+    parent = []
+    for u in units:
+        if u.src is not None and u.a is not None:
+            ls = u.src.rfind('\n', 0, u.a) + 1
+            le = u.src.find('\n', u.a)
+            le = len(u.src) if le < 0 else le
+            parent.append((id(u.src), ls) if u.b <= le + 1 else (id(u.src), u.a, 'own'))
+        else:
+            parent.append(('unit', id(u)))
+    members = collections.defaultdict(list)
+    for i, p in enumerate(parent):
+        members[p].append(i)
+    min_unit = min((u.ntok for u in units))
+
+    def fill(limit):
+        nonlocal keep
+        used = cost(keep)
+        for i in order:
+            if limit - used < min_unit:
+                break
+            if i in keep:
+                continue
+            for cand in (set(members[parent[i]]) - keep, {i}):
+                if not cand or (len(cand) > 1 and sum((units[j].ntok for j in cand)) > max(size, evidence_budget // 3)):
+                    continue
+                lower = sum((units[j].ntok for j in cand))
+                if used + lower > limit:
+                    continue
+                new_cost = cost(keep | cand)
+                if new_cost <= limit:
+                    keep, used = (keep | cand, new_cost)
+                    break
+    fill(int(evidence_budget * PHASE_A))
+    for i in [i for i in order if i in keep and NEIGHBOURS]:
+        for j in sorted((i - 1, i + 1), key=lambda j: -score[j] if 0 <= j < n else 0):
+            if 0 <= j < n and j not in keep and (cost(keep | {j}) <= evidence_budget):
+                keep = keep | {j}
+    runs = _runs(keep)
+    for (a1, b1), (a2, b2) in zip(runs, runs[1:]):
+        gap = set(range(b1 + 1, a2))
+        if gap and (len(gap) == 1 or sum((units[j].ntok for j in gap)) <= GAP_TOKENS) and (cost(keep | gap) <= evidence_budget):
+            keep = keep | gap
+    fill(evidence_budget)
+    out = []
+    for a1, b1 in _runs(keep):
+        segs, cur, last_head = ([], None, None)
+        for i in range(a1, b1 + 1):
+            u = units[i]
+            if u.head and u.head != last_head and (not u.text.lstrip().startswith(u.head)):
+                if cur:
+                    segs.append(cur)
+                    cur = None
+                segs.append(u.head if u.src is not text else u.head)
+            last_head = u.head
+            if cur and u.src is not None and (cur[0] is u.src) and (cur[2] == u.a):
+                cur = (cur[0], cur[1], u.b)
+            else:
+                if cur:
+                    segs.append(cur)
+                cur = (u.src, u.a, u.b) if u.src is not None else (None, u.text, None)
+        if cur:
+            segs.append(cur)
+        body = '\n'.join((x if isinstance(x, str) else x[0][x[1]:x[2]].strip('\n') if x[0] is not None else x[1] for x in segs))
+        out.append(body)
+    result = MARK.join(out)
+    while len(encode(result)) > evidence_budget:
+        removable = [i for i in keep if i not in (0, n - 1)]
+        if not removable:
+            return _budget_unsupported_or_full(full, evidence_budget, encode)
+        keep = keep - {min(removable, key=lambda i: (score[i], -i))}
+        result = _assemble(units, keep, text)
+    return result
+
+def _assemble(units, keep, text):
+    out = []
+    for a1, b1 in _runs(keep):
+        segs, cur, last_head = ([], None, None)
+        for i in range(a1, b1 + 1):
+            u = units[i]
+            if u.head and u.head != last_head and (not u.text.lstrip().startswith(u.head)):
+                if cur:
+                    segs.append(cur)
+                    cur = None
+                segs.append(u.head)
+            last_head = u.head
+            if cur and u.src is not None and (cur[0] is u.src) and (cur[2] == u.a):
+                cur = (cur[0], cur[1], u.b)
+            else:
+                if cur:
+                    segs.append(cur)
+                cur = (u.src, u.a, u.b) if u.src is not None else (None, u.text, None)
+        if cur:
+            segs.append(cur)
+        out.append('\n'.join((x if isinstance(x, str) else x[0][x[1]:x[2]].strip('\n') if x[0] is not None else x[1] for x in segs)))
+    return MARK.join(out)
+
+
+def _runs(sel):
+    runs, prev = ([], None)
+    for i in sorted(sel):
+        if prev is not None and i == prev + 1:
+            runs[-1][1] = i
+        else:
+            runs.append([i, i])
+        prev = i
+    return [tuple(r) for r in runs]
+
+def _budget_unsupported_or_full(full, evidence_budget, encode):
+    """Verify genuine token-budget overflow before reporting a capacity refusal."""
+    input_tokens = len(encode(full))
+    if input_tokens <= evidence_budget:
+        return full
+    raise EvidenceSelectionUnsupported(
+        f"too many tokens to preserve the full input within the configured evidence budget "
+        f"({input_tokens} > {evidence_budget}); relevant whole-unit evidence cannot be represented; "
+        "boundary-only selection is test-only")
+
+
+
+================================================
 FILE: serve.sh
 ================================================
 #!/bin/bash
@@ -5223,7 +6049,13 @@ FILE: serve.sh
 # shim checks the engine's two-way reads against fixed probes before its first two-way answer. TWO_WAY=0 (or
 # ATTENTION=one-way) is the fallback: one stock vLLM 0.30.0 in generate mode, one-way only. The earlier two-engine
 # two-way setup (a pooling-runner engine) is no longer supported: TWO_WAY=1 with ONE_ENGINE=0 stops with a message.
+# PROFILE=di (the Decision Index profile; default: none) turns on the shim's conditional re-read: a choice or score
+# question whose top probability is under 0.8 (SHIM_REREAD_BELOW overrides it) is read once more with the input written
+# twice, and is answered with 2/3 of the first read plus 1/3 of the second (yes/no questions are read once). The profile
+# keeps the yes/no floor 0.801 it was measured with (SHIM_NOUL_FLOOR overrides it); without PROFILE the floor is off.
+# Without PROFILE the serving is exactly the default above.
 set -euo pipefail
+case "${PROFILE:-}" in "") ;; di) export SHIM_REREAD_BELOW="${SHIM_REREAD_BELOW:-0.8}" SHIM_NOUL_FLOOR="${SHIM_NOUL_FLOOR:-0.801}";; *) echo "PROFILE must be di or unset"; exit 1;; esac
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MODEL="${MODEL:-$HERE}"; VLLM_PORT="${VLLM_PORT:-8000}"; PORT="${PORT:-8741}"
 case "${ATTENTION:-}" in "") ;; one-way|causal) TWO_WAY=0;; two-way|bidirectional) TWO_WAY=1;; *) echo "ATTENTION must be one-way or two-way"; exit 1;; esac
@@ -5423,7 +6255,7 @@ FILE: serve_config.json
   "noul": 0.8,
   "score": 0.65
  },
- "noul_floor": 0.801,
+ "noul_floor": 0,
  "prompt": {
   "chat_template": true,
   "enable_thinking": false,
@@ -5693,8 +6525,8 @@ FILE: serve_config.json
  "max_options": 255,
  "image": {
   "max_images": 4,
-  "max_pixels": 1048576,
-  "temperature": 0.65
+  "max_pixels": 1638400,
+  "temperature": 1.0
  },
  "two_way": {
   "label_rows": "label_rows.lightning",
@@ -5704,8 +6536,8 @@ FILE: serve_config.json
    "noul": 0.8,
    "score": 0.65
   },
-  "noul_floor": 0.801,
-  "image_temperature": 0.65,
+  "noul_floor": 0,
+  "image_temperature": 1.0,
   "probe_tolerance": 0.05,
   "probe_reference": [
    {
@@ -5794,13 +6626,13 @@ CLAIMS = [
      "note": "2,724 requests (requests md5 f471a65f without the six covered families); answers v1.4.1 04f802bd, v1.4.0 0035079c"},
     {"quote": "| six task families that the added training data covers (2,891 questions): skill | **67.99** | 50.08 |",
      "tier": "static", "check": "quote", "note": "1,848 requests of the same request file, the six families alone"},
-    {"quote": "| Decision Index 0.3 public suite, the kit's own scorer: text index (140,178 rows) / vision index (12,210 rows) | **63.16 / 69.42** | 62.38 / 69.03 |",
-     "tier": "slow", "check": "di", "values": {"text": 63.16, "vision": 69.42}, "tolerance": 0.3,
-     "note": "v1.4.1 two-way; text max_state_tokens 1000000, MAX_LEN 131072, GPU_UTIL 0.70, 16 shards on 3x L40S (results md5 14c0e29f); vision shipped config, MAX_LEN 40960, a suite that passes `vision verify` (f689e8f2)"},
-    {"quote": "| calibration error on the Decision Index text rows (274,729 questions; lower is better) | 0.0705 | **0.0640** |",
-     "tier": "static", "check": "quote", "note": "15 equal-width bins of the top option's probability, every question with a gold answer; v1.4.0 0.06395"},
-    {"quote": "| one-way reading (`TWO_WAY=0`): JevBench 231 correct · Decision Index text / vision index · calibration error | 202 / 231 · 60.89 / 67.56 · 0.0806 | not measured |",
-     "tier": "static", "check": "quote", "note": "JevBench results md5 908b6a05; text 89d62d17; vision 9ea8e7b7; ECE 0.08057"},
+    {"quote": "| Decision Index 0.3 public suite, the kit's own scorer: text index (140,178 rows) / vision index (12,210 rows) | **63.21 / 69.87** | 62.38 / 69.03 |",
+     "tier": "slow", "check": "di", "values": {"text": 63.21, "vision": 69.87}, "tolerance": 0.3,
+     "note": "two-way; text at the shipped default (yes/no floor off), max_state_tokens 1000000, MAX_LEN 131072, 16 shards, one L40S (results md5 31f67e4c; measured_flooroff.py; earlier floor-0.801 run 63.16, md5 14c0e29f); vision this package, no flags (image cap 1,638,400), MAX_LEN 40960, one RTX PRO 6000, a suite that passes `vision verify` (f689e8f2); 69.874"},
+    {"quote": "| calibration error on the Decision Index text rows (274,729 questions; lower is better) | 0.0701 | **0.0640** |",
+     "tier": "static", "check": "quote", "note": "15 equal-width bins of the top option's probability, every question with a gold answer (measured_flooroff.py, two-way results md5 31f67e4c: 0.0701); v1.4.0 0.06395 (floor 0.801)"},
+    {"quote": "| one-way reading (`TWO_WAY=0`): JevBench 231 correct · Decision Index text / vision index · calibration error | 202 / 231 · 60.86 / 67.56 · 0.0801 | not measured |",
+     "tier": "static", "check": "quote", "note": "JevBench results md5 908b6a05 (answers unchanged by the floor); text at the floor-off default: one-way results md5 24827a16, index 60.86, ECE 0.0801 (measured_flooroff.py); vision 9ea8e7b7"},
     {"quote": "(knowledge 0.258, language 0.258, retrieval 0.200, tools 0.183, arts 0.100,", "tier": "static", "check": "quote",
      "note": "the scorer's area weights (the skill composite's definition)"},
     {"quote": "+0.09 [−0.50, +0.68] on the held-out set and +0.42 [−0.70, +1.49] on the new-domain set", "tier": "static", "check": "quote",
@@ -5815,9 +6647,55 @@ CLAIMS = [
     {"quote": "the held-out set as a whole (−1.49 [−3.08, −0.14])", "tier": "static", "check": "quote", "note": "language area, held-out set"},
     {"quote": "−2.17 [−3.72, −0.70] on the held-out set against v1.4.0 two-way, +0.45\n[−1.74, +2.62] on the new-domain set",
      "tier": "static", "check": "quote", "note": "v1.4.1 one-way answers (e923fa0a, 0851f5fd) against v1.4.0 two-way"},
-    {"quote": "found 1,444 of the 140,178 text rows sharing text with them; the text index without them is 63.09 (−0.07).",
+    {"quote": "1,444 of the 140,178 text rows sharing text with them; on the text run at the floor of 0.801 (text index 63.16) the index\nwithout them was 63.09 (−0.07).",
      "tier": "static", "check": "quote", "note": "kit scorer on the kept text answers without the 1,465 screened ids (1,444 rows); v1.4.0 reproduces its 62.31"},
-    {"quote": "**Expected result:** text index 63.16 (140,178 scored rows) and public vision index 69.42 (12,210 rows)",
+    {"quote": "NetProjects reports 205 / 231 on JevBench's public items two-way and 201\none-way for the 8-bit build", "tier": "static",
+     "check": "quote", "note": "NetProjects' own report (MLX 8-bit, their v1.4.1 build; same weights), not measured by us; quoted as theirs"},
+    {"quote": "mean IoU 79.8, Acc@0.5 85.7 %, confidence ECE 0.0695 against IoU >= 0.5\n(100 x (1 - ECE/0.5) = 86.1)", "tier": "static",
+     "check": "quote", "note": "box read of this package's box path (box question via /v1/systemone, image in state) on RefCOCOg val, 600 "
+     "referring expressions, no board images; served: mean IoU 79.76, Acc@0.5 0.8567, ECE 0.0695 (IoU >= 0.5), 100 x (1 - ECE/0.5) 86.1"},
+    {"quote": "capability 71.84, intelligence 55.48, calibration 88.19, composite\n68.51. This release is not yet on the board.", "tier": "static", "check": "quote",
+     "note": "board https://benchmarkheaven.com/api/decision-results/imagejevbench/v0.3.0/json: row h2o_lightning_4b_v141_d7f1_image (v1.4.1 d7f1b05a, measured 2026-10-28T18:05:44Z, ranked false) 71.8373 / 55.4825 / 88.1920 / 68.5137; earlier row h2o_lightning_4b_v141_image (cc18ee33, 2026-10-27) 66.1578 / 55.3939 / 76.9218 / 66.5768"},
+    {"quote": "| 55.48 | 88.19 | 88.72 | 56.34 | 71.84 | **68.51** |", "tier": "static", "check": "quote",
+     "note": "ImageJevBench v0.3.0 API (sha256 bb96b690, read 2026-10-31): row h2o_lightning_4b_v141_d7f1_image (v1.4.1 @d7f1b05a, measured 2026-10-28, image temperature 1.0) intelligence 55.4825, calibration 88.1920, speed 88.7192, cost 56.3433, capability 71.8373, composite 68.5137"},
+    {"quote": "of it is an API system (75.38)", "tier": "static", "check": "quote",
+     "note": "the page snapshot 20261031T1839Z: the one Jev-class row above 68.5137 on composite is kettei-fat (API) 75.3840; Wity-1 (71.2053) is not Jev-class (inClass false)"},
+    {"quote": ('**#1 of 46 — Composite** (open-weight Jev-class models; #2 of 55 Jev-class models, open or API), ImageJevBench\n'
+              '  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature\n'
+              '  1.0; ahead of\n'
+              '  Drex Max (Nace AI, 44.65),\n'
+              '  Jev 1.13.0 + images (TypeSafe, 26.43),\n'
+              '  Clef-Flash (Cloudflare, 20.41) and\n'
+              '  Liquid d1-3B (4.10) ([details](#imagejevbench))'), "tier": "static", "check": "quote",
+     "note": 'the pinned ImageJevBench page snapshot 20261031T1839Z (sha256 4522323c): v0.3.0 points inClass, ranked or our row h2o_lightning_4b_v141_d7f1_image (v1.4.1 @d7f1b05a, measured 2026-10-28, image temperature 1.0), the 27 Oct row of the same weights left out; JevBench api revision v1.7.15 ranked rows with capability.within_caps, reference rows excluded'},
+    {"quote": ('**#2 of 46 — Intelligence** (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench\n'
+              '  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature\n'
+              '  1.0; ahead of\n'
+              '  Clef (Cloudflare, 47.40) and\n'
+              '  Liquid d1-3B (16.31) ([details](#imagejevbench))'), "tier": "static", "check": "quote",
+     "note": 'the pinned ImageJevBench page snapshot 20261031T1839Z (sha256 4522323c): v0.3.0 points inClass, ranked or our row h2o_lightning_4b_v141_d7f1_image (v1.4.1 @d7f1b05a, measured 2026-10-28, image temperature 1.0), the 27 Oct row of the same weights left out; JevBench api revision v1.7.15 ranked rows with capability.within_caps, reference rows excluded'},
+    {"quote": ('**#2 of 46 — Capability** (open-weight Jev-class models; #6 of 55 Jev-class models, open or API), ImageJevBench\n'
+              '  edition v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature\n'
+              '  1.0; ahead of\n'
+              '  Clef (Cloudflare, 58.08) and\n'
+              '  Liquid d1-3B (47.78) ([details](#imagejevbench))'), "tier": "static", "check": "quote",
+     "note": 'the pinned ImageJevBench page snapshot 20261031T1839Z (sha256 4522323c): v0.3.0 points inClass, ranked or our row h2o_lightning_4b_v141_d7f1_image (v1.4.1 @d7f1b05a, measured 2026-10-28, image temperature 1.0), the 27 Oct row of the same weights left out; JevBench api revision v1.7.15 ranked rows with capability.within_caps, reference rows excluded'},
+    {"quote": ('**#2 of 170 — Composite** (open-weight Jev-class models; #12 of 201 Jev-class models, open or API), JevBench board\n'
+              '  of 2026-10-28, its row for release v1.1, measured 2026-10-04; ahead of\n'
+              '  d1 (Liquid AI, 72.82),\n'
+              '  Microsoft-Decision-1 (69.08),\n'
+              '  OpenAI Decisions (62.37) and\n'
+              '  pplx-decider-flash (Perplexity, 54.01) ([details](#leading-on-benchmarks))'), "tier": "static", "check": "quote",
+     "note": 'the pinned board set 20261029T0256Z (SHA256SUMS): ImageJevBench v0.3.0 page points ranked and inClass; JevBench api revision v1.7.15 ranked rows with capability.within_caps, reference rows excluded'},
+    {"quote": '- **#1 of 4 — Box Capability** (open-weight Jev-class systems; #1 of 5 Jev-class systems, open or API; Jev-class on this\n  track: within 2x the latency and cost of Jev 1.14.0), ImageJevBench Box track (PREVIEW), edition v0.3.0, page read\n  2026-10-29, its row for release v1.4.1 through the H2O serving package, measured 2026-10-29; ahead of\n  Jev 1.14.0 (TypeSafe, 75.71) ([details](#for-benchmark-maintainers-imagejevbench-box-track))', "tier": "static", "check": "quote", "note": "ImageJevBench page read 2026-10-29T23:51Z (snapshot ijb_page_20261029T2351Z.html), Box track (PREVIEW): Jev-class on this track = the main board's rule (out of class at >= 2x the Jev-reference latency or cost) on the track's own p50 latency and $/1,000 boxes against Jev 1.14.0 (0.33 s, 0.057): in class and ranked: H2O Lightning 4B v1.4.1 (H2O serving package) 84.90 (0.85x, 1.68x), Jev 1.14.0 75.71, H2O Lightning 4B v1.4.1 (weights only) 41.13, Florence-2-large 28.95, Florence-2-large-ft 27.85; 4 open-weight"},
+    {"quote": "- **#1 of 46 — Computer-use Composite** (open-weight Jev-class systems; #3 of 55 Jev-class systems, open or API,\n  behind two API systems scored on the board's smaller hosted-API item set), ImageJevBench computer-use track, edition\n  v0.3.0, page read 2026-10-31, its row for release v1.4.1 @d7f1b05a, measured 2026-10-28 at image temperature 1.0;\n  ahead of\n  Liquid d1-3B (Liquid AI, 66.22) and\n  Clef-Flash (Cloudflare, 55.29) ([details](#imagejevbench))", "tier": "static", "check": "quote", "note": "ImageJevBench page snapshot 20261031T1839Z (sha256 4522323c), computer-use track (no latency or cost shown: class = the board's inClass flag of the same system): in class, ranked or our row, by Composite: kettei-fat 85.10 and kettei-chub 84.90 (API, 66-item hosted subset), H2O-Lightning-4B v1.4.1 @d7f1b05a (image) 77.95 (measured 2026-10-28, image temperature 1.0; the 27 Oct row of the same weights left out), Imajev-4B 77.94, Liquid d1-3B 66.22, Clef-Flash 55.29 (both in class); 55 Jev-class rows with a Composite, 46 self-hosted (open-weight)"},
+    {"quote": "the board lists v1.4.1's row, composite 75.98, without a rank", "tier": "static", "check": "quote",
+     "note": "JevBench api/jevbench/latest revision v1.7.15, read 2026-10-28: row h2o-lightning-4b-v1.4.1, listing unranked (not_ranked_because: draw not yet equated), composite 75.9756 (the row measured v1.4.1, the same weights)"},
+    {"quote": "On Capability it is the second of 46 open-weight Jev-class models, behind H2O-Lightning-31B,\nand sixth of 55 Jev-class models, open or API.",
+     "tier": "static", "check": "quote", "note": "the pinned ImageJevBench page snapshot 20261031T1839Z (sha256 4522323c): v0.3.0 points inClass, ranked or our row h2o_lightning_4b_v141_d7f1_image (v1.4.1 @d7f1b05a, measured 2026-10-28, image temperature 1.0), the 27 Oct row of the same weights left out; JevBench api revision v1.7.15 ranked rows with capability.within_caps, reference rows excluded; ahead: H2O-Lightning-31B 80.88, kettei-fat 75.89, Sage 75.79, Drex Max 72.47, TypeSafe's image row 72.44"},
+    {"quote": "It is ahead of Drex Max (Nace AI, 44.65) and\nJev 1.13.0 + images (TypeSafe, 26.43)", "tier": "static", "check": "quote",
+     "note": "Jev 1.13.0 + images 26.4289 < Drex Max 44.6450 < ours 68.5137: ImageJevBench v0.3.0 composite, page snapshot 20261031T1839Z; both named rows Jev-class and well known"},
+    {"quote": "**Expected result:** text index 63.21 (140,178 scored rows) and public vision index 69.87 (12,210 rows)",
      "tier": "static", "check": "quote", "note": "the runbook's expected result is the Measured row"},
     {"quote": "differently (8 of the 24 probes in `tokenizer_contract.json`)", "tier": "static", "check": "quote",
      "note": "Qwen3_5Tokenizer 16/24, Qwen2Tokenizer (tokenizer/) 24/24"},
@@ -5835,7 +6713,43 @@ CLAIMS = [
     {"quote": "81.6 -> 99.2 decisions/s at 64 in flight; 21 of 687 answers flipped (McNemar p = 0.63) [d]", "tier": "static", "check": "quote",
      "note": "H100 2026-10-13, earlier weights; the flips are those weights'"},
     {"quote": "In all, 2,223,151\ntraining examples were read, 29,023 of them replays of earlier stages.", "tier": "static", "check": "quote",
-     "note": "counted from the files the trainer read, all stages; the first amendment's trained part as its corpus minus the second amendment's tail and cut"},
+     "note": "counted from the files the trainer read, all stages"},
+    {"quote": "| Decision Index 0.3 public vision rows (the run above, at the 1,638,400-pixel cap) | 12,210 | 76.2 % | 0.112 | **0.059** |", "tier": "static",
+     "check": "quote", "note": "the vision run at the new cap, served at 1.0 and re-scored at 0.65 from its per-row probabilities "
+     "and the kit gold; accuracy 0.7623, 10-bin top-label ECE 0.1118 / 0.0592; NLL fit 1.01 (halves 1.01 / 0.99)"},
+    {"quote": "The Decision Index 0.3 public vision index is\n69.87 at this cap against 69.42 at 1,048,576 pixels; in two paired runs of the same weights at the two caps the difference\nwas +0.67 [+0.08, +1.34] and +0.62 [+0.04, +1.31] (95 % intervals)",
+     "tier": "static", "check": "quote", "note": "69.874 (RTX PRO 6000) vs 69.42 (L40S); the paired runs: v1.4.1 weights, two-way, two serve.sh starts with the caps, the kit's index per run, bootstrap over rows"},
+    {"quote": "On MMStar (1,493 four-option questions, two-way) accuracy is 68.65 % at\nboth caps and the calibration error 0.0788 at this cap and 0.0769 at 1,048,576 pixels (+0.002 [−0.004, +0.008])",
+     "tier": "static", "check": "quote", "note": "two serve.sh starts (the two caps), 1,493 items each, every row two-way; 10-bin top-label ECE"},
+    {"quote": "5,742 of the 12,210 Decision Index vision rows have a larger image than 1,048,576\npixels", "tier": "static", "check": "quote",
+     "note": "rows of the new-cap vision run with an image_pixels entry above 1,048,576"},
+    {"quote": "| MMStar, four-option questions | 1,493 | 68.3 % | 0.175 | **0.081** |", "tier": "static", "check": "quote",
+     "note": "Lin-Chen/MMStar, 1,493 of 1,500 items parsed; two-way reads at 0.65 re-scored at 1.0; ECE 0.1748 / 0.0809"},
+    {"quote": "| image questions of the kinds it was trained on | 3,961 | 91.6 % | **0.018** | 0.078 |", "tier": "static",
+     "check": "quote", "note": "two-way reads re-scored at 1.0; ECE 0.0181 / 0.0779"},
+    {"quote": "| Decision Index 0.3 public text index (the kit's own scorer; the whole text run, 140,620 rows) | **63.64** | 63.19 |", "tier": "static",
+     "check": "quote", "note": "PROFILE=di vs default, one RTX PRO 6000 each, 140,620 rows answered in each; the kit's index.json of each run"},
+    {"quote": "| calibration error, all 140,620 text rows (274,729 questions with a gold answer; lower is better) | **0.0686** | 0.0706 |", "tier": "static",
+     "check": "quote", "note": "15 equal-width bins, top option, gold questions, the same rule as the Measured row; the two arms' results.jsonl"},
+    {"quote": "| latency, one request at a time, a 500-row sample of the text rows: median / mean / 80th / 95th percentile (nearest rank), ms | 44 / 121 / 142 / 453 | **25 / 80 / 122 / 349** |",
+     "tier": "static", "check": "quote", "note": "both shims on one engine, the same 500 text rows, one request at a time"},
+    {"quote": "| input tokens per request, mean, all 140,620 text rows | 1,819 | **956** |", "tier": "static", "check": "quote",
+     "note": "usage.input_tokens of every answered row of each run's results; re-read 70,814 of 323,259 questions"},
+    {"quote": "| input tokens per request, mean, the same 500-row sample (333 of its 2,270 questions read a second time) | 2,360 | **1,296** |",
+     "tier": "static", "check": "quote", "note": "the single-request sample's usage.input_tokens, both shims"},
+    {"quote": "+0.45 [+0.29, +0.63]", "tier": "static", "check": "quote",
+     "note": "paired group bootstrap within benchmark on the two runs' results (the kit's 0.3 scorer, 140,178 scored rows, 200 draws); MuSR 17 vs 8 discordant (p 0.108), ACOS 273 vs 86, SGD 47 vs 0 (per question, exact McNemar)"},
+    {"quote": "| BM25 selection (default) | **46.0 %** | 45.9 % | 38.7 % | 53.5 % |", "tier": "static", "check": "quote",
+     "note": "our padded test: 331 DI / JevBench public items padded to 60,000 tokens x 3 positions, the v1.4.1 package on one GPU at 40,960; padded_60k.v2.jsonl md5 74d13d88 scored against padded_60k.jsonl md5 11070ce7 (score_all3.json md5 0587e442)"},
+    {"quote": "| head and tail, 32,000 tokens (`SHIM_SELECTOR=headtail`) | 41.9 % | 46.8 % | 27.5 % | 51.4 % |", "tier": "static", "check": "quote",
+     "note": "padded_60k.ht32k.jsonl md5 d5d1e4bd"},
+    {"quote": "| head and tail at the context (39,000 tokens) | 40.9 % | 46.5 % | 26.4 % | 49.8 % |", "tier": "static", "check": "quote",
+     "note": "padded_60k.ht39k.jsonl md5 533098d8; 6 of 993 refused for length before the clamp, percentages over the 987 answered"},
+    {"quote": "Read unpadded, the same items score 61.3 % correct.", "tier": "static", "check": "quote", "note": "base.v2.jsonl md5 8368b1c1 (331 items)"},
+    {"quote": "(paired\nexact test, p = 4 × 10⁻⁶)", "tier": "static", "check": "quote",
+     "note": "McNemar exact on the same 993 requests: BM25 right / headtail-32k wrong 60, the reverse 19"},
+    {"quote": "+1.18 [+0.55, +1.82]", "tier": "static", "check": "quote",
+     "note": "the new-domain set, 7,107 questions; the two readings combined 2:1; the plain mean +1.31 [+0.53, +2.14]"},
 ]
 
 # ---------------------------------------------------------------------------------------------------- fixtures
@@ -5928,7 +6842,7 @@ class StaticTest(unittest.TestCase):
     def test_sibling_pins_match_the_shipped_files(self):
         shim = open(C.REPORT.read(os.path.join(folder(), "h2o_lightning_shim.py")), encoding="utf-8").read()
         pins = dict(re.findall(r"'([\w.]+\.py)': '([0-9a-f]{64})'", shim.split("SIBLING_SHA256 = ", 1)[1].split("\n", 1)[0]))
-        self.assertEqual(set(pins), {"box.py", "assets.py", "pooled_readout.py"})
+        self.assertEqual(set(pins), {"box.py", "assets.py", "pooled_readout.py", "selector_v2.py"})
         for name, want in pins.items():
             self.assertEqual(C.sha256_file(C.REPORT.read(os.path.join(folder(), name))), want, name)
 
@@ -6087,12 +7001,47 @@ class StaticTest(unittest.TestCase):
             self.assertNotIn(word, text)
         self.assertIn("Older versions: see the repo's tags.", text)
 
+    def test_no_changelog_text(self):
+        """The card says what the model is and how to use it now, with no changelog or version-history text (benchmark rows keep only
+        their provenance: board, edition, read date, the release the row measured). The obvious phrasings, in prose (fenced blocks skipped)."""
+        V = r"v\d+(?:\.\d+)+"
+        BANNED = [
+            ("dated update note", re.compile(r"\bUpdated \d{4}-\d{2}-\d{2}\b")),
+            ("version diff in brackets", re.compile(r"[(;]\s*" + V + r": ")),
+            ("since a version or update", re.compile(r"\bsince (?:" + V + r"\b|the \d{4}-\d{2}-\d{2} update)")),
+            ("as a version served it", re.compile(r"\bas " + V + r" served\b")),
+            ("two versions side by side", re.compile(r"\b" + V + r" and " + V + r"\b")),
+            ("a version keeps or ships another's", re.compile(r"\b(?:keeps|ships) " + V + r"'s\b")),
+            ("a version ignored or added", re.compile(r"\bwhich " + V + r" ignored\b|\b" + V + r" (?:adds|changes|ships it|removes|fixes)\b")),
+            ("old or new cap", re.compile(r"\b(?:the|at the) (?:old|new) (?:image )?cap\b")),
+            ("not run there", re.compile(r"\bhas not been run there\b")),
+            ("now does", re.compile(r"\bnow (?:carr(?:y|ies)|tracks?|applies|uses|reads|includes)\b")),
+            ("no longer", re.compile(r"\bno longer\b")),
+            ("brings back", re.compile(r"\bbrings back\b")),
+            ("version equals version", re.compile(r"\b" + V + r" default = " + V)),
+        ]
+        found, fence = [], False
+        for i, line in enumerate(readme().split("\n"), 1):
+            if line.strip().startswith("```"):
+                fence = not fence
+                continue
+            if not fence:
+                found += [f"{i}: {rule}: {line.strip()[:100]}" for rule, rx in BANNED if rx.search(line)]
+        self.assertEqual(found, [])
+
     def test_no_comparison_with_other_vendors_models_by_name(self):
-        """The card compares only H2O-Lightning releases with each other (and the benchmark's own reference model)."""
+        """The card names another vendor's model only when our RANKED row beats a well-known model (listed on
+        OpenRouter or from a frontier lab) on the same board and metric. ALLOWED is the list of such names, each pinned in CLAIMS against
+        the saved board file; every other competitor name is banned (sha256 of the lowercased word, so this file names none of them)."""
         import hashlib
-        banned = {"4b1ef08fd267928e19c3038c4a4952d865dc2153a25db9b3bd493c126a8bf946"}   # sha256 of one lowercased vendor product name
+        allowed = {"drex": "Drex Max (Nace AI", "typesafe": "Jev 1.13.0 + images (TypeSafe", "cloudflare": "(Cloudflare", "openai": "OpenAI Decisions", "liquid": "Liquid", "microsoft": "Microsoft-Decision-1", "perplexity": "(Perplexity"}   # word -> the model it names; each claim: our ranked row ahead on the same board and metric
+        banned = {'6b84d06fef55dc0293b74251d222462037dca026d550b1b1ccc346b1c6e33d46', '4b1ef08fd267928e19c3038c4a4952d865dc2153a25db9b3bd493c126a8bf946', '531edb055152cda358c78b8ec91eadbf5d2b8f4164a72d661d3b6f258b4bc5a0', 'd4a26992f160259c747d9e845b42e5a0f5e7096f4f31be00f44e30c4d44014bd', 'eba64e7fbf467970c6b788b6a998999c8a6e1e2df8a41dc37264ffde93695bc2', 'ba86c3e52a81fe02eeece8dd95a20e494d902332416f91a8ec3b8184b2a452e6', '3c989bdc774ef1407a0e4b587c33fe41d209eab1be53b9dff0a0abe7a958733b', 'cf4caaa22ba1306458be866f42c859b5d2ad3a378756a25401bb8be264478728', '1c82eef83f3d73fb262e870c176bc409e883de6c39c5ad3fb6400ee7395284a3', 'fef006271ec685af989ebf44fa02d9f4ba2de8d5c1248a1e205c53a1deb1413e', 'c21bb6c99169f4291c751233decb75befd74e409b50d8ff241539dadd4c679c2', 'f6ecf8339acd1a1d5d095df48f2b126d13c998b870ea057421a12871155247a1', '36255da96798dab07e9d3990cdd780ba5d6654387a0d8da1f958499db97df6f6', 'f88f5e0cb06d5cdffe613ddbe29b05ed214564ac8e6989ed7ce25fc342443213', 'a0cd47fedfcfe900365c26ca018913e23bc52e0a2097db8eadd52ddfb05e08fa'}
         words = set(re.findall(r"[a-z0-9]+", readme().lower()))
         self.assertEqual([w for w in words if hashlib.sha256(w.encode()).hexdigest() in banned], [])
+        for w, model in allowed.items():
+            if w in words:
+                self.assertTrue(any(model in c["quote"] or (w in c["quote"].lower() and "ahead of" in c["quote"]) for c in CLAIMS),
+                                f"{model} is named but no CLAIMS entry pins the ranked comparison")
 
     def test_links_resolve(self):
         import urllib.request
@@ -6269,8 +7218,13 @@ class LiveTest(unittest.TestCase):
                 self.assertEqual(st, 200, (mode, r))
                 self.assertEqual(r["attention_mode"], mode)
                 got[mode] = r
-            two, one = got["bidirectional"]["answers"]["outage"]["noul"], got["causal"]["answers"]["outage"]["noul"]
-            self.assertGreater(abs(two - one), 0.005, "the flagged and unflagged reads gave the same answer")
+            # the largest difference over every answer of the ticket: with a yes/no floor set (PROFILE=di's 0.801), an
+            # answer inside the floor band reads as the floor in both modes, so one answer alone cannot show the modes apart
+            def probs(a):
+                return {"noul": a["noul"]} if a["type"] == "noul" else dict(a["probabilities"])
+            gap = max(abs(probs(got["bidirectional"]["answers"][q])[k] - probs(got["causal"]["answers"][q])[k])
+                      for q in got["bidirectional"]["answers"] for k in probs(got["bidirectional"]["answers"][q]))
+            self.assertGreater(gap, 0.005, "the flagged and unflagged reads gave the same answers")
             C.REPORT.result("live_one_engine", got)
         finally:
             s.stop()
@@ -6363,7 +7317,7 @@ CONTROLS = [
     # (name, mutation of the card text, the test that must fail)
     ("a registered number changed", lambda t: t.replace("**206 / 231 (89.2 %)**", "**208 / 231 (90.0 %)**", 1), "test_registered_claims_are_in_the_card"),
     ("a file the card names does not exist", lambda t: t.replace("`serve_config.json`", "`serve_config_v2.json`", 1), "test_every_file_the_card_names_exists"),
-    ("a tag the card names does not exist", lambda t: t.replace("`--revision v1.4.1`", "`--revision v1.4.9`", 1), "test_pins_and_tags_resolve"),
+    ("a tag the card names does not exist", lambda t: t.replace("`--revision v1.4.2`", "`--revision v1.4.9`", 1), "test_pins_and_tags_resolve"),
     ("a json example made unparsable", lambda t: t.replace('"probabilities": {"p1": 0.948, "p2": 0.029, "p3": 0.023}},', '"probabilities": {"p1": 0.948, "p2": 0.029, "p3": 0.023},', 1), "test_json_blocks_parse_and_examples_pair_up"),
 ]
 # (name, mutation of serve.sh, the test that must fail): the two-engine refusal removed must be noticed
@@ -6662,10 +7616,14 @@ an evaluation runner depends on.
 """
 import base64
 import copy
+import io
 import json
 import math
 import os
 import re
+import socket
+import struct
+import subprocess
 import sys
 import threading
 import unittest
@@ -6701,6 +7659,8 @@ class FakeVLLM(BaseHTTPRequestHandler):
         cls.flagged, cls.flag_twist = [], 2.0        # the per-request attention flag (the one-engine fork)
         cls.writes, cls.tokenizes = [], 0             # (prompt, vllm_xargs prefix_cache_write); /tokenize calls
         cls.no_token_ids = False                      # an engine that does not return prompt_token_ids
+        cls.max_len = 40960                           # the context /v1/models reports; a longer prompt is refused
+        cls.refuse_twice = False                      # answer a doubled (re-read) prompt with vLLM's context error
 
     @classmethod
     def ids(cls, text):
@@ -6725,7 +7685,7 @@ class FakeVLLM(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
     def do_GET(self):
-        self._send(200, {"object": "list", "data": [{"id": CFG["model"], "max_model_len": 40960}]})
+        self._send(200, {"object": "list", "data": [{"id": CFG["model"], "max_model_len": FakeVLLM.max_len}]})
 
     def do_POST(self):
         req = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
@@ -6744,13 +7704,16 @@ class FakeVLLM(BaseHTTPRequestHandler):
         with FakeVLLM.lock:
             FakeVLLM.prompts.append(text)
             FakeVLLM.completions += 1
-        if "MOCK_OVERFLOW" in text:
-            return self._send(400, {"error": {"message": "This model's maximum context length is 40960 tokens."}})
+        if "MOCK_OVERFLOW" in text or len(self.ids(text)) + 1 > FakeVLLM.max_len:
+            return self._send(400, {"error": {"message": f"This model's maximum context length is {FakeVLLM.max_len} tokens."}})
         if "MOCK_500" in text:
             return self._send(500, {"error": {"message": "boom"}})
+        twice = S.REREAD_SEP in text
+        if twice and FakeVLLM.refuse_twice:
+            return self._send(400, {"error": {"message": "This model's maximum context length is 40960 tokens."}})
         ids = req["logprob_token_ids"]
         assert req["logprobs"] == len(ids) <= 128 and req["max_tokens"] == 1 and req["return_tokens_as_token_ids"]
-        m = re.search(r"MOCK_LP=(\[[^\]]*\])", text)
+        m = (twice and re.search(r"MOCK_LP2=(\[[^\]]*\])", text)) or re.search(r"MOCK_LP=(\[[^\]]*\])", text)
         lp = json.loads(m.group(1)) if m else None
         twist = FakeVLLM.flag_twist if (req.get("vllm_xargs") or {}).get("attention_mode") == "bidirectional" else 0.0
         with FakeVLLM.lock:
@@ -6788,6 +7751,8 @@ class FakeVLLM(BaseHTTPRequestHandler):
                     for p in m["content"])
         with FakeVLLM.lock:
             FakeVLLM.chats.append(req)
+        if len(self.ids(text)) + n_img * (self.IMAGE_TOKENS - 1) + 1 > FakeVLLM.max_len:
+            return self._send(400, {"error": {"message": f"This model's maximum context length is {FakeVLLM.max_len} tokens."}})
         if any(p.get("image_url", {}).get("url", "").endswith("MOCK_422.png") for m in req["messages"]
                if isinstance(m["content"], list) for p in m["content"]):
             return self._send(422, {"error": {"message": "Failed to fetch the image"}})
@@ -6840,6 +7805,35 @@ class ShimTest(unittest.TestCase):
         self.ssrv.shutdown()
         self.vsrv.shutdown()
 
+    def test_a_client_that_left_is_not_answered(self):
+        """A client that hangs up while its request is decided (its own deadline passed) gets no answer: the late
+        write's broken pipe is no error, so no traceback is printed and no 422 follows on the dead connection."""
+        deciding, gone, done = threading.Event(), threading.Event(), threading.Event()
+        decide = self.shim.decide
+
+        def late(body):
+            deciding.set()
+            gone.wait(5)
+            return decide(body)
+
+        class Watched(S.make_handler(self.shim)):
+            def finish(self):
+                super().finish()
+                done.set()
+
+        self.shim.decide = late
+        self.ssrv.RequestHandlerClass = Watched
+        body = json.dumps({"state": "x", "questions": {"d": OK_Q}}).encode()
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            with socket.create_connection(self.ssrv.server_address) as c:
+                c.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack("ii", 1, 0))   # close with a reset
+                c.sendall(b"POST /v1/systemone HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\n"
+                          b"Content-Length: %d\r\n\r\n%s" % (len(body), body))
+                self.assertTrue(deciding.wait(5))
+            gone.set()
+            self.assertTrue(done.wait(5))
+        self.assertNotIn("Traceback", err.getvalue())
+
     def test_choice_prompt_and_probabilities(self):
         body = {"state": {"doc": "MOCK_LP=[-0.2,-1.9,-3.0]"}, "questions": {"decision": {
             "type": "choice", "instructions": "Which?", "criteria": {"x": "first", "y": "second", "z": "third"}}}}
@@ -6857,14 +7851,36 @@ class ShimTest(unittest.TestCase):
         self.assertTrue(text.endswith("<|im_start|>assistant\n<think>\n\n</think>\n\nAnswer:"))
 
     def test_yes_no_floor_and_threshold(self):
+        # v1.4.2 ships the floor off (the 2026-10-29 C-0 ruling): a 0.55 yes/no answer is served as read
+        self.assertEqual(CFG["noul_floor"], 0)
         lp = [math.log(0.55), math.log(0.45)]
         q = {"type": "noul", "instructions": "Holds?", "criteria": {"true": "t", "false": "f"}, "threshold": 0.9}
         st, r = post(self.url, {"state": f"MOCK_LP={json.dumps(lp)}", "questions": {"d": q}})
         a = r["answers"]["d"]
-        self.assertEqual((st, a["noul"], a["decision"]), (200, CFG["noul_floor"], False))
+        self.assertEqual((st, a["decision"]), (200, False))
+        self.assertAlmostEqual(a["noul"], softmax_t(lp)[0], places=12)
         lp = [math.log(0.02), math.log(0.98)]        # committed: left alone
         st, r = post(self.url, {"state": f"MOCK_LP={json.dumps(lp)}", "questions": {"d": q}})
         self.assertAlmostEqual(r["answers"]["d"]["noul"], softmax_t(lp)[0], places=12)
+
+    def test_an_explicit_floor_and_threshold_decisions(self):
+        """SHIM_NOUL_FLOOR (PROFILE=di pins 0.801) moves an unsure yes/no answer to the floor on its own side, never across:
+        the yes/no choice stays; a threshold decision reads the served probability, so it can change with the floor
+        (accepted 2026-10-29): 0.6 against a threshold of 0.7 is false with the floor off and true at 0.801."""
+        ct = S.Contract(dict(copy.deepcopy(CFG), _config_dir=HERE), env={"SHIM_NOUL_FLOOR": "0.801"})
+        self.assertEqual((ct.noul_floor, ct.two_way.noul_floor), (0.801, 0.801))
+        names, lp = ["true", "false"], [math.log(0.6), math.log(0.4)]
+        off = S.format_answer("noul", names, names, lp, 1.0, 0, 0.7)
+        on = S.format_answer("noul", names, names, lp, 1.0, 0.801, 0.7)
+        self.assertAlmostEqual(off["noul"], 0.6, places=12)
+        self.assertEqual((on["noul"], off["decision"], on["decision"]), (0.801, False, True))
+        no = S.format_answer("noul", names, names, [math.log(0.4), math.log(0.6)], 1.0, 0.801)
+        self.assertAlmostEqual(no["noul"], 1 - 0.801, places=12)               # the floor on the no side
+
+    def test_the_default_health_reports_the_floor_off(self):
+        h = self.shim.health()
+        self.assertEqual(h["noul_floor"], {"value": 0.0, "source": "serve_config.json"})
+        self.assertEqual((self.shim.c.noul_floor, self.shim.c.two_way.noul_floor), (0.0, 0.0))
 
     def test_score_and_several_questions(self):
         qs = {"s": {"type": "score", "instructions": "rate", "criteria": ["lo", "mid", "hi"]},
@@ -6955,7 +7971,8 @@ class ShimTest(unittest.TestCase):
         self.assertEqual((st, FakeVLLM.completions, r["answers"]["decision"]["choice"]), (200, 2, "opt150"))
 
     def test_long_state_keeps_head_and_tail(self):
-        self.shim.c.max_state_tokens = 40
+        # selector headtail: v1.4.1's cut of a record over prompt.max_state_tokens (the default v2: LongRecordTest)
+        self.shim.c.selector, self.shim.c.max_state_tokens = "headtail", 40
         st, r = post(self.url, {"state": " ".join(f"w{i}" for i in range(100)), "questions": {"d": OK_Q}})
         text = FakeVLLM.prompts[-1]
         self.assertEqual(st, 200)
@@ -7421,8 +8438,8 @@ class UsageTest(unittest.TestCase):
         FakeVLLM.reset()
         vsrv, vurl = serve(FakeVLLM)
         cfg = copy.deepcopy(CFG)
-        cfg["prompt"] = dict(cfg["prompt"], max_state_tokens=max_state_tokens)
-        shim = S.Shim(S.Contract(cfg, env={}), S.VLLM(vurl, CFG["model"]))
+        # the record capped with SHIM_MAX_STATE_TOKENS (selector v2 selects it down to the cap)
+        shim = S.Shim(S.Contract(cfg, env={"SHIM_MAX_STATE_TOKENS": str(max_state_tokens)}), S.VLLM(vurl, CFG["model"]))
         ssrv, url = serve(S.make_handler(shim))
         try:
             return post(url, body, path)
@@ -7765,9 +8782,12 @@ class TwoWayTest(unittest.TestCase):
         self.start(self.TW)
         lp = [math.log(0.6), math.log(0.4)]
         q = {"type": "noul", "instructions": "Holds?", "criteria": {"true": "t", "false": "f"}}
-        # one-way: 0.6 at T 1 is under the 0.801 floor -> the floor; two-way: the twist flips it, floor 0.9 applies
+        # one-way: 0.6 / 0.4 read at the config's yes/no temperature, with the shipped floor (off since v1.4.2) served as
+        # read; two-way: the twist flips it, this test config's two-way floor 0.9 applies
         st, r = post(self.url, {"state": f"MOCK_LP={json.dumps(lp)}", "questions": {"d": q}, "attention_mode": "causal"})
-        self.assertEqual((st, r["answers"]["d"]["noul"]), (200, CFG["noul_floor"]))
+        self.assertEqual(st, 200, r)
+        t_one = self.shim.c.temperature_by_type["noul"]
+        self.assertAlmostEqual(r["answers"]["d"]["noul"], S.commit_noul(S.probabilities(lp, t_one)[0], CFG["noul_floor"]), places=12)
         st, r = post(self.url, {"state": f"MOCK_LP={json.dumps(lp)}", "questions": {"d": q}, "attention_mode": "bidirectional"})
         p_two = S.probabilities([lp[0] - FakePool.TWIST, lp[1]], 0.5)[0]       # the twist flips it; T 0.5, floor 0.9
         self.assertEqual(st, 200, r)
@@ -8295,6 +9315,18 @@ class OneEngineFlagTest(unittest.TestCase):
         self.assertLess(self.shim.two_way_anchor, 1e-6)
         self.assertGreater(self.shim.two_way_separation, 0.05)
 
+    def test_kwargs_attention_mode_on_the_two_way_default(self):
+        # the 31B card's form {"kwargs": {"attention_mode": "causal"}} reads one-way here too (was silently two-way)
+        self.start(self.reference(FakeVLLM.flag_twist))
+        body = {"state": {"doc": "MOCK_LP=[-0.2,-1.9,-3.0]"}, "questions": {"d": {
+            "type": "choice", "instructions": "Which?", "criteria": {"x": "first", "y": "second", "z": "third"}}}}
+        st, one = post(self.url, dict(body, kwargs={"attention_mode": "causal"}))
+        self.assertEqual((st, one["attention_mode"]), (200, "causal"), one)
+        for k, p in zip("xyz", softmax_t([-0.2, -1.9, -3.0])):
+            self.assertAlmostEqual(one["answers"]["d"]["probabilities"][k], p, places=9)
+        st, r = post(self.url, dict(body, attention_mode="bidirectional", kwargs={"attention_mode": "causal"}))
+        self.assertEqual(st, 400, r)
+
     def test_an_engine_that_ignores_the_flag_is_refused(self):
         FakeVLLM.flag_twist = 0.0                                       # stock vLLM: the flag changes nothing
         self.start(self.reference(2.0))
@@ -8312,6 +9344,576 @@ class OneEngineFlagTest(unittest.TestCase):
         self.assertEqual(st, 503, r)
         self.assertIn("probe_reference is missing", r["detail"])
 
+
+FILLER = ["The quarterly review covered staffing, the cafeteria menu and the parking rota for paragraph %d." % i
+          for i in range(60)]
+NEEDLE = "Invoice INV-4471 was issued by Zephyr Corp on 2026-03-14 for the turbine overhaul."
+NEEDLE2 = "The backup generator at site Kestrel failed its load test and must be replaced."
+
+
+def long_record(needle_at=30, needles=(NEEDLE,)):
+    paras = list(FILLER)
+    for k, n in enumerate(needles):
+        paras.insert(needle_at + 10 * k, n)
+    return "\n\n".join(paras)
+
+
+QV = {"type": "choice", "instructions": "Which company issued invoice INV-4471?",
+      "criteria": {"zephyr": "Zephyr Corp", "acme": "Acme Ltd"}}
+QG = {"type": "noul", "instructions": "Must the backup generator at site Kestrel be replaced?"}
+
+
+class LongRecordTest(unittest.TestCase):
+    """OVER-CONTEXT: a question whose prompt would not fit vLLM's context gets its record BM25-selected
+    (selector_v2, the 31B's) to the room its own prompt leaves, never a 422 and never trimmed under the model's own
+    limit; a request that fits is read exactly as v1.4.1 read it. The stand-in engine refuses a prompt over its
+    max_model_len, as vLLM does."""
+
+    def setUp(self):
+        FakeVLLM.reset()
+        self.vsrv, self.vurl = serve(FakeVLLM)
+        self.servers = []
+
+    def tearDown(self):
+        for srv in self.servers + [self.vsrv]:
+            srv.shutdown()
+
+    def start(self, env=None, cfg=None):
+        # small contexts stand in for the 4B's 40,960 (min_context lowered to let them start)
+        shim = S.Shim(S.Contract(copy.deepcopy(cfg or CFG), env=env or {}), S.VLLM(self.vurl, CFG["model"]), min_context=64)
+        srv, url = serve(S.make_handler(shim))
+        self.servers.append(srv)
+        return shim, url
+
+    def ntok(self, text):
+        return len(FakeVLLM.ids(text))
+
+    def test_a_request_that_fits_is_read_as_v141_read_it(self):
+        body = {"state": {"doc": "MOCK_LP=[-0.2,-1.9,-3.0]", "notes": "a short record"},
+                "questions": {"d": Q3, "e": {"type": "noul", "instructions": "ok?"}}}
+        _s, v2 = self.start()
+        _h, old = self.start({"SHIM_SELECTOR": "headtail"})
+        st1, r1 = post(v2, copy.deepcopy(body))
+        p1 = sorted(FakeVLLM.prompts)
+        FakeVLLM.prompts.clear()
+        st2, r2 = post(old, copy.deepcopy(body))
+        p2 = sorted(FakeVLLM.prompts)
+        self.assertEqual((st1, st2), (200, 200))
+        self.assertEqual(p1, p2)                                   # the same prompts, byte for byte
+        for r in (r1, r2):
+            r["usage"].pop("latency_ms")
+        self.assertEqual(r1, r2)                                   # the same response (no state_selection field)
+        self.assertNotIn("state_selection", r1["effort_used"])
+
+    def test_never_trimmed_under_its_own_limit(self):
+        # a record over prompt.max_state_tokens (v1.4.1 cut it there) that fits the context is read whole
+        cfg = copy.deepcopy(CFG)
+        cfg["prompt"] = dict(cfg["prompt"], max_state_tokens=40)
+        _s, url = self.start(cfg=cfg)
+        rec = " ".join(f"w{i}" for i in range(100))
+        st, r = post(url, {"state": rec, "questions": {"d": OK_Q}})
+        self.assertEqual(st, 200, r)
+        self.assertIn(rec, FakeVLLM.prompts[-1])
+        self.assertNotIn("state_selection", r["effort_used"])
+
+    def test_over_context_is_bm25_selected_to_fit(self):
+        rec = long_record()
+        FakeVLLM.max_len = self.ntok(rec) // 3                     # the record is three times the context
+        _s, url = self.start()
+        st, r = post(url, {"state": rec, "questions": {"v": QV}})
+        self.assertEqual(st, 200, r)
+        sent = FakeVLLM.prompts[-1]
+        self.assertIn(NEEDLE, sent)                                # the relevant paragraph kept
+        self.assertLessEqual(self.ntok(sent), FakeVLLM.max_len - S.CONTEXT_SLACK)
+        self.assertIn("Zephyr Corp", sent)                         # the options whole
+        self.assertEqual(r["effort_used"]["state_selection"], "bm25 (selector v2)")
+        self.assertGreater(r["usage"]["input_tokens"], r["usage"]["processed_input_tokens"])   # billed as read whole
+        self.assertEqual(set(r["answers"]["v"]["probabilities"]), {"zephyr", "acme"})
+
+    def test_budget_edge(self):
+        rec = long_record()
+        _s, url = self.start()
+        st, _r = post(url, {"state": rec, "questions": {"v": QV}})
+        n = self.ntok(FakeVLLM.prompts[-1])                        # the whole prompt's tokens
+        for max_len, whole in ((n + S.CONTEXT_SLACK, True), (n + S.CONTEXT_SLACK - 1, False)):
+            FakeVLLM.prompts.clear()
+            FakeVLLM.max_len = max_len
+            _s2, url2 = self.start()
+            st, r = post(url2, {"state": rec, "questions": {"v": QV}})
+            self.assertEqual(st, 200, r)
+            self.assertEqual(rec in FakeVLLM.prompts[-1], whole, max_len)
+            self.assertEqual("state_selection" in r["effort_used"], not whole, max_len)
+
+    def test_each_question_of_a_record_is_fitted_on_its_own(self):
+        rec = long_record(15, (NEEDLE, NEEDLE2))
+        FakeVLLM.max_len = self.ntok(rec) // 3
+        _s, url = self.start()
+        st, r = post(url, {"state": rec, "questions": {"v": QV, "g": QG}})
+        self.assertEqual(st, 200, r)
+        by_q = {("v" if "INV-4471?" in p else "g"): p for p in FakeVLLM.prompts}
+        self.assertIn(NEEDLE, by_q["v"])
+        self.assertIn(NEEDLE2, by_q["g"])
+        for p in by_q.values():
+            self.assertLessEqual(self.ntok(p), FakeVLLM.max_len - S.CONTEXT_SLACK)
+
+    def test_no_matching_part_keeps_head_and_tail(self):
+        rec = long_record()
+        FakeVLLM.max_len = self.ntok(rec) // 3
+        _s, url = self.start()
+        q = {"type": "choice", "instructions": "zzqx?", "criteria": {"qqv": "vvq", "wwk": "kkw"}}
+        st, r = post(url, {"state": rec, "questions": {"d": q}})
+        self.assertEqual(st, 200, r)
+        self.assertIn("\n...\n", FakeVLLM.prompts[-1])
+        self.assertEqual(r["effort_used"]["state_selection"], "no match; head+tail")
+
+    def test_a_question_longer_than_the_context_is_still_answered(self):
+        FakeVLLM.max_len = 300
+        _s, url = self.start()
+        long_q = {"type": "choice", "instructions": " ".join(f"clause{i}" for i in range(600)),
+                  "criteria": {"keep": "the first", "drop": "the second"}}
+        st, r = post(url, {"state": long_record(), "questions": {"d": long_q}})
+        self.assertEqual(st, 200, r)
+        self.assertLessEqual(self.ntok(FakeVLLM.prompts[-1]), FakeVLLM.max_len - S.CONTEXT_SLACK)
+        self.assertIn("instructions cut", r["effort_used"]["state_selection"])
+        self.assertIn("record left out", r["effort_used"]["state_selection"])
+        self.assertEqual(set(r["answers"]["d"]["probabilities"]), {"keep", "drop"})
+        long_o = {"type": "choice", "instructions": "Which?",
+                  "criteria": {"a": " ".join(f"x{i}" for i in range(400)), "b": " ".join(f"y{i}" for i in range(400))}}
+        st, r = post(url, {"state": "short", "questions": {"d": long_o}})
+        self.assertEqual(st, 200, r)
+        self.assertIn("option descriptions cut", r["effort_used"]["state_selection"])
+        self.assertEqual(set(r["answers"]["d"]["probabilities"]), {"a", "b"})   # the request's names
+
+    def test_the_cap_selects_below_the_context(self):
+        rec = long_record()
+        _s, url = self.start({"SHIM_MAX_STATE_TOKENS": "200"})
+        st, r = post(url, {"state": rec, "questions": {"v": QV}})
+        self.assertEqual(st, 200, r)
+        self.assertIn(NEEDLE, FakeVLLM.prompts[-1])
+        self.assertNotIn(rec, FakeVLLM.prompts[-1])
+        self.assertEqual(r["effort_used"]["state_selection"], "bm25 (selector v2)")
+
+    def test_the_openai_wire_and_the_alias_never_fail_either(self):
+        rec = long_record()
+        FakeVLLM.max_len = self.ntok(rec) // 3
+        _s, url = self.start()
+        oai = {"model": CFG["model"], "input": rec,
+               "questions": [{"type": "predicate", "instructions": "Was invoice INV-4471 issued by Zephyr Corp?"}]}
+        st, r = post(url, oai, "/v1/decisions")
+        self.assertEqual(st, 200, r)
+        self.assertIn(NEEDLE, FakeVLLM.prompts[-1])
+        st, r = post(url, {"state": rec, "questions": {"v": QV}}, "/api/alpha/decisions")
+        self.assertEqual(st, 200, r)
+        self.assertIn(NEEDLE, FakeVLLM.prompts[-1])
+
+    def test_an_image_request_counts_the_images(self):
+        rec = long_record()
+        FakeVLLM.max_len = self.ntok(rec) // 3 + 2 * 1026         # the record's third plus two images' bound
+        _s, url = self.start(cfg=ICFG)
+        img = S._data_uri("image/png", png_bytes())
+        st, r = post(url, {"state": rec, "images": [img, img], "questions": {"v": QV}})
+        self.assertEqual(st, 200, r)
+        text = FakeVLLM.chats[-1]["messages"][1]["content"][-1]["text"]
+        self.assertIn(NEEDLE, text)
+        self.assertEqual(r["effort_used"]["state_selection"], "bm25 (selector v2)")
+
+    def test_a_two_way_read_is_fitted_too(self):
+        rec = long_record()
+        FakeVLLM.max_len = self.ntok(rec) // 3
+        cfg = copy.deepcopy(CFG)
+        cfg["labels"] = CFG["labels"][:8]
+        cfg["two_way"] = {"label_rows": "label_rows.safetensors", "temperature": 0.5, "noul_floor": 0.9,
+                          "probe_reference": OneEngineFlagTest.reference(FakeVLLM.flag_twist)}
+        shim, url = self.start(cfg=cfg)
+        shim.two_way_flag = True
+        st, r = post(url, {"state": rec, "questions": {"v": QV}, "attention_mode": "bidirectional"})
+        self.assertEqual((st, r.get("attention_mode")), (200, "bidirectional"), r)
+        self.assertIn(NEEDLE, FakeVLLM.prompts[-1])
+
+    def test_an_unknown_selector_is_refused(self):
+        with self.assertRaises(ValueError):
+            S.Contract(copy.deepcopy(CFG), env={"SHIM_SELECTOR": "bm99"})
+
+
+class RereadTest(unittest.TestCase):
+    """The DI profile's conditional re-read (SHIM_REREAD_BELOW; serve.sh PROFILE=di): off by default (the serving is
+    unchanged); on, a text question whose first-read top probability BEFORE the yes/no floor is under the threshold
+    is read again with its user turn written twice, and is answered with the MEAN of the two reads' probability
+    vectors (MOCK_LP2 is what the stand-in returns for a doubled prompt). A doubled prompt the engine cannot take, or
+    one over the context, keeps the first answer; over-context records are re-read as selected; images are read once."""
+
+    def setUp(self):
+        FakeVLLM.reset()
+        self.vsrv, self.vurl = serve(FakeVLLM)
+        self.servers = []
+
+    def tearDown(self):
+        for srv in self.servers + [self.vsrv]:
+            srv.shutdown()
+
+    def start(self, env, cfg=CFG):
+        self.shim = S.Shim(S.Contract(copy.deepcopy(cfg), env=env), S.VLLM(self.vurl, CFG["model"]), min_context=64)
+        srv, self.url = serve(S.make_handler(self.shim))
+        self.servers.append(srv)
+        return self.url
+
+    def T(self, typ):
+        t = self.shim.temperatures(self.shim.default_mode())[0]
+        return t[typ] if isinstance(t, dict) else t
+
+    def p(self, lp, typ="choice"):
+        return S.probabilities(lp, self.T(typ))
+
+    @staticmethod
+    def q(lp1, lp2, typ="choice"):
+        """a question carrying its own stand-in log-probabilities (the instructions are in the user turn)"""
+        mock = f"MOCK_LP={json.dumps(lp1)} MOCK_LP2={json.dumps(lp2)}"
+        if typ == "noul":
+            return {"type": "noul", "instructions": f"Holds? {mock}"}
+        return {"type": "choice", "instructions": f"Which? {mock}", "criteria": {"x": "first", "y": "second", "z": "third"}}
+
+    @staticmethod
+    def lp_top(top):
+        """3-option log-probabilities whose softmax at T is (top, rest/2, rest/2): T * log(p) for any T"""
+        r = (1.0 - top) / 2
+        return lambda T: [T * math.log(top), T * math.log(r), T * math.log(r)]
+
+    def test_off_by_default_and_the_off_path_is_unchanged(self):
+        unsure, again = [-1.0, -1.1, -1.2], [-0.1, -3.0, -3.0]
+        body = {"state": "a record", "questions": {"d": self.q(unsure, again), "e": self.q([0.0, -0.5], [0.0, -4.0], "noul")}}
+        self.start({})
+        st, r = post(self.url, copy.deepcopy(body))
+        self.assertEqual((st, FakeVLLM.completions), (200, 2), r)
+        self.assertNotIn("reread", r["effort_used"])
+        self.assertFalse(any(S.REREAD_SEP in x for x in FakeVLLM.prompts))
+        self.assertNotIn("reread_below", self.shim.health())
+        for k, v in zip("xyz", self.p(unsure)):
+            self.assertAlmostEqual(r["answers"]["d"]["probabilities"][k], v, places=12)
+
+    def test_fires_exactly_below_the_threshold_with_counts(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        T = self.T("choice")
+        above, below, sure = self.lp_top(0.8 + 1e-6)(T), self.lp_top(0.8 - 1e-6)(T), self.lp_top(0.99)(T)
+        self.assertGreaterEqual(max(self.p(above)), 0.8)
+        self.assertLess(max(self.p(below)), 0.8)
+        again = [-0.1, -3.0, -3.0]
+        st, r = post(self.url, {"state": "s", "questions": {"a": self.q(above, again), "b": self.q(below, again),
+                                                             "c": self.q(sure, again)}})
+        self.assertEqual(st, 200, r)
+        self.assertEqual(r["effort_used"]["reread"], {"below": 0.8, "first_weight": 0.6667, "questions": 1})
+        self.assertEqual(FakeVLLM.completions, 4)                        # 3 first reads + 1 re-read
+        doubled = [x for x in FakeVLLM.prompts if S.REREAD_SEP in x]
+        self.assertEqual(len(doubled), 1)
+        self.assertIn(json.dumps(below), doubled[0])                     # the re-read is question b's
+        for qid, lp in (("a", above), ("c", sure)):                     # the others: their first read, as served
+            for k, v in zip("xyz", self.p(lp)):
+                self.assertAlmostEqual(r["answers"][qid]["probabilities"][k], v, places=12)
+        self.assertEqual(self.shim.health()["reread_below"], 0.8)
+        n = [0]
+        for lp in (above, below, sure, self.lp_top(0.5)(T)):             # one question per request: 0, 1, 0, 1
+            FakeVLLM.reset()
+            st, r = post(self.url, {"state": "s", "questions": {"d": self.q(lp, again)}})
+            n.append(r["effort_used"]["reread"]["questions"])
+            self.assertEqual(FakeVLLM.completions, 1 + n[-1])
+        self.assertEqual(n[1:], [0, 1, 0, 1])
+
+    def test_the_answer_is_the_2_to_1_first_weighted_mean(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        first, again = [-1.0, -1.1, -1.2], [-3.0, -0.1, -3.0]             # the re-read leans to y
+        st, r = post(self.url, {"state": "s", "questions": {"d": self.q(first, again)}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"]), (200, 1), r)
+        self.assertEqual(S.REREAD_FIRST_WEIGHT, 2.0 / 3.0)
+        mix = [2.0 / 3.0 * a + 1.0 / 3.0 * b for a, b in zip(self.p(first), self.p(again))]
+        a = r["answers"]["d"]
+        for k, v in zip("xyz", mix):
+            self.assertAlmostEqual(a["probabilities"][k], v, places=12)
+        self.assertEqual(a["choice"], "xyz"[max(range(3), key=mix.__getitem__)])
+        self.assertAlmostEqual(sum(a["probabilities"].values()), 1.0, places=12)
+        doubled = [x for x in FakeVLLM.prompts if S.REREAD_SEP in x][0]
+        user = doubled.split("<|im_start|>user\n")[1].split("<|im_end|>")[0]
+        one, two = user.split(S.REREAD_SEP)
+        self.assertEqual(one, two)                                       # the user turn, written twice
+        self.assertEqual(r["usage"]["input_tokens"], sum(len(FakeVLLM.ids(t)) for t in FakeVLLM.prompts))
+
+    def test_score_questions_are_re_read_and_mixed_2_to_1(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        first, again = [-1.0, -1.1, -1.2], [-0.1, -3.0, -3.0]
+        mock = f"MOCK_LP={json.dumps(first)} MOCK_LP2={json.dumps(again)}"
+        q = {"type": "score", "instructions": f"Rate it. {mock}", "criteria": ["low", "mid", "high"]}
+        st, r = post(self.url, {"state": "s", "questions": {"d": q}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"], FakeVLLM.completions), (200, 1, 2), r)
+        mix = [2.0 / 3.0 * a + 1.0 / 3.0 * b for a, b in zip(self.p(first, "score"), self.p(again, "score"))]
+        a = r["answers"]["d"]
+        for k, v in zip("012", mix):
+            self.assertAlmostEqual(a["probabilities"][k], v, places=12)
+        self.assertAlmostEqual(a["score"], sum(i * v for i, v in enumerate(mix)), places=12)
+        self.assertAlmostEqual(a["confidence"], max(mix), places=12)
+        FakeVLLM.reset()                                                 # a confident score: read once
+        T = self.T("score")
+        sure = [T * math.log(0.9), T * math.log(0.05), T * math.log(0.05)]
+        q2 = dict(q, instructions=f"Rate it. MOCK_LP={json.dumps(sure)} MOCK_LP2={json.dumps(again)}")
+        st, r = post(self.url, {"state": "s", "questions": {"d": q2}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"], FakeVLLM.completions), (200, 0, 1), r)
+
+    def test_yes_no_is_read_once_with_the_floor_on(self):
+        # the gate is the SERVED top probability (the measured rule): PROFILE=di's env (serve.sh) pins the floor at 0.801,
+        # which puts a yes/no answer at >= 0.801
+        self.start({"SHIM_REREAD_BELOW": "0.8", "SHIM_NOUL_FLOOR": "0.801"})
+        T = self.T("noul")
+        self.assertGreaterEqual(self.shim.c.noul_floor, 0.8)
+        unsure, sure = [T * math.log(0.7), T * math.log(0.3)], [T * math.log(0.9), T * math.log(0.1)]
+        st, r = post(self.url, {"state": "s", "questions": {"d": self.q(unsure, sure, "noul")}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"], FakeVLLM.completions), (200, 0, 1), r)
+        self.assertAlmostEqual(r["answers"]["d"]["noul"], self.shim.c.noul_floor, places=12)
+        FakeVLLM.reset()                                                 # with the floor off the same rule reaches it
+        self.start({"SHIM_REREAD_BELOW": "0.8", "SHIM_NOUL_FLOOR": "0"})
+        st, r = post(self.url, {"state": "s", "questions": {"d": self.q(unsure, sure, "noul")}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"]), (200, 1), r)
+        self.assertAlmostEqual(r["answers"]["d"]["noul"], 2.0 / 3.0 * 0.7 + 1.0 / 3.0 * 0.9, places=12)
+
+    def test_a_doubled_prompt_the_engine_refuses_keeps_the_first_answer(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        FakeVLLM.refuse_twice = True
+        unsure = [-1.0, -1.1, -1.2]
+        st, r = post(self.url, {"state": "s", "questions": {"d": self.q(unsure, [-0.1, -3.0, -3.0])}})
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"]), (200, 0), r)
+        for k, v in zip("xyz", self.p(unsure)):
+            self.assertAlmostEqual(r["answers"]["d"]["probabilities"][k], v, places=12)
+
+    def test_a_doubled_prompt_over_the_context_is_not_sent(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        post(self.url, {"state": "s", "questions": {"d": OK_Q}})         # the backend check reads max_model_len
+        q = self.q([-1.0, -1.1, -1.2], [-0.1, -3.0, -3.0])
+        once = len(FakeVLLM.ids(self.shim.c.question_prompt(S.render_state("s", True), q)[0]))
+        self.shim.max_model_len = once + 20                              # the single read fits, the doubled one not
+        FakeVLLM.reset()
+        st, r = post(self.url, {"state": "s", "questions": {"d": q}})
+        self.assertEqual((st, FakeVLLM.completions, r["effort_used"]["reread"]["questions"]), (200, 1, 0), r)
+
+    def test_long_inputs_never_fail_and_a_selected_record_is_read_once(self):
+        # BM25 fills the context, so the doubled prompt of a selected record never fits: no re-read is sent, the first
+        # read stands, nothing fails
+        rec = long_record()
+        FakeVLLM.max_len = len(FakeVLLM.ids(rec)) // 3                   # the record is three times the context
+        self.start({"SHIM_REREAD_BELOW": "0.8"})
+        q = dict(QV, instructions=QV["instructions"] + " MOCK_LP=[-0.6,-0.8] MOCK_LP2=[-0.1,-2.5]")
+        st, r = post(self.url, {"state": rec, "questions": {"v": q, "g": dict(QG)}})
+        self.assertEqual(st, 200, r)
+        self.assertIn("bm25 (selector v2)", r["effort_used"]["state_selection"])
+        self.assertLess(max(self.p([-0.6, -0.8])), 0.8)                  # v is under the threshold
+        self.assertEqual((r["effort_used"]["reread"]["questions"], FakeVLLM.completions), (0, 2))
+        self.assertFalse(any(S.REREAD_SEP in x for x in FakeVLLM.prompts))
+        self.assertTrue(all(len(FakeVLLM.ids(x)) + 1 <= FakeVLLM.max_len for x in FakeVLLM.prompts))
+        FakeVLLM.reset()
+        FakeVLLM.max_len = 40960
+        st, r = post(self.url, {"state": "x " * 30000, "questions": {"v": q}})   # near the 40,960 context, read whole
+        self.assertEqual((st, r["effort_used"]["reread"]["questions"], FakeVLLM.completions), (200, 0, 1), r)
+
+    def test_bad_threshold_is_refused(self):
+        for v in ("0", "1.5", "-0.1", "x"):
+            with self.assertRaises(ValueError):
+                S.Contract(copy.deepcopy(CFG), env={"SHIM_REREAD_BELOW": v})
+
+    def test_image_requests_are_read_once(self):
+        self.start({"SHIM_REREAD_BELOW": "0.8"}, ICFG)
+        st, r = post(self.url, {"state": {"photo": PNG_URI, "note": "MOCK_LP=[-1.0,-1.1,-1.2]"}, "questions": {"d": Q3}})
+        self.assertEqual((st, len(FakeVLLM.chats), FakeVLLM.completions), (200, 1, 0), r)
+        self.assertNotIn("reread", r["effort_used"])
+
+    def test_serve_sh_profile_switch(self):
+        sh = open(os.path.join(HERE, "serve.sh")).read()
+        self.assertIn('di) export SHIM_REREAD_BELOW="${SHIM_REREAD_BELOW:-0.8}" SHIM_NOUL_FLOOR="${SHIM_NOUL_FLOOR:-0.801}";;', sh)
+        # run serve.sh's own PROFILE line: di exports the re-read threshold and the 0.801 floor (a user value wins); unset
+        # exports neither
+        case = next(line for line in sh.splitlines() if line.startswith('case "${PROFILE:-}"'))
+        show = case + '; echo "${SHIM_REREAD_BELOW:-unset} ${SHIM_NOUL_FLOOR:-unset}"'
+        env = {k: v for k, v in os.environ.items() if k not in ("SHIM_REREAD_BELOW", "SHIM_NOUL_FLOOR", "PROFILE")}
+        run = lambda extra: subprocess.run(["bash", "-c", show], env=dict(env, **extra), capture_output=True, text=True,
+                                           timeout=30).stdout.split()
+        self.assertEqual(run({"PROFILE": "di"}), ["0.8", "0.801"])
+        self.assertEqual(run({"PROFILE": "di", "SHIM_NOUL_FLOOR": "0.9"}), ["0.8", "0.9"])
+        self.assertEqual(run({}), ["unset", "unset"])
+        out = subprocess.run(["bash", os.path.join(HERE, "serve.sh")], env=dict(os.environ, PROFILE="bogus"),
+                             capture_output=True, text=True, timeout=30)
+        self.assertEqual(out.returncode, 1)
+        self.assertIn("PROFILE must be di or unset", out.stdout + out.stderr)
+
+
+class HeadtailClampTest(unittest.TestCase):
+    """Selector headtail's per-question context clamp (v1.4.2): with SHIM_MAX_STATE_TOKENS near the context, a question
+    whose prompt with the head+tail record would not fit (a long POP909-shaped question) gets the record cut to the room
+    its own prompt leaves, never a 422; a question that fits reads the head+tail record exactly as before."""
+
+    def setUp(self):
+        FakeVLLM.reset()
+        self.vsrv, self.vurl = serve(FakeVLLM)
+        self.servers = []
+
+    def tearDown(self):
+        for srv in self.servers + [self.vsrv]:
+            srv.shutdown()
+
+    def start(self, env):
+        shim = S.Shim(S.Contract(copy.deepcopy(CFG), env=env), S.VLLM(self.vurl, CFG["model"]), min_context=64)
+        srv, url = serve(S.make_handler(shim))
+        self.servers.append(srv)
+        return shim, url
+
+    def test_a_long_question_at_a_budget_near_the_context_never_422s(self):
+        FakeVLLM.max_len = 900
+        shim, url = self.start({"SHIM_SELECTOR": "headtail", "SHIM_MAX_STATE_TOKENS": "800"})   # ~ the 4B's 39,000 of 40,960: a short question fits, a long one not
+        rec = " ".join(f"beat{i} chord C{i % 7} bass E{i % 5}" for i in range(400))   # a POP909-shaped record, over the budget
+        long_q = {"type": "choice", "instructions": "Which chord is played on the beat? " + " ".join(f"note{i}" for i in range(120)),
+                  "criteria": {f"c{i}": f"chord option {i} with a long description of its voicing" for i in range(12)}}
+        short_q = {"type": "choice", "instructions": "Which key?", "criteria": {"c": "C major", "g": "G major"}}
+        st, r = post(url, {"state": rec, "questions": {"long": long_q, "short": short_q}})
+        self.assertEqual(st, 200, r)
+        self.assertTrue(all(len(FakeVLLM.ids(x)) + 1 <= FakeVLLM.max_len for x in FakeVLLM.prompts))
+        self.assertIn("head+tail cut to the context", r["effort_used"]["state_selection"])
+        cut = shim.truncate_state(S.render_state(rec, True))                # the short question reads the plain cut
+        self.assertIn(shim.c.question_prompt(cut, short_q, "short")[0], FakeVLLM.prompts)
+        self.assertEqual(set(r["answers"]), {"long", "short"})
+
+    def test_a_request_that_fits_is_read_as_before(self):
+        FakeVLLM.max_len = 40960
+        shim, url = self.start({"SHIM_SELECTOR": "headtail", "SHIM_MAX_STATE_TOKENS": "200"})
+        rec = " ".join(f"w{i}" for i in range(600))
+        st, r = post(url, {"state": rec, "questions": {"d": Q3}})
+        self.assertEqual(st, 200, r)
+        self.assertEqual(r["effort_used"]["state_selection"], "head+tail (selector headtail)")
+        self.assertEqual(FakeVLLM.prompts, [shim.c.question_prompt(shim.truncate_state(S.render_state(rec, True)), Q3, "d")[0]])
+
+
+class ImageCalibrationTest(unittest.TestCase):
+    """The 2026-10-28 image temperatures: image answers only, the same answer at either temperature, the text path
+    byte for byte as before."""
+    SHIPPED = json.load(open(os.path.join(HERE, "serve_config.json")))
+    IMAGE_T, IMAGE_T_TWO_WAY = 1.0, 1.0
+    V141 = {"temperature": {"choice": 0.75, "noul": 0.8, "score": 0.65}, "noul_floor": 0.801, "image_temperature": 0.65}
+
+    def v141_config(self):
+        cfg = copy.deepcopy(self.SHIPPED)
+        cfg["image"]["temperature"] = self.V141["image_temperature"]
+        cfg["two_way"]["image_temperature"] = self.V141["image_temperature"]
+        return cfg
+
+    def test_shipped_values(self):
+        c, tw = self.SHIPPED, self.SHIPPED["two_way"]
+        self.assertEqual((c["image"]["temperature"], tw["image_temperature"]), (self.IMAGE_T, self.IMAGE_T_TWO_WAY))
+        # the text temperatures of both modes are v1.4.1's; the yes/no floor of both modes is off (0) since v1.4.2 (the
+        # 2026-10-29 C-0 ruling; PROFILE=di pins 0.801 in serve.sh); nothing else moved
+        self.assertEqual((c["temperature"], tw["temperature"]), (self.V141["temperature"], self.V141["temperature"]))
+        self.assertEqual((c["noul_floor"], tw["noul_floor"]), (0, 0))
+        self.assertEqual({k: v for k, v in c.items() if k not in ("image", "two_way", "noul_floor")},
+                         {k: v for k, v in self.v141_config().items() if k not in ("image", "two_way", "noul_floor")})
+        ct = S.Contract(dict(copy.deepcopy(c), _config_dir=HERE), env={})
+        self.assertEqual((ct.image_temperature, ct.two_way.image_temperature), (self.IMAGE_T, self.IMAGE_T_TWO_WAY))
+        self.assertEqual((ct.temperature_by_type, ct.two_way.temperature_by_type),
+                         (self.V141["temperature"], self.V141["temperature"]))
+
+    def test_image_answers_keep_their_top1(self):
+        import random
+        rng = random.Random(20261027)
+        names = [f"o{i}" for i in range(12)]
+        moved = 0
+        for t_new in (self.IMAGE_T, self.IMAGE_T_TWO_WAY):
+            for _ in range(2000):
+                n = rng.randint(2, 12)
+                lp = [math.log(rng.random() ** rng.choice((0.3, 1, 3, 10)) + 1e-9) for _ in range(n)]
+                for typ in ("choice", "noul", "score"):
+                    nm = names[:2] if typ == "noul" else names[:n]
+                    v = lp[:len(nm)]
+                    old = S.format_answer(typ, nm, nm, v, self.V141["image_temperature"], self.V141["noul_floor"])
+                    new = S.format_answer(typ, nm, nm, v, t_new, self.V141["noul_floor"])
+                    if typ == "choice":
+                        self.assertEqual(new["choice"], old["choice"])
+                        moved += new["probabilities"] != old["probabilities"]
+                    elif typ == "noul":
+                        self.assertEqual(new["noul"] >= 0.5, old["noul"] >= 0.5)
+                    else:
+                        top = lambda a: max(a["probabilities"], key=lambda k: (a["probabilities"][k], -int(k)))
+                        self.assertEqual(top(new), top(old))
+        self.assertGreater(moved, 3000)            # the probabilities do change: the test is not vacuous
+
+    def start(self, cfg):
+        FakeVLLM.reset()
+        vsrv, vurl = serve(FakeVLLM)
+        self.addCleanup(vsrv.shutdown)
+        shim = S.Shim(S.Contract(cfg, env={}), S.VLLM(vurl, CFG["model"]))
+        ssrv, url = serve(S.make_handler(shim))
+        self.addCleanup(ssrv.shutdown)
+        return url
+
+    def test_text_path_byte_identical(self):
+        qs = {"c": Q3, "n": {"type": "noul", "instructions": "ok?", "criteria": {"true": "y", "false": "n"}},
+              "s": {"type": "score", "instructions": "rate", "criteria": ["lo", "mid", "hi"]}}
+        body = {"state": {"doc": "MOCK_LP=[-0.2,-1.9,-3.0]", "link": "https://example.com/a.png"}, "questions": qs}
+        seen = []
+        for cfg in (self.v141_config(), copy.deepcopy(self.SHIPPED)):
+            url = self.start(cfg)
+            st, r = post(url, body)
+            self.assertEqual((st, FakeVLLM.chats), (200, []))
+            r["usage"].pop("latency_ms", None)
+            seen.append((json.dumps(r, sort_keys=True), sorted(FakeVLLM.prompts)))   # questions are read concurrently
+        self.assertEqual(seen[0], seen[1])
+
+    def test_image_request_reads_at_the_image_temperature(self):
+        url = self.start(copy.deepcopy(self.SHIPPED))
+        st, r = post(url, {"state": {"photo": PNG_URI, "note": "MOCK_LP=[-0.2,-1.9,-3.0]"}, "questions": {"d": Q3}})
+        self.assertEqual((st, len(FakeVLLM.chats)), (200, 1), r)
+        for k, p in zip("xyz", softmax_t([-0.2, -1.9, -3.0], T=self.IMAGE_T)):
+            self.assertAlmostEqual(r["answers"]["d"]["probabilities"][k], p, places=12)
+        self.assertEqual(r["answers"]["d"]["choice"], "x")
+
+
+
+class KwargsAttentionModeTest(unittest.TestCase):
+    """The attention mode from `kwargs.attention_mode` too (the hosted gateway's and the 31B package's form): the top
+    level alone, kwargs alone and both equal choose the mode; both given with different values is a 400 (the gateway's
+    rule); a request with neither is unchanged."""
+
+    def setUp(self):
+        FakeVLLM.reset()
+        self.vsrv, self.vurl = serve(FakeVLLM)
+        self.shim = S.Shim(S.Contract(copy.deepcopy(CFG), env={}), S.VLLM(self.vurl, CFG["model"]))
+        self.ssrv, self.url = serve(S.make_handler(self.shim))
+
+    def tearDown(self):
+        self.ssrv.shutdown(); self.vsrv.shutdown()
+
+    def ask(self, **extra):
+        return post(self.url, dict({"state": "s", "questions": {"d": Q3}}, **extra))
+
+    def test_kwargs_alone_chooses_the_mode(self):
+        st, r = self.ask(kwargs={"attention_mode": "causal"})
+        self.assertEqual((st, r["attention_mode"]), (200, "causal"), r)
+        st, r = self.ask(kwargs={"attention_mode": "one-way"})       # the aliases as at the top level
+        self.assertEqual((st, r["attention_mode"]), (200, "causal"), r)
+
+    def test_top_level_alone_and_both_equal(self):
+        for extra in ({"attention_mode": "causal"}, {"attention_mode": "causal", "kwargs": {"attention_mode": "causal"}},
+                      {"attention_mode": "causal", "kwargs": {"other": 1}}):
+            st, r = self.ask(**extra)
+            self.assertEqual((st, r["attention_mode"]), (200, "causal"), (extra, r))
+
+    def test_both_different_is_a_400(self):
+        st, r = self.ask(attention_mode="causal", kwargs={"attention_mode": "bidirectional"})
+        self.assertEqual(st, 400, r)
+        self.assertIn("attention_mode given twice with different values", r["detail"])
+
+    def test_neither_is_the_default_and_unchanged(self):
+        st0, r0 = self.ask()
+        FakeVLLM.prompts.clear()
+        st1, r1 = self.ask(kwargs={})
+        for r in (r0, r1):
+            r["usage"].pop("latency_ms", None)
+        self.assertEqual((st0, st1), (200, 200))
+        self.assertEqual(r0, r1)
+        self.assertEqual(r0["attention_mode"], self.shim.default_mode())
+
+    def test_a_bad_kwargs_mode_is_refused(self):
+        st, r = self.ask(kwargs={"attention_mode": "sideways"})
+        self.assertEqual(st, 400, r)
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)

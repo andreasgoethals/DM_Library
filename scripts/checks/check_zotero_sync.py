@@ -242,7 +242,8 @@ def compare(z: ZoteroReader, collection: dict) -> tuple[dict, Report, list[str]]
         if web_entry:
             record = entry[1]
             eligible = (data.get("itemType") == "blogPost" or
-                        (data.get("itemType") == "report" and "model card" in data.get("reportType", "").casefold()))
+                        (data.get("itemType") == "report" and "model card" in data.get("reportType", "").casefold()) or
+                        (data.get("itemType") == "webpage" and "model card" in data.get("websiteType", "").casefold()))
             if not eligible:
                 rep.add("Research source incorrectly registered as web-only", label)
             matched_web.add(key)

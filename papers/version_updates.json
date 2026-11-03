@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "updates": [
+    {
+      "arxiv": "2609.37647",
+      "version": 2,
+      "filed_version_date": "2026-10-29",
+      "source_url": "https://arxiv.org/pdf/2609.37647v2",
+      "path": "papers/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf",
+      "sha256": "902f582dc3620c0c2d07473744bdb55eac317f9214aadb96d1357ec6b8ec4f17",
+      "previous_path": "papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf",
+      "previous_sha256": "364866b9dd291eca746f8dbbbeaf2c2f6e65b2ae37ca7e674470bd138fae7ffd",
+      "retrieved": "2026-11-03",
+      "zotero_attachment": "Existing Zotero records and attachments preserved unchanged; repository revision refreshed from the primary arXiv source."
+    },
+    {
+      "arxiv": "2609.26550",
+      "version": 6,
+      "filed_version_date": "2026-10-29",
+      "source_url": "https://arxiv.org/pdf/2609.26550v6",
+      "path": "papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf",
+      "sha256": "e3834a6763b1aaa861d958bdd9434545c8f8918ea1954b74b2e5cd1873d2a935",
+      "previous_path": "papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf",
+      "previous_sha256": "a78edff547f1d714c4fb9c71dfb7866bc2171062c21d112c5f2721bd769c2ef7",
+      "retrieved": "2026-11-03",
+      "zotero_attachment": "Existing Zotero records and attachments preserved unchanged; repository revision refreshed from the primary arXiv source."
+    }
+  ]
+}

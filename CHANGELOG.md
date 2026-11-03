@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-03
+
+- Added Yang et al., *What Can't Jev Decide?*, and Rao and Callison-Burch, *Decision Models vs. LLMs as Rubric Judges*, with PDFs, generated text, complete summaries and synthesis comparisons of multi-step state reconstruction and correlated judge errors.
+- Synchronized three already-approved Zotero model cards (d3-turbo, Bespoke-Nimble-9B and SII-Decision-27B-Full), archived immutable primary text, and added source-grounded summaries and comparison rows. Dates retain their precision; card assertions are provider claims. The selected corpus now contains 18 papers and 18 web sources.
+- Refreshed Deußer et al. to arXiv v2 and JEV-as-a-Judge to v6 (29 October); recorded old hashes/paths, regenerated text, updated version chronology and reviewed results. The benchmark summary and synthesis now include v2's sequential task extension.
+- Refreshed all 19 registered implementation snapshots. The Zotero checker now recognizes explicitly labelled Web Page model cards while continuing to flag ordinary research web pages missing PDFs; extended regression coverage for both cases.
+
 ## 2026-10-29
 
 - Reconciled all 31 selected sources with live Zotero. Filed SearchJev arXiv v2 (23 October), regenerated text and recorded version-specific title/authors separately from unchanged Zotero metadata. Updated its summary, overview and synthesis for one-hot and component ablations, the explicit confidence threshold and the limits of the calibration-utility result; moved the entry to its filed-version date order.

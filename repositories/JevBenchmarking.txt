@@ -2,13 +2,13 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/AppliedMachineLearning-Lab/jev-benchmarking",
-  "revision": "87562114d23597f610754f057e5e0da8659dbcfb",
-  "revision_date": "2026-10-07T13:43:42+02:00",
+  "revision": "a86e6757e51acf3aa7d745572532f48ebf3dbb7c",
+  "revision_date": "2026-10-30T09:50:50+01:00",
   "slug": "AppliedMachineLearning-Lab/jev-benchmarking",
-  "retrieved_utc": "2026-10-23T08:24:27+00:00",
+  "retrieved_utc": "2026-11-03T15:52:22+00:00",
   "identity_source": "https://arxiv.org/html/2609.37647v1",
-  "included_files": 54,
-  "excluded_files": 166,
+  "included_files": 73,
+  "excluded_files": 187,
   "file_sha256": [
     {
       "path": "LICENSE",
@@ -22,8 +22,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 7791,
-      "sha256": "ca38c4ebbefd36d7c8329f2e6b4a4bbedcb511872956ab9e969cb3fbbd1dd239"
+      "bytes": 12562,
+      "sha256": "d4a2ad0d0a5428d405aa8cca704b725f4478dd6c18479efa6421dcee49ac5140"
     },
     {
       "path": "benchmarks.txt",
@@ -47,8 +47,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "jev_benchmarking/config.py",
-      "bytes": 2225,
-      "sha256": "07a271763885d6639d7a04b1eecdba2691bc0212b2e80c7114e2637b688fc6d9"
+      "bytes": 3041,
+      "sha256": "47a9a8eb9028c218ff2e6122e2804a2b60afa3255306af35939e77a16a6f22a6"
     },
     {
       "path": "jev_benchmarking/evaluate.py",
@@ -116,6 +116,61 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "a47d6905679fe014315954bf312c70a514e1eb7b3131367611f01a205113864f"
     },
     {
+      "path": "jev_benchmarking/sequential/__init__.py",
+      "bytes": 839,
+      "sha256": "6fae6b66611fcf7e9a74658ccf6989558238d5be744ffd5ff6f44b64f6ddc4c0"
+    },
+    {
+      "path": "jev_benchmarking/sequential/backends.py",
+      "bytes": 7661,
+      "sha256": "933f961bbf8cf3995dcfa7871e5e7267034496de1b0e16efd98a2db5f09816a9"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/alfworld.py",
+      "bytes": 8857,
+      "sha256": "b75604e472e3f1f5c3d8fc29071fe9d162c9cfbabfd4746c1799dbbb7b8a8851"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/babyai_text.py",
+      "bytes": 8789,
+      "sha256": "1ef13593d550c5a90b8a4ec16d34ddb8b71fb936da52f9d11240610164ecc3bf"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/base.py",
+      "bytes": 2564,
+      "sha256": "755763389728943b70e7bbceb07b2daf71ba521463ac8b368ffd932cfd555d03"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/blackjack.py",
+      "bytes": 10489,
+      "sha256": "5a5a68b3e39dcb0b71d98a51a2b369101c568f29c6655aec97fb2564855a452f"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/frozenlake.py",
+      "bytes": 15085,
+      "sha256": "aa7670dd95e177c0319f0adb70a26d24ac28230bccb2f99ba76c76f30209615a"
+    },
+    {
+      "path": "jev_benchmarking/sequential/envs/textworld_games.py",
+      "bytes": 9996,
+      "sha256": "229c5a1fff3ca110e756d62ca5edc506daeb35e545aa76fda763c5ecba8cc6e9"
+    },
+    {
+      "path": "jev_benchmarking/sequential/metrics.py",
+      "bytes": 10225,
+      "sha256": "54994624f6bdc8d5ff4944e75426b25ee09927f621ccf9bd32b12555c5256f89"
+    },
+    {
+      "path": "jev_benchmarking/sequential/runner.py",
+      "bytes": 6100,
+      "sha256": "39927182abf55e3a7b08768617f8d7cdb820ef3953d56775df0524ddde2f09e0"
+    },
+    {
       "path": "jev_benchmarking/tasks/__init__.py",
       "bytes": 2082,
       "sha256": "2e997c34eabc70c469d0d6119f264fad085c6b3e2c55e5efb04a3d737ceea429"
@@ -172,8 +227,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "pyproject.toml",
-      "bytes": 814,
-      "sha256": "5dbbfbc6afa6f03e7d1cf2403c6a2db8fef515f259aad9b2bf920bb01717cf6c"
+      "bytes": 945,
+      "sha256": "26da24881fb0ed37387028a5f3abde0e871738cb8324b8eee203ba2dd5dc5799"
     },
     {
       "path": "responses/LICENSE_RESPONSES.md",
@@ -201,14 +256,19 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "20abe7b25771ca26fee6220009ec0ec3b3d9c4b9dd3bf2b8254a46e74f0764f8"
     },
     {
+      "path": "scripts/inspect_episode.py",
+      "bytes": 4301,
+      "sha256": "27fd20fbad4cbb1b164787aeabf1a321ade790c568cbe4e46c1f12d963370a70"
+    },
+    {
       "path": "scripts/make_paper_assets.py",
       "bytes": 6788,
       "sha256": "6c4a653cf811dda88936f0a3cb064eb339d764c8eac94ba455f1d8a528e206ca"
     },
     {
       "path": "scripts/marvin/common.sh",
-      "bytes": 830,
-      "sha256": "bf641971ac9bff26d23413538e21f83b91a5e26c3ff449afa308af96a615c5fa"
+      "bytes": 947,
+      "sha256": "ca4b4c3b7e3ff48d718328514e2da8fa1db51fb80f5cc0e0c8998a73832d8ce2"
     },
     {
       "path": "scripts/marvin/fetch.sh",
@@ -226,19 +286,39 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "0798ca51441c546c087b7f3ef1a8772da332f4dccf0ffd79cd89db7c0ff103c3"
     },
     {
+      "path": "scripts/marvin/sequential.slurm",
+      "bytes": 2543,
+      "sha256": "6fd15b0fb9b836dff8a79005e720646d93993b34b4120503b1c08dadc20ec59f"
+    },
+    {
+      "path": "scripts/marvin/setup_babyai_env.sh",
+      "bytes": 792,
+      "sha256": "e8811a16c3a391707598c228e058e0bc1ac606a1b9581f4fb835ca23c22d92d5"
+    },
+    {
       "path": "scripts/marvin/setup_env.sh",
       "bytes": 1224,
       "sha256": "cd9a6fd8f8efa350432dc3090f075f3871d6344bc7f9b72b76261003150b9ced"
     },
     {
       "path": "scripts/marvin/submit.sh",
-      "bytes": 1496,
-      "sha256": "fcad6207c7fc67de75ab57cce12ab958dac66b2daacde1d204b9a439010a9d93"
+      "bytes": 1675,
+      "sha256": "ffeb68a3e462d691fc06e53d1a9304026233928d660c661fc51d90c63423dc39"
     },
     {
       "path": "scripts/marvin/sync.sh",
       "bytes": 614,
       "sha256": "1f4f2f65962713ba41385794d6c9569a85776b2f4ca694a8c1f4aae964cc861a"
+    },
+    {
+      "path": "scripts/merge_sequential_caches.py",
+      "bytes": 3977,
+      "sha256": "9eb84379e17aaf7a327f50296355365ad6ef50ebd64454c9a1fbf6edf643890d"
+    },
+    {
+      "path": "scripts/probe_frozenlake.py",
+      "bytes": 8548,
+      "sha256": "16945b28a3fdfdd0a2b1b77262d1a079817180b58dd64318d0b1d337c163fa8e"
     },
     {
       "path": "scripts/run.py",
@@ -254,6 +334,16 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "path": "scripts/run_open_model.py",
       "bytes": 3115,
       "sha256": "7b71267c749b065d3fa0d93f117dce455ade6e6ba8417b26c6dda0be523b3ef5"
+    },
+    {
+      "path": "scripts/run_sequential.py",
+      "bytes": 7773,
+      "sha256": "15f7edea1b134d24e569384d51a039f59628df2f2f9b38432f5a6b58d3b8520c"
+    },
+    {
+      "path": "scripts/setup_babyai_text_env.sh",
+      "bytes": 1507,
+      "sha256": "eb3b9e543f1401674e293df458e1c3826547dc3068fca043351b80c0bf186f87"
     },
     {
       "path": "scripts/usage.py",
@@ -276,6 +366,11 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
       "sha256": "38503efd8dae88e170f2faa4a9d69493198757a7a6a1a242e135469bf9cb2e75"
     },
     {
+      "path": "tests/test_sequential.py",
+      "bytes": 12618,
+      "sha256": "987e403d36e7f75277de8102a41d4a135642fcea848524c8d7a6cb48e732bd4e"
+    },
+    {
       "path": "tests/test_tasks.py",
       "bytes": 4118,
       "sha256": "7e15d0dc99eb05b9bcc666111d7e3faf9b86549c6fdd60b00db2de17fb3b36db"
@@ -289,7 +384,7 @@ FILE: README.md
 # Evaluating and Benchmarking the System One Model Jev
 
 Code for the paper **[Evaluating and Benchmarking the System One Model Jev](https://arxiv.org/abs/2609.37647)**
-(Tobias Deußer, Lorenz Sparrenberg, Rafet Sifa; arXiv:2609.37647, 2026).
+(Tobias Deußer, Rajkumar Ramamurthy, Lorenz Sparrenberg, Rafet Sifa; arXiv:2609.37647, 2026).
 
 - **Paper:** <https://arxiv.org/abs/2609.37647>
 - **Raw responses (dataset):** <https://doi.org/10.5281/zenodo.23039006>
@@ -395,6 +490,62 @@ visible GPUs. `scripts/marvin/` contains the Slurm scripts we used on the Marvin
 environment setup, prefetching models and datasets for offline GPU jobs, job arrays, and syncing. Adapt paths,
 partitions and e-mail addresses to your own cluster.
 
+## Sequential decisions
+
+The sequential track lets the model choose the next action in an environment at every step: one request per
+step, with the state and one Choice question over the legal actions, executing the most probable option.
+A reference action is logged at every step (never sent to the model), so step accuracy, ECE and Brier score can
+be reported alongside the success rate.
+
+| Task | Implementation | Episodes | Reference action | Environment |
+|---|---|---|---|---|
+| `alfworld` | ALFWorld (`alfworld` package), unseen split, 50 steps | 134 | handcoded ALFWorld expert | `.venv` + `alfworld-download` |
+| `blackjack` | RLCard `blackjack`, default configuration | 5,000 | exact optimum (DP) | `.venv` |
+| `frozenlake` | Gymnasium `FrozenLake-v1`, slippery, random 4x4 and 8x8 maps | 500 | exact optimum (DP) | `.venv` |
+| `textworld` | TextWorld's `tw-make` challenges (coin collector, treasure hunter, cooking), 3 levels x 10 seeds, 50 steps; coin collector and treasure hunter with goal-only objectives | 90 | TextWorld solver (`policy_commands`) | `.venv` |
+| `babyai_text` | original BabyAI-Text packages (Carta et al., 2023), `BabyAI-MixedTrainLocal-v0`, their prompt | 250 | BabyAI bot | `.venv-babyai` |
+| `babyai_text_instructions` | diagnostic only: `babyai_text` with BALROG's instruction prompt (action descriptions, two tips) added to the state | 250 | BabyAI bot | `.venv-babyai` |
+
+Install the sequential dependencies with `pip install -e ".[sequential]"` (then `alfworld-download` for
+ALFWorld). TextWorld games are generated with `tw-make` on first use and cached in `~/.cache/jev-benchmarking/`.
+BabyAI-Text needs an old gym and numpy and therefore its own environment:
+
+```bash
+bash scripts/setup_babyai_text_env.sh          # creates .venv-babyai (Python 3.10) with the original packages
+source .venv-babyai/bin/activate
+```
+
+The API key can also be put in `.env` or `.env.local` (see `.env.example`).
+
+```bash
+python scripts/run_sequential.py blackjack --backend scripted:optimal          # reference policy, free
+python scripts/run_sequential.py textworld --backend scripted:expert           # expert / solver reference
+python scripts/run_sequential.py frozenlake --backend scripted:random --mode sample   # uniform policy (greedy would always move left)
+python scripts/run_sequential.py frozenlake --dry-run                          # requests and cost estimate
+python scripts/run_sequential.py frozenlake --backend jev --limit 1            # one episode first
+python scripts/run_sequential.py frozenlake --backend jev --max-cost 1.0       # full run
+python scripts/run_sequential.py alfworld --backend jev --shard 0 --num-shards 4   # one of 4 parallel processes
+python scripts/run_sequential.py frozenlake --backend hf:Qwen/Qwen3.8-27B --device auto   # open-weight model
+python scripts/run_sequential.py frozenlake --backend jev --summarize          # metrics only
+python scripts/probe_frozenlake.py --backend jev                               # FrozenLake prompt-variant probe
+python scripts/run_sequential.py babyai_text_instructions --backend jev --max-cost 1.0   # BabyAI-Text with BALROG's instruction prompt (diagnostic)
+python scripts/inspect_episode.py frozenlake results/sequential/frozenlake/jev.greedy.eval.jsonl --episode 0   # replay and check one episode
+```
+
+- **Uniform reference policies:** `scripted:random` gives every action the same probability. Run it with
+  `--mode sample`; under the default `--mode greedy` the tie always goes to the first action (in FrozenLake, "left").
+- **Expert labels:** the ALFWorld handcoded expert breaks ties with Python's `random`; the environment seeds it per
+  episode, so the expert's commands are reproducible. The TextWorld expert follows TextWorld's `policy_commands`,
+  which can choose a different (equally winning) plan on a different platform or Python version: on the archived
+  games the expert needs 851 steps in total on Linux (Python 3.13) and 863 on macOS (Python 3.12). Model trajectories
+  do not depend on the expert.
+- **Output:** one JSON line per episode in `results/sequential/<task>/<model>.<mode>.<split>.jsonl` (every step's
+  action, option probabilities, reference action and feedback) and the metrics in `<...>.summary.json`.
+- **Metrics:** success rate (95% bootstrap CI), mean steps, cost per episode, repeat rate, step accuracy against
+  the reference, step ECE and step Brier; for Blackjack and FrozenLake also the regret per decision.
+- **Cache and spend guards:** as for the single-step track; deterministic episodes replay from the cache for free,
+  and runs resume where they stopped.
+
 ## Layout
 
 - `jev_benchmarking/tasks/`: one class per dataset (request construction and gold labels); `probes.py` holds
@@ -405,6 +556,7 @@ partitions and e-mail addresses to your own cluster.
   accuracy, bootstrap confidence intervals
 - `jev_benchmarking/thresholds.py`: per-question Noul thresholds tuned on dev data
 - `jev_benchmarking/report/`: paper tables (LaTeX) and figures (plotnine, tol-colors)
+- `jev_benchmarking/sequential/`: sequential track: environments (`envs/`), episode runner, backends, metrics
 - `scripts/`: entry points; `scripts/marvin/`: Slurm scripts
 - `results/eval/`: per-dataset metrics for Jev; `results/eval/open_models/`: the same for the open-weight models
 - `responses/`: license of the released model responses
@@ -424,7 +576,7 @@ Apache License 2.0.
 ```bibtex
 @misc{deußer2026evaluatingbenchmarkingmodeljev,
       title={Evaluating and Benchmarking the System One Model Jev}, 
-      author={Tobias Deußer and Lorenz Sparrenberg and Rafet Sifa},
+      author={Tobias Deußer and Rajkumar Ramamurthy and Lorenz Sparrenberg and Rafet Sifa},
       year={2026},
       eprint={2609.37647},
       archivePrefix={arXiv},
@@ -523,6 +675,7 @@ dependencies = [
 dev = ["pytest"]
 paper = ["pandas", "pyarrow", "plotnine", "tol-colors"]
 openmodel = ["torch", "transformers==5.14.1", "accelerate"]
+sequential = ["alfworld", "rlcard>=1.2", "gymnasium>=1.0"]  # ALFWorld text games (TextWorld + PDDL); then run `alfworld-download`
 
 [build-system]
 requires = ["setuptools>=77"]
@@ -804,6 +957,27 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _load_env_files(root: Path) -> None:
+    """Read `KEY=value` lines from `.env` and then `.env.local` in the repo root (both git-ignored).
+    Variables already set in the shell win; `.env.local` overrides `.env`. No dependency needed."""
+    from_files: dict[str, str] = {}
+    for name in (".env", ".env.local"):
+        path = root / name
+        if not path.is_file():
+            continue
+        for line in path.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.removeprefix("export ").split("=", 1)
+            from_files[key.strip()] = value.strip().strip("'\"")
+    for key, value in from_files.items():
+        os.environ.setdefault(key, value)
+
+
+_load_env_files(ROOT)
 CACHE_DB = Path(os.environ.get("JEV_CACHE_DB", ROOT / "cache" / "responses.db"))  # Jev responses
 RESULTS_DIR = ROOT / "results"
 
@@ -2413,6 +2587,1806 @@ def comparison(results_by_model: dict[str, dict[str, dict]]) -> str:
         f"    Dataset & Metric & {' & '.join(labels)} & {' & '.join(labels)}"
     )
     return _tabular("l l " + "c " * (2 * n), header, _grouped(2 + 2 * n, rows))
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/__init__.py
+================================================
+"""Sequential decision benchmarks: one decision request per step, the next request depends on the answer.
+
+The single-step suite sends all requests up front. Here a decision model acts in an environment: at every
+step the environment builds a request (state + typed questions), the model answers, the chosen option is
+executed, and the episode is scored at the end. Requests are still cached by their exact JSON, so a rerun
+of a deterministic episode replays from the cache without paying again.
+
+Layout:
+- `backends.py`: who answers a request (Jev over the API, an open-weight model, or a scripted policy).
+- `envs/`: the environments (Blackjack with exact values, ALFWorld).
+- `runner.py`: plays episodes and writes one JSON line per episode.
+- `metrics.py`: success, cost, and calibration of the success estimates against outcomes.
+"""
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/backends.py
+================================================
+"""Who answers a step request. Every backend returns the API's `answers` dict (question id -> answer).
+
+All backends are cache-first: the response is looked up by the hash of (model, state, questions) in the
+same SQLite cache the single-step suite uses, one database per model. A deterministic episode therefore
+replays from the cache, and the Jev database stays the spend ledger.
+"""
+
+import json
+import time
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import Any
+
+from jev_benchmarking.cache import ResponseCache, request_key
+from jev_benchmarking.config import MODEL, TOTAL_BUDGET_USD, USD_PER_INPUT_TOKEN
+from jev_benchmarking.runner import OVERHEAD_TOKENS, CHARS_PER_TOKEN
+
+
+class BudgetExceeded(Exception):
+    """The next request would push spend past the run cap or the ledger's total budget."""
+
+
+@dataclass
+class BackendStats:
+    requests: int = 0
+    cached: int = 0
+    input_tokens: int = 0
+    latency_s: float = 0.0
+    errors: dict[str, int] = field(default_factory=dict)
+
+    @property
+    def cost_usd(self) -> float:
+        return self.input_tokens * USD_PER_INPUT_TOKEN
+
+
+def estimate_tokens(state: Any, questions: dict) -> int:
+    chars = len(json.dumps(state, ensure_ascii=False)) + len(json.dumps(questions, ensure_ascii=False))
+    return OVERHEAD_TOKENS + int(chars / CHARS_PER_TOKEN)
+
+
+class Backend:
+    """Subclasses implement `_answer`; `ask` adds caching and bookkeeping."""
+
+    model: str = ""
+    pays: bool = False  # True only for the TypeSafe API
+
+    def __init__(self, cache: ResponseCache | None = None, max_cost_usd: float = 0.0):
+        self.cache = cache
+        self.max_cost_usd = max_cost_usd
+        self.stats = BackendStats()
+        self._ledger_usd: float | None = None
+
+    def ask(self, state: Any, questions: dict) -> tuple[dict, dict]:
+        """Return (answers, meta). meta: key, cached, input_tokens, latency_s."""
+        key = request_key(self.model, state, questions)
+        if self.cache is not None:
+            hit = self.cache.get(key)
+            if hit is not None:
+                self.stats.cached += 1
+                tokens = int((hit.get("usage") or {}).get("input_tokens") or 0)
+                return hit["answers"], {"key": key, "cached": True, "input_tokens": tokens, "latency_s": 0.0}
+        if self.pays:
+            est = estimate_tokens(state, questions)
+            if self.stats.requests:  # never assume less than the average real request so far
+                est = max(est, -(-self.stats.input_tokens // self.stats.requests))
+            if (self.stats.input_tokens + est) * USD_PER_INPUT_TOKEN > self.max_cost_usd:
+                raise BudgetExceeded(f"run cap ${self.max_cost_usd:.2f} reached (${self.stats.cost_usd:.4f} spent)")
+            if self._ledger_usd is None:  # read the ledger once; afterwards add this run's own spend
+                self._ledger_usd = self.cache.spent_usd() if self.cache is not None else 0.0
+            if self._ledger_usd + (self.stats.input_tokens + est) * USD_PER_INPUT_TOKEN > TOTAL_BUDGET_USD:
+                raise BudgetExceeded(f"total budget ${TOTAL_BUDGET_USD:.2f} in the ledger reached")
+        t0 = time.monotonic()
+        body = self._answer(state, questions)
+        latency = time.monotonic() - t0
+        tokens = int((body.get("usage") or {}).get("input_tokens") or 0)
+        self.stats.requests += 1
+        self.stats.input_tokens += tokens
+        self.stats.latency_s += latency
+        if self.cache is not None:
+            self.cache.put(key, "sequential", body, estimate_tokens(state, questions), latency)
+        return body["answers"], {"key": key, "cached": False, "input_tokens": tokens, "latency_s": latency}
+
+    def _answer(self, state: Any, questions: dict) -> dict:
+        raise NotImplementedError
+
+
+class JevBackend(Backend):
+    """TypeSafe API (synchronous; a sequential episode cannot pipeline its own steps).
+
+    Episodes are independent, so throughput comes from running several episodes in parallel processes
+    (`scripts/run_sequential.py --shard i --num-shards n`), not from concurrency inside an episode.
+    """
+
+    pays = True
+
+    def __init__(self, cache: ResponseCache | None = None, max_cost_usd: float = 0.5, model: str = MODEL, transport=None):
+        super().__init__(cache, max_cost_usd)
+        from typesafe_sdk import RetryPolicy, TypeSafeClient
+
+        from jev_benchmarking.config import load_api_key
+        from jev_benchmarking.runner import RawResponse
+
+        self.model = model
+        self._raw = RawResponse
+        self.client = TypeSafeClient(
+            api_key=load_api_key(), model=model, timeout=60.0,
+            retry=RetryPolicy(max_retries=6, backoff_max=30.0, timeout=180.0), transport=transport,
+        )
+
+    def _answer(self, state: Any, questions: dict) -> dict:
+        return self.client.system_one(state, questions, response_model=self._raw).model_dump()
+
+
+class OpenModelBackend(Backend):
+    """Open-weight LLM scored exactly as in the single-step suite: one forward pass per question, the
+    next-token distribution restricted to the option codes (see `openmodel/`)."""
+
+    def __init__(self, model_id: str, cache: ResponseCache | None = None, device: str = "cuda", **scorer_kw):
+        super().__init__(cache)
+        from jev_benchmarking.openmodel.runner import model_tag
+        from jev_benchmarking.openmodel.scorer import HFScorer
+
+        self.model = model_tag(model_id)
+        self.scorer = HFScorer(model_id, device=device, **scorer_kw)
+
+    def _answer(self, state: Any, questions: dict) -> dict:
+        from jev_benchmarking.openmodel.prompts import render, to_answer
+        from jev_benchmarking.openmodel.runner import _normalize
+
+        rendered = {qid: render(state, q, self.scorer.is_single_token) for qid, q in questions.items()}
+        qids = list(rendered)
+        results = self.scorer.score([self.scorer.prompt_ids(rendered[q].text) for q in qids], [rendered[q].codes for q in qids])
+        answers, mass, tokens = {}, {}, 0
+        for qid, res in zip(qids, results):
+            probs, valid = _normalize(res.logprobs)
+            answers[qid] = to_answer(rendered[qid], probs, questions[qid])
+            mass[qid] = valid
+            tokens += res.n_prompt_tokens
+        return {"model": self.model, "answers": answers, "usage": {"input_tokens": tokens, "output_tokens": 0},
+                "diagnostics": {"valid_mass": mass}}
+
+
+class FunctionBackend(Backend):
+    """A Python policy in the API's response format, for baselines (random, expert, basic strategy) and
+    tests. `fn(state, questions) -> answers`. Not cached by default: it costs nothing."""
+
+    def __init__(self, name: str, fn: Callable[[Any, dict], dict], cache: ResponseCache | None = None):
+        super().__init__(cache)
+        self.model = f"scripted:{name}"
+        self.fn = fn
+
+    def _answer(self, state: Any, questions: dict) -> dict:
+        return {"model": self.model, "answers": self.fn(state, questions), "usage": {"input_tokens": 0}}
+
+
+# ----------------------------------------------------------------------------------------------------
+# Helpers to build answers in the API's format (used by scripted policies and tests).
+
+
+def choice_answer(probs: dict[str, float]) -> dict:
+    z = sum(probs.values())
+    probs = {k: v / z for k, v in probs.items()}
+    k = len(probs)
+    top = max(probs, key=probs.get)
+    conf = max(0.0, min(1.0, (k * probs[top] - 1) / (k - 1))) if k > 1 else 1.0
+    return {"type": "choice", "choice": top, "probabilities": probs, "confidence": conf}
+
+
+def noul_answer(p: float) -> dict:
+    return {"type": "noul", "noul": float(p)}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/metrics.py
+================================================
+"""Metrics over episode logs (one dict per episode, as written by `runner.run`)."""
+
+import math
+from collections import defaultdict
+
+import numpy as np
+
+from jev_benchmarking.config import USD_PER_INPUT_TOKEN
+from jev_benchmarking.metrics import _safe, ece
+
+N_BOOTSTRAP = 1000
+
+
+def _bootstrap(values: np.ndarray, seed: int = 0) -> tuple[float, float]:
+    if len(values) == 0:
+        return (math.nan, math.nan)
+    rng = np.random.default_rng(seed)
+    means = values[rng.integers(0, len(values), (N_BOOTSTRAP, len(values)))].mean(axis=1)
+    return float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))
+
+
+def _calibration(p: np.ndarray, y: np.ndarray) -> dict:
+    """Calibration of probabilities `p` against binary outcomes `y`."""
+    if len(p) == 0:
+        return {}
+    return {
+        "n": int(len(p)),
+        "mean_p": float(p.mean()),
+        "rate": float(y.mean()),
+        "ece": ece(p, y),
+        "brier": float(np.mean((p - y) ** 2)),
+    }
+
+
+CORE = [
+    "env", "model", "n_episodes",
+    "success_rate", "success_ci95", "mean_steps", "cost_per_episode_usd",
+    "repeat_step_rate",
+    "step_accuracy_vs_expert", "step_ece", "step_brier",
+    "success_estimate_ece", "success_estimate_brier",
+]
+
+
+def summarize(episodes: list[dict]) -> dict:
+    """The headline metrics at the top level (see CORE); everything else under "details"."""
+    full = _summarize_all(episodes)
+    if not episodes:
+        return full
+    act = full.get("action_vs_expert_calibration", {})
+    est = full.get("success_calibration_first_step", {})
+    core = {
+        "env": full["env"],
+        "model": full["model"],
+        "n_episodes": full["n_episodes"],
+        "success_rate": full["success_rate"],
+        "success_ci95": full["success_ci95"],
+        "mean_steps": full["mean_steps"],
+        "cost_per_episode_usd": full["cost_usd"] / full["n_episodes"],
+        "repeat_step_rate": full["repeat_step_rate"],
+        "step_accuracy_vs_expert": full.get("expert_agreement"),
+        "step_ece": act.get("ece"),
+        "step_brier": act.get("brier"),
+        "success_estimate_ece": est.get("ece"),
+        "success_estimate_brier": est.get("brier"),
+    }
+    if "exact" in full:  # Blackjack: reward and exact-value metrics replace the expert comparison
+        core["mean_reward"] = full["mean_reward"]
+        core["mean_regret_per_decision"] = full["exact"]["mean_regret_per_decision"]
+        core["success_estimate_mae_vs_exact"] = full["exact"].get("success_vs_exact_p_win", {}).get("mae")
+    core = {k: v for k, v in core.items() if v is not None}  # e.g. no success estimates unless asked
+    core["details"] = full
+    return core
+
+
+def _summarize_all(episodes: list[dict]) -> dict:
+    if not episodes:
+        return {"n_episodes": 0}
+    success = np.array([e["success"] for e in episodes], dtype=float)
+    reward = np.array([e["reward"] for e in episodes], dtype=float)
+    steps = [s for e in episodes for s in e["steps"]]
+    tokens = sum(s["input_tokens"] for s in steps)
+    model = episodes[0]["model"]
+    out = {
+        "env": episodes[0]["env"],
+        "model": model,
+        "mode": episodes[0]["mode"],
+        "n_episodes": len(episodes),
+        "success_rate": float(success.mean()),
+        "success_ci95": _bootstrap(success),
+        "mean_reward": float(reward.mean()),
+        "reward_ci95": _bootstrap(reward),
+        "mean_steps": float(np.mean([e["n_steps"] for e in episodes])),
+        "truncated_rate": float(np.mean([e.get("truncated", False) for e in episodes])),
+        "n_requests": len(steps),
+        "input_tokens": int(tokens),
+        "tokens_per_request": tokens / len(steps) if steps else math.nan,
+        "cost_usd": tokens * USD_PER_INPUT_TOKEN if not model.startswith(("hf:", "scripted:")) else 0.0,
+        "mean_latency_s": float(np.mean([s["latency_s"] for s in steps if not s["cached"]] or [math.nan])),
+    }
+
+    by_subset = defaultdict(list)
+    for e in episodes:
+        by_subset[e["subset"]].append(e["success"])
+    if len(by_subset) > 1:
+        out["success_by_subset"] = {k: {"n": len(v), "success_rate": float(np.mean(v))} for k, v in sorted(by_subset.items())}
+
+    # Calibration of the success question against the episode outcome, at the first decision only:
+    # one prediction per episode, so the predictions are independent.
+    first = [(e["steps"][0]["p_success"], e["success"]) for e in episodes if e["steps"] and e["steps"][0]["p_success"] is not None]
+    if first:
+        p, y = map(np.array, zip(*first))
+        out["success_calibration_first_step"] = _calibration(p.astype(float), y.astype(float))
+
+    out.update(repeat_metrics(episodes))
+
+    top = np.array([max(s["probs"].values()) for s in steps]) if steps else np.array([])
+    out["mean_top_action_prob"] = float(top.mean()) if len(top) else math.nan
+
+    # Agreement with the reference action (ALFWorld: handcoded expert; Blackjack and FrozenLake: exact optimal
+    # actions), and calibration of the top action probability against "the chosen action is a reference action".
+    # Same definitions as the single-step Choice metrics (metrics.choice_metrics): ECE on the top probability, and
+    # the multiclass Brier score over the full distribution with the reference action as the gold option. Where
+    # several actions are optimal (FrozenLake), they form one gold class: its probability is their summed
+    # probability. Steps on which every legal action is optimal carry no information and are left out.
+    labelled = []
+    for s in steps:
+        ref = _reference(s["oracle"])
+        if ref and len(ref) < s.get("n_actions", len(s["probs"])):
+            labelled.append((s, ref))
+    if labelled:
+        p = np.array([max(s["probs"].values()) for s, _ in labelled], dtype=float)
+        y = np.array([s["action"] in ref for s, ref in labelled], dtype=float)
+        out["expert_agreement"] = float(y.mean())
+        cal = _calibration(p, y)
+        cal["brier"] = float(np.mean([
+            (sum(q for a, q in s["probs"].items() if a in ref) - 1.0) ** 2
+            + sum(q ** 2 for a, q in s["probs"].items() if a not in ref)
+            for s, ref in labelled
+        ]))
+        out["action_vs_expert_calibration"] = cal
+        out["n_uninformative_steps"] = len(steps) - len(labelled)
+
+    # FrozenLake: exact success probabilities per action.
+    valued = [s for s in steps if "q" in s["oracle"]]
+    if valued:
+        regret = np.array([max(s["oracle"]["q"].values()) - s["oracle"]["q"][s["action"]] for s in valued])
+        out["exact"] = {
+            "optimal_action_rate": float(np.mean([s["action"] in s["oracle"]["optimal"] for s in valued])),
+            "mean_regret_per_decision": float(regret.mean()),
+        }
+        with_p = [s for s in valued if s["p_success"] is not None]
+        if with_p:
+            pp = np.array([s["p_success"] for s in with_p], dtype=float)
+            star = np.array([s["oracle"]["p_win"] for s in with_p], dtype=float)
+            out["exact"]["success_vs_exact_p_win"] = {"mae": float(np.abs(pp - star).mean()),
+                                                     "bias": float((pp - star).mean()),
+                                                     "ece_vs_exact": _ece_vs_target(pp, star)}
+
+    # Blackjack: exact values.
+    exact = [s for s in steps if "q_hit" in s["oracle"]]
+    if exact:
+        q = lambda s, a: s["oracle"]["q_" + a]  # noqa: E731
+        regret = np.array([max(q(s, "hit"), q(s, "stand")) - q(s, s["action"]) for s in exact])
+        optimal = np.array([s["action"] == s["oracle"]["best"] for s in exact], dtype=float)
+        p_opt = np.array([s["probs"][s["oracle"]["best"]] for s in exact])
+        out["exact"] = {
+            "optimal_action_rate": float(optimal.mean()),
+            "mean_regret_per_decision": float(regret.mean()),
+            "mean_prob_on_optimal_action": float(p_opt.mean()),
+        }
+        with_p = [s for s in exact if s["p_success"] is not None]
+        if with_p:
+            p = np.array([s["p_success"] for s in with_p], dtype=float)
+            star = np.array([s["oracle"]["p_win"] for s in with_p], dtype=float)
+            out["exact"]["success_vs_exact_p_win"] = {
+                "mae": float(np.abs(p - star).mean()),
+                "bias": float((p - star).mean()),
+                "pearson": float(np.corrcoef(p, star)[0, 1]) if p.std() > 0 and star.std() > 0 else math.nan,
+                "ece_vs_exact": _ece_vs_target(p, star),
+            }
+    return out
+
+
+def _reference(oracle: dict) -> list[str]:
+    """The reference action(s) of a step: the set of optimal actions, the expert's action, or the best action."""
+    if oracle.get("optimal"):
+        return list(oracle["optimal"])
+    ref = oracle.get("expert") or oracle.get("best")
+    return [ref] if ref else []
+
+
+def _ece_vs_target(p: np.ndarray, target: np.ndarray, n_bins: int = 15) -> float:
+    """Like ECE, but against known probabilities instead of 0/1 outcomes (no outcome noise)."""
+    bins = np.minimum((p * n_bins).astype(int), n_bins - 1)
+    return float(sum((bins == b).sum() * abs(p[bins == b].mean() - target[bins == b].mean()) for b in np.unique(bins)) / len(p))
+
+
+def repeat_metrics(episodes: list[dict], max_period: int = 2) -> dict:
+    """Loops: a step whose (command, observation) equals that of one of the previous `max_period` steps
+    added nothing new. Period 1 catches "examine desk 1" over and over; period 2 catches oscillations such
+    as "open microwave 1 / close microwave 1". Returning to a place much later is not counted."""
+    n_steps = repeats = 0
+    loop_episodes = 0
+    for e in episodes:
+        pairs = [(s["action"], s.get("feedback", "")) for s in e["steps"]]
+        rep = [any(t - k >= 0 and pairs[t] == pairs[t - k] for k in range(1, max_period + 1)) for t in range(len(pairs))]
+        n_steps += len(pairs)
+        repeats += sum(rep)
+        run = best = 0
+        for r in rep:
+            run = run + 1 if r else 0
+            best = max(best, run)
+        loop_episodes += best >= 3
+    return {
+        "repeat_step_rate": repeats / n_steps if n_steps else math.nan,
+        "episodes_with_loop": loop_episodes / len(episodes) if episodes else math.nan,  # >= 3 repeats in a row
+    }
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/runner.py
+================================================
+"""Play episodes with a backend and write one JSON line per finished episode (resumable)."""
+
+import hashlib
+import json
+import logging
+import random
+import time
+from pathlib import Path
+
+from jev_benchmarking.config import RESULTS_DIR, model_slug
+from jev_benchmarking.sequential.backends import Backend, BudgetExceeded
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, EpisodeSpec, SequentialEnv
+
+log = logging.getLogger(__name__)
+
+
+def episodes_path(env_name: str, model: str, mode: str, split: str, shard: int = 0, num_shards: int = 1,
+                  ask_success: bool = False) -> Path:
+    """One file per (env, model, mode, split, with/without success question); requests differ between them."""
+    slug = (model_slug(model) or "jev").replace(":", "_")
+    variant = ".with-success" if ask_success else ""
+    suffix = f".shard{shard:02d}of{num_shards:02d}" if num_shards > 1 else ""
+    return RESULTS_DIR / "sequential" / env_name / f"{slug}.{mode}.{split}{variant}{suffix}.jsonl"
+
+
+def _shard_files(path: Path) -> list[Path]:
+    """All episode files of one (env, model, mode, split), sharded or not."""
+    stem = path.name.split(".shard")[0].removesuffix(".jsonl")
+    return sorted(path.parent.glob(f"{stem}.jsonl")) + sorted(path.parent.glob(f"{stem}.shard*.jsonl"))
+
+
+def load_episodes(path: Path) -> list[dict]:
+    """Episodes from all shards, one per uid (a uid played twice keeps its first record)."""
+    seen, out = set(), []
+    for p in _shard_files(path):
+        for line in p.read_text().splitlines():
+            try:
+                ep = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if ep["uid"] not in seen:
+                seen.add(ep["uid"])
+                out.append(ep)
+    return out
+
+
+def finished_uids(path: Path) -> set[str]:
+    if not path.is_file():
+        return set()
+    out = set()
+    for line in path.read_text().splitlines():
+        try:
+            out.add(json.loads(line)["uid"])
+        except (json.JSONDecodeError, KeyError):
+            pass  # a line cut off by a killed run is redone
+    return out
+
+
+def _rng(uid: str, model: str, t: int) -> random.Random:
+    return random.Random(hashlib.sha256(f"{uid}/{model}/{t}".encode()).hexdigest())
+
+
+def pick(answer: dict, mode: str, rng: random.Random) -> str:
+    """greedy: the API's argmax; sample: draw from the returned distribution (seeded per step, so a rerun
+    replays the same episode from the cache)."""
+    if mode == "greedy":
+        return answer["choice"]
+    keys, probs = zip(*answer["probabilities"].items())
+    return rng.choices(keys, weights=probs, k=1)[0]
+
+
+def run_episode(env: SequentialEnv, spec: EpisodeSpec, backend: Backend, mode: str = "greedy") -> dict:
+    env.reset(spec)
+    steps = []
+    t0 = time.monotonic()
+    result = None
+    for t in range(env.max_steps):
+        d = env.decision()
+        if d is None:
+            break
+        if hasattr(backend, "observe"):  # scripted experts may read the privileged oracle
+            backend.observe(d)
+        answers, meta = backend.ask(d.state, d.questions)
+        act = answers[ACTION]
+        key = pick(act, mode, _rng(spec.uid, backend.model, t))
+        if key not in d.actions:
+            raise ValueError(f"{spec.uid} step {t}: answer key {key!r} is not a legal action")
+        step = {
+            "t": t,
+            "action": d.actions[key],
+            "key": key,
+            "probs": {d.actions[k]: p for k, p in act["probabilities"].items()},
+            "p_success": answers[SUCCESS]["noul"] if SUCCESS in answers else None,
+            "n_actions": len(d.actions),
+            "oracle": d.oracle,
+            "request": meta["key"],
+            "cached": meta["cached"],
+            "input_tokens": meta["input_tokens"],
+            "latency_s": round(meta["latency_s"], 4),
+        }
+        result = env.step(d.actions[key])
+        step["feedback"] = result.feedback[:500]
+        steps.append(step)
+        if result.done:
+            break
+    final = env.outcome()
+    return {
+        "uid": spec.uid,
+        "subset": spec.subset,
+        "env": env.name,
+        "model": backend.model,
+        "mode": mode,
+        "success": bool(final.success),
+        "reward": final.reward,
+        "n_steps": len(steps),
+        "truncated": not final.success and len(steps) >= env.max_steps,
+        "wall_s": round(time.monotonic() - t0, 3),
+        "steps": steps,
+    }
+
+
+def shard_of(uid: str, num_shards: int) -> int:
+    return int(hashlib.sha256(uid.encode()).hexdigest(), 16) % num_shards
+
+
+def run(env: SequentialEnv, backend: Backend, *, split: str = "eval", limit: int | None = None,
+        mode: str = "greedy", out: Path | None = None, shard: int = 0, num_shards: int = 1) -> Path:
+    """Play all unfinished episodes of this shard. Run shards as separate processes to play episodes in
+    parallel (each episode is sequential, episodes are independent); `load_episodes` merges them."""
+    out = out or episodes_path(env.name, backend.model, mode, split, shard, num_shards, env.ask_success)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    done = set().union(*(finished_uids(p) for p in _shard_files(out))) if out.suffix == ".jsonl" else set()
+    specs = [s for s in env.episodes(split, limit) if s.uid not in done and shard_of(s.uid, num_shards) == shard]
+    log.info("%s / %s: %d episodes to play (%d already done)", env.name, backend.model, len(specs), len(done))
+    with out.open("a") as f:
+        for i, spec in enumerate(specs, 1):
+            try:
+                ep = run_episode(env, spec, backend, mode)
+            except BudgetExceeded as e:
+                log.warning("stopping: %s", e)
+                break
+            f.write(json.dumps(ep, ensure_ascii=False) + "\n")
+            f.flush()
+            if i % 25 == 0 or i == len(specs):
+                log.info("%s: %d/%d episodes, $%.4f spent, %d requests (%d cached)", env.name, i, len(specs),
+                         backend.stats.cost_usd, backend.stats.requests, backend.stats.cached)
+    env.close()
+    return out
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/__init__.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/alfworld.py
+================================================
+"""ALFWorld (text): household tasks played through TextWorld; one Choice over the admissible commands per step.
+
+Splits follow the ALFWorld papers: `eval` = valid_unseen (134 games, unseen rooms, "out of distribution"),
+`dev` = valid_seen (140 games). An episode succeeds if the task is completed within `max_steps` (50, as in
+ReAct and most ALFWorld agent papers).
+
+The request state holds the task, the initial room description (which lists every place in the room
+and is never repeated later), the current observation and the full history of commands and their
+observations since the start of the episode (at most 50 entries). The model chooses among the commands TextWorld lists as
+admissible in the current state ("help" removed), so every answer is executable. The handcoded ALFWorld
+expert runs alongside and its next command is logged as `oracle.expert` (never sent to the model) for
+per-step agreement.
+
+Setup: `pip install "alfworld[full]"` and `alfworld-download` (about 2 GB into $ALFWORLD_DATA).
+"""
+
+import glob
+import hashlib
+import os
+import random
+import re
+import sys
+
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, Decision, EpisodeSpec, SequentialEnv, StepResult, _only_asked
+from jev_benchmarking.tasks.base import choice, mc_criteria, noul, option_keys
+
+SPLITS = {"eval": "valid_unseen", "dev": "valid_seen", "unseen": "valid_unseen", "seen": "valid_seen"}
+INTRO = re.compile(r"^-= Welcome to TextWorld, ALFRED! =-\s*", re.M)
+
+ACTION_INSTRUCTIONS = (
+    "You are controlling an agent in a household. Choose the command that makes the most progress toward "
+    "completing the task, given the current observation and everything that happened so far."
+)
+
+
+def _patch_textworld_for_py313() -> None:
+    """TextWorld's grammar evaluates templates with `locals().update(...)`, which no longer affects `eval`
+    under Python 3.13 (PEP 667). Pass the variables explicitly instead. No-op on older Pythons."""
+    if sys.version_info < (3, 13):
+        return
+    from textworld.envs.pddl import textgen
+
+    def derive(self, context=None):
+        context = context or self.context
+        return [textgen.TerminalSymbol(eval(self.expression, {}, dict(context["variables"])))]
+
+    textgen.EvalSymbol.derive = derive
+
+
+class ALFWorld(SequentialEnv):
+    name = "alfworld"
+    max_steps = 50
+    history_window: int | None = None  # None = full history (the episode is capped at max_steps anyway)
+    description = "Text household tasks; Choice over admissible commands; success within 50 steps."
+
+    def __init__(self, data_dir: str | None = None, with_expert: bool = True, ask_success: bool = False):
+        _patch_textworld_for_py313()
+        from alfworld.info import ALFWORLD_DATA
+
+        self.data_dir = data_dir or ALFWORLD_DATA
+        self.with_expert = with_expert
+        self.ask_success = ask_success
+        self.env = None
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        root = os.path.join(self.data_dir, "json_2.1.1", SPLITS[split])
+        files = sorted(glob.glob(os.path.join(root, "*", "*", "game.tw-pddl")))
+        if not files:
+            raise FileNotFoundError(f"no ALFWorld games under {root}; run `alfworld-download`")
+        specs = []
+        for f in files:
+            rel = os.path.relpath(os.path.dirname(f), root)  # "<task>-<obj>-...-<scene>/trial_..."
+            task_type = rel.split("-")[0]
+            specs.append(EpisodeSpec(f"{SPLITS[split]}/{rel}", task_type, f))
+        # Hash order (as in the single-step suite), so `--limit` takes a mixed sample of task types and a
+        # smaller limit is always a subset of a larger one. Alphabetical order would pick one task type.
+        specs.sort(key=lambda sp: hashlib.sha256(f"alfworld/{sp.uid}".encode()).hexdigest())
+        return specs[:limit] if limit is not None else specs
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        import textworld
+        import textworld.gym
+        from alfworld.agents.environment.alfred_tw_env import AlfredDemangler, AlfredExpert, AlfredExpertType, AlfredInfos
+
+        self.close()
+        # The handcoded expert breaks ties with Python's global random.choice (alfworld's handcoded_expert.py), so
+        # its commands, and with them the expert labels, would change between runs. Seeding the global generator
+        # per episode makes them reproducible; the model's requests do not depend on it.
+        random.seed(int(hashlib.sha256(f"alfworld-expert/{spec.uid}".encode()).hexdigest()[:16], 16))
+        extras = ["gamefile"] + (["expert_plan"] if self.with_expert else [])
+        infos = textworld.EnvInfos(won=True, admissible_commands=True, facts=self.with_expert, extras=extras)
+        wrappers = [AlfredDemangler(shuffle=False), AlfredInfos]
+        if self.with_expert:
+            wrappers.append(AlfredExpert(AlfredExpertType.HANDCODED))
+        env_id = textworld.gym.register_games([spec.payload], infos, batch_size=1, asynchronous=False,
+                                              max_episode_steps=self.max_steps, wrappers=wrappers)
+        self.env = textworld.gym.make(env_id)
+        obs, info = self.env.reset()
+        text = INTRO.sub("", obs[0]).strip()
+        intro, _, task = text.partition("Your task is to:")
+        self.task = task.strip()
+        self.observation = intro.strip()
+        self.initial_observation = self.observation
+        self.info = info
+        self.history: list[dict] = []
+        self.won = False
+        self.done = False
+
+    def _expert(self) -> str | None:
+        plan = (self.info.get("extra.expert_plan") or [None])[0]
+        return plan[0] if plan else None
+
+    def decision(self) -> Decision | None:
+        if self.done:
+            return None
+        commands = [c for c in self.info["admissible_commands"][0] if c != "help"]
+        t = len(self.history)
+        left = self.max_steps - t
+        state = {
+            "task": self.task,
+            "initial_observation": self.initial_observation,
+            "current_observation": self.observation,
+            "history": list(self.history) if self.history_window is None else self.history[-self.history_window :],  # a copy, not the live list
+            "steps_taken": t,
+            "steps_left": left,
+        }
+        questions = {ACTION: choice(ACTION_INSTRUCTIONS, mc_criteria(commands))}
+        if self.ask_success:
+            questions[SUCCESS] = noul(f"Will the task be completed within the remaining {left} steps?")
+        actions = dict(zip(option_keys(len(commands)), commands))
+        return Decision(state, questions, actions, {"expert": self._expert()} if self.with_expert else {})
+
+    def step(self, action: str) -> StepResult:
+        obs, _, done, info = self.env.step([action])
+        self.info = info
+        self.observation = obs[0].strip()
+        self.history.append({"command": action, "observation": self.observation})
+        self.won = bool(info["won"][0])
+        self.done = bool(done[0])
+        return StepResult(self.done, self.won, float(self.won), self.observation)
+
+    def outcome(self) -> StepResult:
+        return StepResult(self.done, self.won, float(self.won))
+
+    def close(self) -> None:
+        if self.env is not None:
+            self.env.close()
+            self.env = None
+
+
+# ----------------------------------------------------------------------------------------------------
+# Scripted reference policies. They need the expert's command, which only the env knows, so the env
+# exposes it through `oracle`; `ExpertBackend` in the CLI reads it from the last decision.
+
+
+def random_policy(state: dict, questions: dict) -> dict:
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    keys = list(questions[ACTION]["criteria"])
+    return _only_asked(questions, {ACTION: choice_answer({k: 1.0 for k in keys}), SUCCESS: noul_answer(0.1)})
+
+
+class ExpertBackend:
+    """Follows the handcoded ALFWorld expert (an upper reference, not a model). Built by the CLI."""
+
+    @staticmethod
+    def make(cache=None):
+        from jev_benchmarking.sequential.backends import FunctionBackend, choice_answer, noul_answer
+
+        holder: dict = {}
+
+        def fn(state: dict, questions: dict) -> dict:
+            d = holder["decision"]
+            expert = d.oracle.get("expert")
+            keys = list(d.actions)
+            probs = {k: float(d.actions[k] == expert) for k in keys}
+            if not any(probs.values()):  # expert has no plan or proposes a non-admissible command
+                probs = {k: 1.0 for k in keys}
+            return _only_asked(questions, {ACTION: choice_answer(probs), SUCCESS: noul_answer(0.9)})
+
+        backend = FunctionBackend("expert", fn, cache)
+        backend.observe = lambda d: holder.__setitem__("decision", d)
+        return backend
+
+
+SCRIPTED = {"random": random_policy}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/babyai_text.py
+================================================
+"""BabyAI-Text with the original code of Carta et al. (ICML 2023, "Grounding Large Language Models in
+Interactive Environments with Online Reinforcement Learning"; GLAM repository, MIT license).
+
+Everything comes from the original packages at a pinned commit of the GLAM repository
+(`scripts/setup_babyai_text_env.sh`): the level `BabyAI-MixedTrainLocal-v0` with its default settings
+(one 8x8 room, eight distractor objects; a second, locked room for the open task), the text descriptions
+of the agent's view (`info["descriptions"]`), the six actions of their experiments (turn left, turn right, go
+forward, pick up, drop, toggle), their prompt (`generate_prompt` of experiments/agents/base_agent.py, with
+the last three observations and two actions, as in their configuration `nbr_obs: 3`), and the BabyAI bot
+(`babyai.bot.Bot`) as reference, replanned at every step after the action actually taken.
+
+The level draws its instruction type (go to, pick up, open, put next to, pick up then go to) when the
+environment is constructed, from an unseeded generator. To obtain a reproducible set of episodes with all
+five types, each episode constructs environments until one has the wanted type, then seeds it; the room,
+objects and mission then depend only on the seed.
+
+The original packages need an old gym and numpy, so this task runs in its own environment.
+
+Diagnostic variant (`babyai_text_instructions`, not part of the main results): the same episodes with the
+instruction prompt that BALROG (Paglieri et al., 2025) gives zero-shot LLMs on this level added to the
+state, copied verbatim (`balrog/environments/babyai_text/__init__.py`, commit b7afe79): the goal, a short
+description of each action, and two tips, one of which says not to repeat an action whose observation does
+not change. The prompt of Carta et al. was written for agents trained with reinforcement learning and
+explains neither the actions nor the rules; the variant tests whether Jev's results depend on that.
+"""
+
+from collections import deque
+
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, Decision, EpisodeSpec, SequentialEnv, StepResult, _only_asked
+from jev_benchmarking.tasks.base import choice, noul
+
+GLAM_COMMIT = "31847fb8c1db58bc8f595bea8f8cbaf26fb79dc2"
+LEVEL = "BabyAI-MixedTrainLocal-v0"
+ACTIONS = ["turn left", "turn right", "go forward", "pick up", "drop", "toggle"]  # BabyAI action ids 0..5
+KINDS = ["goto", "pickup", "open", "putnext", "pick up seq go to"]
+NBR_OBS = 3
+BALROG_COMMIT = "b7afe79e3e4265811cfa985ed7c95c4d1a11e3f5"
+BALROG_ACTIONS = {  # verbatim from BALROG
+    "turn left": "turn to the left",
+    "turn right": "turn to the right",
+    "go forward": "take one step forward",
+    "pick up": "pick up the object below you",
+    "drop": "drop the object that you are holding",
+    "toggle": "manipulate the object in front of you",
+}
+
+ACTION_Q_TEXT = "Which action should the agent take next?"
+SUCCESS_Q = noul("Will the agent reach its goal before running out of steps?")
+
+
+def generate_prompt(goal, subgoals, deque_obs, deque_actions):
+    """Verbatim copy of BaseAgent.generate_prompt (GLAM, experiments/agents/base_agent.py)."""
+    ldo = len(deque_obs)
+    lda = len(deque_actions)
+
+    head_prompt = "Possible action of the agent:"
+    for sg in subgoals:
+        head_prompt += " {},".format(sg)
+    head_prompt = head_prompt[:-1]
+
+    g = " \n Goal of the agent: {}".format(goal)
+    obs = ""
+    for i in range(ldo):
+        obs += " \n Observation {}: ".format(i)
+        for d_obs in deque_obs[i]:
+            obs += "{}, ".format(d_obs)
+        obs += "\n Action {}: ".format(i)
+        if i < lda:
+            obs += "{}".format(deque_actions[i])
+    return head_prompt + g + obs
+
+
+def balrog_instruction_prompt(mission):
+    """Verbatim copy of get_instruction_prompt (BALROG, balrog/environments/babyai_text/__init__.py)."""
+    action_strings = ",\n".join(f"{action}: {description}" for action, description in BALROG_ACTIONS.items())
+
+    instruction_prompt = f"""
+You are an agent playing a simple navigation game. Your goal is to {mission}. The following are the possible actions you can take in the game, followed by a short description of each action:
+
+{action_strings}.
+
+In a moment I will present you an observation.
+
+Tips:
+- Once the desired object you want to interact or pickup in front of you, you can use the 'toggle' action to interact with it.
+- It doesn't make sense to repeat the same action over and over if the observation doesn't change.
+
+PLAY!
+""".strip()
+
+    return instruction_prompt
+
+
+class BabyAIText(SequentialEnv):
+    name = "babyai_text"
+    description = "BabyAI-Text, original code of Carta et al. (MixedTrainLocal, 8 distractors, their prompt); BabyAI bot reference."
+    DEFAULT_N = {"eval": 250, "dev": 50}
+    SEED_OFFSET = {"eval": 0, "dev": 100_000}
+
+    def __init__(self, ask_success: bool = False, instructions: bool = False):
+        self.ask_success = ask_success
+        self.instructions = instructions  # diagnostic variant, see module docstring
+        if instructions:
+            self.name = "babyai_text_instructions"
+        self.env = None
+        self.max_steps = 128
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        """The five instruction types in turn (any prefix covers all five), one seed per episode."""
+        n = limit if limit is not None else self.DEFAULT_N[split]
+        return [EpisodeSpec(f"{split}-{KINDS[i % 5].replace(' ', '_')}-seed{self.SEED_OFFSET[split] + i:06d}",
+                            KINDS[i % 5].replace(" ", "_"), {"kind": KINDS[i % 5], "seed": self.SEED_OFFSET[split] + i})
+                for i in range(n)]
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        import gym
+        import babyai_text  # noqa: F401  (registers the levels)
+        from babyai.bot import Bot
+
+        if self.env is not None:
+            self.env.close()
+        while True:  # the instruction type is fixed at construction (see module docstring)
+            env = gym.make(LEVEL)
+            if env.unwrapped.action_kinds[0] == spec.payload["kind"]:
+                break
+            env.close()
+        self.env = env
+        self.env.seed(spec.payload["seed"])
+        self.obs, self.infos = self.env.reset()
+        self.max_steps = self.env.unwrapped.max_steps
+        self.bot = Bot(self.env.unwrapped)
+        self.last_action = None
+        self.obs_queue = deque([], maxlen=NBR_OBS)
+        self.acts_queue = deque([], maxlen=NBR_OBS - 1)
+        self.obs_queue.append(self.infos["descriptions"])
+        self.t = 0
+        self.result: StepResult | None = None
+
+    def state(self) -> dict:
+        """The prompt of Carta et al., exactly as their agents receive it (in the diagnostic variant preceded by
+        BALROG's instruction prompt)."""
+        prompt = generate_prompt(self.obs["mission"], ACTIONS, self.obs_queue, self.acts_queue)
+        if self.instructions:
+            return {"instructions": balrog_instruction_prompt(self.obs["mission"]), "prompt": prompt}
+        return {"prompt": prompt}
+
+    def _reference(self) -> str | None:
+        try:
+            a = int(self.bot.replan(self.last_action))
+        except Exception:  # the bot cannot plan from some states it was not built for
+            return None
+        return ACTIONS[a] if a < len(ACTIONS) else None  # 'done' is not one of the six actions
+
+    def decision(self) -> Decision | None:
+        if self.result is not None:
+            return None
+        ref = self._reference()
+        q = choice(ACTION_Q_TEXT, {a: a for a in ACTIONS})
+        questions = {ACTION: q, SUCCESS: SUCCESS_Q} if self.ask_success else {ACTION: q}
+        return Decision(self.state(), questions, {a: a for a in ACTIONS}, {"expert": ref} if ref else {})
+
+    def step(self, action: str) -> StepResult:
+        a = ACTIONS.index(action)
+        self.acts_queue.append(action)
+        self.obs, reward, done, self.infos = self.env.step(a)
+        self.last_action = a
+        self.t += 1
+        self.obs_queue.append(self.infos["descriptions"])
+        feedback = ", ".join(self.infos["descriptions"])
+        if done:
+            self.result = StepResult(True, reward > 0, 1.0 if reward > 0 else 0.0, feedback)
+            return self.result
+        return StepResult(False, feedback=feedback)
+
+    def outcome(self) -> StepResult:
+        return self.result or StepResult(False, feedback="No steps left.")
+
+    def close(self) -> None:
+        if self.env is not None:
+            self.env.close()
+            self.env = None
+
+
+def random_policy(state, questions):
+    from jev_benchmarking.sequential.backends import choice_answer
+
+    return _only_asked(questions, {ACTION: choice_answer({a: 1.0 for a in ACTIONS})})
+
+
+SCRIPTED = {"random": random_policy}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/base.py
+================================================
+"""Environment interface for sequential benchmarks.
+
+An environment plays one episode at a time. At each step it exposes a `Decision`: the request (state and
+typed questions) plus which question picks the action and how its option keys map to actions. The runner
+asks a backend, executes the chosen action, and repeats until the episode ends.
+
+Every step request carries the action question: a Choice over the currently legal actions. Optionally
+(`ask_success = True`, off by default) it also carries a success question, a Noul asking whether the
+episode will end in success. It is answered independently, never used to act, and only serves to check
+calibration against the episode's outcome.
+"""
+
+from dataclasses import dataclass, field
+from typing import Any
+
+ACTION = "action"
+SUCCESS = "success"
+
+
+@dataclass(frozen=True)
+class EpisodeSpec:
+    uid: str  # stable id, e.g. "unseen/pick_and_place.../trial_..." or "seed-000123"
+    subset: str = ""  # task type, difficulty, etc. for grouped metrics
+    payload: Any = None  # whatever the env needs to reset (game file, seed)
+
+
+@dataclass
+class Decision:
+    state: Any
+    questions: dict[str, dict]
+    actions: dict[str, str]  # option key of the action question -> action executed in the env
+    oracle: dict = field(default_factory=dict)  # privileged info logged for metrics, never sent to the model
+
+
+@dataclass
+class StepResult:
+    done: bool
+    success: bool = False
+    reward: float = 0.0
+    feedback: str = ""
+
+
+class SequentialEnv:
+    name: str = ""
+    max_steps: int = 50
+    ask_success: bool = False  # add the optional success question to every request
+    description: str = ""
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        raise NotImplementedError
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        raise NotImplementedError
+
+    def decision(self) -> Decision | None:
+        """The next decision, or None if the episode ended without needing one (e.g. a dealt blackjack)."""
+        raise NotImplementedError
+
+    def step(self, action: str) -> StepResult:
+        raise NotImplementedError
+
+    def outcome(self) -> StepResult:
+        """Final result; called once the episode is over (by `done` or by hitting `max_steps`)."""
+        raise NotImplementedError
+
+    def close(self) -> None:
+        pass
+
+
+def _only_asked(questions: dict, answers: dict) -> dict:
+    """Scripted policies answer every question they know; keep only those in the request."""
+    return {k: v for k, v in answers.items() if k in questions}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/blackjack.py
+================================================
+"""Blackjack on RLCard's implementation, with exact action values computed alongside.
+
+The game is RLCard's `blackjack` environment (Zha et al., 2019) with its default configuration, the setup
+on which earlier LLM agents (Agent-Pro, Zhang et al., 2024) and RL agents (DQN, DMC) report win rates:
+one player against a dealer, a fresh shuffled 52-card deck for every hand, hit or stand only, the dealer
+draws until 17 or more and stands on every 17, no doubling, splitting, insurance or blackjack bonus. The
+dealer's first card is hidden and the second is shown. RLCard deals, scores and judges every hand; this
+module only renders the state as text for the model and computes the reference values.
+
+Because every hand starts from a full deck, the value of every decision can be computed exactly given the
+cards the player can see (own cards and the dealer's face-up card; the hidden card and every later card
+are a uniform draw from the rest of the deck): the expected return of hitting and standing, the optimal
+action, and the probability of winning the hand from here when playing optimally. These are logged with
+every step (`oracle`) and never sent to the model.
+
+Each episode is one hand, seeded by its index, so every model is dealt the same starting hand; after that
+the cards depend on the actions taken, as in RLCard.
+"""
+
+from functools import lru_cache
+
+import rlcard
+
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, Decision, EpisodeSpec, SequentialEnv, StepResult, _only_asked
+from jev_benchmarking.tasks.base import choice, noul
+
+RANK_NAME = {"A": "A", "T": "10"}  # RLCard writes ten as "T"
+VALUE = {"A": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 10, "Q": 10, "K": 10}
+FULL_DECK = (4, 4, 4, 4, 4, 4, 4, 4, 4, 16)  # cards of value 1 (ace) .. 10 in one 52-card deck
+
+RULES = (
+    "Blackjack against a dealer, one 52-card deck shuffled for every hand. Number cards count their number, "
+    "J, Q and K count 10, an ace counts 11 unless that would bring the total over 21, in which case it counts "
+    "1. The dealer has one card face up and one hidden. The player may hit (take one more card) or stand "
+    "(stop). A player total over 21 loses immediately. After the player stands, the dealer reveals the "
+    "hidden card and draws until the dealer total is 17 or more, standing on every 17. A dealer total over "
+    "21 loses; otherwise the higher total wins and equal totals tie. There is no doubling, splitting, "
+    "insurance or blackjack bonus."
+)
+
+ACTION_Q = choice(
+    "Which move gives the player the best expected result in this hand?",
+    {"hit": "take one more card", "stand": "stop and let the dealer play"},
+)
+SUCCESS_Q = noul("Will the player win this hand against the dealer? A tie does not count as a win.")
+
+
+def best_total(hard: int, ace: bool) -> int:
+    return hard + 10 if ace and hard + 10 <= 21 else hard
+
+
+def hand(cards: list[str]) -> tuple[int, bool]:
+    """(hard total with aces as 1, contains an ace)."""
+    return sum(VALUE[c] for c in cards), any(c == "A" for c in cards)
+
+
+def remaining_deck(seen: list[str]) -> tuple[int, ...]:
+    deck = list(FULL_DECK)
+    for c in seen:
+        deck[VALUE[c] - 1] -= 1
+    return tuple(deck)
+
+
+def _draws(deck: tuple[int, ...]):
+    """(card value, probability, deck after the draw) for one draw from `deck`."""
+    n = sum(deck)
+    for i, k in enumerate(deck):
+        if k:
+            yield i + 1, k / n, deck[:i] + (k - 1,) + deck[i + 1:]
+
+
+# ----------------------------------------------------------------------------------------------------
+# Exact values (one deck, composition-dependent).
+
+
+@lru_cache(maxsize=None)
+def dealer_final(hard: int, ace: bool, deck: tuple[int, ...]) -> tuple[tuple[int, float], ...]:
+    """Distribution of the dealer's final total from a dealer hand (hard, ace) drawing from `deck`;
+    22 stands for a bust."""
+    if hard > 21:
+        return ((22, 1.0),)
+    total = best_total(hard, ace)
+    if total >= 17:
+        return ((total, 1.0),)
+    dist: dict[int, float] = {}
+    for v, p, rest in _draws(deck):
+        for final, q in dealer_final(hard + v, ace or v == 1, rest):
+            dist[final] = dist.get(final, 0.0) + p * q
+    return tuple(sorted(dist.items()))
+
+
+@lru_cache(maxsize=None)
+def stand_value(total: int, upcard: int, deck: tuple[int, ...]) -> tuple[float, float]:
+    """(expected return, P(win)) of standing on `total`; the dealer's hidden card and draws come from `deck`."""
+    if total > 21:
+        return -1.0, 0.0
+    win = lose = 0.0
+    for final, p in dealer_final(upcard, upcard == 1, deck):
+        if final == 22 or final < total:
+            win += p
+        elif final > total:
+            lose += p
+    return win - lose, win
+
+
+@lru_cache(maxsize=None)
+def values(hard: int, ace: bool, upcard: int, deck: tuple[int, ...]) -> dict:
+    """Exact values of a player state under optimal play from here (optimal = highest expected return).
+    `deck` is the deck without the player's cards and the dealer's face-up card."""
+    if hard > 21:
+        return {"q_hit": -1.0, "q_stand": -1.0, "v": -1.0, "p_win": 0.0, "p_win_hit": 0.0, "p_win_stand": 0.0, "best": "stand"}
+    q_stand, w_stand = stand_value(best_total(hard, ace), upcard, deck)
+    q_hit = w_hit = 0.0
+    for v, p, rest in _draws(deck):
+        nxt = values(hard + v, ace or v == 1, upcard, rest)
+        q_hit += p * nxt["v"]
+        w_hit += p * nxt["p_win"]
+    best = "hit" if q_hit > q_stand else "stand"
+    return {
+        "q_hit": q_hit, "q_stand": q_stand, "v": max(q_hit, q_stand),
+        "p_win": w_hit if best == "hit" else w_stand,
+        "p_win_hit": w_hit, "p_win_stand": w_stand, "best": best,
+    }
+
+
+def state_values(player_cards: list[str], upcard: str) -> dict:
+    hard, ace = hand(player_cards)
+    return values(hard, ace, VALUE[upcard], remaining_deck(player_cards + [upcard]))
+
+
+# ----------------------------------------------------------------------------------------------------
+
+
+def _name(card) -> str:
+    return RANK_NAME.get(card.rank, card.rank)
+
+
+class Blackjack(SequentialEnv):
+    name = "blackjack"
+    max_steps = 12  # at most 11 cards fit under 22 with one deck
+    description = "RLCard Blackjack (hit or stand); exact action values and win probabilities by dynamic programming."
+    SEED_OFFSET = {"eval": 0, "dev": 10_000_000}
+    DEFAULT_N = {"eval": 5000, "dev": 500}
+
+    def __init__(self, ask_success: bool = False):
+        self.ask_success = ask_success
+        self.env = rlcard.make("blackjack", config={"game_num_players": 1, "game_num_decks": 1})
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        n = limit if limit is not None else self.DEFAULT_N[split]
+        base = self.SEED_OFFSET[split]
+        return [EpisodeSpec(f"{split}-{i:06d}", "", base + i) for i in range(n)]
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        self.env.seed(spec.payload)
+        self.env.reset()
+        self.result: StepResult | None = None
+
+    @property
+    def _game(self):
+        return self.env.game
+
+    @property
+    def player(self) -> list[str]:
+        return [_name(c) for c in self._game.players[0].hand]
+
+    @property
+    def dealer(self) -> list[str]:
+        return [_name(c) for c in self._game.dealer.hand]
+
+    @property
+    def upcard(self) -> str:
+        return self.dealer[1]  # RLCard hides the dealer's first card and shows the second
+
+    def state(self) -> dict:
+        hard, ace = hand(self.player)
+        return {
+            "rules": RULES,
+            "player_cards": self.player,
+            "player_total": best_total(hard, ace),
+            "player_total_is_soft": ace and hard + 10 <= 21,
+            "dealer_face_up_card": self.upcard,
+        }
+
+    def decision(self) -> Decision | None:
+        if self.env.is_over():
+            return None
+        hard, ace = hand(self.player)
+        oracle = dict(state_values(self.player, self.upcard))
+        oracle.update(player_total=best_total(hard, ace), soft=ace and hard + 10 <= 21, upcard=self.upcard)
+        questions = {ACTION: ACTION_Q, SUCCESS: SUCCESS_Q} if self.ask_success else {ACTION: ACTION_Q}
+        return Decision(self.state(), questions, {"hit": "hit", "stand": "stand"}, oracle)
+
+    def step(self, action: str) -> StepResult:
+        self.env.step(action, raw_action=True)
+        p = best_total(*hand(self.player))
+        if not self.env.is_over():
+            return StepResult(False, feedback=f"Player draws {self.player[-1]}: {p}.")
+        reward = float(self.env.get_payoffs()[0])
+        d = best_total(*hand(self.dealer))
+        drew = f"Player draws {self.player[-1]}: {p}. " if action == "hit" else ""
+        fb = f"{drew}Bust." if p > 21 else f"{drew}Dealer has {' '.join(self.dealer)} = {d}; player {p}."
+        self.result = StepResult(True, reward > 0, reward, fb)
+        return self.result
+
+    def outcome(self) -> StepResult:
+        return self.result or StepResult(False)
+
+
+# ----------------------------------------------------------------------------------------------------
+# Scripted reference policies (FunctionBackend).
+
+
+def _oracle_of(state: dict) -> dict:
+    return state_values(state["player_cards"], state["dealer_face_up_card"])
+
+
+def optimal_policy(state: dict, questions: dict) -> dict:
+    """Optimal play with exact win probabilities: the calibrated reference."""
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    v = _oracle_of(state)
+    return _only_asked(questions, {ACTION: choice_answer({"hit": float(v["best"] == "hit"), "stand": float(v["best"] == "stand")}),
+                                   SUCCESS: noul_answer(v["p_win"])})
+
+
+def never_bust_policy(state: dict, questions: dict) -> dict:
+    """Hit below 12 (cannot bust), stand otherwise; reports the base rate of winning as its estimate."""
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    hit = state["player_total"] < 12
+    return _only_asked(questions, {ACTION: choice_answer({"hit": float(hit), "stand": float(not hit)}), SUCCESS: noul_answer(0.43)})
+
+
+def random_policy(state: dict, questions: dict) -> dict:
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    return _only_asked(questions, {ACTION: choice_answer({"hit": 0.5, "stand": 0.5}), SUCCESS: noul_answer(0.5)})
+
+
+SCRIPTED = {"optimal": optimal_policy, "never_bust": never_bust_policy, "random": random_policy}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/frozenlake.py
+================================================
+"""FrozenLake on Gymnasium's implementation, with exact action values computed alongside.
+
+The game is Gymnasium's `FrozenLake-v1` (Towers et al., 2024) with slippery ice, the standard setting: the
+agent walks on a grid from the start S to the goal G over frozen tiles F and must avoid holes H. Each move
+goes in the intended direction with probability 1/3 and in each of the two perpendicular directions with
+probability 1/3; a move into the edge leaves the agent in place. The episode ends in a hole (failure), at
+the goal (success), or at the step limit Gymnasium registers for the map size (100 steps for 4x4, 200
+for 8x8). Each episode uses its own map from Gymnasium's `generate_random_map` (frozen-tile probability
+0.8, a path from S to G guaranteed), seeded by the episode id, so the model cannot rely on a memorised map.
+
+Gymnasium simulates every step; this module only renders the state as text and computes the reference.
+Because the transition probabilities are known, the probability of reaching the goal within the remaining
+steps can be computed exactly for every state and action by finite-horizon dynamic programming on
+Gymnasium's own transition table. The optimal actions are those with the highest probability; several
+actions are often tied (for example two moves that both slide along a wall). These values are logged with
+every step (`oracle`) and never sent to the model.
+"""
+
+from functools import lru_cache
+
+import gymnasium as gym
+import numpy as np
+from gymnasium.envs.toy_text.frozen_lake import generate_random_map
+
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, Decision, EpisodeSpec, SequentialEnv, StepResult, _only_asked
+from jev_benchmarking.tasks.base import choice, noul
+
+MOVES = ["left", "down", "right", "up"]  # Gymnasium's action order 0..3
+STEP_LIMIT = {4: 100, 8: 200}  # Gymnasium's registered limits for FrozenLake-v1 and FrozenLake8x8-v1
+TIE = 1e-9
+
+RULES = (
+    "FrozenLake. The agent walks on a frozen lake drawn as a grid of tiles: S is the start, F is frozen "
+    "ice that is safe to stand on, H is a hole and G is the goal. Rows are numbered from 0 at the top and "
+    "columns from 0 at the left. 'up' decreases the row, 'down' increases it, 'left' decreases the column "
+    "and 'right' increases it. The ice is slippery: the agent moves in the chosen direction with "
+    "probability 1/3 and in each of the two perpendicular directions with probability 1/3 (for example, "
+    "choosing 'up' moves up, left or right, each with probability 1/3). A move into the edge of the grid "
+    "leaves the agent where it is. Stepping onto H ends the episode in failure, reaching G ends it in "
+    "success, and the episode also fails when no steps are left. In the map with the agent, A marks the "
+    "agent's tile."
+)
+
+ACTION_Q = choice(
+    "Which move gives the highest probability of reaching the goal G before falling into a hole or running out of steps?",
+    {"left": "move left", "down": "move down", "right": "move right", "up": "move up"},
+)
+SUCCESS_Q = noul("Will the agent reach the goal G before falling into a hole or running out of steps?")
+
+
+@lru_cache(maxsize=4096)
+def _model(desc: tuple[str, ...]):
+    """Gymnasium's transition table for a map: P[s][a] = [(prob, next_state, reward, terminated), ...]."""
+    env = gym.make("FrozenLake-v1", desc=list(desc), is_slippery=True)
+    P = env.unwrapped.P
+    env.close()
+    return P
+
+
+@lru_cache(maxsize=4096)
+def q_table(desc: tuple[str, ...], horizon: int) -> np.ndarray:
+    """Q[k, s, a]: probability of reaching G when taking `a` in `s` with k steps left (k = 1..horizon),
+    then acting optimally. Terminal tiles never get a decision."""
+    P = _model(desc)
+    n = len(desc) * len(desc[0])
+    flat = "".join(desc)
+    v = np.zeros(n)  # V with 0 steps left: success only if already at G (G is terminal, so never queried)
+    Q = np.zeros((horizon + 1, n, 4))
+    for k in range(1, horizon + 1):
+        for s in range(n):
+            if flat[s] in "GH":
+                continue
+            for a in range(4):
+                Q[k, s, a] = sum(p * (1.0 if flat[s2] == "G" else 0.0 if flat[s2] == "H" else v[s2]) for p, s2, _, _ in P[s][a])
+        v = Q[k].max(axis=1)
+        v[[i for i, t in enumerate(flat) if t == "G"]] = 1.0
+        v[[i for i, t in enumerate(flat) if t == "H"]] = 0.0
+    return Q
+
+
+def state_values(desc: tuple[str, ...], row: int, col: int, steps_left: int, horizon: int) -> dict:
+    q = q_table(desc, horizon)[steps_left, row * len(desc[0]) + col]
+    best = float(q.max())
+    optimal = [MOVES[a] for a in range(4) if q[a] >= best - TIE]
+    return {"q": {MOVES[a]: float(q[a]) for a in range(4)}, "p_win": best, "optimal": optimal, "best": optimal[0]}
+
+# ----------------------------------------------------------------------------------------------------
+# Prompt variants, used only by the diagnostic probe (scripts/probe_frozenlake.py); episodes use "base".
+#   base:          the request above.
+#   safety:        the question adds the strategy (avoid moves that can slip into a hole).
+#   outcomes:      each option lists where the move can land, so no consequence has to be worked out.
+#   deterministic: non-slippery ice (moves go where chosen); the reference is the shortest safe path.
+
+VARIANTS = ("base", "safety", "outcomes", "deterministic")
+
+SAFETY_Q = choice(
+    "Which move gives the highest probability of reaching the goal G before falling into a hole or running out "
+    "of steps? Falling into a hole ends the game, and every move can slip sideways. Prefer a move for which no "
+    "possible slip lands on a hole, even if it leads away from the goal for now.",
+    {"left": "move left", "down": "move down", "right": "move right", "up": "move up"},
+)
+
+RULES_DETERMINISTIC = (
+    "FrozenLake. The agent walks on a frozen lake drawn as a grid of tiles: S is the start, F is frozen "
+    "ice that is safe to stand on, H is a hole and G is the goal. Rows are numbered from 0 at the top and "
+    "columns from 0 at the left. 'up' decreases the row, 'down' increases it, 'left' decreases the column "
+    "and 'right' increases it. The ice is not slippery: the agent always moves in the chosen direction. A "
+    "move into the edge of the grid leaves the agent where it is. Stepping onto H ends the episode in "
+    "failure and reaching G ends it in success. In the map with the agent, A marks the agent's tile."
+)
+
+DETERMINISTIC_Q = choice(
+    "Which move brings the agent to the goal G in the fewest moves without ever stepping onto a hole?",
+    {"left": "move left", "down": "move down", "right": "move right", "up": "move up"},
+)
+
+DELTA = {"left": (0, -1), "down": (1, 0), "right": (0, 1), "up": (-1, 0)}
+PERPENDICULAR = {"left": ("down", "up"), "down": ("left", "right"), "right": ("down", "up"), "up": ("left", "right")}
+
+
+def landing(desc: tuple[str, ...], row: int, col: int, direction: str) -> tuple[int, int]:
+    dr, dc = DELTA[direction]
+    r, c = row + dr, col + dc
+    return (r, c) if 0 <= r < len(desc) and 0 <= c < len(desc[0]) else (row, col)
+
+
+def outcome_text(desc: tuple[str, ...], row: int, col: int, move: str) -> str:
+    """Where a slippery move can land, merged by tile, e.g. '2/3: stay at row 0, column 0 (S); 1/3: row 0,
+    column 1 (F)'."""
+    counts: dict[tuple[int, int], int] = {}
+    for d in (move, *PERPENDICULAR[move]):
+        counts[landing(desc, row, col, d)] = counts.get(landing(desc, row, col, d), 0) + 1
+    names = {"S": "start", "F": "frozen", "H": "HOLE", "G": "GOAL"}
+    parts = []
+    for (r, c), k in counts.items():
+        where = f"stay at row {r}, column {c}" if (r, c) == (row, col) else f"row {r}, column {c}"
+        parts.append(f"{k}/3: {where} ({names[desc[r][c]]})")
+    return f"move {move}; lands on " + "; ".join(parts)
+
+
+@lru_cache(maxsize=4096)
+def distances(desc: tuple[str, ...]) -> dict[tuple[int, int], int]:
+    """Shortest number of deterministic moves to G from every tile, never stepping onto H (BFS from G)."""
+    n, m = len(desc), len(desc[0])
+    goal = next((r, c) for r in range(n) for c in range(m) if desc[r][c] == "G")
+    dist, frontier = {goal: 0}, [goal]
+    while frontier:
+        nxt = []
+        for r, c in frontier:
+            for dr, dc in DELTA.values():
+                pr, pc = r - dr, c - dc  # a tile from which moving (dr, dc) reaches (r, c)
+                if 0 <= pr < n and 0 <= pc < m and (pr, pc) not in dist and desc[pr][pc] != "H":
+                    dist[(pr, pc)] = dist[(r, c)] + 1
+                    nxt.append((pr, pc))
+        frontier = nxt
+    return dist
+
+
+def deterministic_values(desc: tuple[str, ...], row: int, col: int) -> dict:
+    """Reference for non-slippery ice: the moves that start a shortest safe path to G."""
+    dist = distances(desc)
+    q = {}
+    for mv in MOVES:
+        r, c = landing(desc, row, col, mv)
+        # moves needed to reach G after this move (negated); a hole is worst, then a tile without a safe path, then
+        # staying in place against the edge
+        if desc[r][c] == "H":
+            q[mv] = -1000.0
+        elif (r, c) == (row, col):
+            q[mv] = -99.0
+        elif (r, c) not in dist:
+            q[mv] = -500.0
+        else:
+            q[mv] = -float(dist[(r, c)] + 1)
+    best = max(q.values())
+    optimal = [mv for mv in MOVES if q[mv] >= best - TIE] if (row, col) in dist else []
+    return {"q_steps": q, "optimal": optimal, "best": optimal[0] if optimal else None,
+            "distance": dist.get((row, col))}
+
+
+def build_request(desc: tuple[str, ...], row: int, col: int, steps_taken: int, max_steps: int,
+                  variant: str = "base", ask_success: bool = False) -> tuple[dict, dict, dict]:
+    """(state, questions, oracle) for one decision under a prompt variant."""
+    rows = list(desc)
+    rows[row] = rows[row][:col] + "A" + rows[row][col + 1:]
+    state = {
+        "rules": RULES_DETERMINISTIC if variant == "deterministic" else RULES,
+        "map": list(desc),
+        "map_with_agent": rows,
+        "agent_row": row,
+        "agent_column": col,
+        "agent_tile": desc[row][col],
+        "steps_taken": steps_taken,
+        "steps_left": max_steps - steps_taken,
+    }
+    if variant == "deterministic":
+        q, oracle = DETERMINISTIC_Q, deterministic_values(desc, row, col)
+    else:
+        q = {"base": ACTION_Q, "safety": SAFETY_Q}.get(variant)
+        if variant == "outcomes":
+            q = choice(ACTION_Q["instructions"], {mv: outcome_text(desc, row, col, mv) for mv in MOVES})
+        if q is None:
+            raise ValueError(f"unknown variant {variant!r}; choose from {VARIANTS}")
+        oracle = state_values(desc, row, col, max_steps - steps_taken, max_steps)
+    questions = {ACTION: q, SUCCESS: SUCCESS_Q} if ask_success else {ACTION: q}
+    return state, questions, oracle
+
+
+class FrozenLake(SequentialEnv):
+    name = "frozenlake"
+    description = "Gymnasium FrozenLake-v1 (slippery), random 4x4 and 8x8 maps; exact success probabilities by DP."
+    SIZES = (4, 8)
+    SEED_OFFSET = {"eval": 0, "dev": 10_000_000}
+    DEFAULT_N = {"eval": 500, "dev": 100}
+
+    def __init__(self, ask_success: bool = False):
+        self.ask_success = ask_success
+        self.max_steps = max(STEP_LIMIT.values())
+        self.env = None
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        """Alternates 4x4 and 8x8, so any prefix (`--limit`) has both sizes."""
+        n = limit if limit is not None else self.DEFAULT_N[split]
+        base = self.SEED_OFFSET[split]
+        out = []
+        for i in range(n):
+            size = self.SIZES[i % len(self.SIZES)]
+            out.append(EpisodeSpec(f"{split}-{size}x{size}-{i:05d}", f"{size}x{size}", {"size": size, "seed": base + i}))
+        return out
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        size, seed = spec.payload["size"], spec.payload["seed"]
+        self.desc = tuple(generate_random_map(size=size, p=0.8, seed=seed))
+        self.max_steps = STEP_LIMIT[size]
+        if self.env is not None:
+            self.env.close()
+        self.env = gym.make("FrozenLake-v1", desc=list(self.desc), is_slippery=True, max_episode_steps=self.max_steps)
+        self.s, _ = self.env.reset(seed=seed)
+        self.t = 0
+        self.result: StepResult | None = None
+
+    @property
+    def pos(self) -> tuple[int, int]:
+        return divmod(int(self.s), len(self.desc[0]))
+
+    def state(self) -> dict:
+        r, c = self.pos
+        return build_request(self.desc, r, c, self.t, self.max_steps)[0]
+
+    def decision(self) -> Decision | None:
+        if self.result is not None:
+            return None
+        r, c = self.pos
+        state, questions, oracle = build_request(self.desc, r, c, self.t, self.max_steps, "base", self.ask_success)
+        oracle = dict(oracle, row=r, col=c, steps_left=self.max_steps - self.t)
+        return Decision(state, questions, {m: m for m in MOVES}, oracle)
+
+    def step(self, action: str) -> StepResult:
+        self.s, reward, terminated, truncated, _ = self.env.step(MOVES.index(action))
+        self.t += 1
+        r, c = self.pos
+        tile = self.desc[r][c]
+        where = f"Chose {action}; now at row {r}, column {c} ({tile})."
+        if terminated or truncated:
+            success = tile == "G"
+            end = "Reached the goal." if success else "Fell into a hole." if tile == "H" else "No steps left."
+            self.result = StepResult(True, success, float(reward), f"{where} {end}")
+            return self.result
+        return StepResult(False, feedback=where)
+
+    def outcome(self) -> StepResult:
+        return self.result or StepResult(False)
+
+    def close(self) -> None:
+        if self.env is not None:
+            self.env.close()
+            self.env = None
+
+
+# ----------------------------------------------------------------------------------------------------
+# Scripted reference policies (FunctionBackend).
+
+
+def _oracle_of(state: dict) -> dict:
+    desc = tuple(state["map"])
+    horizon = STEP_LIMIT[len(desc)]
+    return state_values(desc, state["agent_row"], state["agent_column"], state["steps_left"], horizon)
+
+
+def optimal_policy(state: dict, questions: dict) -> dict:
+    """Always the first optimal move (deterministic), with the exact success probability: the reference."""
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    v = _oracle_of(state)
+    return _only_asked(questions, {ACTION: choice_answer({m: float(m == v["best"]) for m in MOVES}),
+                                   SUCCESS: noul_answer(v["p_win"])})
+
+
+def random_policy(state: dict, questions: dict) -> dict:
+    """Uniform over the four moves. Run it with `--mode sample`: with `--mode greedy` the tie between equal
+    probabilities always goes to the first move ("left"), which is not a random policy."""
+    from jev_benchmarking.sequential.backends import choice_answer, noul_answer
+
+    return _only_asked(questions, {ACTION: choice_answer({m: 0.25 for m in MOVES}), SUCCESS: noul_answer(0.5)})
+
+
+SCRIPTED = {"optimal": optimal_policy, "random": random_policy}
+
+
+
+================================================
+FILE: jev_benchmarking/sequential/envs/textworld_games.py
+================================================
+"""TextWorld (Côté et al., 2018) with its own game generators, on the official TextWorld package.
+
+The games are made with TextWorld's `tw-make` tool, which ships three challenges from the literature:
+  tw-coin_collector    a chain of rooms with a coin at the far end (Yuan et al., 2018),
+  tw-treasure_hunter   find a given object, possibly in locked containers or behind locked doors,
+  tw-cooking           read the cookbook, gather and process the ingredients, prepare and eat the meal (the
+                       game type of the First TextWorld Problems competition).
+Each challenge is used at three difficulty settings, with 10 games (seeds 1..10) each, 90 games in total:
+  coin collector   levels 10, 110, 210: a quest of 10 rooms without distractor rooms, with distractor rooms
+                   off the chain, and with distractor rooms placed randomly (TextWorld's level definition);
+  treasure hunter  levels 5, 15, 25: TextWorld's easy, medium and hard modes (5, 10 and 20 rooms);
+  cooking          1 ingredient in 1 room; 2 ingredients that need cutting and cooking, in 6 rooms with
+                   closed containers and doors; 3 such ingredients in 9 rooms. (The limited-inventory skill,
+                   --drop, is not used: TextWorld's solver finds no plan in those games.)
+The games are generated once with the official generator and cached; the same TextWorld version and seed give
+the same game. With `tw-make`'s defaults, the objective of coin collector and treasure hunter games spells out
+every step of the walkthrough ("First, move south. And then, take a trip east. ..."), which turns them into
+instruction following. These two challenges are therefore generated through the same code path as `tw-make`
+with TextWorld's grammar option `only_last_action` set, which states only the goal ("pick up the coin from the
+floor of the silent cubicle"); the world, the quest and the solver's moves are unchanged. Cooking games use
+`tw-make`'s defaults; their objective never lists the steps. The request is built as for ALFWorld (objective, first observation, current room,
+inventory, full history of commands and feedback, steps left), and the options are the commands TextWorld
+admits in the current state. The reference action is the first command of the winning sequence TextWorld
+computes from the current state (`policy_commands`); the solver knows the whole game, including where unseen
+objects are and the recipe before the cookbook is read.
+"""
+
+import os
+import re
+import subprocess
+from pathlib import Path
+
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS, Decision, EpisodeSpec, SequentialEnv, StepResult, _only_asked
+from jev_benchmarking.tasks.base import choice, mc_criteria, noul, option_keys
+
+STEP_BUDGET = 50  # as for ALFWorld
+GOAL_ONLY_OBJECTIVE = True  # coin collector and treasure hunter: state the goal, not the walkthrough
+SEEDS = range(1, 11)
+SETTINGS = {  # name -> tw-make arguments
+    "coin_collector/level10": ["tw-coin_collector", "--level", "10"],
+    "coin_collector/level110": ["tw-coin_collector", "--level", "110"],
+    "coin_collector/level210": ["tw-coin_collector", "--level", "210"],
+    "treasure_hunter/level5": ["tw-treasure_hunter", "--level", "5"],
+    "treasure_hunter/level15": ["tw-treasure_hunter", "--level", "15"],
+    "treasure_hunter/level25": ["tw-treasure_hunter", "--level", "25"],
+    "cooking/easy": ["tw-cooking", "--recipe", "1", "--take", "1", "--go", "1"],
+    "cooking/medium": ["tw-cooking", "--recipe", "2", "--take", "2", "--go", "6", "--open", "--cook", "--cut"],
+    "cooking/hard": ["tw-cooking", "--recipe", "3", "--take", "3", "--go", "9", "--open", "--cook", "--cut"],
+}
+
+ACTION_Q_TEXT = "Which command brings the player closest to completing the objective?"
+SUCCESS_Q = noul("Will the player complete the objective before running out of steps?")
+
+
+def games_dir() -> Path:
+    return Path(os.environ.get("TEXTWORLD_GAMES", Path.home() / ".cache" / "jev-benchmarking" / "textworld"))
+
+
+def game_file(setting: str, seed: int) -> str:
+    """Generate the game once and return its path.
+
+    Cooking games are made with the `tw-make` command at its defaults. Coin collector and treasure hunter games
+    are made exactly as `tw-make` makes them (the challenge's own `make` function, then `compile_game`), with
+    one documented generator setting changed: `options.grammar.only_last_action = True`, so that the objective
+    states the goal ("pick up the coin from the floor of the ...") instead of every step of the walkthrough.
+    """
+    args = list(SETTINGS[setting])
+    goal_only = args[0] != "tw-cooking" and GOAL_ONLY_OBJECTIVE
+    path = games_dir() / setting / f"seed{seed:02d}{'.goal' if goal_only else ''}.z8"
+    if path.exists():
+        return str(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if args[0] == "tw-cooking":
+        args += ["--recipe-seed", str(seed)]  # a different recipe per game, as in the FTWP games
+        subprocess.run(["tw-make", *args, "--seed", str(seed), "--output", str(path), "--silent", "-f"], check=True)
+        return str(path)
+    import textworld
+    import textworld.challenges
+    from textworld.generator import compile_game
+
+    from jev_benchmarking.sequential.envs import alfworld  # noqa: F401  (TextWorld fix for Python 3.13)
+
+    options = textworld.GameOptions()  # as in tw-make
+    options.seeds = seed
+    options.path = str(path)
+    options.file_ext = ".z8"
+    options.force_recompile = True
+    options.grammar.only_last_action = GOAL_ONLY_OBJECTIVE
+    _, make_game, _ = textworld.challenges.CHALLENGES[args[0]]
+    compile_game(make_game(settings={"level": int(args[2])}, options=options), options)
+    return str(path)
+
+
+class TextWorldGames(SequentialEnv):
+    name = "textworld"
+    description = "TextWorld, official generators (coin collector, treasure hunter, cooking), 3 levels x 10 games; solver reference."
+
+    def __init__(self, ask_success: bool = False):
+        from jev_benchmarking.sequential.envs import alfworld  # noqa: F401  (TextWorld fix for Python 3.13)
+
+        self.ask_success = ask_success
+        self.max_steps = STEP_BUDGET
+        self.env = None
+
+    def episodes(self, split: str = "eval", limit: int | None = None) -> list[EpisodeSpec]:
+        """All 90 games, interleaved across the nine settings so that any prefix covers all of them."""
+        out = [EpisodeSpec(f"{s}/seed{seed:02d}", s.split("/")[0], {"setting": s, "seed": seed})
+               for seed in SEEDS for s in SETTINGS]
+        return out[:limit] if limit is not None else out
+
+    def reset(self, spec: EpisodeSpec) -> None:
+        import textworld
+
+        if self.env is not None:
+            self.env.close()
+        infos = textworld.EnvInfos(objective=True, description=True, inventory=True, admissible_commands=True,
+                                   policy_commands=True, won=True, lost=True, score=True, max_score=True)
+        self.env = textworld.start(game_file(spec.payload["setting"], spec.payload["seed"]), request_infos=infos)
+        self.gs = self.env.reset()
+        self.first_observation = self._strip(self.gs.feedback)
+        self.history: list[dict] = []
+        self.t = 0
+        self.result: StepResult | None = None
+
+    @staticmethod
+    def _strip(text: str) -> str:
+        """Game text without the ASCII-art title banner and the trailing prompt and status line."""
+        lines = (text or "").split("\n")
+        banner = [k for k, ln in enumerate(lines) if "$$" in ln]
+        if banner:
+            lines = lines[banner[-1] + 1:]
+        for k, ln in enumerate(lines):
+            if ln.startswith(">"):
+                lines = lines[:k]
+                break
+        return re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+
+    def state(self) -> dict:
+        return {
+            "objective": (self.gs.objective or "").strip(),
+            "first_observation": self.first_observation,
+            "current_room": self._strip(self.gs.description),
+            "inventory": (self.gs.inventory or "").strip(),
+            "history": list(self.history),
+            "steps_taken": self.t,
+            "steps_left": self.max_steps - self.t,
+        }
+
+    def decision(self) -> Decision | None:
+        if self.result is not None or self.gs.done:
+            return None
+        commands = list(self.gs.admissible_commands)
+        policy = list(self.gs.policy_commands or [])
+        oracle = {"expert": policy[0]} if policy and policy[0] in commands else {}
+        q = choice(ACTION_Q_TEXT, mc_criteria(commands))
+        questions = {ACTION: q, SUCCESS: SUCCESS_Q} if self.ask_success else {ACTION: q}
+        return Decision(self.state(), questions, dict(zip(option_keys(len(commands)), commands)), oracle)
+
+    def step(self, action: str) -> StepResult:
+        self.gs, _, done = self.env.step(action)
+        self.t += 1
+        feedback = self._strip(self.gs.feedback)
+        self.history.append({"command": action, "feedback": feedback})
+        if done or self.gs.won or self.gs.lost:
+            won = bool(self.gs.won)
+            progress = 1.0 if won else (self.gs.score / self.gs.max_score if self.gs.max_score else 0.0)
+            self.result = StepResult(True, won, float(progress), feedback)
+            return self.result
+        return StepResult(False, feedback=feedback)
+
+    def outcome(self) -> StepResult:
+        if self.result is not None:
+            return self.result
+        progress = self.gs.score / self.gs.max_score if self.gs.max_score else 0.0
+        return StepResult(False, False, float(progress), "No steps left.")
+
+    def close(self) -> None:
+        if self.env is not None:
+            self.env.close()
+            self.env = None
+
+
+def random_policy(state, questions):
+    from jev_benchmarking.sequential.backends import choice_answer
+
+    keys = list(questions[ACTION]["criteria"])
+    return _only_asked(questions, {ACTION: choice_answer({k: 1.0 for k in keys})})
+
+
+SCRIPTED = {"random": random_policy}
 
 
 
@@ -4330,6 +6304,93 @@ if __name__ == "__main__":
 
 
 ================================================
+FILE: scripts/inspect_episode.py
+================================================
+"""Replay a logged episode step by step and show what the model saw and did.
+
+The episode log stores the actions, option probabilities, reference actions and feedback, not the requests.
+This script rebuilds every request by replaying the logged actions in a fresh environment, prints it, and
+checks that the replay matches the log (same options, the logged action among them, same feedback). A
+mismatch means the environment is not deterministic or the state is not updated as logged.
+
+Examples:
+  python scripts/inspect_episode.py frozenlake results/sequential/frozenlake/jev.greedy.eval.jsonl
+  python scripts/inspect_episode.py textworld results/sequential/textworld/jev.greedy.eval.jsonl --episode 4
+  python scripts/inspect_episode.py babyai_text results/sequential/babyai_text/jev.greedy.eval.jsonl --uid eval-goto-seed000000 --full
+"""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from run_sequential import make_env  # noqa: E402
+
+
+def show(value, width: int) -> str:
+    text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, indent=1)
+    return text if width <= 0 or len(text) <= width else text[:width] + f" ... [{len(text) - width} more chars]"
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("env", choices=["blackjack", "frozenlake", "alfworld", "textworld", "babyai_text", "babyai_text_instructions"])
+    ap.add_argument("file", type=Path, help="episode log (.jsonl)")
+    ap.add_argument("--episode", type=int, default=0, help="index of the episode in the file")
+    ap.add_argument("--uid", help="episode id (overrides --episode)")
+    ap.add_argument("--steps", type=int, default=None, help="show only the first N steps")
+    ap.add_argument("--full", action="store_true", help="print the full state at every step (default: changes only)")
+    ap.add_argument("--width", type=int, default=1200, help="truncate long fields (0 = no limit)")
+    args = ap.parse_args()
+
+    episodes = [json.loads(line) for line in args.file.read_text().splitlines() if line.strip()]
+    ep = next(e for e in episodes if e["uid"] == args.uid) if args.uid else episodes[args.episode]
+    env, _ = make_env(args.env)
+    split = ep["uid"].split("-")[0] if ep["uid"].split("-")[0] in ("eval", "dev") else "eval"
+    spec = next(s for s in env.episodes(split) if s.uid == ep["uid"])
+
+    print(f"episode {ep['uid']}  model {ep['model']}  success {ep['success']}  reward {ep['reward']}  steps {ep['n_steps']}")
+    env.reset(spec)
+    previous, problems = {}, 0
+    for step in ep["steps"][: args.steps]:
+        d = env.decision()
+        if d is None:
+            print(f"!! step {step['t']}: the replayed episode ended before the log did")
+            problems += 1
+            break
+        state = d.state if isinstance(d.state, dict) else {"state": d.state}
+        print(f"\n===== step {step['t']} =====")
+        for k, v in state.items():
+            if args.full or previous.get(k) != v:
+                print(f"[{k}] {show(v, args.width)}")
+        previous = dict(state)
+        options = list(d.actions.values())
+        top = sorted(step["probs"].items(), key=lambda kv: -kv[1])[:4]
+        ref = step["oracle"].get("expert") or (step["oracle"].get("optimal") or [step["oracle"].get("best")])[0]
+        mark = "OK " if step["action"] == ref or step["action"] in step["oracle"].get("optimal", []) else "-- "
+        print(f"options ({len(options)}): {show(options, args.width)}")
+        print(f"model: {', '.join(f'{a} {p:.2f}' for a, p in top)}")
+        print(f"{mark}chose: {step['action']}   reference: {ref}")
+        if step["action"] not in options:
+            print("!! the logged action is not among the replayed options")
+            problems += 1
+        r = env.step(step["action"])
+        print(f"feedback: {show(r.feedback, args.width)}")
+        if r.feedback[:500] != step["feedback"][:500]:
+            print(f"!! feedback differs from the log: {show(step['feedback'], 300)}")
+            problems += 1
+    env.close()
+    print(f"\nreplay {'matches the log' if problems == 0 else f'found {problems} mismatch(es)'}")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
 FILE: scripts/make_paper_assets.py
 ================================================
 """Build all paper tables (paper/tables/*.tex) and figures (paper/figures/*.pdf) from cached responses
@@ -4470,6 +6531,268 @@ def probe_table(recs: dict[str, dict], refresh: bool) -> dict[str, str]:
         rows.append({"benchmark": bench, "condition": cond, "n": len(vals[labels[0]]), "acc": {m: float(v.mean()) for m, v in vals.items()}})
     (RESULTS_DIR / "eval" / "probes.json").write_text(json.dumps(rows, indent=1) + "\n")
     return {"probes": tables.probes(rows, labels)}
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: scripts/merge_sequential_caches.py
+================================================
+"""Merge the per-shard response caches of the sequential runs into one database per model.
+
+    python scripts/merge_sequential_caches.py runs/alfworld-seqcache cache/sequential
+
+The Slurm jobs write one cache per shard (<src>/<run>/shardNN/responses.<org>__<name>.db), since SQLite's WAL
+is not safe across nodes. This writes <out>/responses.<org>__<name>.db, which run_sequential.py reads with
+JEV_CACHE_DB=<out>/responses.db. Each shard is copied (with its -wal/-shm files) before it is opened, so the
+sources stay untouched. A key found in several shards is kept once; differing answers for it are reported.
+Finally, every request in the episode logs (results/sequential/<env>/<org>__<name>.*.jsonl) must be in the
+merged database.
+"""
+
+import argparse
+import json
+import shutil
+import sqlite3
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def merge(shards: list[Path], out: Path) -> tuple[set[str], int, int]:
+    """Copy all rows of `shards` into `out`; returns the merged keys, rows read and conflicting keys."""
+    schema = sqlite3.connect(shards[0]).execute("SELECT sql FROM sqlite_master WHERE type = 'table'").fetchall()
+    dst = sqlite3.connect(out)
+    for (sql,) in schema:
+        dst.execute(sql)
+    answers: dict[str, dict] = {}
+    rows = conflicts = 0
+    for db in shards:
+        with tempfile.TemporaryDirectory() as tmp:
+            for f in db.parent.glob(db.name + "*"):
+                shutil.copy2(f, tmp)
+            src = sqlite3.connect(Path(tmp) / db.name)
+            if src.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+                raise SystemExit(f"{db}: integrity check failed")
+            for row in src.execute("SELECT * FROM responses ORDER BY created_at"):
+                rows += 1
+                key, answer = row[0], json.loads(row[3])["answers"]
+                if key in answers:
+                    conflicts += answers[key] != answer
+                    continue
+                answers[key] = answer
+                dst.execute(f"INSERT INTO responses VALUES ({','.join('?' * len(row))})", row)
+            for row in src.execute("SELECT * FROM errors"):
+                dst.execute(f"INSERT OR IGNORE INTO errors VALUES ({','.join('?' * len(row))})", row)
+            src.close()
+    dst.commit()
+    dst.execute("VACUUM")
+    dst.close()
+    return set(answers), rows, conflicts
+
+
+def main() -> None:
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("src", type=Path, help="directory with <run>/shardNN/responses.<slug>.db")
+    p.add_argument("out", type=Path, help="output directory, e.g. cache/sequential")
+    p.add_argument("--results", type=Path, default=ROOT / "results" / "sequential", help="episode logs to check")
+    args = p.parse_args()
+
+    by_slug: dict[str, list[Path]] = {}
+    for db in sorted(args.src.glob("*/shard*/responses.*.db")):
+        by_slug.setdefault(db.name.removeprefix("responses.").removesuffix(".db"), []).append(db)
+    if not by_slug:
+        raise SystemExit(f"no shard caches under {args.src}")
+    args.out.mkdir(parents=True, exist_ok=True)
+    for slug, shards in by_slug.items():
+        out = args.out / f"responses.{slug}.db"
+        if out.exists():
+            raise SystemExit(f"{out} exists; remove it to rebuild")
+        keys, rows, conflicts = merge(shards, out)
+        steps = [s["request"] for f in args.results.glob(f"*/{slug}.*.jsonl") for line in f.open()
+                 for s in json.loads(line)["steps"]]
+        missing = sum(k not in keys for k in steps)
+        print(f"{slug}: {len(shards)} shards, {rows} rows, {len(keys)} unique keys, {conflicts} conflicting, "
+              f"{len(steps)} episode steps, {missing} missing -> {out} ({out.stat().st_size / 1e6:.1f} MB)")
+        if missing:
+            raise SystemExit(f"{missing} requests of the episode logs are not in {out}")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: scripts/probe_frozenlake.py
+================================================
+"""Diagnostic probe: does Jev's FrozenLake failure depend on how the request is worded?
+
+Asks for the best move at a fixed set of positions under several prompt variants (see `VARIANTS` in
+`envs/frozenlake.py`): the same positions for every variant, one request per position, no episodes, so
+early mistakes do not compound and variants are compared on identical inputs.
+
+Positions: for each of the first `--n-maps` evaluation maps (alternating 4x4 and 8x8, the same maps as the
+episodes), `--per-map` frozen tiles drawn with a fixed seed among those from which the goal can be reached
+and on which not every move is optimal, with the full step budget left.
+
+Examples:
+  python scripts/probe_frozenlake.py --backend scripted:oracle                 # sanity check, free
+  python scripts/probe_frozenlake.py --backend scripted:no-slip                # plans as if the ice were not slippery
+  python scripts/probe_frozenlake.py --backend jev --max-cost 0.2               # all four variants
+  python scripts/probe_frozenlake.py --backend jev --variants base,outcomes
+"""
+
+import argparse
+import json
+import logging
+import random
+import sys
+from pathlib import Path
+
+import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from jev_benchmarking.cache import ResponseCache  # noqa: E402
+from jev_benchmarking.config import MODEL, RESULTS_DIR, model_slug  # noqa: E402
+from jev_benchmarking.metrics import ece  # noqa: E402
+from jev_benchmarking.sequential.backends import FunctionBackend, JevBackend, OpenModelBackend, choice_answer  # noqa: E402
+from jev_benchmarking.sequential.envs.base import ACTION  # noqa: E402
+from jev_benchmarking.sequential.envs.frozenlake import (  # noqa: E402
+    MOVES, STEP_LIMIT, VARIANTS, FrozenLake, build_request, deterministic_values, state_values,
+)
+from gymnasium.envs.toy_text.frozen_lake import generate_random_map  # noqa: E402
+
+AWAY = {"left", "up"}  # the goal is always at the bottom right
+
+
+def positions(n_maps: int, per_map: int, seed: int = 0) -> list[dict]:
+    out = []
+    for spec in FrozenLake().episodes("eval", n_maps):
+        size, map_seed = spec.payload["size"], spec.payload["seed"]
+        desc = tuple(generate_random_map(size=size, p=0.8, seed=map_seed))
+        limit = STEP_LIMIT[size]
+        cand = []
+        for r in range(size):
+            for c in range(size):
+                if desc[r][c] in "HG":
+                    continue
+                v = state_values(desc, r, c, limit, limit)
+                if v["p_win"] > 0 and len(v["optimal"]) < 4:
+                    cand.append((r, c))
+        rng = random.Random(f"{seed}/{spec.uid}")
+        for r, c in rng.sample(cand, min(per_map, len(cand))):
+            out.append({"uid": f"{spec.uid}/r{r}c{c}", "size": f"{size}x{size}", "desc": desc, "row": r, "col": c, "limit": limit})
+    return out
+
+
+def scripted(name: str):
+    """oracle: the reference move of each variant. no-slip: the shortest safe path, i.e. planning as if the
+    ice were not slippery (what a model that ignores slipping would do)."""
+    def fn(state, questions):
+        desc, r, c = tuple(state["map"]), state["agent_row"], state["agent_column"]
+        if name == "no-slip" or "not slippery" in state["rules"]:
+            best = deterministic_values(desc, r, c)["best"]
+        else:
+            best = state_values(desc, r, c, state["steps_left"], STEP_LIMIT[len(desc)])["best"]
+        return {ACTION: choice_answer({m: float(m == best) for m in MOVES})}
+    return fn
+
+
+def make_backend(spec: str, max_cost: float, device: str):
+    if spec == "jev":
+        return JevBackend(ResponseCache(model=MODEL), max_cost_usd=max_cost)
+    if spec.startswith("hf:"):
+        return OpenModelBackend(spec[3:], ResponseCache(model=spec), device=device)
+    if spec.startswith("scripted:"):
+        return FunctionBackend(spec.split(":", 1)[1], scripted(spec.split(":", 1)[1]))
+    raise SystemExit(f"unknown backend {spec!r}")
+
+
+def summarize(rows: list[dict]) -> dict:
+    ok = np.array([r["choice"] in r["optimal"] for r in rows], dtype=float)
+    top = np.array([max(r["probs"].values()) for r in rows])
+    away = np.array([set(r["optimal"]) <= AWAY for r in rows])
+    p_opt = np.array([sum(q for m, q in r["probs"].items() if m in r["optimal"]) for r in rows])
+    brier = np.mean([(sum(q for m, q in r["probs"].items() if m in r["optimal"]) - 1) ** 2
+                     + sum(q ** 2 for m, q in r["probs"].items() if m not in r["optimal"]) for r in rows])
+    out = {
+        "n": len(rows),
+        "step_accuracy": float(ok.mean()),
+        "accuracy_optimal_toward_goal": float(ok[~away].mean()) if (~away).any() else None,
+        "accuracy_optimal_away_from_goal": float(ok[away].mean()) if away.any() else None,
+        "share_optimal_away": float(away.mean()),
+        "mean_prob_on_optimal": float(p_opt.mean()),
+        "mean_top_prob": float(top.mean()),
+        "top_prob_when_right": float(top[ok == 1].mean()) if ok.any() else None,
+        "top_prob_when_wrong": float(top[ok == 0].mean()) if (ok == 0).any() else None,
+        "ece": ece(top, ok),
+        "brier": float(brier),
+        "choices": {m: sum(r["choice"] == m for r in rows) for m in MOVES},
+    }
+    if "q" in rows[0]:
+        out["mean_regret"] = float(np.mean([max(r["q"].values()) - r["q"][r["choice"]] for r in rows]))
+        out["choice_can_slip_into_hole"] = float(np.mean([r["risky"][r["choice"]] for r in rows]))
+    else:
+        out["choice_steps_onto_hole"] = float(np.mean([r["q_steps"][r["choice"]] == -1000.0 for r in rows]))
+    return out
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--backend", default="jev")
+    ap.add_argument("--variants", default=",".join(VARIANTS))
+    ap.add_argument("--n-maps", type=int, default=100)
+    ap.add_argument("--per-map", type=int, default=5)
+    ap.add_argument("--max-cost", type=float, default=0.2, help="USD cap for this run (Jev only)")
+    ap.add_argument("--device", default="cuda")
+    args = ap.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+    pos = positions(args.n_maps, args.per_map)
+    backend = make_backend(args.backend, args.max_cost, args.device)
+    slug = (model_slug({"jev": MODEL}.get(args.backend, args.backend)) or "jev").replace(":", "_")
+    out_dir = RESULTS_DIR / "sequential" / "frozenlake" / "probe"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    summary = {}
+    for variant in args.variants.split(","):
+        rows = []
+        for p in pos:
+            state, questions, oracle = build_request(p["desc"], p["row"], p["col"], 0, p["limit"], variant)
+            answers, meta = backend.ask(state, questions)
+            a = answers[ACTION]
+            row = {"uid": p["uid"], "size": p["size"], "variant": variant, "choice": a["choice"],
+                   "probs": a["probabilities"], "optimal": oracle["optimal"], "cached": meta["cached"],
+                   "input_tokens": meta["input_tokens"]}
+            if "q" in oracle:
+                row["q"] = oracle["q"]
+                row["risky"] = {m: any(p["desc"][rr][cc] == "H" for rr, cc in _landings(p, m)) for m in MOVES}
+            else:
+                row["q_steps"] = oracle["q_steps"]
+            rows.append(row)
+        (out_dir / f"{slug}.{variant}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+        summary[variant] = summarize(rows)
+        logging.info("%s: %d positions, accuracy %.3f", variant, len(rows), summary[variant]["step_accuracy"])
+    path = out_dir / f"{slug}.summary.json"
+    path.write_text(json.dumps(summary, indent=1))
+    keys = ["step_accuracy", "accuracy_optimal_toward_goal", "accuracy_optimal_away_from_goal", "mean_prob_on_optimal",
+            "top_prob_when_right", "top_prob_when_wrong", "ece", "brier", "mean_regret", "choice_can_slip_into_hole",
+            "choice_steps_onto_hole"]
+    print(f"{'variant':14s}" + "".join(f"{k[:14]:>15s}" for k in keys))
+    for v, s in summary.items():
+        print(f"{v:14s}" + "".join(f"{s[k]:15.3f}" if isinstance(s.get(k), float) else f"{'-':>15s}" for k in keys))
+    print(f"positions: {len(pos)}  cost so far: ${backend.stats.cost_usd:.4f}  results: {out_dir}")
+
+
+def _landings(p: dict, move: str):
+    from jev_benchmarking.sequential.envs.frozenlake import PERPENDICULAR, landing
+
+    return [landing(p["desc"], p["row"], p["col"], d) for d in (move, *PERPENDICULAR[move])]
 
 
 if __name__ == "__main__":
@@ -4725,6 +7048,186 @@ if __name__ == "__main__":
 
 
 ================================================
+FILE: scripts/run_sequential.py
+================================================
+"""Play sequential benchmarks and summarize them.
+
+Examples:
+  python scripts/run_sequential.py blackjack --backend scripted:optimal --limit 2000      # reference, free
+  python scripts/run_sequential.py blackjack --dry-run --limit 5000                       # token/cost estimate
+  python scripts/run_sequential.py blackjack --backend jev --limit 5000 --max-cost 1.0
+  python scripts/run_sequential.py frozenlake --backend scripted:optimal --limit 500
+  python scripts/run_sequential.py frozenlake --backend scripted:random --mode sample  # uniform policy: needs --mode sample
+  python scripts/run_sequential.py alfworld --backend scripted:expert                     # expert reference
+  python scripts/run_sequential.py alfworld --backend jev --split eval --max-cost 2.0
+  python scripts/run_sequential.py alfworld --backend hf:Qwen/Qwen3.8-27B --device auto
+  python scripts/run_sequential.py alfworld --backend jev --shard 3 --num-shards 8        # one of 8 parallel processes
+  python scripts/run_sequential.py babyai_text_instructions --backend jev --max-cost 1.0   # diagnostic prompt variant
+  python scripts/run_sequential.py blackjack --backend jev --summarize                    # metrics only (all shards)
+"""
+
+import argparse
+import json
+import logging
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from jev_benchmarking.cache import ResponseCache  # noqa: E402
+from jev_benchmarking.config import MODEL, USD_PER_INPUT_TOKEN  # noqa: E402
+from jev_benchmarking.sequential.backends import FunctionBackend, JevBackend, OpenModelBackend, estimate_tokens  # noqa: E402
+from jev_benchmarking.sequential.metrics import summarize  # noqa: E402
+from jev_benchmarking.sequential.runner import episodes_path, load_episodes, run  # noqa: E402
+
+
+def make_env(name: str):
+    if name == "blackjack":
+        from jev_benchmarking.sequential.envs import blackjack
+
+        return blackjack.Blackjack(), blackjack.SCRIPTED
+    if name == "frozenlake":
+        from jev_benchmarking.sequential.envs import frozenlake
+
+        return frozenlake.FrozenLake(), frozenlake.SCRIPTED
+    if name == "alfworld":
+        from jev_benchmarking.sequential.envs import alfworld
+
+        return alfworld.ALFWorld(), {**alfworld.SCRIPTED, "expert": None}
+    if name == "textworld":
+        from jev_benchmarking.sequential.envs import textworld_games
+
+        return textworld_games.TextWorldGames(), {**textworld_games.SCRIPTED, "expert": None}
+    if name == "babyai_text":
+        from jev_benchmarking.sequential.envs import babyai_text
+
+        return babyai_text.BabyAIText(), {**babyai_text.SCRIPTED, "expert": None}
+    if name == "babyai_text_instructions":  # diagnostic: BALROG's instruction prompt added to the state
+        from jev_benchmarking.sequential.envs import babyai_text
+
+        return babyai_text.BabyAIText(instructions=True), {**babyai_text.SCRIPTED, "expert": None}
+    raise SystemExit(f"unknown env {name!r}")
+
+
+def make_backend(spec: str, env_name: str, scripted: dict, args):
+    if spec == "jev":
+        return JevBackend(ResponseCache(model=MODEL), max_cost_usd=args.max_cost)
+    if spec.startswith("hf:"):
+        model_id = spec[3:]
+        return OpenModelBackend(model_id, ResponseCache(model=spec), device=args.device)
+    if spec.startswith("scripted:"):
+        name = spec.split(":", 1)[1]
+        if env_name in ("alfworld", "textworld", "babyai_text", "babyai_text_instructions") and name == "expert":
+            from jev_benchmarking.sequential.envs.alfworld import ExpertBackend
+
+            return ExpertBackend.make()
+        if name not in scripted:
+            raise SystemExit(f"{env_name} has no scripted policy {name!r}; choose from {sorted(scripted)}")
+        return FunctionBackend(name, scripted[name])
+    raise SystemExit(f"unknown backend {spec!r}")
+
+
+class _CountingBackend(FunctionBackend):
+    """Dry run: plays with a scripted policy and records the estimated size of every request."""
+
+    def __init__(self, inner: FunctionBackend):
+        super().__init__(inner.model.split(":", 1)[1], inner.fn)
+        self.est = []
+        if hasattr(inner, "observe"):
+            self.observe = inner.observe
+
+    def _answer(self, state, questions):
+        self.est.append(estimate_tokens(state, questions))
+        return super()._answer(state, questions)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("env", choices=["blackjack", "frozenlake", "alfworld", "textworld", "babyai_text", "babyai_text_instructions"])
+    ap.add_argument("--backend", default="jev", help="jev | hf:<model id> | scripted:<policy>")
+    ap.add_argument("--split", default="eval")
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--mode", default="greedy", choices=["greedy", "sample"],
+                    help="greedy: most probable action; sample: draw from the probabilities (needed for scripted:random, "
+                         "whose uniform probabilities always resolve to the first action under greedy)")
+    ap.add_argument("--ask-success", action="store_true", help="also ask the optional success question at every step")
+    ap.add_argument("--max-cost", type=float, default=0.5, help="USD cap for this run (Jev only)")
+    ap.add_argument("--device", default="cuda")
+    ap.add_argument("--shard", type=int, default=0, help="play only this shard (run shards as parallel processes)")
+    ap.add_argument("--num-shards", type=int, default=1)
+    ap.add_argument("--dry-run", action="store_true", help="estimate requests, tokens and Jev cost with a scripted policy")
+    ap.add_argument("--summarize", action="store_true", help="only compute metrics from existing episode logs")
+    args = ap.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+    env, scripted = make_env(args.env)
+    env.ask_success = args.ask_success
+    if args.dry_run:
+        policy = "expert" if args.env in ("alfworld", "textworld", "babyai_text", "babyai_text_instructions") else "optimal"
+        backend = _CountingBackend(make_backend(f"scripted:{policy}", args.env, scripted, args))
+        out = run(env, backend, split=args.split, limit=args.limit, mode=args.mode, out=Path("/dev/null"))
+        n_ep = len(env.episodes(args.split, args.limit))
+        tok = sum(backend.est)
+        print(json.dumps({
+            "env": args.env, "split": args.split, "episodes": n_ep, "policy_for_estimate": policy,
+            "requests": len(backend.est), "requests_per_episode": len(backend.est) / max(n_ep, 1),
+            "est_input_tokens": tok, "est_tokens_per_request": tok / max(len(backend.est), 1),
+            "est_jev_cost_usd": round(tok * USD_PER_INPUT_TOKEN, 4),
+            "note": "a weaker policy takes more steps; ALFWorld episodes cap at 50 steps (worst case ~50x episodes requests)",
+        }, indent=1))
+        return
+
+    backend_model = {"jev": MODEL}.get(args.backend, args.backend)
+    path = episodes_path(args.env, backend_model, args.mode, args.split, ask_success=args.ask_success)
+    if not args.summarize:
+        backend = make_backend(args.backend, args.env, scripted, args)
+        run(env, backend, split=args.split, limit=args.limit, mode=args.mode, shard=args.shard, num_shards=args.num_shards)
+    episodes = load_episodes(path)
+    summary = summarize(episodes)
+    summary_path = path.with_suffix(".summary.json")
+    summary_path.write_text(json.dumps(summary, indent=1))
+    print(json.dumps({k: v for k, v in summary.items() if k != "details"}, indent=1))  # full set is in the file
+    print(f"episodes: {path}\nsummary:  {summary_path}")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: scripts/setup_babyai_text_env.sh
+================================================
+#!/usr/bin/env bash
+# Environment for BabyAI-Text, which runs on the original packages of Carta et al. (GLAM repository, pinned
+# commit): their forks of BabyAI and gym-minigrid and the babyai_text package. These need an old gym and
+# numpy, so they get their own virtual environment with Python 3.10. Needs uv (pip install uv) and git.
+#
+#   bash scripts/setup_babyai_text_env.sh
+#   source .venv-babyai/bin/activate
+#   python scripts/run_sequential.py babyai_text --backend jev --limit 5
+set -euo pipefail
+
+GLAM=31847fb8c1db58bc8f595bea8f8cbaf26fb79dc2   # flowersteam/Grounding_LLMs_with_online_RL
+SRC=.venv-babyai-src
+
+uv venv -p 3.10 .venv-babyai
+source .venv-babyai/bin/activate
+if [ ! -d "$SRC" ]; then
+    git clone -q --filter=blob:none --sparse https://github.com/flowersteam/Grounding_LLMs_with_online_RL.git "$SRC"
+    git -C "$SRC" sparse-checkout set babyai-text
+fi
+git -C "$SRC" checkout -q "$GLAM"
+# Dependencies of the original packages (babyai imports torch for its RL code; the levels and the bot do not
+# use it), then the packages themselves as their README installs them.
+uv pip install -e . rlcard pytest httpx2 "numpy==1.23.1" "gym==0.23.1" "setuptools<81" \
+    torch blosc matplotlib ipython colorama termcolor tqdm
+uv pip install --no-deps -e "$SRC/babyai-text/babyai" -e "$SRC/babyai-text/gym-minigrid" -e "$SRC/babyai-text"
+python -W ignore -c "import gym, babyai_text; from babyai.bot import Bot; gym.make('BabyAI-MixedTrainLocal-v0'); print('BabyAI-Text environment ready')"
+
+
+
+================================================
 FILE: scripts/usage.py
 ================================================
 """Spend and latency per task from the cache ledger, plus how good the token estimate was."""
@@ -4760,6 +7263,7 @@ export PATH="$HOME/.local/bin:$PATH"                                  # uv (alre
 export JEV_REMOTE_DIR="${JEV_REMOTE_DIR:-jev-benchmarking}"           # code, relative to $HOME
 export JEV_WS="${JEV_WS:-$HOME/workspaces/jevbench}"                  # Lustre SSD workspace (see setup_env.sh)
 export JEV_VENV="${JEV_VENV:-$HOME/.venvs/jevbench}"                  # own env, separate from VNB's vLLM env
+export JEV_BABYAI_VENV="${JEV_BABYAI_VENV:-$HOME/$JEV_REMOTE_DIR/.venv-babyai}"  # BabyAI-Text (setup_babyai_env.sh)
 export HF_HOME="$JEV_WS/hf_home"                                      # datasets + hub caches on Lustre
 export HF_HUB_CACHE="$JEV_WS/hf_home/hub"
 export HF_TOKEN_PATH="$HOME/.cache/huggingface/token"                 # token stays where `hf auth login` put it
@@ -4869,6 +7373,80 @@ PY
 
 
 ================================================
+FILE: scripts/marvin/sequential.slurm
+================================================
+#!/usr/bin/env bash
+#SBATCH --job-name=jev-sequential
+#SBATCH --partition=mlgpu_short
+#SBATCH --gres=gpu:a40:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=06:00:00
+#SBATCH --output=%x-%A_%a.out
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=tdeusser@uni-bonn.de
+#
+# Play a sequential benchmark with an open-weight model. One array task = one shard of the episodes
+# (assigned by episode uid). Resumable: a resubmitted shard skips episodes already in its JSONL. Submit via
+#   JEV_MODEL=google/gemma-4-E4B-it SHARDS=4 SCRIPT=sequential.slurm scripts/marvin/submit.sh
+#
+# Environment (set by submit.sh):
+#   JEV_MODEL  (default google/gemma-4-E4B-it)   JEV_TASKS (environment, default alfworld; also blackjack,
+#                                                frozenlake, textworld, babyai_text)
+#   JEV_SPLIT  (default eval)                    JEV_LIMIT (default: none = all episodes)
+#   JEV_RUN    name of the per-shard response caches under $JEV_WS/seqcache/
+#   JEV_DEVICE (default cuda; "auto" splits a model that does not fit one GPU over all allocated GPUs)
+set -euo pipefail
+source "$HOME/${JEV_REMOTE_DIR:-jev-benchmarking}/scripts/marvin/common.sh"
+export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export ALFWORLD_DATA="$JEV_WS/alfworld"
+export TEXTWORLD_GAMES="$JEV_WS/textworld-games"   # Raj's 90 games, copied from the laptop (never regenerated here)
+
+MODEL="${JEV_MODEL:-google/gemma-4-E4B-it}"
+ENV_NAME="${JEV_TASKS:-alfworld}"
+[ "$ENV_NAME" = all ] && ENV_NAME=alfworld
+SPLIT="${JEV_SPLIT:-eval}"
+RUN="${JEV_RUN:?set JEV_RUN}"
+SHARD="${SLURM_ARRAY_TASK_ID:-0}"
+NSHARDS="${SLURM_ARRAY_TASK_COUNT:-1}"
+LIMIT_ARG=()
+[ -n "${JEV_LIMIT:-}" ] && LIMIT_ARG=(--limit "$JEV_LIMIT")
+# BabyAI-Text needs the old gym/numpy of its original packages, hence its own environment.
+PYTHON="$JEV_VENV/bin/python"
+case "$ENV_NAME" in babyai_text*) PYTHON="$JEV_BABYAI_VENV/bin/python" ;; esac
+# One SQLite cache per shard: WAL locking is not safe across nodes on Lustre. Merged locally afterwards.
+export JEV_CACHE_DB="$JEV_WS/seqcache/$RUN/shard$(printf %02d "$SHARD")/responses.db"
+
+echo "=== job ${SLURM_JOB_ID:-?} shard $SHARD/$NSHARDS on $(hostname): $MODEL, env=$ENV_NAME, split=$SPLIT ==="
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+cd "$HOME/$JEV_REMOTE_DIR"
+"$PYTHON" scripts/run_sequential.py "$ENV_NAME" \
+    --backend "hf:$MODEL" --split "$SPLIT" "${LIMIT_ARG[@]}" \
+    --shard "$SHARD" --num-shards "$NSHARDS" --device "${JEV_DEVICE:-cuda}"
+
+
+
+================================================
+FILE: scripts/marvin/setup_babyai_env.sh
+================================================
+#!/usr/bin/env bash
+# One-time setup of the BabyAI-Text environment on the Marvin LOGIN node (needs internet):
+#   ssh marvin 'bash jev-benchmarking/scripts/marvin/setup_babyai_env.sh'
+#
+# Runs the repository's setup_babyai_text_env.sh in the code directory (creates .venv-babyai there) and adds
+# what the open-model backend needs; transformers 5.14.1 works with the environment's numpy 1.23.1.
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+cd "$HOME/$JEV_REMOTE_DIR"
+bash scripts/setup_babyai_text_env.sh
+uv pip install --python "$JEV_BABYAI_VENV/bin/python" "transformers==5.14.1" accelerate
+"$JEV_BABYAI_VENV/bin/python" -c 'import torch, transformers; print("torch", torch.__version__, "cuda build", torch.version.cuda, "| transformers", transformers.__version__)'
+
+
+
+================================================
 FILE: scripts/marvin/setup_env.sh
 ================================================
 #!/usr/bin/env bash
@@ -4906,6 +7484,8 @@ FILE: scripts/marvin/submit.sh
 #   JEV_RUN=gemma4-e4b-pilot JEV_SPLIT=dev JEV_LIMIT=20 SHARDS=1 PARTITION=mlgpu_devel TIME=01:00:00 scripts/marvin/submit.sh
 #   JEV_RUN=gemma4-e4b-eval SHARDS=8 scripts/marvin/submit.sh
 #   JEV_RUN=qwen38-27b-eval JEV_MODEL=Qwen/Qwen3.8-27B GPUS=2 PARTITION=mlgpu_medium TIME=24:00:00 SHARDS=8 scripts/marvin/submit.sh
+# Sequential benchmarks (ALFWorld) use another job script:
+#   JEV_RUN=gemma4-e4b-alfworld JEV_TASKS=alfworld SCRIPT=sequential.slurm SHARDS=4 scripts/marvin/submit.sh
 # GPU_TYPE (default a40) selects the GPU model, e.g. an 80 GB type together with its PARTITION.
 # GPUS>1 splits the model over the GPUs of one job (for models larger than one GPU).
 set -euo pipefail
@@ -4920,7 +7500,7 @@ EXPORTS="ALL,JEV_RUN=$JEV_RUN,JEV_MODEL=${JEV_MODEL:-google/gemma-4-E4B-it},JEV_
 OPTS=(--array="0-$((SHARDS - 1))" --export="$EXPORTS" --gres="gpu:$GPU_TYPE:$GPUS" --mem="$((64 * GPUS))G" --cpus-per-task="$((8 * GPUS))")
 [ -n "${PARTITION:-}" ] && OPTS+=(--partition="$PARTITION")
 [ -n "${TIME:-}" ] && OPTS+=(--time="$TIME")
-ssh "$REMOTE" "cd jev-benchmarking && mkdir -p \$HOME/workspaces/jevbench/logs && cd \$HOME/workspaces/jevbench/logs && sbatch ${OPTS[*]} \$HOME/jev-benchmarking/scripts/marvin/open_model.slurm"
+ssh "$REMOTE" "cd jev-benchmarking && mkdir -p \$HOME/workspaces/jevbench/logs && cd \$HOME/workspaces/jevbench/logs && sbatch ${OPTS[*]} \$HOME/jev-benchmarking/scripts/marvin/${SCRIPT:-open_model.slurm}"
 
 
 
@@ -5245,6 +7825,271 @@ def test_budget_cap_stops_sending(tmp_path):
     stats = run(cache, examples(20), lambda r: httpx2.Response(200, json=ok_body(300)), max_cost_usd=1000 * 0.042 / 1e6)
     assert stats.sent <= 3
     assert stats.skipped_budget >= 17
+
+
+
+================================================
+FILE: tests/test_sequential.py
+================================================
+"""Sequential track: exact Blackjack values, episode determinism, cache replay, metrics. No network."""
+
+import json
+
+import httpx2
+import numpy as np
+import pytest
+
+from jev_benchmarking.cache import ResponseCache
+from jev_benchmarking.sequential.backends import BudgetExceeded, FunctionBackend, JevBackend
+from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS
+from jev_benchmarking.sequential.envs.blackjack import FULL_DECK, SCRIPTED, Blackjack, dealer_final, state_values
+from jev_benchmarking.sequential.metrics import repeat_metrics, summarize
+from jev_benchmarking.sequential.runner import load_episodes, run, run_episode
+
+
+@pytest.fixture(autouse=True)
+def fake_key(monkeypatch):
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+
+
+# ---- exact values ----------------------------------------------------------------------------------
+
+
+def test_dealer_distribution_sums_to_one():
+    for up in range(1, 11):
+        assert sum(p for _, p in dealer_final(up, up == 1, FULL_DECK)) == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize(
+    "cards,up,best",
+    [  # single-deck basic strategy incl. the composition-dependent 10-3 v 2 and 10-2 v 4 hits (hit or stand only, dealer stands on soft 17)
+        (["10", "2"], "7", "hit"), (["9", "4"], "2", "stand"), (["10", "3"], "2", "hit"), (["10", "2"], "4", "hit"), (["10", "6"], "10", "hit"),
+        (["10", "6"], "6", "stand"), (["10", "7"], "10", "stand"), (["5", "6"], "10", "hit"),
+        (["A", "6"], "9", "hit"), (["A", "8"], "10", "stand"), (["10", "10"], "A", "stand"),
+    ],
+)
+def test_basic_strategy(cards, up, best):
+    assert state_values(cards, up)["best"] == best
+
+
+def test_exact_values_match_simulation():
+    env, backend = Blackjack(), FunctionBackend("optimal", SCRIPTED["optimal"])
+    eps = [run_episode(env, s, backend) for s in env.episodes("dev", 4000)]
+    first = [(e["steps"][0]["oracle"]["p_win"], e["success"]) for e in eps if e["steps"]]
+    p, y = map(np.array, zip(*first))
+    # mean predicted win probability vs observed win rate, within ~3 standard errors
+    assert abs(p.mean() - y.mean()) < 3 * np.sqrt(p.mean() * (1 - p.mean()) / len(p))
+
+
+def test_episodes_are_deterministic():
+    env, backend = Blackjack(), FunctionBackend("random", SCRIPTED["random"])
+    spec = env.episodes("eval", 50)[17]
+    a = run_episode(env, spec, backend, mode="sample")
+    b = run_episode(env, spec, backend, mode="sample")
+    assert [s["action"] for s in a["steps"]] == [s["action"] for s in b["steps"]] and a["reward"] == b["reward"]
+
+
+# ---- Jev backend against a fake API -----------------------------------------------------------------
+
+
+def fake_api(calls: list):
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        body = json.loads(request.content)
+        calls.append(body)
+        hit = body["state"]["player_total"] < 15
+        answers = {
+            ACTION: {"type": "choice", "choice": "hit" if hit else "stand",
+                     "probabilities": {"hit": 0.8 if hit else 0.2, "stand": 0.2 if hit else 0.8}, "confidence": 0.6},
+            SUCCESS: {"type": "noul", "noul": 0.4},
+        }
+        return httpx2.Response(200, json={"model": "jev-1.13.0", "answers": answers, "usage": {"input_tokens": 600, "output_tokens": 0}})
+
+    return httpx2.MockTransport(handler)
+
+
+def test_jev_episodes_replay_from_cache(tmp_path):
+    calls = []
+    cache = ResponseCache(tmp_path / "r.db", model="jev-1.13.0")
+    env = Blackjack()
+    out = tmp_path / "eps.jsonl"
+    run(env, JevBackend(cache, max_cost_usd=1.0, transport=fake_api(calls)), limit=30, out=out)
+    n_first = len(calls)
+    assert n_first > 0 and len(load_episodes(out)) == 30
+    out.unlink()  # forget the episodes, keep the cache: a replay must not call the API again
+    run(env, JevBackend(cache, max_cost_usd=1.0, transport=fake_api(calls)), limit=30, out=out)
+    assert len(calls) == n_first
+    assert len(load_episodes(out)) == 30
+
+
+def test_budget_cap_stops_run(tmp_path):
+    calls = []
+    cache = ResponseCache(tmp_path / "r.db", model="jev-1.13.0")
+    backend = JevBackend(cache, max_cost_usd=0.0001, transport=fake_api(calls))  # ~2,400 tokens
+    out = tmp_path / "eps.jsonl"
+    run(Blackjack(), backend, limit=200, out=out)
+    assert backend.stats.cost_usd <= 0.0001 and len(load_episodes(out)) < 200
+
+
+def test_sharding_partitions_episodes(tmp_path):
+    env, backend = Blackjack(), FunctionBackend("optimal", SCRIPTED["optimal"])
+    for shard in range(3):
+        run(env, backend, limit=60, out=tmp_path / f"m.greedy.eval.shard{shard:02d}of03.jsonl", shard=shard, num_shards=3)
+    eps = load_episodes(tmp_path / "m.greedy.eval.jsonl")
+    assert sorted(e["uid"] for e in eps) == [s.uid for s in env.episodes("eval", 60)]
+
+
+# ---- metrics ---------------------------------------------------------------------------------------
+
+
+def test_metrics_reference_policy_is_exact():
+    env, backend = Blackjack(ask_success=True), FunctionBackend("optimal", SCRIPTED["optimal"])
+    s = summarize([run_episode(env, sp, backend) for sp in env.episodes("eval", 500)])
+    assert s["step_accuracy_vs_expert"] == 1.0 and s["step_ece"] == pytest.approx(0.0)
+    assert s["mean_regret_per_decision"] == pytest.approx(0.0)
+    assert s["success_estimate_mae_vs_exact"] == pytest.approx(0.0)
+
+
+def test_metrics_weak_policy_has_regret():
+    env, backend = Blackjack(), FunctionBackend("never_bust", SCRIPTED["never_bust"])
+    s = summarize([run_episode(env, sp, backend) for sp in env.episodes("eval", 500)])
+    assert s["step_accuracy_vs_expert"] < 0.9 and s["mean_regret_per_decision"] > 0
+
+
+def test_repeat_metrics_catch_repeats_and_oscillations():
+    step = lambda a, f: {"action": a, "feedback": f}  # noqa: E731
+    looping = {"steps": [step("go to desk 1", "desk"), step("examine desk 1", "same"), step("examine desk 1", "same"),
+                         step("examine desk 1", "same"), step("examine desk 1", "same"), step("go to desk 2", "clock")]}
+    oscillating = {"steps": [step("open microwave 1", "open"), step("close microwave 1", "closed"),
+                             step("open microwave 1", "open"), step("close microwave 1", "closed"),
+                             step("open microwave 1", "open")]}
+    revisit = {"steps": [step("go to fridge 1", "closed"), step("go to sink 1", "sink"), step("go to table 1", "t"),
+                         step("go to fridge 1", "closed")]}
+    m = repeat_metrics([looping, oscillating, revisit])
+    assert m["repeat_step_rate"] == pytest.approx((3 + 3 + 0) / 15)
+    assert m["episodes_with_loop"] == pytest.approx(2 / 3)
+
+def test_step_brier_matches_single_step_choice_brier():
+    """The step-level Brier must equal metrics.choice_metrics' multiclass Brier with the expert as gold."""
+    from jev_benchmarking.metrics import choice_metrics
+
+    probs = [{"A": 0.9, "B": 0.05, "C": 0.05}, {"A": 0.6, "B": 0.3, "C": 0.1}, {"A": 0.2, "B": 0.7, "C": 0.1}]
+    experts = ["A", "B", "B"]
+    steps = [{"t": i, "action": max(p, key=p.get), "probs": p, "p_success": None, "oracle": {"expert": e},
+              "input_tokens": 0, "cached": False, "latency_s": 0.0, "feedback": str(i)} for i, (p, e) in enumerate(zip(probs, experts))]
+    ep = {"env": "x", "model": "m", "mode": "greedy", "subset": "", "success": True, "reward": 1.0, "n_steps": 3, "steps": steps}
+    seq = summarize([ep])["details"]["action_vs_expert_calibration"]
+    single = choice_metrics(experts, [{"choice": max(p, key=p.get), "probabilities": p, "confidence": 0.0} for p in probs])
+    assert seq["brier"] == pytest.approx(single["brier"])
+    assert seq["ece"] == pytest.approx(single["ece"])
+
+
+def test_success_question_is_off_by_default():
+    env = Blackjack()
+    env.reset(env.episodes("eval", 5)[1])
+    d = env.decision()
+    assert d is None or set(d.questions) == {ACTION}
+    env = Blackjack(ask_success=True)
+    env.reset(env.episodes("eval", 5)[1])
+    d = env.decision()
+    assert d is None or set(d.questions) == {ACTION, SUCCESS}
+
+
+# ---- FrozenLake -----------------------------------------------------------------------------------
+
+
+def test_frozenlake_exact_values_match_simulation():
+    from jev_benchmarking.sequential.envs.frozenlake import SCRIPTED as FL, FrozenLake
+
+    env, backend = FrozenLake(), FunctionBackend("optimal", FL["optimal"])
+    eps = [run_episode(env, s, backend) for s in env.episodes("dev", 400) if s.subset == "4x4"]
+    p = np.array([e["steps"][0]["oracle"]["p_win"] for e in eps])
+    y = np.array([e["success"] for e in eps], dtype=float)
+    assert abs(p.mean() - y.mean()) < 3 * np.sqrt(p.mean() * (1 - p.mean()) / len(p))
+    s = summarize(eps)
+    assert s["step_accuracy_vs_expert"] == 1.0 and s["mean_regret_per_decision"] == pytest.approx(0.0, abs=1e-12)
+
+
+def test_frozenlake_wall_hugging_start():
+    """Holes directly below the start: only 'up' cannot fall (it slips left or right along the edge)."""
+    from jev_benchmarking.sequential.envs.frozenlake import state_values
+
+    v = state_values(("SFFF", "HHFF", "FHHF", "HFFG"), 0, 0, 100, 100)
+    assert v["optimal"] == ["up"] and v["q"]["down"] < v["q"]["up"]
+
+
+def test_tied_optimal_actions_form_one_gold_class():
+    probs = {"left": 0.4, "down": 0.4, "right": 0.1, "up": 0.1}
+    step = {"t": 0, "action": "left", "probs": probs, "p_success": None, "n_actions": 4, "feedback": "",
+            "oracle": {"optimal": ["left", "down"], "q": {"left": .5, "down": .5, "right": .2, "up": .1}},
+            "input_tokens": 0, "cached": False, "latency_s": 0.0}
+    ep = {"env": "x", "model": "m", "mode": "greedy", "subset": "", "success": True, "reward": 1.0, "n_steps": 1, "steps": [step]}
+    cal = summarize([ep])["details"]["action_vs_expert_calibration"]
+    assert cal["brier"] == pytest.approx((0.8 - 1) ** 2 + 0.1 ** 2 + 0.1 ** 2)
+
+
+def test_frozenlake_variants():
+    from jev_benchmarking.sequential.envs.frozenlake import build_request
+
+    desc = ("SFFF", "HHFF", "FHHF", "HFFG")
+    s, q, o = build_request(desc, 0, 0, 0, 100, "outcomes")
+    assert "HOLE" in q["action"]["criteria"]["right"] and "HOLE" not in q["action"]["criteria"]["up"]
+    s, q, o = build_request(desc, 0, 0, 0, 100, "deterministic")
+    assert "not slippery" in s["rules"] and o["optimal"] == ["right"] and o["distance"] == 6
+    base = build_request(desc, 0, 0, 0, 100, "base")
+    assert base[2]["optimal"] == ["up"] and "slippery: the agent moves" in base[0]["rules"]
+
+
+# ---- BabyAI-Text (original packages; run in the environment from scripts/setup_babyai_text_env.sh) and
+# ---- TextWorld (official generators) ------------------------------------------------------------------
+
+
+def _run_reference(env, spec):
+    env.reset(spec)
+    while (d := env.decision()) is not None:
+        key = next(k for k, a in d.actions.items() if a == d.oracle["expert"])
+        if env.step(d.actions[key]).done:
+            break
+    return env.outcome()
+
+
+def test_babyai_text_original_prompt_and_bot():
+    pytest.importorskip("babyai_text")
+    from jev_benchmarking.sequential.envs.babyai_text import BabyAIText
+
+    env = BabyAIText()
+    specs = env.episodes("dev", 5)
+    env.reset(specs[0])
+    prompt = env.decision().state["prompt"]
+    assert prompt.startswith("Possible action of the agent: turn left, turn right, go forward, pick up, drop, toggle")
+    assert "Goal of the agent:" in prompt and prompt.rstrip().endswith("Action 0:")
+    env.reset(specs[0])
+    assert env.decision().state["prompt"] == prompt  # same seed, same episode
+    for spec in specs:
+        assert _run_reference(env, spec).success
+
+
+def test_babyai_text_instructions_variant_only_adds_balrog_prompt():
+    pytest.importorskip("babyai_text")
+    from jev_benchmarking.sequential.envs.babyai_text import BabyAIText
+
+    base, variant = BabyAIText(), BabyAIText(instructions=True)
+    spec = base.episodes("dev", 1)[0]
+    base.reset(spec)
+    variant.reset(spec)
+    a, b = base.decision(), variant.decision()
+    assert variant.name == "babyai_text_instructions" and set(b.state) == {"instructions", "prompt"}
+    assert b.state["prompt"] == a.state["prompt"] and b.oracle == a.oracle and b.actions == a.actions
+    assert "Your goal is to " + base.obs["mission"] + "." in b.state["instructions"]
+
+
+def test_textworld_generated_games_solver_wins():
+    pytest.importorskip("textworld")
+    from jev_benchmarking.sequential.envs.textworld_games import TextWorldGames
+
+    env = TextWorldGames()
+    specs = {s.payload["setting"]: s for s in env.episodes(limit=9)}
+    for name in ["coin_collector/level10", "treasure_hunter/level5", "cooking/easy"]:
+        assert _run_reference(env, specs[name]).success
 
 
 

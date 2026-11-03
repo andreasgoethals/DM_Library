@@ -323,6 +323,66 @@
       "reviewed_on": "2026-10-23",
       "metadata_verified_on": "2026-10-23",
       "zotero_version_at_review": 716
+    },
+    {
+      "zotero_item_key": "QPQUPNHN",
+      "citation_key": "2026.BESPOKELABS.bespokenimble9b",
+      "title": "Bespoke-Nimble-9B",
+      "item_type": "webpage",
+      "publication_date": "2026-09-18",
+      "url": "https://huggingface.co/bespokelabs/Bespoke-Nimble-9B",
+      "authors": [
+        "Bespoke Labs"
+      ],
+      "venue": "Hugging Face",
+      "archive_path": "papers/web/Bespoke-Nimble-9B.txt",
+      "status": "web-only model card; primary Markdown archived; no paper PDF claimed",
+      "date_precision": "day",
+      "date_note": "Curated Zotero date retained; Hub creation dates alone do not establish first public release. Card read at the pinned revision on 2026-11-03.",
+      "reviewed_on": "2026-11-03",
+      "metadata_verified_on": "2026-11-03",
+      "source_revision": "bd792f44ec8e265be861bfcdf4e05967ffe0e858",
+      "source_sha256": "1d968b0816997a7cfb31ed0cd7fc77f65b5ce725451bdde632ff5922abc1f250"
+    },
+    {
+      "zotero_item_key": "BV5NWE2L",
+      "citation_key": "2026.LIN.siidecision27bfull",
+      "title": "SII-Decision-27B-Full",
+      "item_type": "webpage",
+      "publication_date": "2026-10-01",
+      "url": "https://huggingface.co/jylin001206/SII-Decision-27B-Full",
+      "authors": [
+        "Jiayu Lin"
+      ],
+      "venue": "Hugging Face",
+      "archive_path": "papers/web/SII-Decision-27B-Full.txt",
+      "status": "web-only model card; primary Markdown archived; no paper PDF claimed",
+      "date_precision": "day",
+      "date_note": "Curated Zotero date retained; Hub creation dates alone do not establish first public release. Card read at the pinned revision on 2026-11-03.",
+      "reviewed_on": "2026-11-03",
+      "metadata_verified_on": "2026-11-03",
+      "source_revision": "8f5a51dcde7b0fd6a2eea3ab423bad5e3b11dfda",
+      "source_sha256": "fce738fb6335b8bd9a54a44e51ceaac6cdd15169c1cd88614cb13a13de5fadbe"
+    },
+    {
+      "zotero_item_key": "4SX3R3C2",
+      "citation_key": "2026.VLLMSEMANTICROUTERTEAM.d3turbomultimodaldecisionmodelthatreadsonce",
+      "title": "d3-turbo: A Multimodal Decision Model that Reads Once",
+      "item_type": "webpage",
+      "publication_date": "2026-10-19",
+      "url": "https://huggingface.co/vllm-sr/d3-turbo",
+      "authors": [
+        "vLLM Semantic Router Team"
+      ],
+      "venue": "Hugging Face",
+      "archive_path": "papers/web/d3-turbo.txt",
+      "status": "web-only model card; primary Markdown archived; no paper PDF claimed",
+      "date_precision": "day",
+      "date_note": "Curated Zotero date retained; Hub creation dates alone do not establish first public release. Card read at the pinned revision on 2026-11-03.",
+      "reviewed_on": "2026-11-03",
+      "metadata_verified_on": "2026-11-03",
+      "source_revision": "9df220de4ce52ab11047156fa54b8c0313d8b0eb",
+      "source_sha256": "38191c2e048833334551357e3b0aee003cbf4bc05204444418dcffa3a4d5eadb"
     }
   ]
 }

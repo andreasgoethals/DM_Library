@@ -1,37 +1,6 @@
 {
   "schema_version": 1,
   "papers": {
-    "papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf": {
-      "title": "Evaluating and Benchmarking the System One Model Jev",
-      "authors": [
-        "Tobias Deußer",
-        "Lorenz Sparrenberg",
-        "Rafet Sifa"
-      ],
-      "arxiv": "2609.37647",
-      "surnames": [
-        "Deußer",
-        "Sparrenberg",
-        "Sifa"
-      ],
-      "zotero_item_key": "LN9XQUG5",
-      "citation_key": "2026.DEUSSER.evaluatingbenchmarkingsystemonemodeljev",
-      "publication_date": "2026-09-29",
-      "venue": "",
-      "doi": "10.48550/arXiv.2609.37647",
-      "abstract": "Jev is a commercial System One model from TypeSafe AI that does not generate text: given a state and typed questions, it returns a choice from fixed options, a position on a rubric, or the probability that a statement is true, with probabilities the vendor describes as calibrated. Such models target small decisions in information access pipelines, such as routing queries, checking grounding, moderating content, or rating against a rubric. We evaluate Jev (jev-1.13.0) zero-shot on 37 datasets spanning classification, routing, natural language inference, reading comprehension, commonsense reasoning, moderation, legal clause analysis and rubric scoring, with one frozen template per dataset and full evaluation splits: 346,009 requests for under USD 10. For reference, we score Qwen3.8-27B and Gemma-4-E4B on identical requests via their exact next-token probabilities over the options. Jev reaches 95-99% accuracy on IMDB, SST-2, HellaSwag and ARC and 86.7% on Belebele across 122 languages. It beats Qwen on 27 of 37 datasets, with none of Qwen's nine leads outside the bootstrap intervals, and Gemma on all 37. All three models degrade on low-resource languages, fine-grained or noisy labels, and rubric-based quality judgments. Jev's choice probabilities are well calibrated and support selective prediction. Binary probabilities rank well but are poorly placed relative to a fixed 0.5 threshold; thresholds tuned on training data raise micro-F1 on UNFAIR-ToS from 0.50 to 0.75. Jev answers MMLU's calculation-heavy questions more accurately than other MMLU questions (94% vs. 91%), whereas both open models, and all three on C-Eval, find them harder. Rotating the options leaves Jev's accuracy unchanged and withholding the question drops it to near chance, ruling out shallow memorization but not memorized question-answer pairs. We release the code, harness and all raw responses.",
-      "url": "https://arxiv.org/abs/2609.37647",
-      "item_type": "preprint",
-      "date_source": "PDF arXiv banner",
-      "arxiv_version": 1,
-      "overrides": {},
-      "filed_date": "2026-09",
-      "sha256": "364866b9dd291eca746f8dbbbeaf2c2f6e65b2ae37ca7e674470bd138fae7ffd",
-      "metadata_verified_on": "2026-10-20",
-      "metadata_source": "https://arxiv.org/abs/2609.37647",
-      "zotero_version_at_review": 364,
-      "filed_version_date": "2026-09-29"
-    },
     "papers/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.pdf": {
       "title": "SearchJev: A Fast and Calibrated System-1 Model for Search Agents",
       "authors": [
@@ -129,39 +98,6 @@
       "metadata_source": "https://arxiv.org/abs/2609.30243",
       "zotero_version_at_review": 364,
       "filed_version_date": "2026-10-08"
-    },
-    "papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf": {
-      "title": "JEV-as-a-Judge: Accept When Confident, Escalate When Unsure",
-      "authors": [
-        "Yubo Li",
-        "Yidi Miao",
-        "Ramayya Krishnan",
-        "Rema Padman"
-      ],
-      "arxiv": "2609.26550",
-      "surnames": [
-        "Li",
-        "Miao",
-        "Krishnan",
-        "Padman"
-      ],
-      "zotero_item_key": "3YDAWGNC",
-      "citation_key": "2026.LI.jevasajudgeacceptwhenconfidentescalatewhenunsure",
-      "publication_date": "2026-09-22",
-      "venue": "",
-      "doi": "10.48550/arXiv.2609.26550",
-      "abstract": "LLM-as-a-judge scales evaluation, but reasoning judges are slow and costly. We study JEV-as-a-Judge: evaluation with JEV, a decision-only judge that returns label probabilities instead of text, and whose confidence decides whether to accept its verdict or escalate to a reasoning judge. Against sixteen generative and reward-model judges, with blinded human adjudication, JEV comes within three points of GPT-6 wherever a verdict can be read off the text, at 0.36% of its fee and a 0.15-second median latency, and falls behind where the verdict must be derived, as in math, code, and logic. Its confidence marks this boundary. With a threshold frozen in advance, accepting confident verdicts and escalating the rest is 0.9 points more accurate than GPT-6 on 1,610 held-out pairs at 41% of its fee, and in a pre-specified live test on two new workloads the cascade matches GPT-6's accuracy exactly. Confidence routing weakens on style-adversarial pairs and reference-free prose; we close with a simple recipe for validating thresholds locally.",
-      "url": "https://arxiv.org/abs/2609.26550",
-      "item_type": "preprint",
-      "date_source": "PDF arXiv banner",
-      "arxiv_version": 5,
-      "overrides": {},
-      "filed_date": "2026-10",
-      "sha256": "a78edff547f1d714c4fb9c71dfb7866bc2171062c21d112c5f2721bd769c2ef7",
-      "metadata_verified_on": "2026-10-20",
-      "metadata_source": "https://arxiv.org/abs/2609.26550",
-      "zotero_version_at_review": 361,
-      "filed_version_date": "2026-10-09"
     },
     "papers/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.pdf": {
       "title": "General Decision Models: Benchmarking and Insights Beyond Jev",
@@ -570,6 +506,145 @@
       "overrides": {},
       "filed_date": "2026-10",
       "sha256": "b089a5b72af98540716ce3832a6267cc29c8276f730240405214239eb0ee3ee5"
+    },
+    "papers/2026/10_Yang_et_al._What_Cant_Jev_Decide_Probing_the_Limits_of_One_Pass_Decision_Models.pdf": {
+      "title": "What Can't Jev Decide? Probing the Limits of One-Pass Decision Models",
+      "authors": [
+        "Wang Yang",
+        "Xinpeng Li",
+        "Yanyan Zhang",
+        "Chuang Ma",
+        "Shouren Wang",
+        "Jianzhe Wei",
+        "Liqin Ye",
+        "Xiaoran Cai",
+        "Mohsen Hariri",
+        "Vipin Chaudhary",
+        "Xiaotian Han"
+      ],
+      "arxiv": "2610.24929",
+      "surnames": [
+        "Yang",
+        "Li",
+        "Zhang",
+        "Ma",
+        "Wang",
+        "Wei",
+        "Ye",
+        "Cai",
+        "Hariri",
+        "Chaudhary",
+        "Han"
+      ],
+      "zotero_item_key": "7RFCXNQ6",
+      "citation_key": "2026.YANG.whatcantjevdecideprobinglimitsonepassdecisionmodels",
+      "publication_date": "2026-10-18",
+      "venue": "",
+      "doi": "10.48550/arXiv.2610.24929",
+      "abstract": "Jev and its open replicas choose among the options a caller supplies with a single forward pass, fast enough to decide inside an agent loop. We ask what such a model cannot decide, and find a simple limit: Jev cannot make a decision that an LLM makes only by writing out intermediate steps. On a benchmark that varies one factor at a time, Jev finds and selects records without error up to 20k tokens and 64 options, but once the answer depends on two or more updates of one user, accuracy falls, to 53-80% at sixteen updates, because similar records interfere. Given a stale summary of the state, Jev follows it. On real decision items graded by how many thinking tokens a reference LLM needs, Jev answers 97.5% of the items that one forward pass of that LLM solves, but only 74% of the others. Jev also does not know its limit: its confidence flags the errors it makes itself but not those it inherits from a stale input, and neither an explicit nor a trained hand-off option catches the latter. The open models we evaluate share these limits. Checking the state such models rely on requires a model that reasons.",
+      "url": "https://arxiv.org/abs/2610.24929",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 1,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "6a5598cd9eee10d2fda80b408d380dd749f0b6562cb8497b7983bf05a2c7f38e"
+    },
+    "papers/2026/10_Rao_and_Callison_Burch_Decision_Models_vs._LLMs_as_Rubric_Judges_Cheaper_Faster_and_Wrong_in_the_Same_Places.pdf": {
+      "title": "Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places",
+      "authors": [
+        "Delip Rao",
+        "Chris Callison-Burch"
+      ],
+      "arxiv": "2609.29769",
+      "surnames": [
+        "Rao",
+        "Callison-Burch"
+      ],
+      "zotero_item_key": "W33YZ67L",
+      "citation_key": "2026.RAO.decisionmodelsvsllmsrubricjudgescheaperfasterwrongsameplaces",
+      "publication_date": "2026-09-24",
+      "venue": "",
+      "doi": "10.48550/arXiv.2609.29769",
+      "abstract": "LLM judges now score outputs against rubrics, in benchmarks and as training rewards. Decision models return probabilities over permitted answers with a confidence score but no free text. Two such models are Jev and an open reproduction, Perplexity's Decider. We compare each with three flash-tier LLM judges on nine panels from seven benchmarks with human judgments, giving every judge identical criterion texts. The LLM judges run in two setups, reading a whole rubric at once or one criterion at a time. Our findings suggest both decision models can often stand in for them. The LLM judges cost 16 to 357 times as much and take 5 to 350 times as long, yet in both setups each decision model trails them significantly in at most 6 of 27 comparisons. The two kinds of judge err alike, agreeing more with one another than with the human-annotated judgment labels on ordinal criteria. Over 85% of flash-tier LLM verdicts on either decision model's most confident errors repeat them, where independent errors would give about half. Each decision model's confidence ranks its errors on most ordinal panels, so each is a natural first stage for a cascade deferring uncertain verdicts to an LLM judge. Yet with flash-tier fallbacks, such cascades gained a mere 2.7 points at best over the strongest single judge, even with oracle thresholds, suggesting they mainly save cost. A cascade needs a fallback that is right where its first stage errs, but the LLM judges are mostly wrong in the same places as Jev, and the Decider is already the strongest single judge on most panels. Even each vendor's higher-tier model repeats those errors, and as a fallback it lifted no cascade more than 1.7 points above both tiers' strongest single judge. Holding across setups, effort levels, and tiers, these findings suggest designing future decision models afresh to get right what LLM judges get wrong, and vice versa.",
+      "url": "https://arxiv.org/abs/2609.29769",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 3,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "3aeecd12926f8af8af97f53791d1234e805d6783dfb229caeb110750699fa765",
+      "filed_version_date": "2026-10-13",
+      "filed_version_source": "https://arxiv.org/pdf/2609.29769v3",
+      "filed_version_reviewed_on": "2026-11-03"
+    },
+    "papers/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf": {
+      "title": "Evaluating and Benchmarking the System One Model Jev",
+      "authors": [
+        "Tobias Deußer",
+        "Lorenz Sparrenberg",
+        "Rafet Sifa"
+      ],
+      "arxiv": "2609.37647",
+      "surnames": [
+        "Deußer",
+        "Sparrenberg",
+        "Sifa"
+      ],
+      "zotero_item_key": "LN9XQUG5",
+      "citation_key": "2026.DEUSSER.evaluatingbenchmarkingsystemonemodeljev",
+      "publication_date": "2026-09-29",
+      "venue": "",
+      "doi": "10.48550/arXiv.2609.37647",
+      "abstract": "Jev is a commercial System One model from TypeSafe AI that does not generate text: given a state and typed questions, it returns a choice from fixed options, a position on a rubric, or the probability that a statement is true, with probabilities the vendor describes as calibrated. Such models target small decisions in information access pipelines, such as routing queries, checking grounding, moderating content, or rating against a rubric. We evaluate Jev (jev-1.13.0) zero-shot on 37 datasets spanning classification, routing, natural language inference, reading comprehension, commonsense reasoning, moderation, legal clause analysis and rubric scoring, with one frozen template per dataset and full evaluation splits: 346,009 requests for under USD 10. For reference, we score Qwen3.8-27B and Gemma-4-E4B on identical requests via their exact next-token probabilities over the options. Jev reaches 95-99% accuracy on IMDB, SST-2, HellaSwag and ARC and 86.7% on Belebele across 122 languages. It beats Qwen on 27 of 37 datasets, with none of Qwen's nine leads outside the bootstrap intervals, and Gemma on all 37. All three models degrade on low-resource languages, fine-grained or noisy labels, and rubric-based quality judgments. Jev's choice probabilities are well calibrated and support selective prediction. Binary probabilities rank well but are poorly placed relative to a fixed 0.5 threshold; thresholds tuned on training data raise micro-F1 on UNFAIR-ToS from 0.50 to 0.75. Jev answers MMLU's calculation-heavy questions more accurately than other MMLU questions (94% vs. 91%), whereas both open models, and all three on C-Eval, find them harder. Rotating the options leaves Jev's accuracy unchanged and withholding the question drops it to near chance, ruling out shallow memorization but not memorized question-answer pairs. We release the code, harness and all raw responses.",
+      "url": "https://arxiv.org/abs/2609.37647",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 2,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "902f582dc3620c0c2d07473744bdb55eac317f9214aadb96d1357ec6b8ec4f17",
+      "metadata_verified_on": "2026-10-20",
+      "metadata_source": "https://arxiv.org/abs/2609.37647",
+      "zotero_version_at_review": 364,
+      "filed_version_date": "2026-10-29",
+      "pdf_source_url": "https://arxiv.org/pdf/2609.37647v2",
+      "pdf_reviewed_on": "2026-11-03"
+    },
+    "papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf": {
+      "title": "JEV-as-a-Judge: Accept When Confident, Escalate When Unsure",
+      "authors": [
+        "Yubo Li",
+        "Yidi Miao",
+        "Ramayya Krishnan",
+        "Rema Padman"
+      ],
+      "arxiv": "2609.26550",
+      "surnames": [
+        "Li",
+        "Miao",
+        "Krishnan",
+        "Padman"
+      ],
+      "zotero_item_key": "3YDAWGNC",
+      "citation_key": "2026.LI.jevasajudgeacceptwhenconfidentescalatewhenunsure",
+      "publication_date": "2026-09-22",
+      "venue": "",
+      "doi": "10.48550/arXiv.2609.26550",
+      "abstract": "LLM-as-a-judge scales evaluation, but reasoning judges are slow and costly. We study JEV-as-a-Judge: evaluation with JEV, a decision-only judge that returns label probabilities instead of text, and whose confidence decides whether to accept its verdict or escalate to a reasoning judge. Against sixteen generative and reward-model judges, with blinded human adjudication, JEV comes within three points of GPT-6 wherever a verdict can be read off the text, at 0.36% of its fee and a 0.15-second median latency, and falls behind where the verdict must be derived, as in math, code, and logic. Its confidence marks this boundary. With a threshold frozen in advance, accepting confident verdicts and escalating the rest is 0.9 points more accurate than GPT-6 on 1,610 held-out pairs at 41% of its fee, and in a pre-specified live test on two new workloads the cascade matches GPT-6's accuracy exactly. Confidence routing weakens on style-adversarial pairs and reference-free prose; we close with a simple recipe for validating thresholds locally.",
+      "url": "https://arxiv.org/abs/2609.26550",
+      "item_type": "preprint",
+      "date_source": "PDF arXiv banner",
+      "arxiv_version": 6,
+      "overrides": {},
+      "filed_date": "2026-10",
+      "sha256": "e3834a6763b1aaa861d958bdd9434545c8f8918ea1954b74b2e5cd1873d2a935",
+      "metadata_verified_on": "2026-10-20",
+      "metadata_source": "https://arxiv.org/abs/2609.26550",
+      "zotero_version_at_review": 361,
+      "filed_version_date": "2026-10-29",
+      "pdf_source_url": "https://arxiv.org/pdf/2609.26550v6",
+      "pdf_reviewed_on": "2026-11-03"
     }
   }
 }

@@ -2,8 +2,8 @@
 
 This selected corpus studies **fast decisions over supplied options**: a model
 receives a state, one or more typed questions and a finite option set, and returns
-a probability for each option instead of generating text. It contains sixteen
-arXiv preprints and fifteen provider release posts, model cards or API references,
+a probability for each option instead of generating text. It contains eighteen
+arXiv preprints and eighteen provider release posts, model cards or API references,
 all dated September–October 2026. [SUMMARIES.md](SUMMARIES.md) records evidence
 locations, limitations and Zotero citation keys; [DECISION_MODELS.md](DECISION_MODELS.md)
 lists release dates, licenses, context limits and prices;
@@ -156,6 +156,9 @@ Provider records are linked by title in the first column; "card" denotes that re
 | Clef / Clef-flash (Cloudflare; [*Introducing Clef: our open-source decision models, and new RL fine-tuning platform*](SUMMARIES.md#web-mwjhy75j)) | Qwen backbones, nominal 27B / 9B | Joint-schema head with option-specific evidence routing | Cross-field attention in head | Yes (provider) | Open | Smoothed cross-entropy + Brier; later RL objective | Provider claim + inference code |
 | Strands Decider 2B ([*Introducing Strands Decider 2B: a small, open source, decision model*](SUMMARIES.md#web-gi68ips2)) | Qwen3.5-2B torso | Pointer head (an earlier slot-head alternative was removed upstream in October) | Causal | n.d. | Open | Temperature fitted per question kind (code) | Provider claim + training code |
 | Decision 2.0 family (vLLM Semantic Router; [*Decision-2.0-Vega-27B*](SUMMARIES.md#web-bh58bep7)) | Size labels 0.6B–27B; Vega 29.37B actual | Candidate readout | n.d. | Yes: simultaneous choice, yes/no and score (card) | Open | n.d. | Model card + code |
+| d3-turbo (vLLM Semantic Router; [model card](SUMMARIES.md#web-4sx3r3c2)) | Nominal 27B, 26.09B stored tensors | Shared-state typed heads; choice, yes/no, ordinal score, box and track | Single state read (provider); exact mask checkpoint-specific | Yes | Apache-2.0 | Provider reports calibration; transfer unverified | Pinned model card |
+| Bespoke-Nimble-9B ([model card](SUMMARIES.md#web-qpqupnhn)) | Qwen3.5-9B + LoRA adapter | Field-by-field option scoring | Backbone-dependent | No shared multi-field pass | Apache-2.0 adapter; base required | Current card uses temperature 1.0, no fitted temperature | Pinned model card; evaluated in [AJ] |
+| SII-Decision-27B-Full ([model card](SUMMARIES.md#web-bv5nwe2l)) | Qwen3.8-27B; full-rank adaptation | Reasoning-distilled first-token option scores | Causal | Independent question scoring | Apache-2.0 | Single-checkpoint 58-benchmark score, not a multi-seed mean | Pinned model card; related research [GDM] |
 | pplx-decider-v1.1-27b (Perplexity; [*pplx-decider-v1.1-27b*](SUMMARIES.md#web-de9kqqlx)) | Nominal 27B | Separate decision readout | Noncausal full-attention layers (card; also noted in [SL]) | n.d. | Open | One saved temperature | Model card + code |
 | H2O-Lightning-4B ([*H2O-Lightning-4B*](SUMMARIES.md#web-skwpxqtg)) | Qwen3.5-4B | Serving shim over choice, yes/no and score | One-way or two-way reading mode | n.d. | Open | Saved calibration plus yes/no adjustment | Model card + code |
 | d1-3B / d1-omni-600M (Liquid AI; [*Open d1: Edge decision models for text, vision, and audio*](SUMMARIES.md#web-4u52t7rc)) | Distinct backbones; omni is a 587M encoder | Decision head | Omni: encoder | n.d. | Downloadable, commercial-use condition | n.d. | Provider claim + inference code |
@@ -180,21 +183,23 @@ are not claims about training-data inheritance or priority.
 | Date | Paper | What it added | Builds on |
 |---|---|---|---|
 | 2026-09 | Li et al. (2026), [Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms?](SUMMARIES.md#beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms) | Label-free logical checks expose inconsistency between negation, disjunction, yes/no and categorical probabilities. | Probability coherence beyond marginal calibration |
-| 2026-09 | Deußer et al. (2026), [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | Frozen-template evaluation distinguishes calibration across output primitives | Typed choice, binary and ordinal interfaces |
 | 2026-09 | Zhang et al. (2026), [AnyJev Technical Report](SUMMARIES.md#anyjev-technical-report) | Frozen-LLM readouts separate label-prior correction, option-order averaging, calibration and adaptive rotation cost. | Restricted next-token probabilities and permutation averaging |
 | 2026-10 | Rafe and Das (2026), [Benchmarking System One decision models against trained classifiers and language models for automated decision gates](SUMMARIES.md#benchmarking-system-one-decision-models-against-trained-classifiers-and-language-models-for-automated-decision-gates) | Matched decision gates compare specialist models, trained classifiers and LLM readouts under calibration, rejection and cascade costs. | Supervised baselines, selective risk and application-level routing |
 | 2026-10 | Xu et al. (2026), [JevOut: Natural Context Can Flip Decision Models](SUMMARIES.md#jevout) | Answer-preserving context search exposes confident errors; filed 8 October | Input invariance and robustness |
-| 2026-10 | Li et al. (2026), [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 9 October | Selective prediction and cascaded judging |
 | 2026-10 | Sharma et al. (2026), [TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models](SUMMARIES.md#typedbench-a-benchmark-for-calibration-framing-sensitivity-and-cost-in-system-one-decision-models) | Policy-generated tasks evaluate wording robustness, calibration noise floors and decisions under asymmetric costs. | Typed interfaces, programmatic ground truth and selective prediction |
 | 2026-10 | Duan et al. (2026), [General Decision Models: Benchmarking and Insights Beyond Jev](SUMMARIES.md#general-decision-models) | Analytic uncertainty, system failures and reasoning distillation; filed 12 October | Typed decisions and agent evaluation |
-| 2026-10 | Zhuang et al. (2026), [StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions](SUMMARIES.md#startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions) | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | Direct option scoring, reasoning supervision and proper scoring rules |
 | 2026-10 | Geuter et al. 2026 — [Releasing the Inner Jev: A Simple Recipe for Open Decision Models](SUMMARIES.md#releasing-the-inner-jev-a-simple-recipe-for-open-decision-models) | Answer-letter readout and short LoRA training yield competitive open decisions on OpenDecisions and JevBench. | Frozen instruction-tuned LMs, temperature calibration and supervised LoRA |
+| 2026-10 | Rao and Callison-Burch (2026), [Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places](SUMMARIES.md#decision-models-vs-llms-as-rubric-judges-cheaper-faster-and-wrong-in-the-same-places) | Jev and Decider are inexpensive rubric judges, but correlated errors limit confidence cascades even with stronger fallback models. | Human-labelled rubric evaluation, correlated errors and cascade cost |
 | 2026-10 | Li and Wagle (2026), [LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them](SUMMARIES.md#llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them) | Prefix-free candidate scoring tests when frozen LLMs suffice and when anchored fine-tuning or bounded reasoning helps. | Joint candidate likelihood, constrained readout and KL-regularized adaptation |
 | 2026-10 | Imperatrice et al. (2026), [Are AI Decision Models Biased? A Case Study of Jev](SUMMARIES.md#are-ai-decision-models-biased-a-case-study-of-jev) | Behavioral tasks distinguish selected answers from probability shifts under irrelevant context, framing and option order. | Cognitive-bias paradigms and controlled input variation |
 | 2026-10 | Zhang et al. 2026 — [Typed Decision Models on Tabular Data](SUMMARIES.md#typed-decision-models-on-tabular-data) | Four decision models and three LLMs separate option-format robustness from table-serialization robustness. | Semantic-preserving rewrites of tabular decisions and selective re-querying |
 | 2026-10 | Zhu et al. (2026), [Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling](SUMMARIES.md#intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling) | Multimodal masked decision training scores multiple fields in one causal pass, with separate calibration and handoff evaluations. | Native LM-head scoring, multimodal inputs and post-hoc calibration |
 | 2026-10 | Chen et al. 2026 — [System1-Arena: Which Decisions Can Be Left to System 1?](SUMMARIES.md#system1-arena-which-decisions-can-be-left-to-system-1) | Shared probability-scoring requests separate strong static decisions from weak closed-loop control across 30 models. | Typed decisions, broad benchmarks and latency-aware closed-loop evaluation |
+| 2026-10 | Yang et al. (2026), [What Can't Jev Decide? Probing the Limits of One-Pass Decision Models](SUMMARIES.md#what-can-t-jev-decide-probing-the-limits-of-one-pass-decision-models) | Controlled state-tracking and real-task probes distinguish accurate lookup from multi-step state reconstruction; confidence misses errors inherited from stale summaries. | One-pass computation limits and confidence-based handoff |
+| 2026-10 | Zhuang et al. (2026), [StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions](SUMMARIES.md#startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions) | Instant and AutoThink models combine bidirectional readout, selective reasoning and decision-weighted probability rewards. | Direct option scoring, reasoning supervision and proper scoring rules |
 | 2026-10 | Cao et al. (2026), [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning; v2 adds one-hot and component ablations; filed 23 October | Direct readout and hybrid search control |
+| 2026-10 | Deußer et al. (2026), [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | v2 combines the 37-dataset static benchmark with sequential environments: static confidence and near-optimal one-step actions do not ensure effective multi-step control | Typed choice, binary and ordinal interfaces |
+| 2026-10 | Li et al. (2026), [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 29 October | Selective prediction and cascaded judging |
 
 ## Web-source timeline
 
@@ -208,6 +213,7 @@ current model specifications are separate; see [DECISION_MODELS.md](DECISION_MOD
 | 2026 | H2O.ai 2026 — [H2O-Lightning-4B](SUMMARIES.md#web-skwpxqtg) | Open-weight probability readout with a concrete serving contract |
 | 2026 | Inception 2026 — [Mercury Decide: Create a decision](SUMMARIES.md#web-ps2pzgda) | Hosted decision contract and modality/request-size boundaries |
 | 2026-09-15 | Almeida 2026 — [Introducing System One Models & Jev](SUMMARIES.md#web-qezz55x7) | Provider interface and motivation |
+| 2026-09-18 | Bespoke-Nimble-9B — [model card](SUMMARIES.md#web-qpqupnhn) | A compact adaptation baseline with an explicit prompt builder and probability calculation. It is an adapter requiring the separately licensed base checkpoint, not a standalone merged model. |
 | 2026-09-22 | Upstage 2026 — [Solar Decide](SUMMARIES.md#web-qzkmbk7l) | Hosted long-context typed scoring and Korean-language deployment |
 | 2026-09-23 | Together AI 2026 — [Tev1-4B-experimental](SUMMARIES.md#web-rgvmcn25) | Native answer-token readout and reproducible adaptation recipe |
 | 2026-09-26 | InternLM 2026 — [Intern-Decision-4B](SUMMARIES.md#web-x58irxca) | Multi-field readout and calibration; 26 September upload and public demo |
@@ -215,10 +221,12 @@ current model specifications are separate; see [DECISION_MODELS.md](DECISION_MOD
 | 2026-09-30 | Jared Palmer 2026 — [Kev-27B](SUMMARIES.md#web-q9s5d6r2) | Open-source candidate readout, adaptation and context validation |
 | 2026-10-01 | Chen et al. 2026 — [Introducing Clef: our open-source decision models, and new RL fine-tuning platform](SUMMARIES.md#web-mwjhy75j) | Open architecture and adaptation |
 | 2026-10-01 | Brooker et al. 2026 — [Introducing Strands Decider 2B: a small, open source, decision model](SUMMARIES.md#web-gi68ips2) | Local model and public development materials |
+| 2026-10-01 | SII-Decision-27B-Full — [model card](SUMMARIES.md#web-bv5nwe2l) | A checkpoint-specific companion to Duan et al., General Decision Models: Benchmarking and Insights Beyond Jev. It separates full-rank adaptation from the related LoRA variants and provides training/inference provenance. |
 | 2026-10-03 | vLLM Semantic Router Team 2026 — [Decision-2.0-Vega-27B](SUMMARIES.md#web-bh58bep7) | Serving-integrated open decision models across several model sizes |
 | 2026-10-06 | Perplexity AI 2026 — [pplx-decider-v1.1-27b](SUMMARIES.md#web-de9kqqlx) | Checkpoint-specific inference contract; public announcement |
 | 2026-10-07 | Liquid AI 2026 — [Open d1: Edge decision models for text, vision, and audio](SUMMARIES.md#web-4u52t7rc) | Edge and modality expansion |
 | 2026-10-09 | Srivastava 2026 — [Introducing Microsoft-Decision-1, our model for fast decision-making](SUMMARIES.md#web-lelm4ubr) | Hosted release and provider evaluation |
+| 2026-10-19 | d3-turbo: A Multimodal Decision Model that Reads Once — [model card](SUMMARIES.md#web-4sx3r3c2) | A later serving and multimodal extension of the Decision 2.0 family already covered here. It distinguishes shared-state multi-question processing from field-by-field scoring. |
 | 2026-10-22 | OpenAI 2026 — [Build more responsive apps with the Decisions API](SUMMARIES.md#web-q9x2h26h) | Hosted typed decisions, shared-input caching and explicit endpoint billing |
 
 ## Decisions and available information
@@ -249,6 +257,14 @@ a schema constrains output form, not interpretation of the evidence.
 | Sequential behavior | Search and tool-agent experiments, closed-loop environments | Optimal-policy or cumulative-regret guarantees |
 | Causal assumptions | Controlled component comparisons within harnesses | Identification of counterfactual policy value |
 | Cost | Measured fees and runtime under stated protocols | Hardware-independent efficiency rankings |
+
+The v2 extension of Deußer et al. 2026 (*Evaluating and Benchmarking the System
+One Model Jev*) makes this distinction concrete: Jev solves 35% of unseen
+ALFWorld tasks, 42% of TextWorld games and 21% of BabyAI-Text missions, while
+choosing optimal Blackjack actions 90% of the time. Repeated ineffective actions
+and FrozenLake detour failures show that one-step selection and accumulated
+environment control are different tests. These are task-specific observations,
+not a universal claim that direct decision models cannot act sequentially.
 
 ## Readout, adaptation and selective computation
 
@@ -376,6 +392,10 @@ which must not be pooled into one failure rate:
 The provider record *Introducing Microsoft-Decision-1, our model for fast
 decision-making* reports perturbation tests with a different protocol; a low
 average flip rate there does not rebut adaptive-search results.
+
+Rao and Callison-Burch (2026), [*Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places*](SUMMARIES.md#decision-models-vs-llms-as-rubric-judges-cheaper-faster-and-wrong-in-the-same-places), show why an accurate first-stage confidence ranking is insufficient: the fallback can repeat the same mistakes. Their modest cascade gains qualify, rather than refute, Li et al. (2026), *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*, because the studies use different fallbacks, tasks and threshold protocols. Evaluate complementarity and held-out total cost, not confidence alone.
+
+Yang et al. (2026), [*What Can't Jev Decide? Probing the Limits of One-Pass Decision Models*](SUMMARIES.md#what-can-t-jev-decide-probing-the-limits-of-one-pass-decision-models), identify a separate failure: a high-confidence answer can faithfully follow a stale state. Confidence catches the model's own state-tracking errors much better than errors inherited from incorrect summaries. A pipeline needs state validation or reasoning as well as an answer-confidence gate; these results do not prove that every future one-pass architecture shares the same limitation.
 
 ## Where the evidence conflicts
 

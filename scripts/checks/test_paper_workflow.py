@@ -311,6 +311,10 @@ class WorkflowCase(unittest.TestCase):
         self.assertEqual(report.total, 0)
         self.assertEqual(stats["registered web sources"], 1)
         self.assertTrue(notes)
+        reference["data"].update(itemType="webpage", websiteType="Model card")
+        self.assertEqual(self.compare([reference], pdf=False)[1].total, 0)
+        reference["data"]["websiteType"] = "Research article"
+        self.assertIn("Research source incorrectly registered as web-only", self.compare([reference], pdf=False)[1].sections)
         reference["data"]["itemType"] = "journalArticle"
         self.assertIn("Research source incorrectly registered as web-only", self.compare([reference], pdf=False)[1].sections)
 

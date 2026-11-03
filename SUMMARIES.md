@@ -1,7 +1,7 @@
 # Decision models: source summaries
 
-The selected Zotero **Decision Models** collection contains sixteen research papers
-and fifteen web-only releases/model cards. The current evidence concerns fast,
+The selected Zotero **Decision Models** collection contains eighteen research papers
+and eighteen web-only releases/model cards. The current evidence concerns fast,
 schema-conditioned probabilistic decisions. It does not constitute a general
 survey of decision theory or optimization. Read [the synthesis](SYNTHESIS.md) for
 comparisons, [the model comparison](DECISION_MODELS.md) for specifications and
@@ -9,7 +9,7 @@ costs, and [the implementation guide](REPOSITORIES.md) for source maps.
 
 Dates below describe the PDF version filed. Publication dates remain separately
 recorded in [the provenance manifest](papers/manifest.json); multiple October
-versions are ordered by their confirmed day. All sixteen are arXiv preprints: no
+versions are ordered by their confirmed day. All eighteen are arXiv preprints: no
 peer-reviewed venue is confirmed in the curated records. Source-specific numbers
 are reported results, not measurements rerun by this library. Citation keys come
 from Zotero and remain unchanged.
@@ -26,21 +26,23 @@ use the same labels, and their contents are marked as provider claims.
 | Date | Authors | Title | Method and headline result | PDF |
 |---|---|---|---|---|
 | 2026-09 | Li et al. | Beyond Calibration: Do a Typed-Decision Model's Probabilities Obey the Probability Axioms? | Label-free coherence battery over three-label partitions: Jev's negation violation is 0.064 vs 0.293 (Qwen first-token) and 0.122 (verbalized), but its single-label probabilities sum to 1.14. | [pdf](papers/2026/09_Li_et_al._Beyond_Calibration_Do_a_Typed_Decision_Models_Probabilities_Obey_the_Probability_Axioms.pdf) |
-| 2026-09 | Deußer et al. | Evaluating and Benchmarking the System One Model Jev | Zero-shot Jev 1.13.0 on 37 full-split datasets (346,009 requests, under US$10) vs matched-readout open models: beats Qwen3.8-27B on 27/37, pooled Choice ECE 0.028, but binary thresholds misplaced. | [pdf](papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) |
 | 2026-09 | Zhang et al. | AnyJev Technical Report | Training-free readout of frozen LLMs (label-token restriction, label-prior division, cyclic option rotations): flip rate 0.33 to 0.14–0.18 on 20-option tasks, no accuracy gain on JevBench, adaptive rotations give 2.22× throughput. | [pdf](papers/2026/09_Zhang_et_al._AnyJev_Technical_Report.pdf) |
 | 2026-10 | Rafe and Das | Benchmarking System One decision models against trained classifiers and language models for automated decision gates | One harness compares eight decision checkpoints, four generative LLMs (two readouts) and trained classifiers as decision gates: labelled DeBERTa wins most tasks, a 5%-risk guarantee leaves Jev 0.528 coverage, and its in-scope gate still accepts 0.310 of out-of-scope requests. | [pdf](papers/2026/10_Rafe_and_Das_Benchmarking_System_One_decision_models_against_trained_classifiers_and_language_models_for_automated_decision_gates.pdf) |
 | 2026-10 | Xu et al. | JevOut: Natural Context Can Flip Decision Models | Probability-guided search for answer-preserving context additions (≤64 accepted target calls) redirects 61.4–73.2% of initially correct decisions to a fixed wrong option, including 45.5% of confident Jev decisions; contexts transfer across models. | [pdf](papers/2026/10_Xu_et_al._JevOut_Natural_Context_Can_Flip_Decision_Models.pdf) |
-| 2026-10 | Li et al. | JEV-as-a-Judge: Accept When Confident, Escalate When Unsure | Two-order confidence gate escalates uncertain Jev verdicts to GPT-6: a frozen τ = 0.9 beats GPT-6 by 0.9 points at 41% of its fee on 1,610 held-out pairs, and lower-bound thresholds match it exactly on two new live workloads. | [pdf](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) |
 | 2026-10 | Sharma et al. | TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models | Seven policy-labelled generators and nine suites test six checkpoints: rewording the rule moves Jev 24 points, calibration is judged against a null ECE, and and acting on Jev's probabilities instead of its top answer raises asymmetric cost (2,300 vs 1,080 per 10⁴ on ticket priority). | [pdf](papers/2026/10_Sharma_et_al._TypedBench_A_Benchmark_for_Calibration_Framing_Sensitivity_and_Cost_in_System_One_Decision_Models.pdf) |
 | 2026-10 | Duan et al. | General Decision Models: Benchmarking and Insights Beyond Jev | JEVal (11,257 bilingual items, 25 configurations), analytic probability probes and agent/simulation tests show Jev picks the mode but overstates it (89% vs 36% true mass) and lowers τ-bench success when it selects actions (77.6% to 66.1%); self-distilled SII-Decision-27B reaches 79.2% at the lowest ECE. | [pdf](papers/2026/10_Duan_et_al._General_Decision_Models_Benchmarking_and_Insights_Beyond_Jev.pdf) |
-| 2026-10 | Zhuang et al. | StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions | Letter-logit decision models (0.8B–27B) with bidirectional prompt attention (Instant) or confidence-gated reasoning trained with a proper-score RL reward (AutoThink); 27B AutoThink reaches 86.9% DecisionPivot pair accuracy and RLCD² cuts 9B reasoning length by 65%. | [pdf](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) |
 | 2026-10 | Geuter et al. | Releasing the Inner Jev: A Simple Recipe for Open Decision Models | Answer-letter logits plus temperature scaling make open LLMs near-Jev zero-shot (Gemma 4 31B 79.6 vs 80.1 OpenDecisions Capability); 400-step LoRA reaches 84.4, with backbone adaptation rather than the head driving the gain. | [pdf](papers/2026/10_Geuter_et_al._Releasing_the_Inner_Jev_A_Simple_Recipe_for_Open_Decision_Models.pdf) |
+| 2026-10 | Rao and Callison-Burch | Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places | Jev and Decider are inexpensive rubric judges, but correlated errors limit confidence cascades even with stronger fallback models. | [pdf](papers/2026/10_Rao_and_Callison_Burch_Decision_Models_vs._LLMs_as_Rubric_Judges_Cheaper_Faster_and_Wrong_in_the_Same_Places.pdf) |
 | 2026-10 | Li and Wagle | LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them | Prefix-free numbered-suffix scoring turns frozen LLMs into decision models for any option count (Qwen3.5-4B 81.4% on public JevBench); KL-anchored LoRA reaches 84.0% and budgeted thinking 94.8%. | [pdf](papers/2026/10_Li_and_Wagle_LLM_as_Jev_LLMs_Are_Already_Jev_Style_Decision_Models_When_and_How_to_Fine_Tune_Them.pdf) |
 | 2026-10 | Imperatrice et al. | Are AI Decision Models Biased? A Case Study of Jev | 41,500 Jev calls on classic bias paradigms with original/edited scenarios: choices mostly unbiased, but probabilities shift under anchors, framing and answer order, and an edited conjunction item is wrong in all 500 calls. | [pdf](papers/2026/10_Imperatrice_et_al._Are_AI_Decision_Models_Biased_A_Case_Study_of_Jev.pdf) |
 | 2026-10 | Zhang et al. | Typed Decision Models on Tabular Data | Four decision models and three LLMs under 21 information-preserving rewrites on three tabular tasks: decision models match LLMs more cheaply and resist option rewrites (except GPT-6 Luna Decisions), but table rewrites flip about a third of every model's row decisions; low confidence flags them. | [pdf](papers/2026/10_Zhang_et_al._Typed_Decision_Models_on_Tabular_Data.pdf) |
 | 2026-10 | Zhu et al. | Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling | Placeholder fields in a JSON skeleton are read from shifted LM-head logits in one causal pass; the 4B model averages 90.0% over seven suites (Jev 88.7%) at 44 ms per request, with a separate known-distribution pilot and handoff study. | [pdf](papers/2026/10_Zhu_et_al._Intern_Decision_Efficient_Multimodal_Decision_Making_with_Autoregressive_Masked_Language_Modeling.pdf) |
 | 2026-10 | Chen et al. | System1-Arena: Which Decisions Can Be Left to System 1? | Shared typed requests over 92k static questions and 138 closed loops for 30 models: Jev and Decision-2.0-Vega-27B match fast closed LLMs (72.6–73.0% vs 71.2%) with better Brier scores, but equal step accuracy yields 5.7–26.5% loop success. | [pdf](papers/2026/10_Chen_et_al._System1_Arena_Which_Decisions_Can_Be_Left_to_System_1.pdf) |
+| 2026-10 | Yang et al. | What Can't Jev Decide? Probing the Limits of One-Pass Decision Models | Controlled state-tracking and real-task probes distinguish accurate lookup from multi-step state reconstruction; confidence misses errors inherited from stale summaries. | [pdf](papers/2026/10_Yang_et_al._What_Cant_Jev_Decide_Probing_the_Limits_of_One_Pass_Decision_Models.pdf) |
+| 2026-10 | Zhuang et al. | StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions | Letter-logit decision models (0.8B–27B) with bidirectional prompt attention (Instant) or confidence-gated reasoning trained with a proper-score RL reward (AutoThink); 27B AutoThink reaches 86.9% DecisionPivot pair accuracy and RLCD² cuts 9B reasoning length by 65%. | [pdf](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) |
 | 2026-10 | Cao et al. | SearchJev: A Fast and Calibrated System-1 Model for Search Agents | LoRA-trained label-logit readout with soft-label CE+Brier loss for six search decisions: 5.2–5.3× faster than JSON decoding; a 4B hybrid lifts BrowseComp-Plus accuracy from 45% to 54% in one 100-question run; v2 isolates sufficiency gains and mixed soft-label effects. | [pdf](papers/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.pdf) |
+| 2026-10 | Deußer et al. | Evaluating and Benchmarking the System One Model Jev | Zero-shot Jev 1.13.0 on 37 full-split datasets (346,009 requests, under US$10) vs matched-readout open models: beats Qwen3.8-27B on 27/37, pooled Choice ECE 0.028, but binary thresholds misplaced. | [pdf](papers/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) |
+| 2026-10 | Li et al. | JEV-as-a-Judge: Accept When Confident, Escalate When Unsure | Two-order confidence gate escalates uncertain Jev verdicts to GPT-6: a frozen τ = 0.9 beats GPT-6 by 0.9 points at 41% of its fee on 1,610 held-out pairs, and lower-bound thresholds match it exactly on two new live workloads. | [pdf](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) |
 
 <a id="beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms"></a>
 
@@ -61,26 +63,6 @@ use the same labels, and their contents are marked as provider claims.
 **Limitations.** Author-stated: two English domains, one wording each for negation and disjunction and no paraphrase control (the two complement wordings differ by 0.060, about as much as the negation violation); one Jev version via one gateway; one comparison model with thinking disabled; public datasets, so memorization cannot be excluded; coherence is necessary but not sufficient, since constant answers of 1/3 and 2/3 pass every check. Reviewer reading: Table 4's decomposition and several correlations are labelled exploratory, and per-label estimates rest on 19–100 items.
 
 **Evidence locations.** §§3–7; Eqs. 1–3; Tables 1–4; Figures 1–3. The [author supplement](https://github.com/bro789/typed-decision-coherence) is linked for reproduction but is not selected as a substantial maintained implementation snapshot.
-
-<a id="deusser-benchmark"></a>
-
-## 2026-09 — Deußer et al. — Evaluating and Benchmarking the System One Model Jev
-
-**Venue / provenance:** arXiv preprint `2609.37647v1`; filed PDF version dated 2026-09-29. Zotero publication date: 2026-09-29. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2609.37647](https://doi.org/10.48550/arXiv.2609.37647). [PDF](papers/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) · [generated text](papers/text/2026/09_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.txt).
-
-**Zotero citation key:** `2026.DEUSSER.evaluatingbenchmarkingsystemonemodeljev`
-
-**Where it fits.** Deußer, Sparrenberg and Sifa (2026), *Evaluating and Benchmarking the System One Model Jev*, provide the first broad public-benchmark baseline for a hosted typed-decision service. The contribution is measurement across Jev's three question primitives and many task families, with reusable raw responses, rather than a new model.
-
-**What it contains.** Thirty-seven public datasets in seven categories (classification, routing, NLI/grounding, reading comprehension and knowledge, commonsense, safety/moderation/legal, rubric scoring) are mapped onto Jev's primitives: Choice (pick one of up to 255 options), Noul (probability of "yes"; multi-label tasks become one Noul per label in one request) and Score (probability over a 2–10-level described rubric, summarized as a probability-weighted level) (§§3.1–3.3; Table 1). Jev 1.13.0 is queried zero-shot on full evaluation splits (346,009 requests) with one template per dataset, piloted on 20 training/validation examples and then frozen. Two open-weight controls, Qwen3.8-27B and Gemma-4-E4B, receive identical requests and are scored by their exact next-token probabilities restricted to single-token option codes and renormalized, with thinking disabled (§3.6) — a matched probability readout rather than generated JSON. Metrics include task-appropriate primary scores with bootstrap intervals, 15-bin ECE, Brier score, selective-prediction accuracy and AURC, thresholds tuned on 1,000 training examples, and two memorization probes (option rotation, question withheld).
-
-**Key results.** Jev beats Qwen on 27 datasets, trails on nine and ties one; eleven Jev leads have non-overlapping 95% intervals, none of Qwen's do, and Jev exceeds Gemma on all 37 (Table 3). It reaches 95–99% on IMDB, SST-2, HellaSwag and ARC, and 86.7% on Belebele across 122 languages, with a steep drop on low-resource languages (§4.5). Pooled Choice ECE is 0.028 over 279,925 answers (median per-dataset 0.028, unweighted mean 0.061), with miscalibration concentrated on low-accuracy datasets (Figure 2; Appendix Table 8). Binary interfaces err in opposite directions: single Nouls are under-confident (mean P(yes) 0.465 vs a 0.518 base rate), explaining recall deficits despite high AUROC, while multi-label fan-out over-predicts yes (0.209 vs 0.041). Thresholds tuned on training data raise UNFAIR-ToS micro-F1 from 0.499 to 0.748 (Table 4). At 50% coverage, confidence ranking lifts Banking77 accuracy from 79.7% to 96.3% (Figure 3). Rubric scoring is the one area where Qwen is on par or slightly ahead (higher correlation on 9 of 12 dimensions; Table 5). Jev scores calculation-heavy MMLU subjects higher than other MMLU subjects (94.3% vs 91.3%), unlike both open models and unlike C-Eval; option rotation leaves this unchanged and withholding the question drops it to near chance (Table 6). The main run cost US$9.15 (US$9.40 including pilot and extra analyses; Table 7).
-
-**Strengths.** Full evaluation splits, explicit primitive mappings, frozen prompts, bootstrap intervals and matched probability readouts make the comparison auditable. The study reports calibration, selective prediction, threshold transfer, multilingual breakdowns and contamination probes rather than average accuracy alone. A content-addressed harness and all raw responses (Zenodo DOI 10.5281/zenodo.23039006) allow reanalysis without repeat API calls.
-
-**Limitations.** Author-stated (§5): one untuned template per dataset; open models scored without reasoning on prompts written for Jev; no generative proprietary baselines; thresholds tuned on only 1,000 examples; the probes cannot detect memorized question–answer pairs, so the MMLU mathematics result remains unexplained; a single run per request; client-side latency including network time; results tied to jev-1.13.0. Reviewer reading: pooled ECE is dominated by three large datasets, and Jev's architecture and training data are unknown, so the open-model comparison places Jev on a scale without attributing differences to any property of the model.
-
-**Evidence locations.** §§3.1–3.7; Tables 1–7; Figures 2–6; §§4.3–4.7; §5; Appendix Table 8. See [official code source maps](REPOSITORIES.md).
 
 <a id="anyjev-technical-report"></a>
 
@@ -142,28 +124,6 @@ use the same labels, and their contents are marked as provider claims.
 
 **Evidence locations.** §§3–4 (§4.6 for learned proposers), Limitations; Eqs. 1–4; Tables 1–4, 7 and 28–30; Figures 1–5; Appendices B–D (definitions, interfaces, acceptance checks, protocol), E–G (task-level, confidence strata, transfer), H (proposer training), I–J (accounting, repeatability, independent-generation control). See the [JevOut source map](REPOSITORIES.md#jevouttxt).
 
-<a id="jev-judge"></a>
-
-## 2026-10 — Li et al. — JEV-as-a-Judge: Accept When Confident, Escalate When Unsure
-
-**Venue / provenance:** arXiv preprint `2609.26550v5`; filed PDF version dated 2026-10-09. Zotero publication date: 2026-09-22. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2609.26550](https://doi.org/10.48550/arXiv.2609.26550). [PDF](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) · [generated text](papers/text/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.txt).
-
-**Zotero citation key:** `2026.LI.jevasajudgeacceptwhenconfidentescalatewhenunsure`
-
-**Where it fits.** Li, Miao, Krishnan and Padman (2026), *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*, study a concrete accept-or-escalate decision: Jev acts as a cheap first-stage evaluation judge, and its confidence decides whether an expensive reasoning judge is called. The contribution is an empirical operating envelope and a threshold-validation procedure, not a new routing algorithm.
-
-**What it contains.** Jev 1.13.0 receives one Choice question per request (rubric, allowed labels, the item) and returns a probability per label; the paper's confidence q is the largest of these, not Jev's unpublished native confidence field (Spearman 0.958–0.999 with it; §4). Sixteen other configurations (fourteen generative LLM judges plus two reward models, PairRM and Skywork-Reward-V2) are compared on 5,172 base judgments: 1,500 RewardBench and 350 JudgeBench preference pairs, 3,000 HaluEval evidence-grounded factuality answers, 150 final-answer adjudications and two easy controls (§3). Generative judges answer under the same contract (verdict plus verbalized label probabilities, no rationale). The base set is split by source question into a 642-item pilot (40% selection set for temperatures and thresholds, 60% pilot test) and a 4,530-item held-out set whose 1,610 preference pairs test routing. Follow-ups cover reversed candidate order, RM-Bench style variation, four-way RewardBench 2 selection, answer format and 600 natural-prose judgments. Fees and latency come from a separate 120-judgment timing panel (§4). One team member, blind to labels and judge outputs, adjudicated all 163 items in a 990-item subset that Jev or GPT-6 Astra gets wrong under the supplied labels, plus 20 controls (183 adjudications; §6, Appendix D).
-
-The cascade (§8) judges each pair in both candidate orders, averages the aligned probability (Eq. 1), accepts Jev's verdict when the averaged confidence reaches τ and otherwise takes the fallback judge's verdict. τ is the most permissive grid value whose accuracy loss against the fallback on labelled local items stays within two points: the point rule uses the mean paired loss; the lower-bound rule uses its one-sided 95% lower confidence bound. Both minimize cost under an accuracy tolerance rather than a priced error cost.
-
-**Key results.** Standalone, Jev ranks eighth of fifteen LLM judges on 4,850 pooled public judgments, 1.7 points behind GPT-6, at $0.044 per 1,000 judgments (277× cheaper, i.e. 0.36% of the fee) and 0.15 s median latency (Table 1; §5). It ties GPT-6 on RewardBench (92.5%) and is within about three points on factuality and final answers, but trails by 7–28 points where the verdict must be derived (expert knowledge, code, math, logic) and by 13.5 on style-adversarial RM-Bench pairs (§6). Where Jev's confidence is at least 0.9 the two judges are nearly tied (94.7% versus 94.4% on 3,744 items; §7). The frozen two-order Jev→GPT-6 policy (τ = 0.9, chosen by the point rule on 96 pilot selection pairs before held-out inspection) escalates 31.5% of the 1,610 held-out pairs and scores 93.4% versus GPT-6's 92.5% (+0.93 points, [0.24, 1.66]) at 41.4% of its fee (Table 4). The pool is 83% RewardBench: on JudgeBench alone the policy escalates 65% and stays 0.74 points below GPT-6 at 66.8% of its fee. A live rerun on 510 held-out pairs reproduces the offline estimates with 0.27 s versus 2.10 s median latency (§8; Appendix O). In the prospective live test (§9), thresholds chosen per workload on 100 local labels by the lower-bound rule match GPT-6 exactly (90.2%) on 570 held-out PPE and JudgeBench-Claude pairs, escalating 74.2% at 75.5% of its fee (Table 5). In resampling, the lower-bound rule cuts the chance of losing more than two points from about 45% (point rule) to about 5% with roughly 100 labels.
-
-**Strengths.** Threshold exploration, frozen selection, live replication and a prospective workload test are kept distinct, and only the latter three are pre-specified. Source-cluster bootstrap intervals, a matched-spend random-routing control, retrospective alternative first stages (Table 3), human adjudication and explicit failure cases accompany the headline numbers. Cost accounting includes both first-stage orders and escalations.
-
-**Limitations.** Author-stated: confidence routing weakens on style-adversarial pairs (error-detection AUROC 0.76 versus 0.84) and fails on reference-free prose, where every judge is near chance; the comparison is not compute-matched; Jev 1.13.0 is a black box whose training data cannot be checked for benchmark exposure; human adjudication covers only 183 disagreement-selected items; a decision-only judge gives no auditable explanation; agentic use is untested. Reviewer reading: thresholds are workload- and fallback-dependent (the same rule picks τ from 0.5 to 0.9 depending on the fallback, and the GPT-5.6 Sol policy loses 4.81 points on JudgeBench), and savings shrink sharply on harder workloads. The two-order protocol doubles first-stage calls. Most cascade results are offline reconstructions from retained outputs.
-
-**Evidence locations.** Abstract; §§3–9 and Limitations; Eq. 1; Tables 1 and 3–5; Figures 8–9; Appendices D, N–Q. Rechecked 2026-10-20: the [author project repository](https://github.com/yubol-bobo/jev-as-a-judge) supplies a website, manuscript and figures, but no experimental reproduction code. The paper's supplementary package (Appendix Q) remains unverified as a public download; see [implementation coverage boundaries](REPOSITORIES.md#coverage-boundaries).
-
 <a id="typedbench-a-benchmark-for-calibration-framing-sensitivity-and-cost-in-system-one-decision-models"></a>
 
 ## 2026-10 — Sharma et al. — TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models
@@ -206,26 +166,6 @@ The models are hosted Jev 1.13.0, two Laya 0.3.4 ModernBERT-encoder checkpoints 
 
 **Evidence locations.** §§3–6 and 9; Eqs. 1–12; Tables 1–5; Figures 3–10; Appendices C (protocol), E.2–E.3 (agent workflow; Tables 40–41) and F (readout template, training settings, training-set size). See the [SII-Decision source map](REPOSITORIES.md#siidecisiontxt).
 
-<a id="startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions"></a>
-
-## 2026-10 — Zhuang et al. — StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions
-
-**Venue / provenance:** arXiv preprint `2610.17309v2`; filed PDF version dated 2026-10-20 (v2 is a layout and affiliation revision of the 12 October v1; section structure and reported results are unchanged). Zotero publication date: 2026-10-12. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2610.17309](https://doi.org/10.48550/arXiv.2610.17309). [PDF](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) · [generated text](papers/text/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.txt).
-
-**Zotero citation key:** `2026.ZHUANG.startluxdecisionautothinkdecisionmodelsreinforcementlearningcalibrateddeliberativedecisions`
-
-**Where it fits.** Zhuang et al. (2026), *StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions*, make inference-time computation a per-question choice: the same model answers confident questions from one readout and reasons only when uncertain. This sits between always-direct readout (for example [Releasing the Inner Jev](#releasing-the-inner-jev-a-simple-recipe-for-open-decision-models)) and confidence-based escalation to a separate, larger model ([JEV-as-a-Judge](#jev-judge)).
-
-**What it contains.** *Readout.* Each typed question (choice, yes/no, or a 2–10-level ordinal score) becomes its own prompt with options lettered A–Z; probabilities are a temperature-scaled softmax over the letter logits at the last prompt position, read through the existing language-model head (Eq. 1). Questions in one request are separate batch rows, and lists longer than 26 options are split into groups of at most 25 whose top three candidates advance to a final round (Appendix D.4). This differs from the simultaneous multi-field readout of [Intern-Decision](#intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling). *Variants* (Qwen3.5/Qwen3.8 backbones; Figure 2). Instant (0.8B–27B) removes the causal mask in the full-attention layers (8 of 32 layers at 4B/9B; linear-attention layers stay causal), so earlier prompt tokens can attend to later questions and options; it is trained with this mask rather than switched at inference. AutoThink (4B–27B) keeps causal attention and applies "Read-or-Think": read p₀; if its top probability reaches g = 0.9 return p₀, otherwise generate up to 4,096 reasoning tokens, read p₁ and return (1 − α)p₀ + αp₁ with α = 0.75 (Eq. 2). *Training* (§2.3). Stage 1 fine-tunes all parameters with soft cross-entropy on Lux-Release (about 2.7M examples for 0.8B–9B, 0.8M for 27B); Stage 2 trains adapters on Lux-Rounds (about 1.7M decisions) and merges them, each Instant checkpoint being a uniform average of three or four seeds; Stage 3 (AutoThink only) adds reasoning supervision on 4,000–21,000 traces per model and then RLCD². The RLCD² reward is the improvement from p₀ to p₁ in a decision-weighted proper score that emphasizes high-confidence errors (Eqs. 3–5), with both readouts taken from a frozen copy of the starting model, minus 10⁻⁴ per token beyond a soft budget (3,072 tokens for the released models); it is optimized with group-relative policy gradients (Eq. 6) on questions below the 0.9 gate only. Per-question-type temperatures are fitted on held-out training-distribution data. *Policy-aware calibration* (§5.5) refits confidence on the outputs of the deployed selection or routing policy (isotonic maps within routing-confidence strata; logistic plus isotonic for best-of-N). *Evaluation.* The public subset (20% of the score) of Decision Index (DI) 0.3 and 0.2.1, which also served as the development benchmark, and DecisionPivot, the authors' programmatically generated benchmark of 13 families × 600 items, mostly contrast pairs differing in one answer-changing detail and scored by pair accuracy; DecisionPivot is the stated independent evaluation (§4.1).
-
-**Key results.** On the DI 0.3 public subset, every Instant size beats the strongest comparable-size third-party model (all from vLLM Semantic Router's Decision 3.0 family, run through the authors' pipeline) by 7.4–16.9 points; 27B Instant scores 72.83 and 27B AutoThink 73.37, against 57.96 for hosted Jev (Table 4; Figure 7). On DecisionPivot, AutoThink beats its Instant counterpart by 18.4, 12.4 and 11.5 pair-accuracy points at 4B, 9B and 27B; 27B AutoThink reaches 86.9%, ahead of GLM-5.3 with low reasoning effort (82.2%), Decision 3.0 d3 (71.3%) and hosted Jev (31.0%) (§4.3; Figure 9). On its 7,800 core items the 27B model answers 39% directly (96% correct) and raises the remaining 61% from 57% to 93% (Figure 3). RLCD² raises 9B termination within the limit from 45.9% to 93.9% and cuts its mean trace from 2,494 to 868 tokens (−65%), with held-out default-answer accuracy unchanged within uncertainty (Table 2). The budget matters: a 512-token budget lowers 4B DecisionPivot pair accuracy from 60.4% to 52.9%, and the released 3,072-token budget still loses 4.2 points on the longest pre-RL computations at 4B (Table 3; Figure 6). Reward ablations attribute termination to the length penalty and calibration gains to the proper-score term (§3.4). DecisionPivot calibration error is 2.4/3.3/5.2 points for the 4B/9B/27B AutoThink models versus 8.9 (Perplexity Decider), 13.8 (Jev) and 19.3 (Clef) (Figure 11). Policy-aware calibration narrows signed confidence–accuracy gaps across 184 selection/routing settings from [−11.7, +20.5] to [−2.7, +2.1] points (Figure 15b). A single readout takes 31 ms (0.8B) to 98 ms (27B) for a 1,024-token prompt on one H200 (Table 5); AutoThink reasons on about 28–33% of DI questions, averaging 110–372 reasoning tokens per question (§5.2).
-
-**Strengths.** The paper separates its development benchmark from its independent evaluation and discloses task-family specialization (Stage 2 data improve represented DecisionPivot reuse tasks by 8.6 points versus 0.3 elsewhere; §5.1). Same-data, same-checkpoint attention ablations (Figure 4), gate and fusion-weight sweeps (Figure 13; §5.2), reward-component ablations and backend/quantization measurements (§6) make individual design choices inspectable. The analysis of selection-induced miscalibration (§5.4) applies beyond this model family. The public repository has substantial serving, inference, evaluation and adaptation code.
-
-**Limitations.** Author-stated: DI public scores reflect model selection and are not independent test results (§4.1); gains concentrate on task families represented in training (§5.1); restrictive reasoning budgets cost accuracy on long computations (§3.4); policy-aware calibration maps still show up to 6.1 points of overconfidence when transferred to unseen datasets (§5.5); 4-bit GGUF quantization loses up to 4.3 DecisionPivot points (Table 9). Reviewer reading: DecisionPivot is the authors' own benchmark, so the independent evaluation is still in-house, and reference scores mix public-leaderboard numbers with the authors' own runs of Decision 3.0. AutoThink's per-decision cost includes reasoning and a second readout, which the single-readout latency tables omit. Grouped large-option decisions do not produce one jointly normalized distribution over the full list. Weights are released under CC BY-NC 4.0 (Appendix A.4), and the released inference and LoRA utilities are not the full three-stage training pipeline or RL data.
-
-**Evidence locations.** Abstract; §2 (Eqs. 1–2; Figures 2–4; Table 1); §3 (Eqs. 3–6; Tables 2–3; Figures 5–6); §4 (Table 4; Figures 7–11); §5 (Figures 12–15); §6 (Tables 5–9); Appendices A, C and D.4. See [StartLux source map](REPOSITORIES.md#startluxdecisiontxt).
-
 <a id="releasing-the-inner-jev-a-simple-recipe-for-open-decision-models"></a>
 
 ## 2026-10 — Geuter et al. — Releasing the Inner Jev: A Simple Recipe for Open Decision Models
@@ -245,6 +185,28 @@ The models are hosted Jev 1.13.0, two Laya 0.3.4 ModernBERT-encoder checkpoints 
 **Limitations.** Author-stated: OpenDecisions was used to select the recipe and is therefore a development set, not an independent test; it is 78% English and largely LLM-written; Qwen3.6-27B supplies teacher labels while the related Qwen3.8-27B helps label evaluation items; the readout supports at most 16 options; most ablations use one seed; paraphrase and pretraining overlap are not ruled out (§§5.4 and 6; Appendix C.1). Reviewer reading: Capability is a JevBench-style composite rather than deployment utility, and the clear lead over Jev is specific to Gemma 4 31B. Leaderboard systems are each measured on their own 1,500-item draw; the text cites leaderboard v1.7 while Table 14 names revision v1.6.7, and yes/no probabilities inside the leaderboard's abstention band were moved just outside it for the submission. Weights are CC BY-NC 4.0 (see [DECISION_MODELS.md](DECISION_MODELS.md#openness-and-licensing)); the public serving repository alone does not establish release of the full training pipeline.
 
 **Evidence locations.** Abstract; §3 (Table 1); §4 (Eqs. 1–2; Table 2); §5 (Tables 3–5; Figures 2–3); §6; Appendices C–D (Tables 12–15), G and H. Serving source: [Jeff](https://github.com/j-geuter/Jeff); see [Jeff source map](REPOSITORIES.md#jefftxt).
+
+<a id="decision-models-vs-llms-as-rubric-judges-cheaper-faster-and-wrong-in-the-same-places"></a>
+
+## 2026-10 — Rao and Callison-Burch — Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places
+
+**Venue / provenance.** arXiv preprint [2609.29769v3](https://arxiv.org/abs/2609.29769v3); filed PDF dated 2026-10-13. Zotero publication date: 2026-09-24. No peer-reviewed venue confirmed. **PDF:** [open](papers/2026/10_Rao_and_Callison_Burch_Decision_Models_vs._LLMs_as_Rubric_Judges_Cheaper_Faster_and_Wrong_in_the_Same_Places.pdf); [generated text](papers/text/2026/10_Rao_and_Callison_Burch_Decision_Models_vs._LLMs_as_Rubric_Judges_Cheaper_Faster_and_Wrong_in_the_Same_Places.txt).
+
+**Zotero citation key:** `2026.RAO.decisionmodelsvsllmsrubricjudgescheaperfasterwrongsameplaces`
+
+**Where it fits.** Rao and Callison-Burch (2026), *Decision Models vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places*, qualify the escalation argument in [Li et al., *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*](#jev-judge): routing is useful only if the fallback corrects the first judge's errors. They compare a hosted specialist and an open reproduction rather than inferring a whole model class from Jev alone.
+
+**What it contains.** Jev and Perplexity's Decider judge 5,003 unit–criterion pairs across nine panels from seven public, human-labelled benchmarks. Three flash-tier LLM judges see identical criterion texts, either separately or as complete rubrics. Additional runs vary reasoning effort and provider tier. The study separates binary and ordinal criteria, accuracy and calibration, confidence ranking, replayed cascades, oracle thresholds and cross-fitted thresholds (§§3–6; Appendices N–R).
+
+**Key results.** Across the two rubric setups, each decision model trails the LLM judges significantly in at most six of 27 comparisons, while the LLM judges cost 16–357 times as much and take 5–350 times as long in the reported setup. More than 85% of fallback verdicts repeat each specialist's most confident errors. Flash-tier cascades improve on the strongest single judge by at most 2.7 points under the conditions tested, even with oracle thresholds; higher-tier fallbacks improve by at most 1.7 points over the strongest judge of either tier. These are different comparison conditions, not one pooled effect (Tables 2–3; Appendix S).
+
+**Strengths.** Identical rubric wording, human labels, both holistic and per-criterion protocols, two specialist models and separate operational and oracle cascade estimates make the replacement claim auditable. The paper exposes weak ordinal agreement and correlated failures rather than reporting cost alone.
+
+**Limitations.** Public rubric datasets and historical human annotations do not represent every deployment. Judge IDs and serving behavior can change, prices are time-specific, and replayed cascades are not prospective production tests. Agreement on errors does not identify a causal mechanism. Confidence estimates, ordinal scales and annotation aggregation require local validation.
+
+**Evidence locations.** §§3–6; Tables 1–3; Limitations; Appendices N–S. All measurements remain author-reported.
+
+---
 
 <a id="llm-as-jev-llms-are-already-jev-style-decision-models-when-and-how-to-fine-tune-them"></a>
 
@@ -346,6 +308,48 @@ The models are hosted Jev 1.13.0, two Laya 0.3.4 ModernBERT-encoder checkpoints 
 
 **Evidence locations.** §§3–5 and 7; Tables 1–3; Figures 1, 3–5; Appendices A (prompts and readouts), B (evaluation details, thinking budgets, environment counts), C (sources and tiers) and D (environments, coding controller, real-time mode). See the [System1-Arena source map](REPOSITORIES.md#system1arenatxt).
 
+<a id="what-can-t-jev-decide-probing-the-limits-of-one-pass-decision-models"></a>
+
+## 2026-10 — Yang et al. — What Can't Jev Decide? Probing the Limits of One-Pass Decision Models
+
+**Venue / provenance.** arXiv preprint [2610.24929v1](https://arxiv.org/abs/2610.24929v1); filed PDF dated 2026-10-18. Zotero publication date: 2026-10-18. No peer-reviewed venue confirmed. **PDF:** [open](papers/2026/10_Yang_et_al._What_Cant_Jev_Decide_Probing_the_Limits_of_One_Pass_Decision_Models.pdf); [generated text](papers/text/2026/10_Yang_et_al._What_Cant_Jev_Decide_Probing_the_Limits_of_One_Pass_Decision_Models.txt).
+
+**Zotero citation key:** `2026.YANG.whatcantjevdecideprobinglimitsonepassdecisionmodels`
+
+**Where it fits.** Yang et al. (2026), *What Can't Jev Decide? Probing the Limits of One-Pass Decision Models*, localize the closed-loop failures seen in [Duan et al., *General Decision Models: Benchmarking and Insights Beyond Jev*](#general-decision-models). They distinguish choosing from a correct supplied state from computing or verifying that state, extending the confidence-routing question in [Li et al., *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*](#jev-judge).
+
+**What it contains.** Jev 1.13.0 and 23 open configurations receive identical states, questions and option orders. Programmatically labelled retrieval, selection and state-update tasks vary context length, option count, target position and interfering records. A separate set of 1,131 real decision items is graded by a reference model's reasoning demand; the main analysis retains 738 with reliable labels. The paper also tests uncertainty-based handoff and explicitly trained abstention options (§§3–5).
+
+**Key results.** Jev solves all 105 retrieval/selection/event-lookup cells, up to 20k tokens and 64 options, but state reconstruction falls to 53–80% at sixteen updates. It answers 97.5% of real items that the reference model solves without thinking, versus 74% of the remaining items. Error-detection AUROC is 0.83 for its own state-tracking errors but 0.53 for errors induced by stale summaries. Added or trained handoff options do not reliably detect inherited errors (Table 2; Figures 3–6).
+
+**Strengths.** Controlled paired tasks separate lookup from aggregation, with programmatic ground truth and matched inputs. Context-limit violations are reported rather than silently truncated. Multiple open implementations test whether the observed pattern is specific to the hosted model.
+
+**Limitations.** These are empirical limits of particular checkpoints and tasks, not an impossibility theorem for single-pass architectures. Real-task difficulty is defined using one reference backbone; synthetic logs cover a narrow state-update family. Ten scenarios and three option orders per controlled cell constrain precision. A useful confidence ranking on one error source does not establish reliable detection of stale external information.
+
+**Evidence locations.** §§2–5 and 7; Tables 1–4; Figures 1–6; Appendices A–C. No inference or training was rerun by this library.
+
+---
+
+<a id="startlux-decision-autothink-decision-models-with-reinforcement-learning-for-calibrated-deliberative-decisions"></a>
+
+## 2026-10 — Zhuang et al. — StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions
+
+**Venue / provenance:** arXiv preprint `2610.17309v2`; filed PDF version dated 2026-10-20 (v2 is a layout and affiliation revision of the 12 October v1; section structure and reported results are unchanged). Zotero publication date: 2026-10-12. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2610.17309](https://doi.org/10.48550/arXiv.2610.17309). [PDF](papers/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.pdf) · [generated text](papers/text/2026/10_Zhuang_et_al._StartLux_Decision_AutoThink_Decision_Models_with_Reinforcement_Learning_for_Calibrated_Deliberative_Decisions.txt).
+
+**Zotero citation key:** `2026.ZHUANG.startluxdecisionautothinkdecisionmodelsreinforcementlearningcalibrateddeliberativedecisions`
+
+**Where it fits.** Zhuang et al. (2026), *StartLux-Decision: AutoThink Decision Models with Reinforcement Learning for Calibrated Deliberative Decisions*, make inference-time computation a per-question choice: the same model answers confident questions from one readout and reasons only when uncertain. This sits between always-direct readout (for example [Releasing the Inner Jev](#releasing-the-inner-jev-a-simple-recipe-for-open-decision-models)) and confidence-based escalation to a separate, larger model ([JEV-as-a-Judge](#jev-judge)).
+
+**What it contains.** *Readout.* Each typed question (choice, yes/no, or a 2–10-level ordinal score) becomes its own prompt with options lettered A–Z; probabilities are a temperature-scaled softmax over the letter logits at the last prompt position, read through the existing language-model head (Eq. 1). Questions in one request are separate batch rows, and lists longer than 26 options are split into groups of at most 25 whose top three candidates advance to a final round (Appendix D.4). This differs from the simultaneous multi-field readout of [Intern-Decision](#intern-decision-efficient-multimodal-decision-making-with-autoregressive-masked-language-modeling). *Variants* (Qwen3.5/Qwen3.8 backbones; Figure 2). Instant (0.8B–27B) removes the causal mask in the full-attention layers (8 of 32 layers at 4B/9B; linear-attention layers stay causal), so earlier prompt tokens can attend to later questions and options; it is trained with this mask rather than switched at inference. AutoThink (4B–27B) keeps causal attention and applies "Read-or-Think": read p₀; if its top probability reaches g = 0.9 return p₀, otherwise generate up to 4,096 reasoning tokens, read p₁ and return (1 − α)p₀ + αp₁ with α = 0.75 (Eq. 2). *Training* (§2.3). Stage 1 fine-tunes all parameters with soft cross-entropy on Lux-Release (about 2.7M examples for 0.8B–9B, 0.8M for 27B); Stage 2 trains adapters on Lux-Rounds (about 1.7M decisions) and merges them, each Instant checkpoint being a uniform average of three or four seeds; Stage 3 (AutoThink only) adds reasoning supervision on 4,000–21,000 traces per model and then RLCD². The RLCD² reward is the improvement from p₀ to p₁ in a decision-weighted proper score that emphasizes high-confidence errors (Eqs. 3–5), with both readouts taken from a frozen copy of the starting model, minus 10⁻⁴ per token beyond a soft budget (3,072 tokens for the released models); it is optimized with group-relative policy gradients (Eq. 6) on questions below the 0.9 gate only. Per-question-type temperatures are fitted on held-out training-distribution data. *Policy-aware calibration* (§5.5) refits confidence on the outputs of the deployed selection or routing policy (isotonic maps within routing-confidence strata; logistic plus isotonic for best-of-N). *Evaluation.* The public subset (20% of the score) of Decision Index (DI) 0.3 and 0.2.1, which also served as the development benchmark, and DecisionPivot, the authors' programmatically generated benchmark of 13 families × 600 items, mostly contrast pairs differing in one answer-changing detail and scored by pair accuracy; DecisionPivot is the stated independent evaluation (§4.1).
+
+**Key results.** On the DI 0.3 public subset, every Instant size beats the strongest comparable-size third-party model (all from vLLM Semantic Router's Decision 3.0 family, run through the authors' pipeline) by 7.4–16.9 points; 27B Instant scores 72.83 and 27B AutoThink 73.37, against 57.96 for hosted Jev (Table 4; Figure 7). On DecisionPivot, AutoThink beats its Instant counterpart by 18.4, 12.4 and 11.5 pair-accuracy points at 4B, 9B and 27B; 27B AutoThink reaches 86.9%, ahead of GLM-5.3 with low reasoning effort (82.2%), Decision 3.0 d3 (71.3%) and hosted Jev (31.0%) (§4.3; Figure 9). On its 7,800 core items the 27B model answers 39% directly (96% correct) and raises the remaining 61% from 57% to 93% (Figure 3). RLCD² raises 9B termination within the limit from 45.9% to 93.9% and cuts its mean trace from 2,494 to 868 tokens (−65%), with held-out default-answer accuracy unchanged within uncertainty (Table 2). The budget matters: a 512-token budget lowers 4B DecisionPivot pair accuracy from 60.4% to 52.9%, and the released 3,072-token budget still loses 4.2 points on the longest pre-RL computations at 4B (Table 3; Figure 6). Reward ablations attribute termination to the length penalty and calibration gains to the proper-score term (§3.4). DecisionPivot calibration error is 2.4/3.3/5.2 points for the 4B/9B/27B AutoThink models versus 8.9 (Perplexity Decider), 13.8 (Jev) and 19.3 (Clef) (Figure 11). Policy-aware calibration narrows signed confidence–accuracy gaps across 184 selection/routing settings from [−11.7, +20.5] to [−2.7, +2.1] points (Figure 15b). A single readout takes 31 ms (0.8B) to 98 ms (27B) for a 1,024-token prompt on one H200 (Table 5); AutoThink reasons on about 28–33% of DI questions, averaging 110–372 reasoning tokens per question (§5.2).
+
+**Strengths.** The paper separates its development benchmark from its independent evaluation and discloses task-family specialization (Stage 2 data improve represented DecisionPivot reuse tasks by 8.6 points versus 0.3 elsewhere; §5.1). Same-data, same-checkpoint attention ablations (Figure 4), gate and fusion-weight sweeps (Figure 13; §5.2), reward-component ablations and backend/quantization measurements (§6) make individual design choices inspectable. The analysis of selection-induced miscalibration (§5.4) applies beyond this model family. The public repository has substantial serving, inference, evaluation and adaptation code.
+
+**Limitations.** Author-stated: DI public scores reflect model selection and are not independent test results (§4.1); gains concentrate on task families represented in training (§5.1); restrictive reasoning budgets cost accuracy on long computations (§3.4); policy-aware calibration maps still show up to 6.1 points of overconfidence when transferred to unseen datasets (§5.5); 4-bit GGUF quantization loses up to 4.3 DecisionPivot points (Table 9). Reviewer reading: DecisionPivot is the authors' own benchmark, so the independent evaluation is still in-house, and reference scores mix public-leaderboard numbers with the authors' own runs of Decision 3.0. AutoThink's per-decision cost includes reasoning and a second readout, which the single-readout latency tables omit. Grouped large-option decisions do not produce one jointly normalized distribution over the full list. Weights are released under CC BY-NC 4.0 (Appendix A.4), and the released inference and LoRA utilities are not the full three-stage training pipeline or RL data.
+
+**Evidence locations.** Abstract; §2 (Eqs. 1–2; Figures 2–4; Table 1); §3 (Eqs. 3–6; Tables 2–3; Figures 5–6); §4 (Table 4; Figures 7–11); §5 (Figures 12–15); §6 (Tables 5–9); Appendices A, C and D.4. See [StartLux source map](REPOSITORIES.md#startluxdecisiontxt).
+
 <a id="searchjev"></a>
 
 ## 2026-10 — Cao et al. — SearchJev: A Fast and Calibrated System-1 Model for Search Agents
@@ -372,6 +376,61 @@ The models are hosted Jev 1.13.0, two Laya 0.3.4 ModernBERT-encoder checkpoints 
 
 ---
 
+<a id="deusser-benchmark"></a>
+
+## 2026-10 — Deußer et al. — Evaluating and Benchmarking the System One Model Jev
+
+**Venue / provenance:** arXiv preprint `2609.37647v2`; filed PDF version dated 2026-10-29. Zotero publication date: 2026-09-29. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2609.37647](https://doi.org/10.48550/arXiv.2609.37647). [PDF](papers/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) · [generated text](papers/text/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.txt).
+
+**Zotero citation key:** `2026.DEUSSER.evaluatingbenchmarkingsystemonemodeljev`
+
+**Where it fits.** Deußer, Sparrenberg and Sifa (2026), *Evaluating and Benchmarking the System One Model Jev*, provide the first broad public-benchmark baseline for a hosted typed-decision service. The contribution is measurement across Jev's three question primitives and many task families, with reusable raw responses, rather than a new model.
+
+**What it contains.** Thirty-seven public datasets in seven categories (classification, routing, NLI/grounding, reading comprehension and knowledge, commonsense, safety/moderation/legal, rubric scoring) are mapped onto Jev's primitives: Choice (pick one of up to 255 options), Noul (probability of "yes"; multi-label tasks become one Noul per label in one request) and Score (probability over a 2–10-level described rubric, summarized as a probability-weighted level) (§§3.1–3.3; Table 1). Jev 1.13.0 is queried zero-shot on full evaluation splits (346,009 requests) with one template per dataset, piloted on 20 training/validation examples and then frozen. Two open-weight controls, Qwen3.8-27B and Gemma-4-E4B, receive identical requests and are scored by their exact next-token probabilities restricted to single-token option codes and renormalized, with thinking disabled (§3.6) — a matched probability readout rather than generated JSON. Metrics include task-appropriate primary scores with bootstrap intervals, 15-bin ECE, Brier score, selective-prediction accuracy and AURC, thresholds tuned on 1,000 training examples, and two memorization probes (option rotation, question withheld).
+
+The v2 extension (§5) also selects the next action at every step in ALFWorld,
+TextWorld, BabyAI-Text, Blackjack and FrozenLake, using the same decision
+interface with environment feedback. These closed-loop tasks are separate
+from the original 37-dataset static benchmark.
+
+**Key results.** Jev beats Qwen on 27 datasets, trails on nine and ties one; eleven Jev leads have non-overlapping 95% intervals, none of Qwen's do, and Jev exceeds Gemma on all 37 (Table 2). It reaches 95–99% on IMDB, SST-2, HellaSwag and ARC, and 86.7% on Belebele across 122 languages, with a steep drop on low-resource languages (§4.5). Pooled Choice ECE is 0.028 over 279,925 answers (median per-dataset 0.028, unweighted mean 0.061), with miscalibration concentrated on low-accuracy datasets (Figure 2; Appendix Table 10). Binary interfaces err in opposite directions: single Nouls are under-confident (mean P(yes) 0.465 vs a 0.518 base rate), explaining recall deficits despite high AUROC, while multi-label fan-out over-predicts yes (0.209 vs 0.041). Thresholds tuned on training data raise UNFAIR-ToS micro-F1 from 0.499 to 0.748 (Table 3). At 50% coverage, confidence ranking lifts Banking77 accuracy from 79.7% to 96.3% (Figure 3). Rubric scoring is the one area where Qwen is on par or slightly ahead (higher correlation on 9 of 12 dimensions; Table 4). Jev scores calculation-heavy MMLU subjects higher than other MMLU subjects (94.3% vs 91.3%), unlike both open models and unlike C-Eval; option rotation leaves this unchanged and withholding the question drops it to near chance (Table 5). The main run cost US$9.15 (US$9.40 including pilot and extra analyses; Table 6).
+
+In sequential evaluation (§5; Tables 7–9), Jev completes 35% of unseen
+ALFWorld tasks, 42% of 90 TextWorld games and 21% of BabyAI-Text missions. It
+chooses the optimal Blackjack action in 90% of decisions, but almost never
+steps away from the goal to avoid FrozenLake holes and often repeats ineffective
+actions. Qwen completes more ALFWorld (54.5%) and TextWorld (51.1%) tasks, while
+sharing the BabyAI-Text and FrozenLake weaknesses. Strong static scores do not
+imply reliable multi-step control.
+
+**Strengths.** Full evaluation splits, explicit primitive mappings, frozen prompts, bootstrap intervals and matched probability readouts make the comparison auditable. The study reports calibration, selective prediction, threshold transfer, multilingual breakdowns and contamination probes rather than average accuracy alone. A content-addressed harness and all raw responses (Zenodo DOI 10.5281/zenodo.23039006) allow reanalysis without repeat API calls.
+
+**Limitations.** Author-stated (§6): one untuned template per dataset; open models scored without reasoning on prompts written for Jev; no generative proprietary baselines; thresholds tuned on only 1,000 examples; the probes cannot detect memorized question–answer pairs, so the MMLU mathematics result remains unexplained; a single run per request; client-side latency including network time; results tied to jev-1.13.0. Reviewer reading: pooled ECE is dominated by three large datasets, and Jev's architecture and training data are unknown, so the open-model comparison places Jev on a scale without attributing differences to any property of the model.
+
+**Evidence locations.** §§3.1–3.7; Tables 1–7; Figures 2–6; §§4.3–4.7; §5; Appendix Table 10. See [official code source maps](REPOSITORIES.md).
+
+<a id="jev-judge"></a>
+
+## 2026-10 — Li et al. — JEV-as-a-Judge: Accept When Confident, Escalate When Unsure
+
+**Venue / provenance:** arXiv preprint `2609.26550v6`; filed PDF version dated 2026-10-29. Zotero publication date: 2026-09-22. No peer-reviewed venue recorded. DOI: [10.48550/arXiv.2609.26550](https://doi.org/10.48550/arXiv.2609.26550). [PDF](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) · [generated text](papers/text/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.txt).
+
+**Zotero citation key:** `2026.LI.jevasajudgeacceptwhenconfidentescalatewhenunsure`
+
+**Where it fits.** Li, Miao, Krishnan and Padman (2026), *JEV-as-a-Judge: Accept When Confident, Escalate When Unsure*, study a concrete accept-or-escalate decision: Jev acts as a cheap first-stage evaluation judge, and its confidence decides whether an expensive reasoning judge is called. The contribution is an empirical operating envelope and a threshold-validation procedure, not a new routing algorithm.
+
+**What it contains.** Jev 1.13.0 receives one Choice question per request (rubric, allowed labels, the item) and returns a probability per label; the paper's confidence q is the largest of these, not Jev's unpublished native confidence field (Spearman 0.958–0.999 with it; §4). Sixteen other configurations (fourteen generative LLM judges plus two reward models, PairRM and Skywork-Reward-V2) are compared on 5,172 base judgments: 1,500 RewardBench and 350 JudgeBench preference pairs, 3,000 HaluEval evidence-grounded factuality answers, 150 final-answer adjudications and two easy controls (§3). Generative judges answer under the same contract (verdict plus verbalized label probabilities, no rationale). The base set is split by source question into a 642-item pilot (40% selection set for temperatures and thresholds, 60% pilot test) and a 4,530-item held-out set whose 1,610 preference pairs test routing. Follow-ups cover reversed candidate order, RM-Bench style variation, four-way RewardBench 2 selection, answer format and 600 natural-prose judgments. Fees and latency come from a separate 120-judgment timing panel (§4). One team member, blind to labels and judge outputs, adjudicated all 163 items in a 990-item subset that Jev or GPT-6 Astra gets wrong under the supplied labels, plus 20 controls (183 adjudications; §6, Appendix D).
+
+The cascade (§8) judges each pair in both candidate orders, averages the aligned probability (Eq. 1), accepts Jev's verdict when the averaged confidence reaches τ and otherwise takes the fallback judge's verdict. τ is the most permissive grid value whose accuracy loss against the fallback on labelled local items stays within two points: the point rule uses the mean paired loss; the lower-bound rule uses its one-sided 95% lower confidence bound. Both minimize cost under an accuracy tolerance rather than a priced error cost.
+
+**Key results.** Standalone, Jev ranks eighth of fifteen LLM judges on 4,850 pooled public judgments, 1.7 points behind GPT-6, at $0.044 per 1,000 judgments (277× cheaper, i.e. 0.36% of the fee) and 0.15 s median latency (Table 1; §5). It ties GPT-6 on RewardBench (92.5%) and is within about three points on factuality and final answers, but trails by 7–28 points where the verdict must be derived (expert knowledge, code, math, logic) and by 13.5 on style-adversarial RM-Bench pairs (§6). Where Jev's confidence is at least 0.9 the two judges are nearly tied (94.7% versus 94.4% on 3,744 items; §7). The frozen two-order Jev→GPT-6 policy (τ = 0.9, chosen by the point rule on 96 pilot selection pairs before held-out inspection) escalates 31.5% of the 1,610 held-out pairs and scores 93.4% versus GPT-6's 92.5% (+0.93 points, [0.24, 1.66]) at 41.4% of its fee (Table 4). The pool is 83% RewardBench: on JudgeBench alone the policy escalates 65% and stays 0.74 points below GPT-6 at 66.8% of its fee. A live rerun on 510 held-out pairs reproduces the offline estimates with 0.27 s versus 2.10 s median latency (§8; Appendix O). In the prospective live test (§9), thresholds chosen per workload on 100 local labels by the lower-bound rule match GPT-6 exactly (90.2%) on 570 held-out PPE and JudgeBench-Claude pairs, escalating 74.2% at 75.5% of its fee (Table 5). In resampling, the lower-bound rule cuts the chance of losing more than two points from about 45% (point rule) to about 5% with roughly 100 labels.
+
+**Strengths.** Threshold exploration, frozen selection, live replication and a prospective workload test are kept distinct, and only the latter three are pre-specified. Source-cluster bootstrap intervals, a matched-spend random-routing control, retrospective alternative first stages (Table 3), human adjudication and explicit failure cases accompany the headline numbers. Cost accounting includes both first-stage orders and escalations.
+
+**Limitations.** Author-stated: confidence routing weakens on style-adversarial pairs (error-detection AUROC 0.76 versus 0.84) and fails on reference-free prose, where every judge is near chance; the comparison is not compute-matched; Jev 1.13.0 is a black box whose training data cannot be checked for benchmark exposure; human adjudication covers only 183 disagreement-selected items; a decision-only judge gives no auditable explanation; agentic use is untested. Reviewer reading: thresholds are workload- and fallback-dependent (the same rule picks τ from 0.5 to 0.9 depending on the fallback, and the GPT-5.6 Sol policy loses 4.81 points on JudgeBench), and savings shrink sharply on harder workloads. The two-order protocol doubles first-stage calls. Most cascade results are offline reconstructions from retained outputs.
+
+**Evidence locations.** Abstract; §§3–9 and Limitations; Eq. 1; Tables 1 and 3–5; Figures 8–9; Appendices D, N–Q. Rechecked 2026-10-20: the [author project repository](https://github.com/yubol-bobo/jev-as-a-judge) supplies a website, manuscript and figures, but no experimental reproduction code. The paper's supplementary package (Appendix Q) remains unverified as a public download; see [implementation coverage boundaries](REPOSITORIES.md#coverage-boundaries).
+
 ## Web-source overview
 
 These fifteen selected sources have no PDF attachment. Their curated metadata,
@@ -388,12 +447,15 @@ parameters, context limits, prices and licenses.
 |---|---|---|---|---|
 | 2026 | H2O.ai | H2O-Lightning-4B | Apache-2.0 Qwen3.5-4B checkpoint with a serving shim for choice, yes/no and ordinal probabilities over text and up to four images; one-way/two-way reading and saved calibration are serving settings. | [source summary](#web-skwpxqtg) |
 | 2026 | Inception | Mercury Decide: Create a decision | Hosted decision endpoint reference: shared state plus named questions return binary, categorical or ordinal probabilities; input-only promotional billing. | [source summary](#web-ps2pzgda) |
+| 2026-09 | Bespoke Labs | Bespoke-Nimble-9B | A Qwen3.5-9B LoRA decision adapter scores allowed answer tokens for choices, booleans and rubric levels. The September 24 checkpoint uses an 8,192-token limit, up to 255 choices per field and T=1.0; fields are processed individually. | [source summary](#web-qpqupnhn) |
 | 2026-09-15 | Diogo Almeida | Introducing System One Models & Jev | Launch post defining the typed probabilistic decision interface (Jev, parallel typed questions, RLCD), evaluated against stronger-LLM reference probabilities. | [source summary](#web-qezz55x7) |
 | 2026-09-22 | Upstage | Solar Decide | Hosted beta on Solar Mini 4 returning choice, yes/no and score probabilities, with an advertised 512K context and Korean-language emphasis. | [source summary](#web-qzkmbk7l) |
 | 2026-09-23 | Together AI | Tev1-4B-experimental | LoRA fine-tune of Qwen3.5-4B that generates one answer letter with the ordinary LM head over 2–24 options; public training recipe, license still being finalized. | [source summary](#web-rgvmcn25) |
 | 2026-09-26 | InternLM | Intern-Decision-4B | Model card for multi-field readout: one causal pass over a JSON skeleton reads each placeholder's candidate symbols, then applies temperature calibration. | [source summary](#web-x58irxca) |
 | 2026-09-30 | Sahibzada Allahyar, Mary Newhauser | Introducing GLiDE: The First Thinking Decision Model | Hosted model that scores caller-defined options directly and reasons further only when uncertain; current documentation gives a 65,536-token prompt limit. | [source summary](#web-msejsvgw) |
 | 2026-09-30 | Jared Palmer | Kev-27B | Fully fine-tuned Qwen3.8-27B torso with a small pointer head and fitted temperature; open weights, code and a 65,536-token state-validation protocol. | [source summary](#web-q9s5d6r2) |
+| 2026-10 | Jiayu Lin | SII-Decision-27B-Full | Complete BF16 weights adapt the language linear layers of Qwen3.8-27B using reasoning-to-readout self-distillation. Choice, Noul and Score share an answer-slot interface with thinking disabled. The card records 39,279 training and 7,506 validation questions, loss weights, optimizer settings and checkpoint selection. | [source summary](#web-bv5nwe2l) |
+| 2026-10 | vLLM Semantic Router Team | d3-turbo: A Multimodal Decision Model that Reads Once | The current card describes a 26.09B multimodal Decision 3.0 model that shares one state read across multiple questions, returning choice, yes/no, ordinal, box and tracking outputs without free-form decoding. It documents 32,768 default tokens and optional 131,072-token long-context mode. | [source summary](#web-4sx3r3c2) |
 | 2026-10-01 | Michelle Chen, Alex Reneau, Kevin Flansburg | Introducing Clef: our open-source decision models, and new RL fine-tuning platform | Apache-2.0 Clef/Clef-flash with option-specific evidence routing and cross-field attention, trained with smoothed CE + Brier and a later RL objective. | [source summary](#web-mwjhy75j) |
 | 2026-10-01 | Marc Brooker, Mike Chambers, Fabio Nonato de Paula | Introducing Strands Decider 2B: a small, open source, decision model | Qwen3.5-2B torso with a pointer head and LoRA, released with training scripts, data and architecture history for local experimentation. | [source summary](#web-gi68ips2) |
 | 2026-10-03 | vLLM Semantic Router Team | Decision-2.0-Vega-27B | Apache-2.0 family (0.6B–27B labels); Vega (29.37B actual parameters, 32,768 tokens) scores several typed questions over one shared request. | [source summary](#web-bh58bep7) |
@@ -451,6 +513,24 @@ parameters, context limits, prices and licenses.
 **Strengths.** The interface contract and the evaluation assumptions (developer-created workflows, choice of reference model) are stated explicitly.
 
 **Limitations.** This is a provider announcement. Agreement with reference LLMs is not independent outcome truth, and type validity does not establish factual correctness, calibration or reliable action selection. Efficiency figures apply to the reported workloads. Architecture, parameters and training data are not disclosed.
+
+<a id="web-qpqupnhn"></a>
+
+### 2026-09 — Bespoke-Nimble-9B
+
+**Provenance.** Official [model card](https://huggingface.co/bespokelabs/Bespoke-Nimble-9B), archived at revision `bd792f44ec8e` on 2026-11-03: [primary text](papers/web/Bespoke-Nimble-9B.txt). Zotero date 2026-09-18 is retained; no independent first-release date is inferred from the Hub creation timestamp.
+
+**Zotero citation key:** `2026.BESPOKELABS.bespokenimble9b`
+
+**Where it fits.** A compact adaptation baseline with an explicit prompt builder and probability calculation. It is an adapter requiring the separately licensed base checkpoint, not a standalone merged model.
+
+**What it contains.** A Qwen3.5-9B LoRA decision adapter scores allowed answer tokens for choices, booleans and rubric levels. The September 24 checkpoint uses an 8,192-token limit, up to 255 choices per field and T=1.0; fields are processed individually.
+
+**Strengths.** The provider supplies an explicit inference contract, weight or adapter provenance and a public implementation link, making the documented interface inspectable without calling a paid service.
+
+**Limitations.** The current checkpoint has no separately fitted temperature; the older 2.179 temperature must not be reused. Context limits, adapter precision and field-by-field scoring affect comparisons. Provider documentation is not independent evidence of calibration.
+
+**Evidence locations.** Archived model card: model/training, quickstart, inference and evaluation sections. Provider statements were read, not reproduced.
 
 <a id="web-qzkmbk7l"></a>
 
@@ -564,6 +644,24 @@ parameters, context limits, prices and licenses.
 
 **Limitations.** Iterating architectures against a public benchmark risks benchmark-specific selection. Timing depends on hardware and input length, and the guardrail example does not establish safe deployment. Later backbones have separate cards and licenses.
 
+<a id="web-bv5nwe2l"></a>
+
+### 2026-10 — SII-Decision-27B-Full
+
+**Provenance.** Official [model card](https://huggingface.co/jylin001206/SII-Decision-27B-Full), archived at revision `8f5a51dcde7b` on 2026-11-03: [primary text](papers/web/SII-Decision-27B-Full.txt). Zotero date 2026-10-01 is retained; no independent first-release date is inferred from the Hub creation timestamp.
+
+**Zotero citation key:** `2026.LIN.siidecision27bfull`
+
+**Where it fits.** A checkpoint-specific companion to Duan et al., General Decision Models: Benchmarking and Insights Beyond Jev. It separates full-rank adaptation from the related LoRA variants and provides training/inference provenance.
+
+**What it contains.** Complete BF16 weights adapt the language linear layers of Qwen3.8-27B using reasoning-to-readout self-distillation. Choice, Noul and Score share an answer-slot interface with thinking disabled. The card records 39,279 training and 7,506 validation questions, loss weights, optimizer settings and checkpoint selection.
+
+**Strengths.** The provider supplies an explicit inference contract, weight or adapter provenance and a public implementation link, making the documented interface inspectable without calling a paid service.
+
+**Limitations.** The card reports one BF16 checkpoint score of 80.1734/100 on its fixed 58-benchmark suite, not a multi-seed estimate. NF4/INT8 deployment is not assigned that score. Retaining vision components does not establish multimodal decision training; the released decision interface is text-based.
+
+**Evidence locations.** Archived model card: model/training, quickstart, inference and evaluation sections. Provider statements were read, not reproduced.
+
 <a id="web-bh58bep7"></a>
 
 ### 2026-10 — Decision-2.0-Vega-27B
@@ -627,6 +725,24 @@ parameters, context limits, prices and licenses.
 **Strengths.** Accuracy, perturbation robustness, probability quality and runtime are reported separately, and benchmark exclusion from training is stated.
 
 **Limitations.** These are provider claims without a reproducible training implementation or public weights. Its perturbation protocol differs from the adaptive context search of [JevOut](#jevout), so a low average flip rate does not rebut those adversarial findings. The deployed parameter total is not disclosed.
+
+<a id="web-4sx3r3c2"></a>
+
+### 2026-10 — d3-turbo: A Multimodal Decision Model that Reads Once
+
+**Provenance.** Official [model card](https://huggingface.co/vllm-sr/d3-turbo), archived at revision `9df220de4ce5` on 2026-11-03: [primary text](papers/web/d3-turbo.txt). Zotero date 2026-10-19 is retained; no independent first-release date is inferred from the Hub creation timestamp.
+
+**Zotero citation key:** `2026.VLLMSEMANTICROUTERTEAM.d3turbomultimodaldecisionmodelthatreadsonce`
+
+**Where it fits.** A later serving and multimodal extension of the Decision 2.0 family already covered here. It distinguishes shared-state multi-question processing from field-by-field scoring.
+
+**What it contains.** The current card describes a 26.09B multimodal Decision 3.0 model that shares one state read across multiple questions, returning choice, yes/no, ordinal, box and tracking outputs without free-form decoding. It documents 32,768 default tokens and optional 131,072-token long-context mode.
+
+**Strengths.** The provider supplies an explicit inference contract, weight or adapter provenance and a public implementation link, making the documented interface inspectable without calling a paid service.
+
+**Limitations.** Index and timing figures on the card are provider measurements, sometimes explicitly estimated rather than official leaderboard results. Box outputs always contain one box even if the object is absent. Hardware, question count and long-context flags qualify efficiency claims.
+
+**Evidence locations.** Archived model card: model/training, quickstart, inference and evaluation sections. Provider statements were read, not reproduced.
 
 <a id="web-q9x2h26h"></a>
 
