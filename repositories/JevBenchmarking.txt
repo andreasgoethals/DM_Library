@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://github.com/AppliedMachineLearning-Lab/jev-benchmarking",
-  "revision": "a86e6757e51acf3aa7d745572532f48ebf3dbb7c",
-  "revision_date": "2026-10-30T09:50:50+01:00",
+  "revision": "a06196c4af4053eeafc445b5cfdb2a4bc53b7fb2",
+  "revision_date": "2026-11-04T12:27:22+01:00",
   "slug": "AppliedMachineLearning-Lab/jev-benchmarking",
-  "retrieved_utc": "2026-11-03T15:52:22+00:00",
+  "retrieved_utc": "2026-11-10T09:28:25+00:00",
   "identity_source": "https://arxiv.org/html/2609.37647v1",
   "included_files": 73,
   "excluded_files": 187,
@@ -22,8 +22,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 12562,
-      "sha256": "d4a2ad0d0a5428d405aa8cca704b725f4478dd6c18479efa6421dcee49ac5140"
+      "bytes": 15214,
+      "sha256": "bba2a062a96d28f2b8034df944dbcd3e4eb3eab9cd6e03d4d4c6ff5c766f113b"
     },
     {
       "path": "benchmarks.txt",
@@ -47,8 +47,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "jev_benchmarking/config.py",
-      "bytes": 3041,
-      "sha256": "47a9a8eb9028c218ff2e6122e2804a2b60afa3255306af35939e77a16a6f22a6"
+      "bytes": 3168,
+      "sha256": "f18c45f3642ea240e39d2fa794fdcb18915aa91c66af40cc74b7cf53409677ec"
     },
     {
       "path": "jev_benchmarking/evaluate.py",
@@ -122,8 +122,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "jev_benchmarking/sequential/backends.py",
-      "bytes": 7661,
-      "sha256": "933f961bbf8cf3995dcfa7871e5e7267034496de1b0e16efd98a2db5f09816a9"
+      "bytes": 8187,
+      "sha256": "d1261f83b9930ebc82eacea3a65b9060244222b157d95f49930efdf2a88362cf"
     },
     {
       "path": "jev_benchmarking/sequential/envs/__init__.py",
@@ -312,13 +312,13 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "scripts/merge_sequential_caches.py",
-      "bytes": 3977,
-      "sha256": "9eb84379e17aaf7a327f50296355365ad6ef50ebd64454c9a1fbf6edf643890d"
+      "bytes": 4101,
+      "sha256": "f199356155ef989262b97d4a19fdcd9a478ccd30ef282458b14cd1b480156e20"
     },
     {
       "path": "scripts/probe_frozenlake.py",
-      "bytes": 8548,
-      "sha256": "16945b28a3fdfdd0a2b1b77262d1a079817180b58dd64318d0b1d337c163fa8e"
+      "bytes": 9189,
+      "sha256": "34cbe4f1b7da5da7fd54e93ecc41d4df45c8f7c75460b0d7126355ae1f2c1892"
     },
     {
       "path": "scripts/run.py",
@@ -337,8 +337,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "scripts/run_sequential.py",
-      "bytes": 7773,
-      "sha256": "15f7edea1b134d24e569384d51a039f59628df2f2f9b38432f5a6b58d3b8520c"
+      "bytes": 8443,
+      "sha256": "9252cba456f0401b9b3f177603bc8c9778f8981e78d06a3f919704d8800726b5"
     },
     {
       "path": "scripts/setup_babyai_text_env.sh",
@@ -357,8 +357,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_openmodel.py",
-      "bytes": 5358,
-      "sha256": "98659173457cfc0de36c243069951bebf34e3a3c6b6fb3467ffb77869e41387b"
+      "bytes": 5864,
+      "sha256": "49db36d8347dba05e9e4823bf20634902cfeafcbbd7c8df63c0fc59deacc0d28"
     },
     {
       "path": "tests/test_runner.py",
@@ -367,8 +367,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "tests/test_sequential.py",
-      "bytes": 12618,
-      "sha256": "987e403d36e7f75277de8102a41d4a135642fcea848524c8d7a6cb48e732bd4e"
+      "bytes": 13451,
+      "sha256": "3f2ccc64f17eabcfb8d5761e22f64f914b21c2dc21301c0984ceb83a569b000a"
     },
     {
       "path": "tests/test_tasks.py",
@@ -393,8 +393,9 @@ The repository benchmarks TypeSafe's [Jev](https://docs.typesafe.ai/introduction
 zero-shot on 37 public datasets, and compares it with two open-weight LLMs (Qwen3.8-27B, Gemma-4-E4B) scored on
 identical requests via their exact option probabilities. It contains the dataset definitions and question
 templates, the evaluation harness, the analysis code for every table and figure, and the per-dataset results.
-The dataset audit, the selection rationale and the actual API cost are documented in
-[docs/datasets.md](docs/datasets.md).
+A second, [sequential track](#sequential-decisions) lets the models play five multi-step environments (ALFWorld,
+TextWorld, BabyAI-Text, Blackjack, FrozenLake), choosing one action per request. The dataset audit, the
+selection rationale and the actual API cost are documented in [docs/datasets.md](docs/datasets.md).
 
 ## Installation
 
@@ -415,7 +416,8 @@ pip install -e ".[dev,paper]"
 ```
 
 Optional dependency groups: `dev` (tests), `paper` (tables and figures), `openmodel` (scoring open-weight models
-with PyTorch and `transformers`; needs a GPU for real models).
+with PyTorch and `transformers`; needs a GPU for real models), `sequential` (the environments of the
+[sequential track](#sequential-decisions); BabyAI-Text needs a separate environment).
 
 Datasets are downloaded from the Hugging Face Hub on first use. `lytang/LLM-AggreFact` is gated: accept its terms
 on Hugging Face and log in (`hf auth login`) before using it.
@@ -439,9 +441,38 @@ Responses are keyed by a hash of the exact request. The code rebuilds each reque
 datasets and looks up its response, so a dataset that changes upstream would no longer match its cached
 responses.
 
+The responses of the [sequential track](#sequential-decisions) are in three separate databases with the prefix
+`sequential_`. Point `JEV_CACHE_DB` to the Jev database; the open-model databases next to it are found by
+the same prefix. `--offline` replays every episode from these databases, without an API key or model weights,
+and stops at the first request that is not cached:
+
+```bash
+# download sequential_responses.db, sequential_responses.google__gemma-4-E4B-it.db and
+# sequential_responses.Qwen__Qwen3.8-27B.db from https://doi.org/10.5281/zenodo.23039006 into cache/
+export JEV_CACHE_DB=cache/sequential_responses.db
+for env in blackjack frozenlake alfworld textworld; do
+  for backend in jev hf:Qwen/Qwen3.8-27B hf:google/gemma-4-E4B-it; do
+    python scripts/run_sequential.py $env --backend $backend --offline   # -> results/sequential/<env>/
+  done
+done
+# BabyAI-Text runs in its own environment (see below); Jev also played the diagnostic prompt variant
+for backend in jev hf:Qwen/Qwen3.8-27B hf:google/gemma-4-E4B-it; do
+  .venv-babyai/bin/python scripts/run_sequential.py babyai_text --backend $backend --offline
+done
+.venv-babyai/bin/python scripts/run_sequential.py babyai_text_instructions --backend jev --offline
+python scripts/probe_frozenlake.py --backend jev --offline                # FrozenLake prompt probe
+```
+
+The episodes are played again, so the environments must be installed as described under
+[Sequential decisions](#sequential-decisions); the episode logs and summaries are written to
+`results/sequential/`. The replay reproduces the published summaries except for the latency, which is not
+stored with a response, and the bootstrap CIs of runs played in shards, which depend on the order of the episodes.
+
 ## Running Jev yourself
 
 Set your TypeSafe API key in `TYPESAFE_API_KEY`, or store it in a file and point `TYPESAFE_API_KEY_FILE` to it.
+The commands below run the single-step datasets; the sequential tasks have their own runner, see
+[Sequential decisions](#sequential-decisions).
 
 ```bash
 python scripts/check_api.py                     # validate the key (free: lists models)
@@ -485,6 +516,9 @@ python scripts/import_responses.py runs/gemma/*.jsonl                        # -
 python scripts/evaluate.py all --model hf:google/gemma-4-E4B-it
 ```
 
+On the sequential tasks, open-weight models play directly through `scripts/run_sequential.py --backend hf:<model>`
+(see [Sequential decisions](#sequential-decisions)); no import step is needed.
+
 Runs are resumable and shardable. `--device auto` splits a model that does not fit on one GPU over all
 visible GPUs. `scripts/marvin/` contains the Slurm scripts we used on the Marvin cluster (University of Bonn):
 environment setup, prefetching models and datasets for offline GPU jobs, job arrays, and syncing. Adapt paths,
@@ -527,6 +561,7 @@ python scripts/run_sequential.py frozenlake --backend jev --max-cost 1.0       #
 python scripts/run_sequential.py alfworld --backend jev --shard 0 --num-shards 4   # one of 4 parallel processes
 python scripts/run_sequential.py frozenlake --backend hf:Qwen/Qwen3.8-27B --device auto   # open-weight model
 python scripts/run_sequential.py frozenlake --backend jev --summarize          # metrics only
+python scripts/run_sequential.py frozenlake --backend jev --offline            # replay from the cache, no API key
 python scripts/probe_frozenlake.py --backend jev                               # FrozenLake prompt-variant probe
 python scripts/run_sequential.py babyai_text_instructions --backend jev --max-cost 1.0   # BabyAI-Text with BALROG's instruction prompt (diagnostic)
 python scripts/inspect_episode.py frozenlake results/sequential/frozenlake/jev.greedy.eval.jsonl --episode 0   # replay and check one episode
@@ -544,7 +579,8 @@ python scripts/inspect_episode.py frozenlake results/sequential/frozenlake/jev.g
 - **Metrics:** success rate (95% bootstrap CI), mean steps, cost per episode, repeat rate, step accuracy against
   the reference, step ECE and step Brier; for Blackjack and FrozenLake also the regret per decision.
 - **Cache and spend guards:** as for the single-step track; deterministic episodes replay from the cache for free,
-  and runs resume where they stopped.
+  and runs resume where they stopped. `--offline` replays from the cache alone (see
+  [Reproducing the results without API access](#reproducing-the-results-without-api-access)).
 
 ## Layout
 
@@ -992,9 +1028,10 @@ def model_slug(model: str) -> str:
 
 
 def cache_db_path(model: str) -> Path:
-    """One response database per model: Jev keeps `responses.db`, others get `responses.<org>__<name>.db`."""
+    """One response database per model: Jev keeps `responses.db`, others get `responses.<org>__<name>.db`.
+    The other names follow the stem of JEV_CACHE_DB, e.g. `sequential_responses.db` -> `sequential_responses.<slug>.db`."""
     slug = model_slug(model)
-    return CACHE_DB if not slug else CACHE_DB.parent / f"responses.{slug}.db"
+    return CACHE_DB if not slug else CACHE_DB.parent / f"{CACHE_DB.stem}.{slug}.db"
 
 
 # https://docs.typesafe.ai/models: charged per input token, output tokens are free.
@@ -2752,6 +2789,21 @@ class OpenModelBackend(Backend):
             tokens += res.n_prompt_tokens
         return {"model": self.model, "answers": answers, "usage": {"input_tokens": tokens, "output_tokens": 0},
                 "diagnostics": {"valid_mass": mass}}
+
+
+class CacheMiss(Exception):
+    """An offline replay met a request that is not in the cache."""
+
+
+class CacheOnlyBackend(Backend):
+    """Replays a finished run from the cache, with no API key or model weights; an uncached request raises."""
+
+    def __init__(self, model: str, cache: ResponseCache):
+        super().__init__(cache)
+        self.model = model
+
+    def _answer(self, state: Any, questions: dict) -> dict:
+        raise CacheMiss(f"{self.model}: request not in the cache ({self.stats.cached} cached so far)")
 
 
 class FunctionBackend(Backend):
@@ -6543,11 +6595,11 @@ FILE: scripts/merge_sequential_caches.py
 ================================================
 """Merge the per-shard response caches of the sequential runs into one database per model.
 
-    python scripts/merge_sequential_caches.py runs/alfworld-seqcache cache/sequential
+    python scripts/merge_sequential_caches.py runs/alfworld-seqcache cache/sequential_responses.db
 
 The Slurm jobs write one cache per shard (<src>/<run>/shardNN/responses.<org>__<name>.db), since SQLite's WAL
-is not safe across nodes. This writes <out>/responses.<org>__<name>.db, which run_sequential.py reads with
-JEV_CACHE_DB=<out>/responses.db. Each shard is copied (with its -wal/-shm files) before it is opened, so the
+is not safe across nodes. This writes <out stem>.<org>__<name>.db next to <out> (here
+cache/sequential_responses.<org>__<name>.db), which run_sequential.py reads with JEV_CACHE_DB=<out>. Each shard is copied (with its -wal/-shm files) before it is opened, so the
 sources stay untouched. A key found in several shards is kept once; differing answers for it are reported.
 Finally, every request in the episode logs (results/sequential/<env>/<org>__<name>.*.jsonl) must be in the
 merged database.
@@ -6598,7 +6650,7 @@ def merge(shards: list[Path], out: Path) -> tuple[set[str], int, int]:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("src", type=Path, help="directory with <run>/shardNN/responses.<slug>.db")
-    p.add_argument("out", type=Path, help="output directory, e.g. cache/sequential")
+    p.add_argument("out", type=Path, help="JEV_CACHE_DB the merged databases are read with, e.g. cache/sequential_responses.db")
     p.add_argument("--results", type=Path, default=ROOT / "results" / "sequential", help="episode logs to check")
     args = p.parse_args()
 
@@ -6607,9 +6659,9 @@ def main() -> None:
         by_slug.setdefault(db.name.removeprefix("responses.").removesuffix(".db"), []).append(db)
     if not by_slug:
         raise SystemExit(f"no shard caches under {args.src}")
-    args.out.mkdir(parents=True, exist_ok=True)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     for slug, shards in by_slug.items():
-        out = args.out / f"responses.{slug}.db"
+        out = args.out.parent / f"{args.out.stem}.{slug}.db"
         if out.exists():
             raise SystemExit(f"{out} exists; remove it to rebuild")
         keys, rows, conflicts = merge(shards, out)
@@ -6645,6 +6697,7 @@ Examples:
   python scripts/probe_frozenlake.py --backend scripted:no-slip                # plans as if the ice were not slippery
   python scripts/probe_frozenlake.py --backend jev --max-cost 0.2               # all four variants
   python scripts/probe_frozenlake.py --backend jev --variants base,outcomes
+  python scripts/probe_frozenlake.py --backend jev --offline                    # from the cache only, no API key
 """
 
 import argparse
@@ -6659,9 +6712,11 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from jev_benchmarking.cache import ResponseCache  # noqa: E402
-from jev_benchmarking.config import MODEL, RESULTS_DIR, model_slug  # noqa: E402
+from jev_benchmarking.config import MODEL, RESULTS_DIR, cache_db_path, model_slug  # noqa: E402
 from jev_benchmarking.metrics import ece  # noqa: E402
-from jev_benchmarking.sequential.backends import FunctionBackend, JevBackend, OpenModelBackend, choice_answer  # noqa: E402
+from jev_benchmarking.sequential.backends import (  # noqa: E402
+    CacheOnlyBackend, FunctionBackend, JevBackend, OpenModelBackend, choice_answer,
+)
 from jev_benchmarking.sequential.envs.base import ACTION  # noqa: E402
 from jev_benchmarking.sequential.envs.frozenlake import (  # noqa: E402
     MOVES, STEP_LIMIT, VARIANTS, FrozenLake, build_request, deterministic_values, state_values,
@@ -6704,7 +6759,12 @@ def scripted(name: str):
     return fn
 
 
-def make_backend(spec: str, max_cost: float, device: str):
+def make_backend(spec: str, max_cost: float, device: str, offline: bool = False):
+    if offline and (spec == "jev" or spec.startswith("hf:")):
+        model = MODEL if spec == "jev" else spec
+        if not cache_db_path(model).is_file():
+            raise SystemExit(f"--offline: {cache_db_path(model)} not found (set JEV_CACHE_DB)")
+        return CacheOnlyBackend(model, ResponseCache(model=model))
     if spec == "jev":
         return JevBackend(ResponseCache(model=MODEL), max_cost_usd=max_cost)
     if spec.startswith("hf:"):
@@ -6751,11 +6811,12 @@ def main() -> None:
     ap.add_argument("--per-map", type=int, default=5)
     ap.add_argument("--max-cost", type=float, default=0.2, help="USD cap for this run (Jev only)")
     ap.add_argument("--device", default="cuda")
+    ap.add_argument("--offline", action="store_true", help="jev/hf: answer from the cache only (no API key or model weights)")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     pos = positions(args.n_maps, args.per_map)
-    backend = make_backend(args.backend, args.max_cost, args.device)
+    backend = make_backend(args.backend, args.max_cost, args.device, args.offline)
     slug = (model_slug({"jev": MODEL}.get(args.backend, args.backend)) or "jev").replace(":", "_")
     out_dir = RESULTS_DIR / "sequential" / "frozenlake" / "probe"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -7064,6 +7125,7 @@ Examples:
   python scripts/run_sequential.py alfworld --backend jev --shard 3 --num-shards 8        # one of 8 parallel processes
   python scripts/run_sequential.py babyai_text_instructions --backend jev --max-cost 1.0   # diagnostic prompt variant
   python scripts/run_sequential.py blackjack --backend jev --summarize                    # metrics only (all shards)
+  python scripts/run_sequential.py blackjack --backend hf:Qwen/Qwen3.8-27B --offline      # replay from the cache only
 """
 
 import argparse
@@ -7075,8 +7137,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from jev_benchmarking.cache import ResponseCache  # noqa: E402
-from jev_benchmarking.config import MODEL, USD_PER_INPUT_TOKEN  # noqa: E402
-from jev_benchmarking.sequential.backends import FunctionBackend, JevBackend, OpenModelBackend, estimate_tokens  # noqa: E402
+from jev_benchmarking.config import MODEL, USD_PER_INPUT_TOKEN, cache_db_path  # noqa: E402
+from jev_benchmarking.sequential.backends import (  # noqa: E402
+    CacheOnlyBackend, FunctionBackend, JevBackend, OpenModelBackend, estimate_tokens,
+)
 from jev_benchmarking.sequential.metrics import summarize  # noqa: E402
 from jev_benchmarking.sequential.runner import episodes_path, load_episodes, run  # noqa: E402
 
@@ -7110,6 +7174,11 @@ def make_env(name: str):
 
 
 def make_backend(spec: str, env_name: str, scripted: dict, args):
+    if args.offline and (spec == "jev" or spec.startswith("hf:")):
+        model = MODEL if spec == "jev" else spec
+        if not cache_db_path(model).is_file():
+            raise SystemExit(f"--offline: {cache_db_path(model)} not found (set JEV_CACHE_DB)")
+        return CacheOnlyBackend(model, ResponseCache(model=model))
     if spec == "jev":
         return JevBackend(ResponseCache(model=MODEL), max_cost_usd=args.max_cost)
     if spec.startswith("hf:"):
@@ -7157,6 +7226,8 @@ def main() -> None:
     ap.add_argument("--num-shards", type=int, default=1)
     ap.add_argument("--dry-run", action="store_true", help="estimate requests, tokens and Jev cost with a scripted policy")
     ap.add_argument("--summarize", action="store_true", help="only compute metrics from existing episode logs")
+    ap.add_argument("--offline", action="store_true",
+                    help="jev/hf: answer from the cache only (no API key or model weights); stop at the first uncached request")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
@@ -7701,6 +7772,12 @@ def test_each_model_gets_its_own_database(tmp_path):
     r = subprocess.run([sys.executable, "scripts/import_responses.py", str(jsonl)], env=env, capture_output=True, text=True)
     assert r.returncode != 0 and "refusing" in r.stderr
 
+    # The other databases follow the stem of JEV_CACHE_DB (the sequential responses on Zenodo).
+    env["JEV_CACHE_DB"] = str(tmp_path / "sequential_responses.db")
+    code = "from jev_benchmarking.config import MODEL, cache_db_path; print(cache_db_path(MODEL).name, cache_db_path('hf:org/tiny').name)"
+    r = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True)
+    assert r.stdout.split() == ["sequential_responses.db", "sequential_responses.org__tiny.db"]
+
 
 @pytest.mark.skipif(os.environ.get("JEV_TEST_OPENMODEL") != "1", reason="downloads a tiny model; set JEV_TEST_OPENMODEL=1")
 def test_chunked_prefill_equals_single_pass():
@@ -7840,7 +7917,7 @@ import numpy as np
 import pytest
 
 from jev_benchmarking.cache import ResponseCache
-from jev_benchmarking.sequential.backends import BudgetExceeded, FunctionBackend, JevBackend
+from jev_benchmarking.sequential.backends import BudgetExceeded, CacheMiss, CacheOnlyBackend, FunctionBackend, JevBackend
 from jev_benchmarking.sequential.envs.base import ACTION, SUCCESS
 from jev_benchmarking.sequential.envs.blackjack import FULL_DECK, SCRIPTED, Blackjack, dealer_final, state_values
 from jev_benchmarking.sequential.metrics import repeat_metrics, summarize
@@ -7919,6 +7996,18 @@ def test_jev_episodes_replay_from_cache(tmp_path):
     run(env, JevBackend(cache, max_cost_usd=1.0, transport=fake_api(calls)), limit=30, out=out)
     assert len(calls) == n_first
     assert len(load_episodes(out)) == 30
+
+
+def test_offline_replay_needs_no_api_and_stops_at_a_miss(tmp_path):
+    cache = ResponseCache(tmp_path / "r.db", model="jev-1.13.0")
+    online = tmp_path / "online.jsonl"
+    run(Blackjack(), JevBackend(cache, max_cost_usd=1.0, transport=fake_api([])), limit=30, out=online)
+    offline = tmp_path / "offline.jsonl"
+    run(Blackjack(), CacheOnlyBackend("jev-1.13.0", cache), limit=30, out=offline)
+    assert load_episodes(offline) == [{**ep, "steps": [{**s, "cached": True, "latency_s": 0.0} for s in ep["steps"]],
+                                       "wall_s": ep2["wall_s"]} for ep, ep2 in zip(load_episodes(online), load_episodes(offline))]
+    with pytest.raises(CacheMiss):  # episode 30 was never played
+        run(Blackjack(), CacheOnlyBackend("jev-1.13.0", cache), limit=31, out=offline)
 
 
 def test_budget_cap_stops_run(tmp_path):
