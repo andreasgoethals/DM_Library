@@ -2,7 +2,7 @@
 
 This selected corpus studies **fast decisions over supplied options**: a model
 receives a state, one or more typed questions and a finite option set, and returns
-a probability for each option instead of generating text. It contains eighteen
+a probability for each option instead of generating text. It contains nineteen
 arXiv preprints and eighteen provider release posts, model cards or API references,
 all dated September–October 2026. [SUMMARIES.md](SUMMARIES.md) records evidence
 locations, limitations and Zotero citation keys; [DECISION_MODELS.md](DECISION_MODELS.md)
@@ -56,7 +56,7 @@ from the sources, not rerun here.
   labelled tasks in the one study that tested this (Rafe and Das 2026,
   *Benchmarking System One decision models against trained classifiers and
   language models for automated decision gates*).
-- **Provider claims dominate the release record.** Of fifteen web sources, none
+- **Provider claims dominate the release record.** Of eighteen web sources, none
   is an independent evaluation; benchmark wins, context limits and calibration
   statements in them are provider claims. Several research benchmarks are
   authored by teams whose own model leads them. See
@@ -200,10 +200,11 @@ are not claims about training-data inheritance or priority.
 | 2026-10 | Cao et al. (2026), [SearchJev: A Fast and Calibrated System-1 Model for Search Agents](SUMMARIES.md#searchjev) | Search-specific probability learning; v2 adds one-hot and component ablations; filed 23 October | Direct readout and hybrid search control |
 | 2026-10 | Deußer et al. (2026), [Evaluating and Benchmarking the System One Model Jev](SUMMARIES.md#deusser-benchmark) | v2 combines the 37-dataset static benchmark with sequential environments: static confidence and near-optimal one-step actions do not ensure effective multi-step control | Typed choice, binary and ordinal interfaces |
 | 2026-10 | Li et al. (2026), [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure](SUMMARIES.md#jev-judge) | Frozen and prospective escalation tests; filed 29 October | Selective prediction and cascaded judging |
+| 2026-11 | Shen et al. (2026), [MMDM: Measuring Massive Multitask Decision Making](SUMMARIES.md#mmdm-measuring-massive-multitask-decision-making) | Static benchmark separates complete valid-set recovery and soft-label fidelity from single-select accuracy on long inputs and large option sets. | Typed probability outputs, constrained selection and source-grounded task construction |
 
 ## Web-source timeline
 
-These fifteen selected records have no PDFs. Verified announcement dates and
+These eighteen selected records have no PDFs. Verified announcement dates and
 year-only undated cards are distinguished in the [web registry](papers/web_sources.json).
 A checkpoint upload is not automatically a public release. Source dates and
 current model specifications are separate; see [DECISION_MODELS.md](DECISION_MODELS.md).
@@ -465,9 +466,17 @@ denominators and the conflicts that limit them.
 | SearchDecision-Bench | Search routing, relevance, sufficiency, navigation and verification (Cao et al. 2026, *SearchJev: A Fast and Calibrated System-1 Model for Search Agents*) | Authors' own, task-specific; end-to-end test is one run on 100 questions |
 | TypedBench | Seven rule-based generators, nine suites; null-ECE reference and cost matrices (Sharma et al. 2026, *TypedBench: A Benchmark for Calibration, Framing Sensitivity, and Cost in System One Decision Models*) | Evaluates others' models; templated inputs trade naturalness for derivable labels |
 | System1-Arena | 92,125 questions, 105 tasks, 268 sources; 138 environments, 127 in the headline loop table; 30 models (Chen et al. 2026, *System1-Arena: Which Decisions Can Be Left to System 1?*) | Evaluates others' models; one draw per request, inherited label noise, changing hosted APIs |
+| MMDM | 5,448 questions and 28 models. Best hard multi-select accuracy is 36.81% versus 76.00% on hard single-select (Shen et al. 2026, [*MMDM: Measuring Massive Multitask Decision Making*](SUMMARIES.md#mmdm-measuring-massive-multitask-decision-making)) | Static text tasks and different question mixes across tracks. Hard accuracy includes failures, while probability metrics use valid native outputs. |
 | Deußer harness | 37 datasets, 346,009 Jev requests, frozen templates, released raw responses (Deußer et al. 2026, *Evaluating and Benchmarking the System One Model Jev*) | Single hosted version; open baselines without reasoning; no run-to-run variance |
 | JevOut flips | Initially correct items per model, 64 accepted calls per decision (Xu et al. 2026, *JevOut: Natural Context Can Flip Decision Models*) | Different populations per model, so not a leaderboard |
 | Provider benchmarks | Release posts and cards (for example *Kev-27B*, *Introducing Strands Decider 2B: a small, open source, decision model*, *pplx-decider-v1.1-27b*) | Provider-run; the Kev card acknowledges checkpoint selection after test results; Strands tuned iteratively against a public benchmark |
+
+MMDM and System1-Arena test complementary failure modes. MMDM tests whether
+all valid options outrank all invalid options given a fixed state. System1-Arena
+tests how decisions change the subsequent state and whether an agent recovers.
+For a workload with multiple valid actions, report complete-set recovery and
+native-response coverage alongside top-choice accuracy. For closed-loop use,
+also measure final task success and recovery under the deployed controller.
 
 **Protocol checklist.** Compare systems on identical requests with pinned model,
 checkpoint and runtime revisions, the full option wording and order, and stated
@@ -502,7 +511,7 @@ the evidence and its limits.
 
 ## Released model contracts and deployment cost
 
-The fifteen release records widen deployment choices without making interfaces
+The eighteen release records widen deployment choices without making interfaces
 equivalent. Together AI 2026 (*Tev1-4B-experimental*) generates an answer letter
 through an ordinary LM head; OpenAI 2026 (*Build more responsive apps with the
 Decisions API*), Upstage 2026 (*Solar Decide*) and Inception 2026 (*Mercury

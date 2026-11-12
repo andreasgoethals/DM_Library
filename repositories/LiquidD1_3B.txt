@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://huggingface.co/LiquidAI/d1-3B",
-  "revision": "051bcc464b01b9f92942b364d9586b0ef5912432",
-  "revision_date": "2026-10-07T20:23:00.000Z",
+  "revision": "05b80faf55536582ad5ffb2da7456f6a653acf71",
+  "revision_date": "2026-11-11T17:09:05.000Z",
   "slug": "LiquidAI/d1-3B",
-  "retrieved_utc": "2026-10-23T08:24:55+00:00",
+  "retrieved_utc": "2026-11-12T09:49:39+00:00",
   "identity_source": "https://www.liquid.ai/blog/d1-open",
   "included_files": 12,
   "excluded_files": 3,
@@ -17,8 +17,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": "README.md",
-      "bytes": 10448,
-      "sha256": "175b0bd5f0b4272a67723e16d5e1994e7a8c2d162e7797c9f1c24c01fed83f1d"
+      "bytes": 10475,
+      "sha256": "e29927a558a8e4d25108d184ea12b9043e86699219683fc114ca5463db3e3e6d"
     },
     {
       "path": "api.py",
@@ -110,6 +110,7 @@ tags:
 - system-one
 - multimodal
 - decision-model
+new_version: LiquidAI/d1-2B
 ---
 
 <div align="center">
@@ -358,7 +359,6 @@ With the images removed, the same questions score 45.1, so the answers come from
   year    = {2025}
 }
 ```
-
 
 
 ================================================

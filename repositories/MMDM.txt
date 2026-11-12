@@ -1,0 +1,1882 @@
+DM Library source snapshot
+Do not edit: regenerate with scripts/dumps/refresh_repositories.py
+{
+  "upstream": "https://github.com/mmdm-benchmark/mmdm",
+  "revision": "eedc865ef7303740a92e1abe73e13698e9f88091",
+  "revision_date": "2026-11-11T13:01:53+08:00",
+  "slug": "mmdm-benchmark/mmdm",
+  "retrieved_utc": "2026-11-12T09:46:48+00:00",
+  "identity_source": "https://arxiv.org/abs/2611.14309",
+  "included_files": 20,
+  "excluded_files": 2,
+  "file_sha256": [
+    {
+      "path": "LICENSE",
+      "bytes": 1074,
+      "sha256": "5faced30151bdff15c1fa8630d85695846f0754997d66e1da396f411e789ce96"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4188,
+      "sha256": "5d9c10f9ad538231a67fa617be2e1431edfcf073410bc2d0db7063a68f28f2b1"
+    },
+    {
+      "path": "docs/evaluation.md",
+      "bytes": 7423,
+      "sha256": "e96a43ca33421c2a60eb42e8e287801326a1f7ff507592daf47f59dc96629aa8"
+    },
+    {
+      "path": "examples/evaluate_jev.sh",
+      "bytes": 280,
+      "sha256": "eb9d8945eb5f536f428987e898a734fdb59b8938855b7c5fbb8a957b2deb5562"
+    },
+    {
+      "path": "examples/evaluate_microsoft.sh",
+      "bytes": 306,
+      "sha256": "9715739b070d7c0ecac266e07705eed6eeb9818b2276ffa6428264062f2a3793"
+    },
+    {
+      "path": "examples/predict.py",
+      "bytes": 1252,
+      "sha256": "c96aaa9b3ec56c03d65be9d2458e90d807a10ace23020fb905859739cdf56b25"
+    },
+    {
+      "path": "mmdm_eval/__init__.py",
+      "bytes": 65,
+      "sha256": "3d469c4ff1a9148bc3e8832757cba48757e2771a1b12f1f0da2b5172fa560663"
+    },
+    {
+      "path": "mmdm_eval/__main__.py",
+      "bytes": 33,
+      "sha256": "982976b5921afbc741885fea6bf3377366cd60bec745f35f456b973dc67f08cd"
+    },
+    {
+      "path": "mmdm_eval/client.py",
+      "bytes": 5210,
+      "sha256": "7d1e5c09c1c1f6c4cbd6a35526bca00018c86de0c441f0a26e60f907a61d1c4d"
+    },
+    {
+      "path": "mmdm_eval/common.py",
+      "bytes": 3471,
+      "sha256": "419dcf12b1acc8c850ec1c667955f6a96fe1152e42252236c98f52046de375f6"
+    },
+    {
+      "path": "mmdm_eval/context.py",
+      "bytes": 6575,
+      "sha256": "91d6c4354f1967abfd779b6526c6f97b9d6a62cd205b4ab0a0b7d7a46cafe8ac"
+    },
+    {
+      "path": "mmdm_eval/download.py",
+      "bytes": 2803,
+      "sha256": "eacfb6df5fca048cf1fcde968e0e0e0120e61a060313abb43db67125b1622528"
+    },
+    {
+      "path": "mmdm_eval/grouped_choice.py",
+      "bytes": 6950,
+      "sha256": "a5949a9ff02a244687f68abf031198cd3aa5c5b08b47e53ec592562a8952b9f1"
+    },
+    {
+      "path": "mmdm_eval/metrics.py",
+      "bytes": 3119,
+      "sha256": "7f3ff61c71768ffa99895664e03280ee3d8ade3cfcd89917ce1bb8092ff1bf57"
+    },
+    {
+      "path": "mmdm_eval/runner.py",
+      "bytes": 14358,
+      "sha256": "84f73c2dc79dbe697915b4057ffb6c023c643e589720ac224e7578b247601f23"
+    },
+    {
+      "path": "mmdm_eval/scoring.py",
+      "bytes": 3820,
+      "sha256": "62729e42331fa95e41c85e8f832c92e795d31dd8fd98356b84bb60ff690a21b9"
+    },
+    {
+      "path": "mmdm_eval/set_metrics.py",
+      "bytes": 3815,
+      "sha256": "cec4f98e372d40e833bee4530e4e30284d92325d22a6b5da930e30881542e8f6"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 730,
+      "sha256": "30eb0ab7ac7aed2e509500003c20c63ae48ae8b375ff075f9be8068f0c72f1ae"
+    },
+    {
+      "path": "tests/test_context.py",
+      "bytes": 10923,
+      "sha256": "428b30d02ceb616e7d620097d086d7f435c317118ae9c50e85bcf260d0a88784"
+    },
+    {
+      "path": "tests/test_release.py",
+      "bytes": 6666,
+      "sha256": "c57bc172bf6210ab0e95fe07fa07155234144c279635b21a411efa8b612b6088"
+    }
+  ]
+}
+
+================================================
+FILE: README.md
+================================================
+<p align="center"><img src="assets/mmdm-logo.png" width="140" alt="MMDM" /></p>
+
+<h1 align="center">MMDM: Measuring Massive Multitask Decision Making</h1>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2611.14309">📄 Paper</a> ·
+  <a href="https://mmdm-benchmark.github.io">🌐 Homepage</a> ·
+  <a href="https://huggingface.co/datasets/shenjunhao/mmdm">🤗 Dataset</a> ·
+  <a href="https://mmdm-benchmark.github.io/#leaderboard">🏆 Leaderboard</a>
+</p>
+
+The official evaluation toolkit for **MMDM**, a benchmark for text-based System-1 Decision Models. Evaluate single-choice, multiple-correct-option, soft-distribution, and Score tasks with one scoring protocol. See the [homepage](https://mmdm-benchmark.github.io) for the benchmark and results.
+
+## Install
+
+Python 3.11+ on Linux or macOS (Windows: WSL).
+
+```bash
+git clone https://github.com/mmdm-benchmark/mmdm.git
+cd mmdm
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## Quick start
+
+Check the first 20 questions without an API key:
+
+```bash
+mmdm-eval --output runs/preflight \
+  --context-limit 32768 --service-overhead 1024 \
+  --prepare-only --limit 20
+```
+
+The toolkit **automatically downloads and caches the dataset and tokenizer**. Data is pinned to a Hugging Face commit and checksum-verified. The default Qwen3.5-4B tokenizer is a proxy for input budgeting; only its tokenizer file is downloaded. Set the context budget for the service you evaluate.
+
+### Evaluate an API
+
+```bash
+export JEV_API_KEY="your-key"
+bash examples/evaluate_jev.sh
+```
+
+For Microsoft Decision-1:
+
+```bash
+export OPENROUTER_API_KEY="your-key"
+bash examples/evaluate_microsoft.sh
+```
+
+Both scripts evaluate the full dataset with 16 concurrent requests. Repeat the same command to resume from the cache. For a short run, append `--limit 20` and use a separate output directory. Override `--model` and `--expected-model` together to evaluate another version.
+
+### Evaluate your model
+
+For a service implementing the typed decision API:
+
+```bash
+mmdm-eval --provider custom \
+  --endpoint http://127.0.0.1:8000/v1/systemone --model my-model \
+  --tokenizer /path/to/tokenizer.json --tokenizer-role provider \
+  --context-limit 32768 --service-overhead 1024 \
+  --option-cap 1024 --output runs/my-model
+```
+
+For any other inference interface, write one prediction per line and run the scorer:
+
+```json
+{"id": "question-id", "probabilities": [0.1, 0.7, 0.2]}
+```
+
+Probabilities follow the dataset's option order. A mapping from option IDs to probabilities also works. [This runnable example](examples/predict.py) shows where to plug in your model; its default predictor is a uniform baseline.
+
+```bash
+python examples/predict.py --output runs/uniform/predictions.jsonl
+mmdm-score --predictions runs/uniform/predictions.jsonl --output runs/uniform-score
+```
+
+## Data and outputs
+
+Use `--input /path/to/mmdm.jsonl` for a local dataset, or pre-download with `mmdm-download --with-tokenizer`. [Hugging Face](https://huggingface.co/datasets/shenjunhao/mmdm) also provides the dataset in Parquet format.
+
+Each API run writes `summary.json` (overall and per-category scores), `scored.jsonl`, `predictions.jsonl`, and a resumable request cache. `identity.json` records the data, code, tokenizer, model, and context configuration.
+
+- **Single choice:** hard accuracy.
+- **Multiple correct options:** exact Top-N set match and probability balance.
+- **Soft targets:** Brier score and total variation.
+- **Score tasks:** expected-score MAE and normalized MAE.
+
+The evaluator preserves the question, every option, and every criterion. It applies deterministic head–tail truncation to `state` when needed. Larger independent catalogs use hierarchical selection when they exceed the configured option cap. [Evaluation details and API contract →](docs/evaluation.md)
+
+## Leaderboard
+
+🏆 The MMDM leaderboard is available on the [**official homepage**](https://mmdm-benchmark.github.io/#leaderboard).
+
+## License
+
+The evaluation code is released under the [MIT license](LICENSE). Dataset attribution and source terms are provided on [Hugging Face](https://huggingface.co/datasets/shenjunhao/mmdm/blob/main/SOURCE_NOTICES.md).
+
+
+
+================================================
+FILE: LICENSE
+================================================
+MIT License
+
+Copyright (c) 2026 MMDM contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+================================================
+FILE: pyproject.toml
+================================================
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmdm-eval"
+version = "0.2.0"
+description = "Evaluation toolkit for Measuring Massive Multitask Decision Making"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["tokenizers>=0.20,<1", "huggingface-hub>=0.25,<3"]
+
+[project.urls]
+Homepage = "https://mmdm-benchmark.github.io"
+Repository = "https://github.com/mmdm-benchmark/mmdm"
+Dataset = "https://huggingface.co/datasets/shenjunhao/mmdm"
+
+[project.scripts]
+mmdm-eval = "mmdm_eval.runner:main"
+mmdm-download = "mmdm_eval.download:main"
+mmdm-score = "mmdm_eval.scoring:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mmdm_eval*"]
+
+
+
+================================================
+FILE: docs/evaluation.md
+================================================
+# Evaluation reference
+
+## Inputs and downloads
+
+`mmdm-eval`, `mmdm-score`, and `mmdm-download` share the published JSONL release. The default revision is pinned in `mmdm_eval/download.py`; its SHA-256 is checked against the release manifest and the package's expected checksum. Downloads use the standard Hugging Face cache. `--cache-dir` selects another cache; `HF_HUB_OFFLINE=1` reuses already-cached assets offline.
+
+Pass `--input FILE.jsonl` to use a local copy. Dataset files stay unchanged. `--tokenizer` accepts a local `tokenizer.json`, its directory, or a Hugging Face model ID; `--tokenizer-revision` pins a model revision. `--dataset-revision` accepts a full dataset commit SHA. A run records the actual data and tokenizer hashes.
+
+`--limit N` selects the first N rows for integration checks. Omit it for the full benchmark. Limited runs have their own identity and output directory.
+
+## API adapters
+
+| Provider | Endpoint | Credential environment variable |
+| --- | --- | --- |
+| `jev` | `https://api.typesafe.ai/v1/systemone` | `JEV_API_KEY` |
+| `microsoft` | `https://openrouter.ai/api/alpha/decisions` | `OPENROUTER_API_KEY` |
+| `custom` | `--endpoint` | optional `--api-key-env VARIABLE` |
+
+The built-in model pins are Jev `jev-1.14.0` and Microsoft `microsoft/microsoft-decision-1` (expected response version `microsoft/microsoft-decision-1-20261009`). Set both `--model` and `--expected-model` to change them. For `custom`, the expected response model defaults to `--model`.
+
+Custom endpoints use the same typed request and response shape as [Jev's decision API](https://docs.typesafe.ai/introduction/quickstart):
+
+```json
+{
+  "model": "my-model",
+  "state": "The current situation...",
+  "questions": {
+    "decision": {
+      "type": "choice",
+      "instructions": "Which action should be taken?",
+      "criteria": {"Action A": "When A applies", "Action B": "When B applies"}
+    }
+  }
+}
+```
+
+```json
+{
+  "model": "my-model",
+  "answers": {
+    "decision": {"type": "choice", "probabilities": {"Action A": 0.8, "Action B": 0.2}}
+  }
+}
+```
+
+`common.wire` handles the benchmark's Choice, Noul, and Score primitives; `common.parse_native` aligns returned probabilities with the original option order. Noul returns `answers.decision.noul`; Score returns a probability dictionary over string indices `"0"`, `"1"`, etc. Inspect these two functions when implementing an adapter. OpenAI chat-completion endpoints use a different contract; integrate them through the [prediction example](../examples/predict.py) and `mmdm-score`.
+
+Only `state`, `question`, `options`, `task`, and `score_values` enter model requests. Reference answers and category metadata stay in the evaluator.
+
+## Context and candidate catalogs
+
+Declare `--context-limit`, `--service-overhead`, and optionally `--output-reserve`. The compact serialized API request must fit within:
+
+```text
+available = context_limit - service_overhead - output_reserve
+```
+
+The default tokenizer is Qwen3.5-4B, recorded as a **proxy**. For a service's own tokenizer, use `--tokenizer PATH_OR_MODEL --tokenizer-role provider`. The example scripts use a 32,768-token evaluation budget and a 1,024-token service allowance; these are run settings. Adjust them for your endpoint.
+
+The context adapter preserves all fixed input fields, then retains approximately equal token-boundary portions from the start and end of the original Unicode `state`, with an omission marker. It recounts the complete request. If the fixed fields alone exceed the budget, the result is `fixed_fields_exceed_budget`; if the provider rejects the input length, it is `provider_context_capacity`. Both appear in coverage and failure counts.
+
+For independent catalog tasks above `--option-cap`, the evaluator partitions options deterministically, keeps the top N from each group, and repeats until a final group fits. N is one for single choice and the reference set size for multiple-correct-option evaluation. The API receives neither gold IDs nor N. Every original option participates; all groups share the same budgeted state. Cross-option logic and soft-distribution tasks require a native full-catalog response. The complete catalog is budgeted before grouping.
+
+Native and grouped results are reported separately. Grouped final probabilities are conditional on the surviving set, so full-catalog Brier and Score MAE are computed only for native responses.
+
+## Scoring
+
+- **Hard single accuracy:** the unique highest-probability option must be correct. A tie for first place is incorrect.
+- **Hard-set accuracy:** all gold members must rank strictly above all nonmembers. N is the number of gold members; a tie across the boundary is incorrect.
+- **Top-N balance:** probabilities within the predicted top N are renormalized and compared with a uniform distribution. One means equal allocation; zero means all top-N mass is on one member. Balance and set accuracy are separate metrics.
+- **Soft Brier:** sum of squared errors over options, averaged across valid questions. Lower is better.
+- **Soft total variation:** half the sum of absolute probability errors.
+- **Score MAE:** absolute difference between predicted and reference expected numeric scores. Normalized MAE divides by the score-scale range.
+
+Hard `accuracy_all` includes failed or missing predictions as incorrect; `accuracy_valid` uses valid responses. Distribution metrics include their valid counts. Report coverage with the scores. Probabilities must be finite, nonnegative, at most one, and sum to one within 0.02; accepted rounding drift is renormalized.
+
+## Offline predictions
+
+`mmdm-score` joins predictions by `id`, counts missing and malformed probabilities as invalid, and rejects duplicate or unknown IDs. Probabilities may be an ordered array or a complete dictionary keyed by option ID. Optional `actor_sha256` binds a prediction to its input. A failed request can be recorded as `{"id": "...", "ok": false, "status": "request_error"}`.
+
+The offline scorer accepts native full-distribution predictions. Grouped API runs are scored directly by `mmdm-eval`, which includes their selection trace in `predictions.jsonl`.
+
+## Resume and files
+
+Repeat a command with the same output directory to resume. Successful predictions and HTTP responses are cached; transient failures are retried. A model, dataset, code, tokenizer, budget, seed, or selection change requires a new output directory.
+
+| File | Contents |
+| --- | --- |
+| `identity.json` | Dataset/code/tokenizer hashes and run configuration |
+| `predictions.jsonl` | Probabilities or grouping traces, context accounting and API usage |
+| `calls.sqlite` | Request and response cache, excluding authorization headers |
+| `scored.jsonl` | Per-question metrics |
+| `summary.json` | Overall, category and context-view aggregates |
+| `status.json` | Progress, valid count, attempts and cache hits |
+| `COMPLETE.json` / `BLOCKED.json` | Run outcome |
+
+`--prepare-only` writes `context-audit.jsonl` and `context-summary.json` without inference calls. Use a separate output directory for the subsequent evaluation. Authentication or quota errors stop the run with a nonzero exit status; resume after resolving them.
+
+## Checks
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Tests cover label isolation, Unicode truncation, protected fields, grouping, resume, download checksums, score denominators, and API integration with a local fixture service.
+
+
+
+================================================
+FILE: examples/evaluate_jev.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+: "${JEV_API_KEY:?Set JEV_API_KEY before running}"
+mmdm-eval --provider jev --output runs/jev \
+  --context-limit 32768 --service-overhead 1024 \
+  --tokenizer Qwen/Qwen3.5-4B --tokenizer-role proxy \
+  --option-cap 255 --concurrency 16 "$@"
+
+
+
+================================================
+FILE: examples/evaluate_microsoft.sh
+================================================
+#!/usr/bin/env bash
+set -euo pipefail
+: "${OPENROUTER_API_KEY:?Set OPENROUTER_API_KEY before running}"
+mmdm-eval --provider microsoft --output runs/microsoft \
+  --context-limit 32768 --service-overhead 1024 \
+  --tokenizer Qwen/Qwen3.5-4B --tokenizer-role proxy \
+  --option-cap 255 --concurrency 16 "$@"
+
+
+
+================================================
+FILE: examples/predict.py
+================================================
+"""Minimal model integration. Replace predict() with your model's inference call."""
+import argparse
+from pathlib import Path
+
+from mmdm_eval.common import actor, digest, dump, rows, valid_p
+from mmdm_eval.download import resolve_dataset
+
+
+def predict(request):
+    # This runnable baseline assigns uniform probability. Only model-visible
+    # fields are provided; replace this function to call your model.
+    count = len(request["options"])
+    return [1 / count] * count
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", help="local dataset JSONL; otherwise auto-download")
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+    source = resolve_dataset(args.input)
+    output = Path(args.output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("x", encoding="utf-8") as stream:
+        for row in rows(source):
+            request = actor(row)
+            probabilities = valid_p(predict(request), len(request["options"]))
+            stream.write(dump(dict(id=row["id"], actor_sha256=digest(request),
+                                   probabilities=probabilities)) + "\n")
+    print(output)
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: mmdm_eval/__init__.py
+================================================
+"""Standalone MMDM evaluation toolkit."""
+
+__version__ = "0.2.0"
+
+
+
+================================================
+FILE: mmdm_eval/__main__.py
+================================================
+from .runner import main
+
+main()
+
+
+
+================================================
+FILE: mmdm_eval/client.py
+================================================
+"""Resumable decision API transport; keys are read only from the environment."""
+import asyncio
+import json
+import os
+import sqlite3
+import time
+import urllib.error
+import urllib.request
+
+from .common import digest, dump
+
+PROVIDERS = {
+    "jev": {"url": "https://api.typesafe.ai/v1/systemone", "model": "jev-1.14.0",
+            "expected_model": "jev-1.14.0", "key_env": "JEV_API_KEY"},
+    "microsoft": {"url": "https://openrouter.ai/api/alpha/decisions",
+                  "model": "microsoft/microsoft-decision-1",
+                  "expected_model": "microsoft/microsoft-decision-1-20261009",
+                  "key_env": "OPENROUTER_API_KEY"},
+    "custom": {"url": None, "model": None, "expected_model": None, "key_env": None},
+}
+
+
+class ApiError(RuntimeError):
+    def __init__(self, status, key, context=False):
+        self.status, self.cache_key, self.context = status, key, context
+        super().__init__(f"http_{status}_cache_{key}")
+
+
+class ProviderBlocked(ApiError):
+    pass
+
+
+def is_context_error(status, response):
+    text = dump(response).lower()
+    return status == 413 or (status in (400, 422) and any(term in text for term in (
+        "max_tokens_exceeded", "context limit", "context length", "maximum context",
+        "too many tokens", "limit for the state plus all questions")))
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+class Client:
+    def __init__(self, root, provider, concurrency, run_identity, *, config=None):
+        self.config = config or PROVIDERS[provider]
+        key_env = self.config["key_env"]
+        self.secret = os.environ.get(key_env, "").strip() if key_env else ""
+        if key_env and not self.secret:
+            raise ValueError("set " + self.config["key_env"])
+        self.root = root
+        self.identity = run_identity
+        self.sem = asyncio.Semaphore(concurrency)
+        self.db = sqlite3.connect(root/"calls.sqlite")
+        self.db.execute("pragma journal_mode=WAL")
+        self.db.execute("create table if not exists calls(key text primary key, request text, response text, status integer, at real)")
+        self.db.commit()
+        self.attempts = 0
+        self.cache_hits = 0
+        self.fatal = None
+
+    def post(self, body):
+        headers = {"Content-Type": "application/json"}
+        if self.secret:
+            headers["Authorization"] = "Bearer " + self.secret
+        request = urllib.request.Request(
+            self.config["url"], data=json.dumps(body, ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode(),
+            headers=headers)
+        opener = urllib.request.build_opener(NoRedirect())
+        try:
+            with opener.open(request, timeout=360) as response:
+                status, raw = response.status, response.read()
+        except urllib.error.HTTPError as exc:
+            status, raw = exc.code, exc.read()
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            return 0, {"error_type": type(exc).__name__}
+        try:
+            payload = json.loads(raw)
+            if not isinstance(payload, dict):
+                payload = {"error_type": "non_object_response"}
+        except (ValueError, UnicodeError):
+            payload = {"error_type": "non_json_response"}
+        return status, payload
+
+    async def call(self, body):
+        key = digest({"run_identity": self.identity, "endpoint": self.config["url"], "body": body})
+        old = self.db.execute("select response,status from calls where key=?", (key,)).fetchone()
+        if old:
+            response, status = json.loads(old[0]), old[1]
+            if status == 200 and not response.get("error") and not response.get("error_type"):
+                self.cache_hits += 1
+                return response, key
+            if is_context_error(status, response):
+                raise ApiError(status, key, context=True)
+        for attempt in range(5):
+            async with self.sem:
+                if self.fatal:
+                    raise self.fatal
+                status, response = await asyncio.to_thread(self.post, body)
+                self.attempts += 1
+                self.db.execute("insert or replace into calls values(?,?,?,?,?)",
+                                (key, dump(body), dump(response), status, time.time()))
+                self.db.commit()
+                with (self.root/"http-attempts.jsonl").open("a") as f:
+                    f.write(dump(dict(cache_key=key, status=status, at=time.time()))+"\n")
+                if status == 200 and not response.get("error") and not response.get("error_type"):
+                    return response, key
+                if status in (401, 402, 403, 404) or 300 <= status < 400:
+                    self.fatal = ProviderBlocked(status, key)
+                    raise self.fatal
+                if status not in (0, 408, 409, 425, 429, 500, 502, 503, 504, 529):
+                    raise ApiError(status, key, context=is_context_error(status, response))
+            if attempt < 4:
+                await asyncio.sleep(min(60, 2**attempt))
+        raise ApiError(status, key)
+
+    def close(self):
+        self.db.close()
+
+
+
+================================================
+FILE: mmdm_eval/common.py
+================================================
+"""MMDM JSON, actor and typed decision API contract."""
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+
+def dump(x):
+    return json.dumps(x, sort_keys=True, ensure_ascii=False, allow_nan=False)
+
+def digest(x):
+    return hashlib.sha256(dump(x).encode()).hexdigest()
+
+def file_sha(p):
+    h = hashlib.sha256()
+    with Path(p).open('rb') as f:
+        for block in iter(lambda: f.read(1024 * 1024), b''):
+            h.update(block)
+    return h.hexdigest()
+
+def save(p, value):
+    p = Path(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    t = p.with_name(p.name + f'.{os.getpid()}.partial')
+    t.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + '\n')
+    t.replace(p)
+
+def rows(p):
+    with Path(p).open() as f:
+        for line in f:
+            if line.strip():
+                yield json.loads(line)
+
+def jsonl(p, values):
+    p = Path(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    t = p.with_name(p.name + f'.{os.getpid()}.partial')
+    with t.open('w') as f:
+        for value in values:
+            f.write(dump(value) + '\n')
+    t.replace(p)
+
+def actor(r):
+    return {k: r[k] for k in ['state', 'question', 'options', 'task', 'score_values'] if k in r}
+
+def gold_kind(q):
+    assert q and all(isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) and 0 <= x <= 1 for x in q)
+    assert abs(math.fsum(q) - 1) < 1e-6
+    return 'hard' if q.count(1.0) == 1 and q.count(0.0) == len(q)-1 else 'soft'
+
+def valid_p(p, n):
+    assert isinstance(p, list) and len(p) == n
+    assert all(isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) and 0 <= x <= 1 for x in p)
+    s = math.fsum(p)
+    assert s > 0 and abs(s - 1) <= .020000001
+    return [x/s for x in p]
+
+def wire(r, model):
+    opts = r['options']; names = [o['name'] for o in opts]
+    kind = r['task']; q = {'type': kind, 'instructions': r['question']}
+    if kind == 'noul' and [x.lower() for x in names] == ['false', 'true']:
+        keys = ['no', 'yes']
+        q['criteria'] = {k: o['criteria'] for k, o in zip(['false', 'true'], opts) if o.get('criteria') is not None}
+    elif kind == 'score' and len(opts) <= 10:
+        assert len(r['score_values']) == len(opts)
+        keys = list(map(str, range(len(opts))))
+        q['criteria'] = [dict(name=o['name'], criteria=o.get('criteria'), score_value=v) for o, v in zip(opts, r['score_values'])]
+    else:
+        q['type'] = 'choice'; keys = names if len(set(names)) == len(names) else [o['id'] for o in opts]
+        q['criteria'] = {}
+        for i, (k, o) in enumerate(zip(keys, opts)):
+            c = o.get('criteria')
+            if keys != names or kind == 'score':
+                c = dict(name=o['name'], criteria=c)
+                if kind == 'score': c['score_value'] = r['score_values'][i]
+            q['criteria'][k] = c
+    return {'state': r['state'], 'questions': {'decision': q}, 'model': model}, keys
+
+def parse_native(body, keys, response):
+    a = response['answers']['decision']
+    if a.get('type') != body['questions']['decision']['type']:
+        raise ValueError('response_type_mismatch')
+    if a['type'] == 'noul':
+        p = a['noul']
+        if isinstance(p, bool): raise ValueError('boolean_probability')
+        return valid_p([1-float(p), float(p)], 2)
+    p = a['probabilities']
+    if set(p) != set(keys): raise ValueError('option_key_mismatch')
+    return valid_p([p[k] for k in keys], len(keys))
+
+
+
+================================================
+FILE: mmdm_eval/context.py
+================================================
+"""Gold-blind, deterministic state-only context adaptation.
+
+The counter measures the complete provider request, including fixed fields.
+Service and output allowances are explicit run parameters, never inferred from
+the benchmark's stored length estimates. Original strings are sliced by Python
+character offsets; token decoding cannot corrupt a partial UTF-8 character.
+"""
+from copy import deepcopy
+from dataclasses import asdict, dataclass
+
+from .common import actor, digest, file_sha
+
+PROTOCOL = "mmdm-state-head-tail-v1"
+MARKER = "\n\n[... middle of state omitted ...]\n\n"
+
+
+class FixedFieldsTooLong(ValueError):
+    def __init__(self, metadata):
+        self.metadata = metadata
+        super().__init__("question/options/criteria and overhead exceed context budget")
+
+
+@dataclass(frozen=True)
+class Budget:
+    context_limit: int
+    service_overhead: int
+    output_reserve: int = 0
+
+    def __post_init__(self):
+        values = asdict(self)
+        if any(type(v) is not int for v in values.values()):
+            raise ValueError("context budgets must be integers")
+        if self.context_limit < 1 or self.service_overhead < 0 or self.output_reserve < 0:
+            raise ValueError("invalid context budget")
+        if self.available < 1:
+            raise ValueError("service/output reserves exhaust context budget")
+
+    @property
+    def available(self):
+        return self.context_limit - self.service_overhead - self.output_reserve
+
+
+class JsonTokenizerCounter:
+    """Local estimate of compact wire JSON; provider hidden tokens are reserved.
+
+Use the provider tokenizer when available. If a proxy tokenizer is used, declare
+it in the run and supply an appropriate overhead. Unknown provider capacity is
+never silently replaced with 65,535 or a character-based approximation.
+"""
+    def __init__(self, tokenizer_path, render, *, tokenizer_role):
+        from tokenizers import Tokenizer
+        import tokenizers
+        self.tokenizer = Tokenizer.from_file(str(tokenizer_path))
+        # A tokenizer.json may itself contain truncation or padding settings.
+        self.tokenizer.no_truncation()
+        self.tokenizer.no_padding()
+        self.render = render
+        self.identity = dict(tokenizer_sha256=file_sha(tokenizer_path),
+                             tokenizer_role=tokenizer_role,
+                             tokenizers_version=tokenizers.__version__,
+                             serialization="compact-wire-json-utf8-v1",
+                             special_tokens=False)
+
+    def text_tokens(self, text):
+        return len(self.tokenizer.encode(text, add_special_tokens=False).ids)
+
+    def boundaries(self, text):
+        # Offset sets keep slices on original-text boundaries, including Unicode.
+        encoding = self.tokenizer.encode(text, add_special_tokens=False)
+        return sorted({0, len(text), *(end for start, end in encoding.offsets if end > start)})
+
+    def __call__(self, value):
+        import json
+        body = self.render(value)
+        text = json.dumps(body, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+        return self.text_tokens(text)
+
+
+def adapt_state(row, counter, budget):
+    """Return a separate actor view plus complete accounting, without labels.
+
+Always recount the full rendered request. Fixed-field subtraction provides a
+budget report, not an assumption that separately tokenized fields are additive.
+Head/tail retain approximately equal numbers of token boundaries; an odd unit
+goes to the head. The binary search need not find a maximal BPE packing: every
+accepted candidate is independently measured and never exceeds the budget.
+"""
+    original = deepcopy(actor(row))
+    state = original["state"]
+    if not isinstance(state, str):
+        raise TypeError("state must be text")
+    fixed = {k: v for k, v in original.items() if k != "state"}
+    empty = {**original, "state": ""}
+    total, fixed_tokens = counter(original), counter(empty)
+    meta = dict(protocol=PROTOCOL, budget=asdict(budget), counter=counter.identity,
+                available_input_tokens=budget.available, fixed_request_tokens=fixed_tokens,
+                nominal_state_token_budget=budget.available-fixed_tokens,
+                original_input_tokens=total, original_state_tokens=counter.text_tokens(state),
+                original_actor_sha256=digest(original), protected_fields_sha256=digest(fixed),
+                original_state_sha256=digest(state), original_state_chars=len(state))
+    # Check the actual original first; tokenization is not additive at boundaries.
+    if total <= budget.available:
+        view = original
+        ranges = [[0, len(state)]] if state else []
+        marker_used = False
+    else:
+        if fixed_tokens > budget.available:
+            raise FixedFieldsTooLong({**meta, "status": "fixed_fields_exceed_budget"})
+        boundaries = counter.boundaries(state)
+        if not boundaries or boundaries[0] != 0 or boundaries[-1] != len(state):
+            raise ValueError("counter must expose original-text boundaries")
+        units = len(boundaries)-1
+        view, ranges, marker_used = empty, [], False
+        # A marker is counted only if a nonempty head or tail can also fit.
+        lo, hi = 1, max(0, units-1)
+        while lo <= hi:
+            keep = (lo+hi)//2
+            head, tail = (keep+1)//2, keep//2
+            left, right = boundaries[head], boundaries[units-tail]
+            candidate = {**original, "state": state[:left]+MARKER+state[right:]}
+            if counter(candidate) <= budget.available:
+                view = candidate
+                ranges = [[0, left]] + ([[right, len(state)]] if tail else [])
+                marker_used = True
+                lo = keep+1
+            else:
+                hi = keep-1
+    used = counter(view)
+    if used > budget.available:
+        raise AssertionError("adapted request exceeds configured budget")
+    if {k: v for k, v in view.items() if k != "state"} != fixed:
+        raise AssertionError("protected fields changed")
+    meta.update(truncated=view["state"] != state, input_tokens=used,
+                input_tokens_with_reserves=used+budget.service_overhead+budget.output_reserve,
+                state_tokens=counter.text_tokens(view["state"]), state_chars=len(view["state"]),
+                kept_original_char_ranges=ranges,
+                retained_original_chars=sum(b-a for a, b in ranges),
+                marker_used=marker_used, effective_actor_sha256=digest(view),
+                effective_state_sha256=digest(view["state"]), status="prepared")
+    return view, meta
+
+
+
+================================================
+FILE: mmdm_eval/download.py
+================================================
+"""Download the published MMDM release and tokenizer into the Hugging Face cache."""
+import argparse
+import json
+from pathlib import Path
+import re
+
+from .common import file_sha
+
+DATASET = "shenjunhao/mmdm"
+DATASET_REVISION = "42a2ff808a22b43960d6fff449b5c5062821c71a"
+DATASET_SHA256 = "909e200fd0ac804ac0dafc317d72c7da6736bc43f773957b0fac56e70af30421"
+TOKENIZER = "Qwen/Qwen3.5-4B"
+
+
+def resolve_dataset(path=None, *, cache_dir=None, revision=DATASET_REVISION):
+    if path is not None:
+        local = Path(path).expanduser().resolve()
+        if not local.is_file():
+            raise FileNotFoundError(f"Dataset file does not exist: {local}")
+        return local
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError("--dataset-revision must be a full Hugging Face commit SHA")
+    from huggingface_hub import hf_hub_download
+    common = dict(repo_id=DATASET, repo_type="dataset", revision=revision, cache_dir=cache_dir)
+    path = Path(hf_hub_download(filename="mmdm.jsonl", **common))
+    manifest = json.loads(Path(hf_hub_download(filename="release.json", **common)).read_text())
+    expected = manifest["files"]["mmdm.jsonl"]
+    if revision == DATASET_REVISION and expected != DATASET_SHA256:
+        raise ValueError("Published release manifest does not match the pinned dataset")
+    if file_sha(path) != expected:
+        raise ValueError("Downloaded dataset checksum mismatch")
+    return path
+
+
+def resolve_tokenizer(value=TOKENIZER, *, cache_dir=None, revision=None):
+    local = Path(value).expanduser()
+    if local.is_dir():
+        local = local / "tokenizer.json"
+    if local.is_file():
+        return local.resolve()
+    if str(value).endswith(".json") or str(value).startswith(("/", ".", "~")):
+        raise FileNotFoundError(f"Tokenizer file does not exist: {local}")
+    from huggingface_hub import hf_hub_download
+    return Path(hf_hub_download(repo_id=value, filename="tokenizer.json",
+                               revision=revision, cache_dir=cache_dir))
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cache-dir")
+    parser.add_argument("--dataset-revision", default=DATASET_REVISION)
+    parser.add_argument("--with-tokenizer", action="store_true")
+    parser.add_argument("--tokenizer", default=TOKENIZER)
+    parser.add_argument("--tokenizer-revision")
+    args = parser.parse_args(argv)
+    output = {"dataset": str(resolve_dataset(cache_dir=args.cache_dir, revision=args.dataset_revision))}
+    if args.with_tokenizer:
+        output["tokenizer"] = str(resolve_tokenizer(args.tokenizer, cache_dir=args.cache_dir,
+                                                   revision=args.tokenizer_revision))
+    print(json.dumps(output, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: mmdm_eval/grouped_choice.py
+================================================
+"""Deterministic, gold-blind hierarchical top-k selection.
+
+Scores are compared only within a request. Final probabilities are conditional
+on the final candidate set, never a distribution over the original catalog.
+"""
+import asyncio
+import math
+from .common import digest, dump, valid_p
+
+PROTOCOL = 'hierarchical-choice-v1'
+TOL = 1e-12
+
+
+class ContextCapacityError(RuntimeError):
+    pass
+
+
+def ordered(ids, seed, case_key, path):
+    return sorted(ids, key=lambda x: (digest([PROTOCOL, seed, case_key, path, x]), x))
+
+
+def partition(ids, cap):
+    """Contiguous batches, each bounded by cap; no dropped tail."""
+    return [ids[i:i+cap] for i in range(0,len(ids),cap)]
+
+
+def rank(ids, p, k):
+    # ids were ordered with a fixed, gold-independent seed.
+    ix = sorted(range(len(ids)), key=lambda i: (-p[i], i))
+    tie = len(ids) > k and abs(p[ix[k-1]] - p[ix[k]]) <= TOL
+    return [ids[i] for i in ix[:k]], tie
+
+
+async def select_hierarchical(actor, query, *, cap=255, k=1, seed=20261015):
+    """query(actor_subset, path) -> (normalized probabilities, call metadata).
+
+This function never receives labels. k is the reference cardinality for the
+existing oracle-N multiselect protocol. The API is not given gold IDs or k.
+query may raise ContextCapacityError for an explicit provider size rejection.
+"""
+    opts = actor['options']; ids = [o['id'] for o in opts]
+    if len(ids) < 2 or len(set(ids)) != len(ids):
+        raise ValueError('invalid_option_ids')
+    if not 1 <= k < cap or k >= len(ids):
+        raise ValueError('require_1_le_k_lt_cap_and_catalog_size')
+    byid = dict(zip(ids, opts)); case_key = digest(actor); trace = []
+
+    # Large tool documentation can exceed context capacity even with k+1
+    # candidates. Probe the longest description plus k short descriptions
+    # before expanding a costly tree. This is only a capacity check; its scores
+    # never influence selection. A failed probe is reported, not truncated.
+    sizes = {x:len(dump(byid[x])) for x in ids}
+    longest = max(ids,key=lambda x:(sizes[x],x))
+    if sizes[longest] > 32000:
+        shortest = sorted((x for x in ids if x!=longest),key=lambda x:(sizes[x],x))[:k]
+        members = ordered([longest,*shortest],seed,case_key,'context_probe')
+        subset = {**actor,'options':[byid[x] for x in members]}
+        try:
+            p,meta = await query(subset,'context_probe')
+            valid_p(p,len(members))
+        except ContextCapacityError as exc:
+            raise ContextCapacityError('minimal_cardinality_probe_exceeds_context') from exc
+        trace.append(dict(path='context_probe',kind='capacity_probe',members=members,**meta))
+
+    async def visit(members, path, depth=0):
+        if depth > 32:
+            raise ContextCapacityError('context_reduction_depth_limit')
+        members = ordered(members, seed, case_key, path)
+        if len(members) <= k:
+            trace.append(dict(path=path,kind='carry',members=members,selected=members))
+            return dict(selected=members, final_ids=members, final_probabilities=None,
+                        boundary_tie=False)
+        batch_cap = cap
+        if len(members) <= cap:
+            subset = {**actor, 'options':[byid[x] for x in members]}
+            try:
+                p, meta = await query(subset, path)
+                p = valid_p(p, len(members))
+                winners, tie = rank(members, p, k)
+                trace.append(dict(path=path,kind='decision',members=members,
+                                  probabilities=p,selected=winners,boundary_tie=tie,
+                                  **meta))
+                return dict(selected=winners,final_ids=members,
+                            final_probabilities=p,boundary_tie=tie)
+            except ContextCapacityError as exc:
+                trace.append(dict(path=path,kind='context_split',members=members,
+                                  reason=str(exc)))
+                # With <=k+1 options any top-k reduction must compare the entire
+                # remaining set. Do not silently truncate descriptions or rank
+                # scores from unrelated requests to force an answer.
+                if len(members) <= k+1:
+                    raise ContextCapacityError('minimum_comparison_exceeds_context') from exc
+                batch_cap = max(k+1, math.ceil(len(members)/2))
+        batches = partition(members, batch_cap)
+        children = await asyncio.gather(*(visit(g, path+'.'+str(i), depth+1)
+                                          for i,g in enumerate(batches)),
+                                        return_exceptions=True)
+        # Drain in-flight siblings before returning an error or taking a snapshot.
+        for child in children:
+            if isinstance(child, BaseException):
+                raise child
+        survivors = [x for child in children for x in child['selected']]
+        if len(survivors) >= len(members):
+            raise ContextCapacityError('reduction_cannot_progress')
+        return await visit(survivors, path+'.final', depth+1)
+
+    result = await visit(ids, 'r0')
+    result.update(protocol=PROTOCOL,cap=cap,k=k,seed=seed,original_option_count=len(ids),
+                  probability_scope='final_survivor_set_only',
+                  trace=sorted(trace,key=lambda x:x['path']),
+                  intermediate_boundary_ties=sum(x.get('boundary_tie',False) for x in trace))
+    return result
+
+
+def score_selection(row, result):
+    """Reference-dependent scoring lives entirely outside the selection path."""
+    is_set = row.get('label_semantics') == 'set_hard' or row['task']=='multichoice'
+    gold = set(row['correct_option_ids']) if is_set else {
+        row['options'][row['gold'].index(1.0)]['id']}
+    hit = set(result['selected']) == gold and not result['boundary_tie']
+    final = set(result['final_ids'])
+    p = result['final_probabilities']; k = result['k']
+    top = sorted(p,reverse=True)[:k]; mass = math.fsum(top)
+    balance = 1.0 if k==1 else 1 - (
+        .5*math.fsum(abs(x/mass-1/k) for x in top))/(1-1/k)
+    # This stricter sensitivity statistic flags a gold-containing cutoff tie
+    # even if the fixed tie break happened to keep that gold option.
+    exposed = False
+    for event in result['trace']:
+        if event.get('boundary_tie') and set(event['members']) & gold:
+            cutoff = sorted(event['probabilities'],reverse=True)[k-1]
+            exposed |= any(x in gold and abs(v-cutoff)<=TOL
+                           for x,v in zip(event['members'],event['probabilities']))
+    return dict(hard_accuracy=None if is_set else float(hit),
+                topn_all_hit=float(hit) if is_set else None,
+                final_topn_balance=balance if is_set else None,
+                final_gold_survival=len(gold & final)/len(gold),
+                gold_exposed_to_cutoff_tie=exposed,
+                strict_tie_safe_correct=float(hit and not exposed),
+                full_catalog_brier=None,full_catalog_score_mae=None)
+
+
+
+================================================
+FILE: mmdm_eval/metrics.py
+================================================
+"""Metrics for one native-plus-grouped evaluation, with explicit denominators."""
+import collections
+from .common import valid_p, gold_kind
+from .set_metrics import evaluate_hard_set
+from .grouped_choice import score_selection
+
+def label_kind(r):
+    return 'hard_set' if r.get('label_semantics')=='set_hard' or r['task']=='multichoice' else gold_kind(r['gold'])
+
+def score(r,rec):
+    kind=label_kind(r);v=dict(id=r['id'],category=r['task_category'],kind=kind,task=r['task'],valid=rec.get('ok',False),
+        mode=rec['mode'],status=rec['status'],correct=None,brier=None,tv=None,score_mae=None,score_normalized_mae=None,
+        native_set_balance=None,grouped_final_balance=None)
+    if not v['valid']:return v
+    if rec['mode']=='grouped':
+        m=score_selection(r,rec['result']);v['correct']=m['topn_all_hit'] if kind=='hard_set' else m['hard_accuracy']
+        v['grouped_final_balance']=m['final_topn_balance'];return v
+    p=valid_p(rec['probabilities'],len(r['gold']));q=r['gold']
+    if kind=='hard_set':
+        m=evaluate_hard_set([o['id'] for o in r['options']],r['correct_option_ids'],p)
+        v['correct']=m['topn_all_hit'];v['native_set_balance']=m['topn_balance']
+    elif kind=='hard':
+        winners=[i for i,x in enumerate(p) if abs(x-max(p))<=1e-12]
+        v['correct']=float(len(winners)==1 and q[winners[0]]==1)
+    v['brier']=sum((a-b)**2 for a,b in zip(p,q));v['tv']=.5*sum(abs(a-b) for a,b in zip(p,q))
+    if r['task']=='score':
+        vs=r['score_values'];v['score_mae']=abs(sum((a-b)*s for a,b,s in zip(p,q,vs)))
+        v['score_normalized_mae']=v['score_mae']/(max(vs)-min(vs))
+    return v
+
+def summarize(vs):
+    good=[v for v in vs if v['valid']]
+    def group(kinds):
+        allv=[v for v in vs if v['kind'] in kinds];valid=[v for v in allv if v['valid']]
+        correct=sum(v['correct'] for v in valid) if kinds!={'soft'} else None
+        return dict(rows=len(allv),valid=len(valid),correct=correct,
+                    accuracy_valid=correct/len(valid) if valid and correct is not None else None,
+                    accuracy_all=correct/len(allv) if allv and correct is not None else None)
+    def metric(name,subset):
+        vals=[v[name] for v in subset if v[name] is not None]
+        return dict(n=len(vals),mean=sum(vals)/len(vals) if vals else None)
+    soft=[v for v in good if v['kind']=='soft'];scores=[v for v in good if v['task']=='score']
+    return dict(rows=len(vs),valid=len(good),coverage=len(good)/len(vs) if vs else None,
+                hard_single=group({'hard'}),hard_set=group({'hard_set'}),soft=group({'soft'}),hard_combined=group({'hard','hard_set'}),
+                soft_brier=metric('brier',soft),soft_tv=metric('tv',soft),score_mae=metric('score_mae',scores),
+                score_normalized_mae=metric('score_normalized_mae',scores),native_set_balance=metric('native_set_balance',good),
+                grouped_final_balance=metric('grouped_final_balance',good),
+                modes=dict(collections.Counter(v['mode'] for v in vs)),
+                invalid_statuses=dict(collections.Counter(v['status'] for v in vs if not v['valid'])))
+
+
+
+================================================
+FILE: mmdm_eval/runner.py
+================================================
+"""MMDM native/grouped evaluation with an immutable dataset and budgeted views."""
+import argparse
+import asyncio
+from collections import Counter
+import fcntl
+from pathlib import Path
+import time
+
+from .common import actor, digest, dump, file_sha, json, jsonl, parse_native, rows, save, wire
+from .client import ApiError, Client, PROVIDERS, ProviderBlocked
+from .context import Budget, FixedFieldsTooLong, JsonTokenizerCounter, PROTOCOL, adapt_state
+from .grouped_choice import ContextCapacityError, score_selection, select_hierarchical
+from .metrics import label_kind, score, summarize
+from .download import DATASET_REVISION, TOKENIZER, resolve_dataset, resolve_tokenizer
+from urllib.parse import urlparse
+
+# These catalog tasks were checked for independent option semantics. Cross-option
+# logic and full soft distributions cannot use a hierarchical selection adapter.
+GROUPABLE = {
+    ("mmdm_v2_revision_workflow", "skill_composition"),
+    ("mmdm_v2_practical_plans", "plan_comparison"),
+    ("toolret", "tool_relevance"), ("skillsbench", "skill_composition"),
+    ("skillsbench", "skill_bundle_selection"),
+    ("skilldag", "skill_selection"),
+    ("more_skillbank_review_v2_routing", "skill_library_routing"),
+}
+
+
+def request_counter(tokenizer, model, role):
+    return JsonTokenizerCounter(tokenizer, lambda value: wire(value, model)[0], tokenizer_role=role)
+
+
+def append(path, record):
+    with path.open("a", encoding="utf-8") as stream:
+        stream.write(dump(record)+"\n")
+        stream.flush()
+
+
+async def evaluate_row(row, counter, budget, client, config, *, cap, seed):
+    record = dict(id=row["id"], actor_sha256=digest(actor(row)), mode="native", ok=False)
+    start = time.monotonic()
+    try:
+        effective, context = adapt_state(row, counter, budget)
+        record["context"] = context
+        if len(effective["options"]) > cap:
+            record["mode"] = "grouped"
+            if ((row.get("source", {}).get("dataset"), row.get("task_subcategory")) not in GROUPABLE
+                    or row.get("task_category") == "option_logic"
+                    or row["task"] not in {"choice", "multichoice"}
+                    or label_kind(row) == "soft"):
+                record["status"] = "unsupported_grouping"
+                return record
+
+        async def query(subset, path):
+            # All groups share one precomputed state. No per-group truncation.
+            if subset["state"] != effective["state"]:
+                raise AssertionError("group state changed")
+            count = counter(subset)
+            if count > budget.available:
+                raise ContextCapacityError("group_request_exceeds_budget")
+            body, keys = wire(subset, config["model"])
+            raw, key = await client.call(body)
+            if raw.get("model") != config["expected_model"]:
+                raise ValueError("model_version_changed")
+            p = parse_native(body, keys, raw)
+            return p, dict(cache_key=key, request_sha256=digest(body), model=raw["model"],
+                           usage=raw.get("usage", {}), input_tokens=count,
+                           effective_state_sha256=context["effective_state_sha256"])
+
+        if record["mode"] == "native":
+            p, meta = await query(effective, "native")
+            record.update(probabilities=p, **meta)
+        else:
+            k = len(row["correct_option_ids"]) if label_kind(row) == "hard_set" else 1
+            if not 1 <= k < cap:
+                record["status"] = "unsupported_grouping"
+                return record
+            result = await select_hierarchical(effective, query, cap=cap, k=k, seed=seed)
+            record.update(result=result, metrics=score_selection(row, result))
+        record.update(ok=True, status="complete")
+    except FixedFieldsTooLong as exc:
+        record.update(status="fixed_fields_exceed_budget", context=exc.metadata)
+    except ProviderBlocked:
+        raise
+    except ApiError as exc:
+        # A provider rejection remains visible. No answer-dependent shortening or
+        # retry-driven budget changes are used to select a favorable view.
+        record.update(status="provider_context_capacity" if exc.context else "request_error",
+                      error=str(exc), cache_key=exc.cache_key, http_status=exc.status)
+    except ContextCapacityError as exc:
+        record.update(status="context_capacity", error=str(exc))
+    except (ValueError, KeyError, TypeError, AssertionError) as exc:
+        record.update(status="protocol_error", error=type(exc).__name__+": "+str(exc)[:200])
+    finally:
+        record["wall_s"] = time.monotonic()-start
+    return record
+
+
+def report(data, predictions, identity):
+    values = [score(r, predictions[r["id"]]) for r in data if r["id"] in predictions]
+    context_groups = {}
+    for name, predicate in (("full_input", lambda c: c.get("truncated") is False),
+                            ("truncated_state", lambda c: c.get("truncated") is True),
+                            ("fixed_fields_exceed_budget", lambda c: c.get("status") == "fixed_fields_exceed_budget")):
+        context_groups[name] = summarize([v for v in values if predicate(predictions[v["id"]].get("context", {}))])
+    return dict(identity=identity, planned=len(data), processed=len(values), pending=len(data)-len(values),
+                overall=summarize(values), by_context=context_groups,
+                context_statuses=dict(Counter(p.get("context", {}).get("status", "unknown") for p in predictions.values())),
+                categories={c: summarize([v for v in values if v["category"] == c])
+                            for c in sorted({v["category"] for v in values})})
+
+
+async def run(args, *, counter_override=None, client_factory=Client):
+    source = resolve_dataset(args.input, cache_dir=getattr(args, "cache_dir", None),
+                             revision=getattr(args, "dataset_revision", DATASET_REVISION))
+    root = Path(args.output).resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    lock = (root/"evaluate.lock").open("a")
+    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    client = None
+    try:
+        data = list(rows(source))
+        if not data or len({r["id"] for r in data}) != len(data):
+            raise ValueError("input must have unique IDs and at least one row")
+        if getattr(args, "limit", None):
+            data = data[:args.limit]
+        config = dict(PROVIDERS[args.provider])
+        if args.model: config["model"] = args.model
+        if args.expected_model: config["expected_model"] = args.expected_model
+        if args.provider == "custom":
+            config.update(url=args.endpoint, key_env=args.api_key_env,
+                          expected_model=args.expected_model or args.model)
+        budget = Budget(args.context_limit, args.service_overhead, args.output_reserve)
+        counter = counter_override or request_counter(resolve_tokenizer(
+            args.tokenizer, cache_dir=getattr(args, "cache_dir", None),
+            revision=getattr(args, "tokenizer_revision", None)), config["model"], args.tokenizer_role)
+        identity = dict(protocol=PROTOCOL, dataset_sha256=file_sha(source), provider=args.provider,
+                        model=config["model"], expected_model=config["expected_model"], endpoint=config["url"],
+                        budget=budget.__dict__, counter=counter.identity, seed=args.seed, option_cap=args.option_cap,
+                        mode="prepare" if args.prepare_only else "evaluate",
+                        limit=getattr(args, "limit", None), selected_ids_sha256=digest([r["id"] for r in data]),
+                        code={p.name: file_sha(p) for p in sorted(Path(__file__).parent.glob("*.py"))})
+        identity_path = root/"identity.json"
+        if identity_path.exists():
+            if json.loads(identity_path.read_text()) != identity:
+                raise ValueError("resume_identity_mismatch: use a new output directory")
+        else:
+            if any(p.name != "evaluate.lock" for p in root.iterdir()):
+                raise ValueError("new run output directory must be empty")
+            save(identity_path, identity)
+        pp = root/"predictions.jsonl"
+        predictions = {r["id"]: r for r in rows(pp)} if pp.exists() else {}
+        byid = {r["id"]: r for r in data}
+        for rid, rec in predictions.items():
+            if rid not in byid or rec["actor_sha256"] != digest(actor(byid[rid])):
+                raise ValueError("prediction_actor_mismatch")
+
+        if args.prepare_only:
+            prepared = []
+            for r in data:
+                try:
+                    _, meta = adapt_state(r, counter, budget)
+                except FixedFieldsTooLong as exc:
+                    meta = exc.metadata
+                prepared.append(dict(id=r["id"], context=meta))
+            jsonl(root/"context-audit.jsonl", prepared)
+            save(root/"context-summary.json", dict(rows=len(data), identity=identity,
+                 truncated=sum(p["context"].get("truncated", False) for p in prepared),
+                 fixed_fields_exceed_budget=sum(p["context"]["status"] == "fixed_fields_exceed_budget" for p in prepared)))
+            if file_sha(source) != identity["dataset_sha256"]:
+                raise ValueError("source_changed_during_preparation")
+            print(dump(dict(output=str(root), rows=len(data), status="prepared")))
+            return
+
+        client = client_factory(root, args.provider, args.concurrency, digest(identity), config=config)
+        queue = asyncio.Queue()
+        for row in data:
+            previous = predictions.get(row["id"])
+            if previous is None or previous["status"] == "request_error":
+                queue.put_nowait(row)
+        fatal = None
+
+        def snapshot(status):
+            save(root/"status.json", dict(status=status, planned=len(data), processed=len(predictions),
+                 valid=sum(p["ok"] for p in predictions.values()), updated_at=time.time(),
+                 http_attempts_this_process=client.attempts, cache_hits_this_process=client.cache_hits))
+
+        async def worker():
+            nonlocal fatal
+            while fatal is None:
+                try: row = queue.get_nowait()
+                except asyncio.QueueEmpty: return
+                try:
+                    rec = await evaluate_row(row, counter, budget, client, config,
+                                             cap=args.option_cap, seed=args.seed)
+                except ProviderBlocked as exc:
+                    fatal = str(exc)
+                    return
+                predictions[row["id"]] = rec
+                append(pp, rec)
+                if len(predictions) % 25 == 0 or queue.empty(): snapshot("running")
+
+        (root/"COMPLETE.json").unlink(missing_ok=True)
+        snapshot("running")
+        await asyncio.gather(*(worker() for _ in range(args.concurrency)))
+        if file_sha(source) != identity["dataset_sha256"]:
+            raise ValueError("source_changed_during_evaluation")
+        stats = report(data, predictions, identity)
+        save(root/"summary.json", stats)
+        jsonl(root/"scored.jsonl", [score(r, predictions[r["id"]]) for r in data if r["id"] in predictions])
+        snapshot("blocked" if fatal else "complete")
+        if fatal:
+            save(root/"BLOCKED.json", dict(reason=fatal, pending=len(data)-len(predictions)))
+            raise RuntimeError("Provider blocked the run; see BLOCKED.json. Resume with the same command after resolving it.")
+        else:
+            if len(predictions) != len(data): raise AssertionError("missing_predictions")
+            (root/"BLOCKED.json").unlink(missing_ok=True)
+            save(root/"COMPLETE.json", dict(rows=len(data), valid=stats["overall"]["valid"],
+                 dataset_sha256=identity["dataset_sha256"], summary_sha256=file_sha(root/"summary.json")))
+        print(dump(stats["overall"]))
+    finally:
+        if client is not None: client.close()
+        lock.close()
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", help="local JSONL; omitted: download the pinned MMDM release")
+    parser.add_argument("--cache-dir", help="Hugging Face download cache")
+    parser.add_argument("--dataset-revision", default=DATASET_REVISION)
+    parser.add_argument("--output", "--root", dest="output", required=True)
+    parser.add_argument("--provider", choices=sorted(PROVIDERS), default="jev")
+    parser.add_argument("--model")
+    parser.add_argument("--expected-model")
+    parser.add_argument("--endpoint", help="full typed decision API URL for --provider custom")
+    parser.add_argument("--api-key-env", help="environment variable for a custom endpoint's bearer token")
+    parser.add_argument("--tokenizer", default=TOKENIZER, help="tokenizer.json path or Hugging Face model ID")
+    parser.add_argument("--tokenizer-revision")
+    parser.add_argument("--tokenizer-role", choices=["provider", "proxy"], default="proxy")
+    parser.add_argument("--context-limit", type=int, required=True)
+    parser.add_argument("--service-overhead", type=int, required=True)
+    parser.add_argument("--output-reserve", type=int, default=0)
+    parser.add_argument("--option-cap", type=int, default=255)
+    parser.add_argument("--concurrency", type=int, default=16)
+    parser.add_argument("--seed", type=int, default=20261015)
+    parser.add_argument("--prepare-only", action="store_true", help="no API calls or API key needed")
+    parser.add_argument("--limit", type=int, help="first N rows for a quick check; omit for a full evaluation")
+    args = parser.parse_args(argv)
+    if args.concurrency < 1 or args.option_cap < 2: parser.error("invalid concurrency or option cap")
+    if args.limit is not None and args.limit < 1: parser.error("--limit must be positive")
+    if args.provider == "custom":
+        if not args.endpoint or not args.model:
+            parser.error("--provider custom requires --endpoint and --model")
+        url = urlparse(args.endpoint)
+        if url.scheme not in {"http", "https"} or not url.hostname or url.username or url.password:
+            parser.error("--endpoint must be an HTTP(S) URL without embedded credentials")
+    elif args.endpoint or args.api_key_env:
+        parser.error("--endpoint and --api-key-env apply to --provider custom")
+    asyncio.run(run(args))
+
+
+
+================================================
+FILE: mmdm_eval/scoring.py
+================================================
+"""Score model probability files against MMDM, including missing and invalid predictions."""
+import argparse
+from pathlib import Path
+
+from .common import actor, digest, dump, file_sha, jsonl, rows, save, valid_p
+from .download import DATASET_REVISION, resolve_dataset
+from .metrics import score, summarize
+
+
+def score_predictions(data, predictions):
+    """Join by question ID; probabilities follow option order or use option-ID keys."""
+    by_id = {row["id"]: row for row in data}
+    if not data or len(by_id) != len(data):
+        raise ValueError("Dataset must contain unique question IDs")
+    submitted = {}
+    for prediction in predictions:
+        rid = prediction.get("id")
+        if rid not in by_id:
+            raise ValueError(f"Unknown prediction ID: {rid}")
+        if rid in submitted:
+            raise ValueError(f"Duplicate prediction ID: {rid}")
+        submitted[rid] = prediction
+    scored = []
+    for rid, row in by_id.items():
+        supplied = submitted.get(rid)
+        record = dict(ok=False, mode="native", status="missing_prediction")
+        if supplied is not None:
+            if supplied.get("mode", "native") != "native":
+                raise ValueError("Grouped runs are scored by mmdm-eval; use that run's summary.json")
+            record["status"] = "invalid_prediction"
+            if supplied.get("actor_sha256", digest(actor(row))) != digest(actor(row)):
+                raise ValueError(f"Prediction input hash mismatch: {rid}")
+            if supplied.get("ok", True) is False:
+                record["status"] = supplied.get("status", "request_error")
+            else:
+                try:
+                    p = supplied["probabilities"]
+                    if isinstance(p, dict):
+                        ids = [o["id"] for o in row["options"]]
+                        if set(p) != set(ids):
+                            raise ValueError("Probability keys must equal option IDs")
+                        p = [p[oid] for oid in ids]
+                    p = valid_p(p, len(row["options"]))
+                    record.update(ok=True, status="complete", probabilities=p)
+                except (ValueError, TypeError, KeyError, AssertionError, OverflowError):
+                    pass
+        scored.append(score(row, record))
+    return scored
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", help="local dataset JSONL; default: download pinned MMDM")
+    parser.add_argument("--predictions", required=True, help="JSONL with id and probabilities")
+    parser.add_argument("--output", required=True, help="new output directory")
+    parser.add_argument("--cache-dir")
+    parser.add_argument("--dataset-revision", default=DATASET_REVISION)
+    args = parser.parse_args(argv)
+    root = Path(args.output)
+    if root.exists() and any(root.iterdir()):
+        parser.error("--output must be empty")
+    source = resolve_dataset(args.input, cache_dir=args.cache_dir, revision=args.dataset_revision)
+    data = list(rows(source))
+    predictions = list(rows(args.predictions))
+    values = score_predictions(data, predictions)
+    identity = dict(dataset_sha256=file_sha(source), predictions_sha256=file_sha(args.predictions),
+                    code={p.name: file_sha(p) for p in sorted(Path(__file__).parent.glob("*.py"))})
+    summary = dict(identity=identity, planned=len(data), submitted=len(predictions), overall=summarize(values),
+                   categories={c: summarize([v for v in values if v["category"] == c])
+                               for c in sorted({v["category"] for v in values})})
+    root.mkdir(parents=True, exist_ok=True)
+    jsonl(root/"scored.jsonl", values)
+    save(root/"summary.json", summary)
+    print(dump(summary["overall"]))
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: mmdm_eval/set_metrics.py
+================================================
+"""Hard-set evaluation for normalized relevance scores, separate from soft gold.
+
+Top-k uses reference cardinality only in the evaluator. It measures ranking, not
+the model's ability to predict set size. Native set output is scored separately.
+"""
+import math
+
+
+def _ids(values, name):
+    if not isinstance(values, (list, tuple)) or not values:
+        raise ValueError(name + '_must_be_nonempty')
+    if any(not isinstance(x, str) or not x for x in values):
+        raise ValueError(name + '_must_contain_string_ids')
+    if len(set(values)) != len(values):
+        raise ValueError(name + '_has_duplicates')
+    return list(values)
+
+
+def evaluate_hard_set(option_ids, correct_ids, probabilities, *,
+                      predicted_ids=None, tie_tolerance=1e-12):
+    ids = _ids(option_ids, 'option_ids')
+    gold = set(_ids(correct_ids, 'correct_ids'))
+    if not gold <= set(ids):
+        raise ValueError('unknown_gold_id')
+    if len(ids) < 2 or not 0 <= tie_tolerance <= 1e-6:
+        raise ValueError('invalid_options_or_tolerance')
+    if len(probabilities) != len(ids):
+        raise ValueError('probability_count_mismatch')
+    p = list(probabilities)
+    if any(isinstance(x, bool) or not isinstance(x, (int, float))
+           or not math.isfinite(x) or not 0 <= x <= 1 for x in p):
+        raise ValueError('invalid_probability')
+    if not math.isclose(math.fsum(p), 1.0, rel_tol=0, abs_tol=1e-8):
+        raise ValueError('normalized_relevance_distribution_required')
+    k = len(gold)
+    positive = [v for i, v in zip(ids, p) if i in gold]
+    negative = [v for i, v in zip(ids, p) if i not in gold]
+    mass = math.fsum(positive)
+    margin = min(positive) - max(negative) if negative else None
+    # A tie across the boundary cannot pass by option-order tie breaking.
+    exact = float(margin > tie_tolerance) if negative else 1.0
+    tv = (0.5 * math.fsum(abs(v / mass - 1 / k) for v in positive)
+          if mass > 0 else None)
+    balance = (1.0 if k == 1 and mass > 0 else
+               1 - tv / (1 - 1 / k) if tv is not None else None)
+    topn = sorted(p, reverse=True)[:k]
+    topn_mass = math.fsum(topn)
+    topn_tv = 0.5 * math.fsum(abs(v / topn_mass - 1 / k) for v in topn)
+    topn_balance = 1.0 if k == 1 else 1 - topn_tv / (1 - 1 / k)
+    q = [1 / k if i in gold else 0.0 for i in ids]
+    result = {
+        'target_kind': 'hard', 'label_semantics': 'set_hard',
+        'probability_semantics': 'normalized_equal_membership_relevance',
+        'num_options': len(ids), 'reference_cardinality': k,
+        'topn_all_hit': exact, 'topn_balance': topn_balance,
+        'primary_metrics': ['topn_all_hit', 'topn_balance'],
+        'balance_scope': 'predicted_top_n_normalized_by_its_own_probability_mass',
+        'topk_set_exact': exact, 'topk_uses_reference_cardinality': True,
+        'boundary_tie': bool(negative and abs(margin) <= tie_tolerance),
+        'rank_margin': margin, 'correct_set_mass': mass,
+        'within_set_tv_to_uniform': tv, 'within_set_balance': balance,
+        'uniform_target_brier': math.fsum((a - b) ** 2 for a, b in zip(p, q)),
+        'chance_topk_exact': 1 / math.comb(len(ids), k),
+    }
+    if predicted_ids is not None:
+        if not isinstance(predicted_ids, (list, tuple)):
+            raise ValueError('predicted_ids_must_be_list')
+        pred = set(predicted_ids)
+        if len(pred) != len(predicted_ids) or not pred <= set(ids):
+            raise ValueError('invalid_predicted_ids')
+        tp = len(pred & gold)
+        result.update(native_set_exact=float(pred == gold),
+                      native_set_precision=tp / len(pred) if pred else 0.0,
+                      native_set_recall=tp / k,
+                      native_set_f1=2 * tp / (len(pred) + k),
+                      cardinality_error=abs(len(pred) - k))
+    return result
+
+
+
+================================================
+FILE: tests/test_context.py
+================================================
+import asyncio
+from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
+import types
+import unittest
+
+from mmdm_eval.common import actor, digest, wire
+from mmdm_eval.client import ApiError, PROVIDERS, is_context_error
+from mmdm_eval.context import Budget, FixedFieldsTooLong, MARKER, adapt_state, JsonTokenizerCounter
+from mmdm_eval.metrics import score, summarize
+from mmdm_eval.runner import evaluate_row, report, run
+
+
+class CharacterCounter:
+    """Exact fixture counter, deliberately not presented as a model tokenizer."""
+    identity = {"fixture": "unicode-codepoints-compact-wire-json"}
+
+    def __call__(self, row):
+        return len(json.dumps(wire(row, "fixture")[0], ensure_ascii=False, separators=(",", ":")))
+
+    def text_tokens(self, text): return len(text)
+    def boundaries(self, text): return list(range(len(text)+1))
+
+
+def row(task="choice", count=4):
+    r = dict(id="fixture", state="头部🙂 HEAD " + "middle evidence 中间 "*100 + " TAIL 尾部🦊",
+             question="Which option follows the exceptions? Keep this question.", task=task,
+             options=[dict(id=str(i), name="Action "+str(i), criteria="Use this only if option 0 fails; detail "+str(i)) for i in range(count)],
+             gold=[1.0]+[0.0]*(count-1), correct_option_ids=["0"],
+             task_category="tool_skill_selection", task_subcategory="plan_comparison",
+             source={"dataset": "mmdm_v2_practical_plans"})
+    if task == "score": r["score_values"] = list(range(count))
+    if task == "noul":
+        r["options"] = [dict(id="f", name="false", criteria="negative conditions"), dict(id="t", name="true", criteria="positive conditions")]
+        r["gold"] = [1., 0.]
+    if task == "multichoice":
+        r["label_semantics"] = "set_hard"
+        r["gold"] = [.5, .5]+[0.]*(count-2)
+        r["correct_option_ids"] = ["0", "1"]
+    return r
+
+
+class FakeClient:
+    """Exercises real wire, parser, metrics, persistence and resume without APIs."""
+    def __init__(self, *args, **kwargs):
+        self.attempts = 0
+        self.cache_hits = 0
+        self.bodies = []
+    async def call(self, body):
+        self.attempts += 1
+        self.bodies.append(deepcopy(body))
+        q = body["questions"]["decision"]
+        if q["type"] == "noul": answer = {"type": "noul", "noul": .3}
+        else:
+            criteria = q["criteria"]
+            keys = list(criteria) if isinstance(criteria, dict) else list(map(str, range(len(criteria))))
+            weights = list(range(len(keys), 0, -1))
+            answer = dict(type=q["type"], probabilities={k: w/sum(weights) for k, w in zip(keys, weights)})
+        return {"model": PROVIDERS["jev"]["expected_model"], "answers": {"decision": answer}}, digest(body)
+    def close(self): pass
+
+
+class ContextTests(unittest.TestCase):
+    def setUp(self): self.counter = CharacterCounter()
+
+    def test_small_input_unchanged_at_exact_limit(self):
+        r = row(); before = deepcopy(r)
+        budget = Budget(self.counter(actor(r))+17, 13, 4)
+        view, meta = adapt_state(r, self.counter, budget)
+        self.assertEqual(view, actor(r)); self.assertEqual(r, before)
+        self.assertFalse(meta["truncated"])
+        self.assertEqual(meta["input_tokens_with_reserves"], budget.context_limit)
+        self.assertNotIn("gold", view)
+
+    def test_all_primitives_protected_and_deterministic(self):
+        for kind in ["choice", "noul", "score", "multichoice"]:
+            r = row(kind); before = deepcopy(r)
+            fixed = self.counter({**actor(r), "state": ""})
+            budget = Budget(fixed+150, 19, 11)
+            view, meta = adapt_state(r, self.counter, budget)
+            self.assertEqual((view, meta), adapt_state(r, self.counter, budget))
+            self.assertEqual({k: v for k, v in view.items() if k != "state"}, {k: v for k, v in actor(r).items() if k != "state"})
+            self.assertEqual(r, before)
+            self.assertTrue(view["state"].startswith("头部🙂 HEAD"))
+            self.assertTrue(view["state"].endswith("TAIL 尾部🦊"))
+            self.assertIn(MARKER, view["state"])
+            self.assertLessEqual(meta["input_tokens_with_reserves"], budget.context_limit)
+            self.assertNotIn("\ufffd", view["state"])
+            reconstructed = MARKER.join(r["state"][a:b] for a, b in meta["kept_original_char_ranges"])
+            self.assertEqual(reconstructed, view["state"])
+
+    def test_fixed_fields_failure_does_not_drop_options(self):
+        r = row(count=1024); before = deepcopy(r)
+        fixed = self.counter({**actor(r), "state": ""})
+        with self.assertRaises(FixedFieldsTooLong) as hit:
+            adapt_state(r, self.counter, Budget(fixed-1, 0))
+        self.assertEqual(hit.exception.metadata["status"], "fixed_fields_exceed_budget")
+        self.assertEqual(r, before)
+
+    def test_no_room_for_marker_can_empty_state(self):
+        r = row()
+        fixed = self.counter({**actor(r), "state": ""})
+        view, meta = adapt_state(r, self.counter, Budget(fixed, 0))
+        self.assertEqual(view["state"], "")
+        self.assertFalse(meta["marker_used"])
+        self.assertTrue(meta["truncated"])
+
+    def test_larger_window_retains_more_original_text(self):
+        r = row()
+        fixed = self.counter({**actor(r), "state": ""})
+        retained = [adapt_state(r, self.counter, Budget(fixed+b, 10))[1]["retained_original_chars"] for b in [80, 160, 320, 10000]]
+        self.assertEqual(retained, sorted(retained)); self.assertEqual(retained[-1], len(r["state"]))
+
+    def test_gold_has_no_effect_on_visible_view(self):
+        a = row(); b = deepcopy(a); b["gold"] = [0., 0., 0., 1.]; b["correct_option_ids"] = ["3"]
+        self.assertEqual(adapt_state(a, self.counter, Budget(900, 30)), adapt_state(b, self.counter, Budget(900, 30)))
+
+    def test_budget_validation(self):
+        for args in [(0, 0), (5, 5), (10, -1), (True, 0), (10, 3, 8)]:
+            with self.assertRaises(ValueError): Budget(*args)
+
+    def test_true_full_request_count_not_sum_of_fields(self):
+        class EscapedCounter(CharacterCounter):
+            def __call__(self, r):
+                return super().__call__(r) + r["state"].count("x")*7
+        r = row(); r["state"] = "x"*300
+        counter = EscapedCounter()
+        view, meta = adapt_state(r, counter, Budget(1000, 16))
+        self.assertLessEqual(counter(view)+16, 1000)
+        self.assertEqual(meta["input_tokens"], counter(view))
+
+    def test_mock_transport_preserves_fields_and_scoring(self):
+        for kind in ["choice", "noul", "score", "multichoice"]:
+            r = row(kind); client = FakeClient()
+            rec = asyncio.run(evaluate_row(r, self.counter, Budget(900, 16), client, PROVIDERS["jev"], cap=255, seed=7))
+            self.assertTrue(rec["ok"], rec)
+            expected, _ = wire(r, PROVIDERS["jev"]["model"])
+            self.assertEqual(client.bodies[0]["questions"], expected["questions"])
+            self.assertNotEqual(client.bodies[0]["state"], r["state"])
+            self.assertTrue(score(r, rec)["valid"])
+
+    def test_grouped_catalog_keeps_every_option_and_same_state(self):
+        r = row(count=32); client = FakeClient()
+        fixed = self.counter({**actor(r), "state": ""})
+        rec = asyncio.run(evaluate_row(r, self.counter, Budget(fixed+200, 16), client, PROVIDERS["jev"], cap=8, seed=7))
+        self.assertTrue(rec["ok"], rec)
+        seen = set()
+        for body in client.bodies:
+            seen.update(body["questions"]["decision"]["criteria"])
+        self.assertEqual(seen, {o["name"] for o in r["options"]})
+        self.assertEqual(len({body["state"] for body in client.bodies}), 1)
+        self.assertTrue(rec["context"]["truncated"])
+
+    def test_capacity_rejection_stays_explicit(self):
+        class Reject(FakeClient):
+            async def call(self, body): raise ApiError(400, "cache-key", context=True)
+        r = row()
+        rec = asyncio.run(evaluate_row(r, self.counter, Budget(900, 16), Reject(), PROVIDERS["jev"], cap=255, seed=7))
+        self.assertEqual(rec["status"], "provider_context_capacity")
+        self.assertFalse(rec["ok"])
+        self.assertTrue(is_context_error(400, {"error": "maximum context length exceeded"}))
+        self.assertFalse(is_context_error(402, {"error": "quota exhausted"}))
+
+    def test_resume_identity_and_frozen_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory); source = base/"data.jsonl"
+            r = row(); source.write_text(json.dumps(r, ensure_ascii=False)+"\n")
+            original = source.read_bytes()
+            args = types.SimpleNamespace(input=source, output=base/"run", provider="jev", model=None, expected_model=None,
+                context_limit=900, service_overhead=16, output_reserve=0, tokenizer=None, tokenizer_role="proxy",
+                prepare_only=False, concurrency=2, seed=7, option_cap=255)
+            asyncio.run(run(args, counter_override=self.counter, client_factory=FakeClient))
+            pp = args.output/"predictions.jsonl"; first = pp.read_bytes()
+            asyncio.run(run(args, counter_override=self.counter, client_factory=FakeClient))
+            self.assertEqual(first, pp.read_bytes()); self.assertEqual(original, source.read_bytes())
+            summary = json.loads((args.output/"summary.json").read_text())
+            self.assertEqual(summary["by_context"]["truncated_state"]["rows"], 1)
+            self.assertEqual(summary["pending"], 0)
+            args.context_limit += 1
+            with self.assertRaisesRegex(ValueError, "resume_identity_mismatch"):
+                asyncio.run(run(args, counter_override=self.counter, client_factory=FakeClient))
+
+    def test_real_tokenizer_file_when_available(self):
+        try:
+            from tokenizers import Tokenizer, models, pre_tokenizers
+        except ImportError:
+            self.skipTest("optional tokenizers runtime is not installed")
+        with tempfile.TemporaryDirectory() as directory:
+            vocab = {c: i for i, c in enumerate(["[UNK]", *pre_tokenizers.ByteLevel.alphabet()])}
+            tok = Tokenizer(models.BPE(vocab, [], unk_token="[UNK]"))
+            tok.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
+            tok.enable_truncation(10); tok.enable_padding(length=20)
+            path = Path(directory)/"tokenizer.json"; tok.save(str(path))
+            counter = JsonTokenizerCounter(path, lambda r: wire(r, "fixture")[0], tokenizer_role="proxy")
+            r = row(); fixed = counter({**actor(r), "state": ""})
+            view, meta = adapt_state(r, counter, Budget(fixed+200, 10))
+            self.assertGreater(meta["original_input_tokens"], 20)
+            self.assertLessEqual(counter(view)+10, fixed+200)
+            self.assertIn("头部🙂", view["state"])
+            self.assertTrue(view["state"].endswith("尾部🦊"))
+
+
+if __name__ == "__main__": unittest.main()
+
+
+
+================================================
+FILE: tests/test_release.py
+================================================
+import asyncio
+from copy import deepcopy
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+from pathlib import Path
+import tempfile
+import threading
+import types
+import unittest
+from unittest.mock import patch
+
+from mmdm_eval.common import file_sha
+from mmdm_eval.download import DATASET_REVISION, resolve_dataset, resolve_tokenizer
+from mmdm_eval.metrics import summarize
+from mmdm_eval.runner import run
+from mmdm_eval.scoring import score_predictions
+from test_context import CharacterCounter, row
+
+
+class ScoringTests(unittest.TestCase):
+    def test_missing_invalid_and_wrong_answers_keep_full_denominator(self):
+        data = []
+        for i in range(4):
+            item = row(); item["id"] = str(i); data.append(item)
+        predictions = [dict(id="0", probabilities={"0": .8, "1": .1, "2": .05, "3": .05}),
+                       dict(id="1", probabilities=[0, 1, 0, 0]),
+                       dict(id="2", probabilities=[float("nan"), 0, 0, 1])]
+        values = score_predictions(data, predictions)
+        summary = summarize(values)
+        self.assertEqual(summary["hard_single"]["accuracy_all"], .25)
+        self.assertEqual(summary["hard_single"]["accuracy_valid"], .5)
+        self.assertEqual(summary["coverage"], .5)
+        self.assertEqual(values[3]["status"], "missing_prediction")
+
+    def test_soft_score_and_set_metrics(self):
+        soft = row("score"); soft["id"] = "soft"; soft["gold"] = [.1, .2, .3, .4]
+        hard_set = row("multichoice"); hard_set["id"] = "set"
+        values = score_predictions([soft, hard_set], [
+            dict(id="soft", probabilities=[.1, .2, .3, .4]),
+            dict(id="set", probabilities=[.4, .4, .1, .1])])
+        self.assertEqual(values[0]["brier"], 0)
+        self.assertEqual(values[0]["score_mae"], 0)
+        self.assertEqual(values[1]["correct"], 1)
+        self.assertEqual(values[1]["native_set_balance"], 1)
+        tie = score_predictions([hard_set], [dict(id="set", probabilities=[.4, .2, .2, .2])])
+        self.assertEqual(tie[0]["correct"], 0)
+
+    def test_unknown_duplicate_or_changed_input_rejected(self):
+        r = row()
+        for records in [[dict(id="unknown")], [dict(id=r["id"])]*2,
+                        [dict(id=r["id"], actor_sha256="wrong")]]:
+            with self.assertRaises(ValueError): score_predictions([r], records)
+
+
+class DownloadTests(unittest.TestCase):
+    def test_local_paths_need_no_network_and_do_not_change_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = root/"local.jsonl"; data.write_text('{}\n')
+            tok = root/"tokenizer.json"; tok.write_text('{}')
+            with patch("huggingface_hub.hf_hub_download", side_effect=AssertionError("unexpected download")):
+                self.assertEqual(resolve_dataset(data), data.resolve())
+                self.assertEqual(resolve_tokenizer(root), tok.resolve())
+            self.assertEqual(data.read_text(), '{}\n')
+            with self.assertRaises(FileNotFoundError): resolve_dataset(root/"absent.jsonl")
+
+    def test_download_uses_one_revision_and_validates_checksum(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = root/"mmdm.jsonl"; data.write_text('{}\n')
+            manifest = root/"release.json"
+            manifest.write_text(json.dumps({"files": {"mmdm.jsonl": file_sha(data)}}))
+            calls = []
+            def download(**kwargs):
+                calls.append(kwargs)
+                return str(root/kwargs["filename"])
+            with patch("huggingface_hub.hf_hub_download", side_effect=download):
+                self.assertEqual(resolve_dataset(revision="a"*40), data)
+                self.assertTrue(all(c["revision"] == "a"*40 and c["repo_type"] == "dataset" for c in calls))
+                data.write_text('changed')
+                with self.assertRaisesRegex(ValueError, "checksum"): resolve_dataset(revision="a"*40)
+                with self.assertRaisesRegex(ValueError, "full Hugging Face commit"): resolve_dataset(revision="main")
+
+
+class HttpIntegrationTests(unittest.TestCase):
+    def test_real_transport_resume_and_gold_isolation(self):
+        bodies = []
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args): pass
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                bodies.append(body)
+                keys = list(body["questions"]["decision"]["criteria"])
+                payload = json.dumps(dict(model="test-model", answers=dict(decision=dict(
+                    type="choice", probabilities={k: 1/len(keys) for k in keys})))).encode()
+                self.send_response(200); self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(payload))); self.end_headers(); self.wfile.write(payload)
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory); source = root/"data.jsonl"
+                r = row(); source.write_text(json.dumps(r)+'\n')
+                args = types.SimpleNamespace(input=source, output=root/"run", provider="custom",
+                    model="test-model", expected_model="test-model", api_key_env=None,
+                    endpoint=f"http://127.0.0.1:{server.server_port}/decide",
+                    context_limit=900, service_overhead=16, output_reserve=0, tokenizer=None,
+                    tokenizer_role="proxy", prepare_only=False, concurrency=2, seed=7, option_cap=255)
+                with patch.dict("os.environ", {"NO_PROXY": "127.0.0.1", "no_proxy": "127.0.0.1"}):
+                    asyncio.run(run(args, counter_override=CharacterCounter()))
+                    asyncio.run(run(args, counter_override=CharacterCounter()))
+                self.assertEqual(len(bodies), 1)
+                self.assertEqual(set(bodies[0]), {"state", "questions", "model"})
+                self.assertNotIn("gold", json.dumps(bodies[0]))
+                result = json.loads((root/"run/summary.json").read_text())
+                self.assertEqual(result["overall"]["valid"], 1)
+                self.assertEqual(result["overall"]["hard_single"]["accuracy_all"], 0)
+                self.assertTrue((root/"run/COMPLETE.json").exists())
+        finally:
+            server.shutdown(); server.server_close(); thread.join()
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+

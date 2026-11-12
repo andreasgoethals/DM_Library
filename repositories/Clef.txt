@@ -2,10 +2,10 @@ DM Library source snapshot
 Do not edit: regenerate with scripts/dumps/refresh_repositories.py
 {
   "upstream": "https://huggingface.co/Cloudflare/clef",
-  "revision": "cfddda043dd190ef3b01cff449d5ee8cff1e8ec6",
-  "revision_date": "2026-10-30T14:28:38.000Z",
+  "revision": "171287b2571042abec9e7b99752aee58216b0ed0",
+  "revision_date": "2026-11-10T16:06:55.000Z",
   "slug": "Cloudflare/clef",
-  "retrieved_utc": "2026-11-03T15:52:50+00:00",
+  "retrieved_utc": "2026-11-12T09:49:38+00:00",
   "identity_source": "https://blog.cloudflare.com/clef-decision-models/",
   "included_files": 11,
   "excluded_files": 16,
@@ -17,8 +17,8 @@ Do not edit: regenerate with scripts/dumps/refresh_repositories.py
     },
     {
       "path": ".eval_results/safeagents-judge-bench.yaml",
-      "bytes": 1155,
-      "sha256": "84f9168d4c7ed05550e6b6a898e81fd474e98e365a6d16aa7dd3cf30f1f81bde"
+      "bytes": 1187,
+      "sha256": "0feaa30b604c521afc0235f65aca3ebe814cc0d6f16f487b50430d7ab87e2fd5"
     },
     {
       "path": "LICENSE",
@@ -1617,34 +1617,34 @@ FILE: .eval_results/safeagents-judge-bench.yaml
 - dataset:
     id: harness-hub/safeagents-judge-bench
     task_id: balanced_accuracy
-  value: 0.718
-  date: "2026-10-30"
+  value: 0.808
+  date: "2026-11-10"
   source:
-    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench
-    name: "safeagents judge bench v0, test split, run on NVIDIA A100 80GB (HF Jobs)"
+    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench/tree/v2
+    name: "safeagents judge bench v2, test split, run on NVIDIA A100 80GB (HF Jobs)"
 - dataset:
     id: harness-hub/safeagents-judge-bench
     task_id: auroc
-  value: 0.987
-  date: "2026-10-30"
+  value: 0.993
+  date: "2026-11-10"
   source:
-    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench
-    name: "safeagents judge bench v0, test split, run on NVIDIA A100 80GB (HF Jobs)"
+    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench/tree/v2
+    name: "safeagents judge bench v2, test split, run on NVIDIA A100 80GB (HF Jobs)"
 - dataset:
     id: harness-hub/safeagents-judge-bench
     task_id: false_block_rate
-  value: 0.564
-  date: "2026-10-30"
+  value: 0.384
+  date: "2026-11-10"
   source:
-    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench
-    name: "safeagents judge bench v0, test split, run on NVIDIA A100 80GB (HF Jobs)"
+    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench/tree/v2
+    name: "safeagents judge bench v2, test split, run on NVIDIA A100 80GB (HF Jobs)"
 - dataset:
     id: harness-hub/safeagents-judge-bench
     task_id: category_macro_f1
-  value: 0.425
-  date: "2026-10-30"
+  value: 0.563
+  date: "2026-11-10"
   source:
-    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench
-    name: "safeagents judge bench v0, test split, run on NVIDIA A100 80GB (HF Jobs)"
+    url: https://huggingface.co/datasets/harness-hub/safeagents-judge-bench/tree/v2
+    name: "safeagents judge bench v2, test split, run on NVIDIA A100 80GB (HF Jobs)"
 
 

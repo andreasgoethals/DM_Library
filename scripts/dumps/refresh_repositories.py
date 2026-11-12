@@ -51,6 +51,7 @@ REPOSITORIES: dict[str, dict] = {
     "Kev.txt": {"url": "https://github.com/jaredpalmer/kev", "identity": "https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-27b.md", "exclude": ["runs/*", "experiments/*", "data/*.json", "data/*.jsonl", "data/*.csv", "data/*.parquet"]},
     "VLLMDecision2.txt": {"url": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B", "identity": "https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B"},
     "System1Arena.txt": {"url": "https://github.com/TianyuCodings/S1-Arena", "identity": "https://arxiv.org/abs/2610.21244", "exclude": ["data/*", "datasets/*", "docs/site/*", "results/*", "runs/*"]},
+    "MMDM.txt": {"url": "https://github.com/mmdm-benchmark/mmdm", "identity": "https://arxiv.org/abs/2611.14309", "exclude": ["data/*", "datasets/*", "results/*", "runs/*", "outputs/*"]},
     "Jeff.txt": {"url": "https://github.com/j-geuter/Jeff", "identity": "https://arxiv.org/abs/2610.17205"},
     "JevOut.txt": {"url": "https://github.com/xzx34/JevOut", "identity": "https://arxiv.org/html/2609.30243v1"},
     "SearchJev.txt": {"url": "https://github.com/EvoScientist/SearchJev", "identity": "https://arxiv.org/html/2610.05107v1"},

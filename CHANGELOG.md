@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-12
+
+- Added Shen et al., *MMDM: Measuring Massive Multitask Decision Making*, with PDF, text and the official evaluator snapshot. Integrated complete-set recovery, soft-label scoring and model-limit handling into the summary and synthesis.
+- Refreshed StrandsDecider, Clef and LiquidD1_3B. Reconciled the snapshot inventory with the embedded revisions and file counts.
+
 ## 2026-11-10
 
 - Routine maintenance: refreshed JevBenchmarking (`a86e675` → `a06196c`, 4 November) and StrandsDecider (`5ebe4fa` → `846b69e`, 6 November) source snapshots; all cited symbols still resolve. All 18 filed papers are on their latest arXiv version and the Zotero collection matches.

@@ -1,6 +1,6 @@
 # Decision models: source summaries
 
-The selected Zotero **Decision Models** collection contains eighteen research papers
+The selected Zotero **Decision Models** collection contains nineteen research papers
 and eighteen web-only releases/model cards. The current evidence concerns fast,
 schema-conditioned probabilistic decisions. It does not constitute a general
 survey of decision theory or optimization. Read [the synthesis](SYNTHESIS.md) for
@@ -9,7 +9,7 @@ costs, and [the implementation guide](REPOSITORIES.md) for source maps.
 
 Dates below describe the PDF version filed. Publication dates remain separately
 recorded in [the provenance manifest](papers/manifest.json); multiple October
-versions are ordered by their confirmed day. All eighteen are arXiv preprints: no
+versions are ordered by their confirmed day. All nineteen are arXiv preprints: no
 peer-reviewed venue is confirmed in the curated records. Source-specific numbers
 are reported results, not measurements rerun by this library. Citation keys come
 from Zotero and remain unchanged.
@@ -43,6 +43,7 @@ use the same labels, and their contents are marked as provider claims.
 | 2026-10 | Cao et al. | SearchJev: A Fast and Calibrated System-1 Model for Search Agents | LoRA-trained label-logit readout with soft-label CE+Brier loss for six search decisions: 5.2–5.3× faster than JSON decoding; a 4B hybrid lifts BrowseComp-Plus accuracy from 45% to 54% in one 100-question run; v2 isolates sufficiency gains and mixed soft-label effects. | [pdf](papers/2026/10_Cao_et_al._SearchJev_A_Fast_and_Calibrated_System_1_Model_for_Search_Agents.pdf) |
 | 2026-10 | Deußer et al. | Evaluating and Benchmarking the System One Model Jev | Zero-shot Jev 1.13.0 on 37 full-split datasets (346,009 requests, under US$10) vs matched-readout open models: beats Qwen3.8-27B on 27/37, pooled Choice ECE 0.028, but binary thresholds misplaced. | [pdf](papers/2026/10_Deusser_et_al._Evaluating_and_Benchmarking_the_System_One_Model_Jev.pdf) |
 | 2026-10 | Li et al. | JEV-as-a-Judge: Accept When Confident, Escalate When Unsure | Two-order confidence gate escalates uncertain Jev verdicts to GPT-6: a frozen τ = 0.9 beats GPT-6 by 0.9 points at 41% of its fee on 1,610 held-out pairs, and lower-bound thresholds match it exactly on two new live workloads. | [pdf](papers/2026/10_Li_et_al._JEV_as_a_Judge_Accept_When_Confident_Escalate_When_Unsure.pdf) |
+| 2026-11 | Shen et al. | MMDM: Measuring Massive Multitask Decision Making | 5,448 text decisions separate single-choice accuracy, complete-set recovery and soft-label error. The best of 28 models reaches 76.00% on single-select and 36.81% on multi-select. | [pdf](papers/2026/11_Shen_et_al._MMDM_Measuring_Massive_Multitask_Decision_Making.pdf) |
 
 <a id="beyond-calibration-do-a-typed-decision-model-s-probabilities-obey-the-probability-axioms"></a>
 
@@ -431,9 +432,30 @@ The cascade (§8) judges each pair in both candidate orders, averages the aligne
 
 **Evidence locations.** Abstract; §§3–9 and Limitations; Eq. 1; Tables 1 and 3–5; Figures 8–9; Appendices D, N–Q. Rechecked 2026-10-20: the [author project repository](https://github.com/yubol-bobo/jev-as-a-judge) supplies a website, manuscript and figures, but no experimental reproduction code. The paper's supplementary package (Appendix Q) remains unverified as a public download; see [implementation coverage boundaries](REPOSITORIES.md#coverage-boundaries).
 
+<a id="mmdm-measuring-massive-multitask-decision-making"></a>
+
+## 2026-11 — Shen et al. — MMDM: Measuring Massive Multitask Decision Making
+
+**Venue / provenance:** [arXiv preprint 2611.14309v1](https://arxiv.org/abs/2611.14309v1), filed version and first public release dated 2026-11-10. No peer-reviewed venue recorded. [Generated text](papers/text/2026/11_Shen_et_al._MMDM_Measuring_Massive_Multitask_Decision_Making.txt).
+**Zotero citation key:** `2026.SHEN.mmdmmeasuringmassivemultitaskdecisionmaking`. **PDF:** [open](papers/2026/11_Shen_et_al._MMDM_Measuring_Massive_Multitask_Decision_Making.pdf).
+
+**Where it fits.** Shen et al. complement Chen et al.'s [System1-Arena](#system1-arena-which-decisions-can-be-left-to-system-1) with a static test of interacting options, long contexts and complete-set recovery. The distinction between selecting the best answer and reconstructing a probability distribution also connects to Duan et al.'s [General Decision Models](#general-decision-models).
+
+**What it contains.** The authors combine new tasks with source-grounded rewrites and recompositions, using model screening, targeted human review and an option-only shortcut probe (§3.2, Appendix B). The 5,448 examples span 16 categories and comprise 4,112 hard single-select, 633 hard multi-select and 703 soft-label items. Options range from 2 to 1,024, and the longest complete input is 64,817 tokens (§3.3). Hard multi-select tests whether every valid option outranks every invalid option. SB-F also scores the separation and balance of probability mass within the valid set. Hard accuracy counts failed requests and boundary ties as wrong. Brier error, expected-score error and SB-F use valid native outputs. To accommodate model limits, the harness truncates the middle of the state and can group independent options for hard selection. Dependent options and distributional tasks require a native request (§4.1, Appendix C).
+
+**Key results.** WeMM-JEV 27B leads hard single-select (76.00%) and complete-set accuracy (36.81%). KnowLine 31B Gen1 has similar single-select accuracy (75.07%) but lower soft Brier error (0.1233 vs 0.2327) and normalized expected-score error (0.0624 vs 0.2203). Perplexity Decider V1.2 scores 78.75% on world knowledge, 53.95% on option logic and 47.95% on constraint planning (Tables 2–3).
+
+**Strengths.** Separating tracks exposes ranking changes hidden by single-select accuracy. The paper reports valid-response counts and a fixed-cohort SB-F comparison (Table A9), and provides the dataset and an [evaluation toolkit](REPOSITORIES.md#mmdmtxt).
+
+**Limitations.** Author-stated: static text requests omit interaction and multimodality, multi-select is concentrated in a few task families, and 628 of 703 soft targets are rubric scores. Rewrites cannot rule out prior exposure to source material. Reviewer reading: grouping changes the request and can use the reference cardinality in the evaluation harness, so hard multi-select scores do not establish that the model can infer how many options to select. Native-only probability metrics need coverage counts or common cohorts for fair comparison.
+
+**Evidence locations.** §§3–4, Tables 1–3, Limitations, Appendices B–E and Table A9.
+
+---
+
 ## Web-source overview
 
-These fifteen selected sources have no PDF attachment. Their curated metadata,
+These eighteen selected sources have no PDF attachment. Their curated metadata,
 original URLs, date precision and review dates are retained in
 [the web-source registry](papers/web_sources.json). They have source summaries,
 not fabricated PDFs. Year-only dates mean the original publication day is

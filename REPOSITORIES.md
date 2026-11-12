@@ -3,8 +3,8 @@
 These are greppable source snapshots for the selected Decision Models corpus. They
 contain implementations, evaluation protocols, configuration and license notices;
 they are reference material, not installed or executed model packages. Upstream
-identity was checked against the paper or first-party release linked below on
-19–23 October 2026. Each snapshot embeds its full immutable revision, revision date,
+identity was checked against the paper or first-party release linked below.
+Each snapshot embeds its full immutable revision, revision date,
 retrieval timestamp, original paths and per-file SHA256 hashes. These dates identify
 code snapshots and need not equal the dates of the filed papers.
 
@@ -12,25 +12,36 @@ code snapshots and need not equal the dates of the filed papers.
 
 | Snapshot | Official upstream | Purpose | Revision prefix | Files | License notice |
 |---|---|---|---|---:|---|
+| [MMDM.txt](repositories/MMDM.txt) | [mmdm-benchmark/mmdm](https://github.com/mmdm-benchmark/mmdm) | Static decision evaluation, context budgets and complete-set scoring | eedc865ef730 | 20 | MIT |
 | [VLLMDecision2.txt](repositories/VLLMDecision2.txt) | [official source](https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B) | Decision 2.0 Vega renderer, readout and model wrapper | 71d6ae1db4a7 | 26 | Apache-2.0 |
 | [Kev.txt](repositories/Kev.txt) | [official source](https://github.com/jaredpalmer/kev) | Kev pointer-head models, training and serving | 2074cc442562 | 253 | Apache-2.0; per-source data terms retained |
-| [H2OLightning.txt](repositories/H2OLightning.txt) | [official source](https://huggingface.co/h2oai/h2o-lightning-4b) | H2O decision shim, calibration and attention-mode configuration | e7b32490c9d2 | 28 | Apache-2.0 |
+| [H2OLightning.txt](repositories/H2OLightning.txt) | [official source](https://huggingface.co/h2oai/h2o-lightning-4b) | H2O decision shim, calibration and attention-mode configuration | 659fc412de84 | 27 | Apache-2.0 |
 | [Tev1.txt](repositories/Tev1.txt) | [official source](https://github.com/togethercomputer/tev1) | Together answer-token training recipe and inference examples | 1dde7782382c | 43 | MIT code; fine-tuned weight license pending |
 | [System1Arena.txt](repositories/System1Arena.txt) | [TianyuCodings/S1-Arena](https://github.com/TianyuCodings/S1-Arena) | Common decision requests, metrics and closed-loop environment protocols | 28e16b16cdf6 | 265 | Apache-2.0 |
-| [Jeff.txt](repositories/Jeff.txt) | [j-geuter/Jeff](https://github.com/j-geuter/Jeff) | Jeff decision-head readout, prompts and local serving | 12ba07920283 | 19 | Apache-2.0 |
+| [Jeff.txt](repositories/Jeff.txt) | [j-geuter/Jeff](https://github.com/j-geuter/Jeff) | Jeff decision-head readout, prompts and local serving | 47ac025a1d8a | 27 | Apache-2.0 |
 | [JevOut.txt](repositories/JevOut.txt) | [xzx34/JevOut](https://github.com/xzx34/JevOut) | Context sensitivity and targeted decision flips | c8ab231728ab | 47 | Apache-2.0 |
 | [SearchJev.txt](repositories/SearchJev.txt) | [EvoScientist/SearchJev](https://github.com/EvoScientist/SearchJev) | Search decision training, restricted scoring and calibration | 054ea81d4307 | 22 | Apache-2.0 |
 | [SIIDecision.txt](repositories/SIIDecision.txt) | [amazingljy1206/SII-Decision](https://github.com/amazingljy1206/SII-Decision) | General decision training and JEVal evaluation | 1723d83cbda6 | 29 | Apache-2.0 |
-| [JevBenchmarking.txt](repositories/JevBenchmarking.txt) | [AppliedMachineLearning-Lab/jev-benchmarking](https://github.com/AppliedMachineLearning-Lab/jev-benchmarking) | Benchmark tasks, response caching and probability metrics | 87562114d235 | 54 | MIT; response-specific notices retained |
-| [StrandsDecider.txt](repositories/StrandsDecider.txt) | [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider) | Pointer-head architecture, training recipes and calibration | d942e5515db7 | 206 | Apache-2.0; third-party notices retained |
+| [JevBenchmarking.txt](repositories/JevBenchmarking.txt) | [AppliedMachineLearning-Lab/jev-benchmarking](https://github.com/AppliedMachineLearning-Lab/jev-benchmarking) | Benchmark tasks, response caching and probability metrics | a06196c4af40 | 73 | MIT; response-specific notices retained |
+| [StrandsDecider.txt](repositories/StrandsDecider.txt) | [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider) | Pointer-head architecture, training recipes and calibration | 1ace5aaa86a8 | 239 | Apache-2.0; third-party notices retained |
 | [InternDecision.txt](repositories/InternDecision.txt) | [InternLM/Intern-Decision](https://github.com/InternLM/Intern-Decision) | Masked decision training, inference and calibration pilot | 565350244af8 | 69 | Apache-2.0; benchmark notices retained |
 | [TypeSafeSystemOneAdapter.txt](repositories/TypeSafeSystemOneAdapter.txt) | [typesafe-ai/system-one-adapter-python](https://github.com/typesafe-ai/system-one-adapter-python) | LLM baseline adapter for the TypeSafe decision interface | e1d4cc938204 | 40 | MIT |
-| [Clef.txt](repositories/Clef.txt) | [Cloudflare/clef](https://huggingface.co/Cloudflare/clef) | Joint-schema decision head and inference | a30162b99d68 | 10 | Apache-2.0 |
-| [LiquidD1_3B.txt](repositories/LiquidD1_3B.txt) | [LiquidAI/d1-3B](https://huggingface.co/LiquidAI/d1-3B) | Text/image decision inference | 051bcc464b01 | 12 | LFM Open License v1.0 |
+| [Clef.txt](repositories/Clef.txt) | [Cloudflare/clef](https://huggingface.co/Cloudflare/clef) | Joint-schema decision head and inference | 171287b25710 | 11 | Apache-2.0 |
+| [LiquidD1_3B.txt](repositories/LiquidD1_3B.txt) | [LiquidAI/d1-3B](https://huggingface.co/LiquidAI/d1-3B) | Text/image decision inference | 05b80faf5553 | 12 | LFM Open License v1.0 |
 | [LiquidD1_Omni600M.txt](repositories/LiquidD1_Omni600M.txt) | [LiquidAI/d1-omni-600M](https://huggingface.co/LiquidAI/d1-omni-600M) | Encoder-based text/image/audio decisions | 02b55d7076f1 | 9 | LFM Open License v1.0 |
 | [PerplexityDecider.txt](repositories/PerplexityDecider.txt) | [perplexity-ai/pplx-decider-v1.1-27b](https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b) | Decision readout, training and data construction | 14c9d9013796 | 33 | Apache-2.0; NOTICE retained |
 | [AnyJev.txt](repositories/AnyJev.txt) | [nokia-applied-research/AnyJev](https://github.com/nokia-applied-research/AnyJev) | Training-free typed readout, order marginalization and selective prediction | 35311c589557 | 66 | Apache-2.0; third-party notices retained |
 | [StartLuxDecision.txt](repositories/StartLuxDecision.txt) | [StartLuxLabs/StartLux-Decision](https://github.com/StartLuxLabs/StartLux-Decision) | Instant/deliberative inference, readout controls and adaptation | a99977d9332d | 136 | Apache-2.0 |
+
+## `MMDM.txt`
+
+**Identity:** linked in Appendix E of [Shen et al., *MMDM: Measuring Massive Multitask Decision Making*](SUMMARIES.md#mmdm-measuring-massive-multitask-decision-making).
+The snapshot contains evaluator code and tests, with dataset and result directories excluded.
+
+- `mmdm_eval/context.py` (`adapt_state`) applies context budgets.
+- `mmdm_eval/grouped_choice.py` (`score_selection`) handles selection scoring.
+- `mmdm_eval/set_metrics.py` (`evaluate_hard_set`) checks complete valid-set ranking.
+- `mmdm_eval/scoring.py` (`score_predictions`) scores saved predictions.
 
 ## `JevOut.txt`
 

@@ -2,7 +2,7 @@
 
 A standalone knowledge repository for **models and methods for choosing actions**.
 The owner's Zotero collection matching **Decision Models** defines the exact corpus.
-Its selection concerns fast, schema-conditioned decision models: eighteen
+Its selection concerns fast, schema-conditioned decision models: nineteen
 research papers and eighteen web-only release posts/model cards. It is maintained
 here and consumed elsewhere as a pinned, read-only Git submodule.
 
